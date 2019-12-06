@@ -1,0 +1,816 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{bm}
+\usepackage{wasysym}
+\usepackage{centernot}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usetikzlibrary{arrows}
+\graphicspath{ {./img/} }
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\title{Perfect Graph Recognition and Coloring}
+\subtitle{Dni Magistranta}
+\author{Adrian Siwiec}
+
+
+\date{December 05, 2019}
+
+\definecolor{c1}{RGB}{51,51,178}
+\definecolor{c2}{RGB}{255,173,5}
+\definecolor{c3}{RGB}{20,17,21}
+\definecolor{c4}{RGB}{255,34,12}
+\definecolor{c5}{RGB}{184,184,243}
+\definecolor{ofaded}{RGB}{255,173,5}
+\definecolor{tfaded}{RGB}{51,51,178}
+\definecolor{ududff}{rgb}{0,0,0}
+
+\tikzstyle{taken}=[color=c1]
+\tikzstyle{optimal}=[color=c2]
+\tikzstyle{od}=[color=c2, dashed]
+\tikzstyle{l}=[above, color=black]
+\tikzstyle{lr}=[left, color=black]
+\tikzstyle{sm}=[scale=0.6]
+
+\newcommand{\smm}{\mathsf{SMM}}
+\newcommand{\smmmove}{\textsc{SMMMove}}
+\newcommand{\tqbf}{\textsc{TQBF}}
+\newcommand{\mpmove}{\textsc{MPMove}}
+\newcommand{\dechex}{\textsc{DecisionHex}}
+\newcommand{\decpos}{\textsc{DecisionPoset}}
+\newcommand{\PSPACE}{\textsc{PSPACE}}
+\newcommand{\PSPC}{\textsc{PSPACE}\emph{-complete}}
+\newcommand{\PSPH}{\textsc{PSPACE}\emph{-hard}}
+
+
+\tikzstyle{vertex}=[vertex/.style = {shape=circle,draw, fill=black, scale=0.5}]
+\tikzstyle{edge}=[edge/.style = {-,> = latex', line width=1mm}]
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{References}
+	\textbf{"The strong perfect graph theorem"}
+	\\ \emph{Maria Chudnovsky, Neil Robertson, Paul Seymour, Robin Thomas}
+	\\ https://arxiv.org/abs/math/0212070
+	\vspace{0.3cm}\\
+	\textbf{"A polynomial algorithm for recognizing perfect graphs"}
+	\\ \emph{Gérard Cornuéjols, Xinming Liu, Kristina Vušković}
+	\\ https://ieeexplore.ieee.org/document/1238177
+	\vspace{0.3cm}\\
+	\textbf{"Recognizing Berge Graphs"}
+	\\ \emph{Maria Chudnovsky, Gérard Cornuéjols, Xinming Liu, Paul Seymour, Kristina Vušković}
+	\\ https://link.springer.com/article/10.1007/s00493-005-0012-8
+	\vspace{0.3cm}\\
+	\textbf{"Colouring perfect graphs with bounded clique number"}
+	\\ \emph{Maria Chudnovsky, Aurélie Lagoutte, Paul Seymour, Sophie Spirkl}
+	\\ https://arxiv.org/abs/1707.03747
+	
+\end{frame}
+
+\begin{frame}{Perfect Graphs}
+\begin{itemize}
+\item<1->[]\begin{block}{Perfect Graphs}
+A graph is \emph{perfect} if the chromatic number of every induced subgraph equals the size of its largest clique.
+\end{block}
+\item<2->[]\vspace{-0.55cm}\begin{block}{Perfect Graphs are interesting}
+In all perfect graphs, the \emph{graph coloring problem}, \emph{maximum clique problem}, and \emph{maximum independent set problem} can all be solved in polynomial time. (Grötschel, Lovász, Schrijver 1988)
+\end{block}
+\item<3->[]\vspace{-0.55cm}\begin{block}{Families of graphs that are perfect}
+\begin{itemize}
+\item Bipartite graphs
+\vspace{-0.1cm}\item Line graphs of bipartite graphs
+\vspace{-0.1cm}\item Chordal graphs
+\vspace{-0.1cm}\item Comparability graphs
+\vspace{-0.1cm}\item ...
+\end{itemize}
+\end{block}
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Strong Perfect Graph Theorem}
+\begin{itemize}
+\item<1->[]\begin{block}{Perfect Graphs}
+A graph is \emph{perfect} if the chromatic number of every induced subgraph equals the size of its largest clique.
+\end{block}
+\begin{block}{Berge Graphs}
+A graph is \emph{Berge} if no induced subgraph of G is an odd cycle of length at least five or the
+complement of one.
+\end{block}
+\item<2->[]\begin{block}{Strong Perfect Graph Theorem}
+A graph $G$ is Perfect if and only if it is Berge.
+\end{block}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Recognizing Berge Graphs - an overview of an overview}
+\begin{block}{An odd hole}
+An odd hole in G is an induced subgraph of G that is a cycle of odd length at least five.
+\end{block}
+A graph G is Berge if G and its complement both have no odd hole.
+
+\begin{block}{Algorithm}
+The idea of our algorithm is to decompose the input graph $G$ into a polynomial number of simpler graphs
+$G_1, ..., G_m$ so that:
+\begin{itemize}
+\item $G$ is odd-hole-free if and only if every $G_i$ is odd-hole-free.
+\item $G$ it is easy to check if $G_i$ is odd-hole-free.
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Decompositions}
+
+\begin{block}{2-join}
+A graph $G$ has a \emph{2-join} $V_1|V_2$ with special sets $(A_1, A_2, B_1, B_2)$ if $A_i, B_i \subset V_i$, every vertex of $A_1$ is adjacent to every vertex of $A_2$, every vertex of $B_1$ is adjacent to every vertex of $B_2$ and there are no other adjacencies between $V_1$ and $V_2$.
+\end{block}
+
+\begin{block}{Double Star}
+A set $S$ of vertices is a double star if $S$ contains two adjacent vertices $u$ and $v$ such that
+$S \subseteq N(u) \cup N(v)$.
+\end{block}
+Double-star cutsets pose a problem.
+
+\end{frame}
+
+
+\begin{frame}{Perfect Graph Colouring}
+\begin{block}{Skew Partitions}
+A \emph{skew partition} in $G$ is a partition $(A, B)$ of $V(G)$, such that $G[A]$ is not connected and $\overline{G}[B]$ is not connected.
+\end{block}
+
+\begin{block}{Decomposition Theorem}
+Every Berge graph either admits a balanced skew partition, or admits one of two other decompositions, or it belongs to one of five well-understood classes.
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Goals}
+\begin{block}{Goals}
+\begin{itemize}
+\item Implement Berge Graph recognition algorithm.
+\begin{itemize}
+\item Compare with existing \emph{Java} implementation.
+\item Are there any other implementations to compare to?
+\end{itemize}
+\item Implement Perfect Graph colouring algorithm.
+\begin{itemize}
+\item Compare with existing linear programming solutions.
+\end{itemize}
+\end{itemize}
+\end{block}
+\end{frame}
+
+%
+%\begin{frame}{Further Definitions}
+%\begin{block}{Competetive Ratio}
+%	An online algorithm $ALG$ is \emph{c-competetive} if $ALG(\sigma) \geq OPT(\sigma)/c$ for all request sequences $\sigma$, where $OPT$ is the value of optimal solution.
+%\end{block}		
+%\begin{block}{Edge Type}
+%	An edge is of type $i \in [0,k]$ if it has udergone i decision flips by the algorithm. The default state of an edge is \emph{rejected}.
+%\end{block}
+%\begin{block}{Path Type}
+%	The type of a path $P$ is defined as a sequence of types of its edges.
+%\end{block}
+%	\centering\emph{Example:} $01010 \longrightarrow 12121$
+%\end{frame}
+%
+%\begin{frame}{The algorithm \emph{Greedy}}
+%\begin{block}{\emph{Greedy}}
+%	The algorithm \emph{Greedy} repeatedly applies an orbitrary augmenting path whenever possible.
+%\end{block}
+%\begin{block}{Theorem 1}
+%	The algorithm \emph{Greedy} achieves the competetive ratio of $3/2$ for every even $k$ and $2$ for every odd $k$.
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}{Proof of Theorem 1 (Upper Bound)}
+%\begin{block}{Even alternating paths (symmetric difference)}
+%\begin{minipage}{.6\textwidth}
+%	\centering\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (3,0) {};
+%		\node[vertex] (5) at  (4,0) {};
+%
+%		\draw[edge, taken] (1) to (2);
+%		\draw[edge, optimal] (2) to (3);
+%		\draw[edge, taken] (3) to (4);
+%		\draw[edge, optimal] (4) to (5);
+%	\end{tikzpicture}
+%\end{minipage}%
+%\begin{minipage}{.25\textwidth}
+%	\qquad
+%	\centering\begin{tikzpicture}
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (1.5,0.87) {};
+%		\node[vertex] (4) at  (1,1.74) {};
+%		\node[vertex] (5) at  (0,1.74) {};
+%		\node[vertex] (6) at  (-0.5,0.87) {};
+%		\draw[edge, taken] (1) to (2);
+%		\draw[edge, optimal] (2) to (3);
+%		\draw[edge, taken] (3) to (4);
+%		\draw[edge, optimal] (4) to (5);
+%		\draw[edge, taken] (5) to (6);
+%		\draw[edge, optimal] (6) to (1);
+%	\end{tikzpicture}
+%\end{minipage}
+%\end{block}
+%\begin{block}{Odd alternating paths (symmetric difference)}
+%\begin{minipage}{.6\textwidth}
+%	\centering\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex, fill=black!50, draw=black!50] (1) at  (0,0) {};
+%		\node[vertex, fill=black!50, draw=black!50] (2) at  (1,0) {};
+%		\draw[edge, ofaded!50] (1) to (2);
+%	\end{tikzpicture}
+%\end{minipage}%
+%\begin{minipage}{.25\textwidth}
+%	\qquad
+%	\centering\begin{tikzpicture}
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex, fill=black!50, draw=black!50] (1) at  (0,0) {};
+%		\node[vertex, fill=black!50, draw=black!50] (2) at  (1,0) {};
+%		\node[vertex, fill=black!50, draw=black!50] (3) at  (2,0) {};
+%		\node[vertex, fill=black!50, draw=black!50] (4) at  (3,0) {};
+%		\draw[edge, ofaded!50] (1) to (2);
+%		\draw[edge, tfaded!50] (2) to node[l]  {$i \centernot| 2$} (3);
+%		\draw[edge, ofaded!50] (3) to  (4);
+%	\end{tikzpicture}
+%\end{minipage}%
+%\vspace{0.9cm}
+%\begin{minipage}{.6\textwidth}
+%	\centering\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (3,0) {};
+%		\node[vertex] (5) at  (4,0) {};
+%		\node[vertex] (6) at  (5,0) {};
+%		\draw[edge, optimal] (1) to (2);
+%		\draw[edge, optimal] (3) to (4);
+%		\draw[edge, optimal] (5) to (6);
+%		\draw[edge, taken] (2) to (3);
+%		\draw[edge, taken] (4) to (5);
+%	\end{tikzpicture}
+%\end{minipage}%
+%\begin{minipage}{.18\textwidth}
+%	\qquad
+%	\centering\begin{tikzpicture}
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		$\dots$
+%	\end{tikzpicture}
+%\end{minipage}
+%\vspace{0.4cm}
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}{Proof of Theorem 1 (Lower Bound)}
+%$k = 4, n = 2$
+%\begin{center}
+%\begin{itemize}
+%	\item<1->[]\hspace*{2.5cm}\begin{tikzpicture}[baseline=(current bounding box.center), sm]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (3,0) {};
+%		\node[vertex] (5) at  (4,0) {};
+%		\node[vertex] (6) at  (5,0) {};
+%		\node[vertex] (7) at  (6,0) {};
+%		\node[vertex] (8) at  (7,0) {};
+%		\node[vertex] (9) at  (8,0) {};
+%		\node[vertex] (10) at  (9,0) {};
+%		\draw[edge, taken] (1) to node[l] {$1$} (2);
+%		\draw[edge, taken] (3) to node[l] {$1$} (4);
+%		\draw[edge, taken] (5) to node[l] {$1$} (6);
+%		\draw[edge, taken] (7) to node[l] {$1$} (8);
+%		\draw[edge, taken] (9) to node[l] {$1$} (10);
+%		\draw[edge, od] (1) to node[l] {$1$} (2);
+%		\draw[edge, od] (3) to node[l] {$1$} (4);
+%		\draw[edge, od] (5) to node[l] {$1$} (6);
+%		\draw[edge, od] (7) to node[l] {$1$} (8);
+%		\draw[edge, od] (9) to node[l] {$1$} (10);
+%	\end{tikzpicture}%
+%
+%	\vspace{0.4cm}
+%	\item<2->[]\hspace*{1.9cm}\begin{tikzpicture}[baseline=(current bounding box.center), sm]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (3,0) {};
+%		\node[vertex] (5) at  (4,0) {};
+%		\node[vertex] (6) at  (5,0) {};
+%		\node[vertex] (7) at  (6,0) {};
+%		\node[vertex] (8) at  (7,0) {};
+%		\node[vertex] (9) at  (8,0) {};
+%		\node[vertex] (10) at  (9,0) {};
+%		\node[vertex] (11) at  (10,0) {};
+%		\node[vertex] (12) at  (11,0) {};
+%		\draw[edge, taken] (1) to node[l] {$1$} (2);
+%		\draw[edge, taken] (3) to node[l] {$1$} (4);
+%		\draw[edge, taken] (5) to node[l] {$1$} (6);
+%		\draw[edge, taken] (7) to node[l] {$1$} (8);
+%		\draw[edge, taken] (9) to node[l] {$1$} (10);
+%		\draw[edge, taken] (11) to node[l] {$1$} (12);
+%		\draw[edge, od] (1) to node[l] {$1$} (2);
+%		\draw[edge, od] (3) to node[l] {$1$} (4);
+%		\draw[edge, od] (5) to node[l] {$1$} (6);
+%		\draw[edge, od] (7) to node[l] {$1$} (8);
+%		\draw[edge, od] (9) to node[l] {$1$} (10);
+%		\draw[edge, od] (11) to node[l] {$1$} (12);
+%		\draw[dashed] (10) to node[l] {$2$} (11);
+%		\draw[dashed] (8) to node[l] {$2$} (9);
+%		\draw[dashed] (6) to node[l] {$2$} (7);
+%		\draw[dashed] (4) to node[l] {$2$} (5);
+%		\draw[dashed] (2) to node[l] {$2$} (3);
+%	\end{tikzpicture}%
+%	\vspace{0.4cm}
+%	\onslide<3->\hspace*{1.3cm}\begin{tikzpicture}[baseline=(current bounding box.center), sm]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (3,0) {};
+%		\node[vertex] (5) at  (4,0) {};
+%		\node[vertex] (6) at  (5,0) {};
+%		\node[vertex] (7) at  (6,0) {};
+%		\node[vertex] (8) at  (7,0) {};
+%		\node[vertex] (9) at  (8,0) {};
+%		\node[vertex] (10) at  (9,0) {};
+%		\node[vertex] (11) at  (10,0) {};
+%		\node[vertex] (12) at  (11,0) {};
+%		\node[vertex] (13) at  (12,0) {};
+%		\node[vertex] (14) at  (13,0) {};
+%		\draw[edge, taken] (1) to node[l] {$1$} (2);
+%		\draw[edge, taken] (3) to node[l] {$3$} (4);
+%		\draw[edge, taken] (5) to node[l] {$3$} (6);
+%		\draw[edge, taken] (7) to node[l] {$3$} (8);
+%		\draw[edge, taken] (9) to node[l] {$3$} (10);
+%		\draw[edge, taken] (11) to node[l] {$3$} (12);
+%		\draw[edge, taken] (13) to node[l] {$1$} (14);
+%		\draw[edge, od] (1) to node[l] {$1$} (2);
+%		\draw[edge, od] (3) to node[l] {$3$} (4);
+%		\draw[edge, od] (5) to node[l] {$3$} (6);
+%		\draw[edge, od] (7) to node[l] {$3$} (8);
+%		\draw[edge, od] (9) to node[l] {$3$} (10);
+%		\draw[edge, od] (11) to node[l] {$3$} (12);
+%		\draw[edge, od] (13) to node[l] {$1$} (14);
+%		\draw[dashed] (12) to node[l] {$2$} (13);
+%		\draw[dashed] (10) to node[l] {$2$} (11);
+%		\draw[dashed] (8) to node[l] {$2$} (9);
+%		\draw[dashed] (6) to node[l] {$2$} (7);
+%		\draw[dashed] (4) to node[l] {$2$} (5);
+%		\draw[dashed] (2) to node[l] {$2$} (3);
+%	\end{tikzpicture}%
+%	\vspace{0.4cm}
+%	\onslide<4->\hspace*{0.7cm}\begin{tikzpicture}[baseline=(current bounding box.center), sm]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (3,0) {};
+%		\node[vertex] (5) at  (4,0) {};
+%		\node[vertex] (6) at  (5,0) {};
+%		\node[vertex] (7) at  (6,0) {};
+%		\node[vertex] (8) at  (7,0) {};
+%		\node[vertex] (9) at  (8,0) {};
+%		\node[vertex] (10) at  (9,0) {};
+%		\node[vertex] (11) at  (10,0) {};
+%		\node[vertex] (12) at  (11,0) {};
+%		\node[vertex] (13) at  (12,0) {};
+%		\node[vertex] (14) at  (13,0) {};
+%		\node[vertex] (15) at  (14,0) {};
+%		\node[vertex] (16) at  (15,0) {};
+%		\draw[edge, taken] (1) to node[l] {$1$} (2);
+%		\draw[edge, taken] (3) to node[l] {$3$} (4);
+%		\draw[edge, taken] (5) to node[l] {$3$} (6);
+%		\draw[edge, taken] (7) to node[l] {$3$} (8);
+%		\draw[edge, taken] (9) to node[l] {$3$} (10);
+%		\draw[edge, taken] (11) to node[l] {$3$} (12);
+%		\draw[edge, taken] (13) to node[l] {$1$} (14);
+%		\draw[edge, taken] (15) to node[l] {$1$} (16);
+%		\draw[edge, od] (1) to node[l] {$1$} (2);
+%		\draw[edge, od] (3) to node[l] {$3$} (4);
+%		\draw[edge, od] (5) to node[l] {$3$} (6);
+%		\draw[edge, od] (7) to node[l] {$3$} (8);
+%		\draw[edge, od] (9) to node[l] {$3$} (10);
+%		\draw[edge, od] (11) to node[l] {$3$} (12);
+%		\draw[edge, od] (13) to node[l] {$1$} (14);
+%		\draw[edge, od] (15) to node[l] {$1$} (16);
+%		\draw[dashed] (14) to node[l] {$2$} (15);
+%		\draw[dashed] (12) to node[l] {$4$} (13);
+%		\draw[dashed] (10) to node[l] {$4$} (11);
+%		\draw[dashed] (8) to node[l] {$4$} (9);
+%		\draw[dashed] (6) to node[l] {$4$} (7);
+%		\draw[dashed] (4) to node[l] {$4$} (5);
+%		\draw[dashed] (2) to node[l] {$2$} (3);
+%	\end{tikzpicture}%
+%	\vspace{0.4cm}
+%	\onslide<5->\hspace*{0.7cm}\begin{tikzpicture}[baseline=(current bounding box.center), sm]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (3,0) {};
+%		\node[vertex] (5) at  (4,0) {};
+%		\node[vertex] (6) at  (5,0) {};
+%		\node[vertex] (7) at  (6,0) {};
+%		\node[vertex] (8) at  (7,0) {};
+%		\node[vertex] (9) at  (8,0) {};
+%		\node[vertex] (10) at  (9,0) {};
+%		\node[vertex] (11) at  (10,0) {};
+%		\node[vertex] (12) at  (11,0) {};
+%		\node[vertex] (13) at  (12,0) {};
+%		\node[vertex] (14) at  (13,0) {};
+%		\node[vertex] (15) at  (14,0) {};
+%		\node[vertex] (16) at  (15,0) {};
+%		\node[vertex] (24) at  (3,-1) {};
+%		\node[vertex] (25) at  (4,-1) {};
+%		\node[vertex] (28) at  (7,-1) {};
+%		\node[vertex] (29) at  (8,-1) {};
+%		\node[vertex] (32) at  (11,-1) {};
+%		\node[vertex] (33) at  (12,-1) {};
+%		\draw[edge, taken] (1) to node[l] {$1$} (2);
+%		\draw[edge, taken] (3) to node[l] {$3$} (4);
+%		\draw[edge, taken] (5) to node[l] {$3$} (6);
+%		\draw[edge, taken] (7) to node[l] {$3$} (8);
+%		\draw[edge, taken] (9) to node[l] {$3$} (10);
+%		\draw[edge, taken] (11) to node[l] {$3$} (12);
+%		\draw[edge, taken] (13) to node[l] {$1$} (14);
+%		\draw[edge, taken] (15) to node[l] {$1$} (16);
+%		\draw[edge, optimal] (14) to node[l] {$2$} (15);
+%		\draw[dashed] (12) to node[l] {$4$} (13);
+%		\draw[edge, optimal] (10) to node[l] {$4$} (11);
+%		\draw[dashed] (8) to node[l] {$4$} (9);
+%		\draw[edge, optimal] (6) to node[l] {$4$} (7);
+%		\draw[dashed] (4) to node[l] {$4$} (5);
+%		\draw[edge, optimal] (2) to node[l] {$2$} (3);
+%		\draw[edge, optimal] (4) to (24);
+%		\draw[edge, optimal] (5) to (25);
+%		\draw[edge, optimal] (8) to (28);
+%		\draw[edge, optimal] (9) to (29);
+%		\draw[edge, optimal] (12) to (32);
+%		\draw[edge, optimal] (13) to (33);
+%	\end{tikzpicture}
+%
+%\end{itemize}
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}{The \lga{} }
+%\begin{block}{The $L$-Greedy Algorithm}
+%	We define the \lga{} for some parameter $L$ as a greedy algorithm that applies only augmenting paths of lengths at most $2L+1$ that are in the symmetric difference between the current matching and some particular matching $OPT$. The $OPT$ is then updated using some augmenting path.
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}{The \lga{} }
+%\begin{block}{The competetive ratio}
+%	The competetive ratio of \lga{} with $L = \floor*{\sqrt{k-1}}$ for even $k \geq 6$ is at most:\\
+%	\centering\scalebox{1.3}{\centering${{k(L+2)-2}\over{(L+1)(k-1)}} = 1 + O({{1}\over{\sqrt{k}}})$}
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}{Lower bound for deterministic algorithms}
+%\begin{block}{Theorem 2}
+%	The deterministic competetive ratio for $k \geq 3$ is at least $1 + {{1}\over{k-1}}$
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}{Lower bound for $k=3$ is $3/2$}
+%\begin{center}
+%\begin{overprint}
+%\onslide<1>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[edge, optimal] (1) to (2);
+%\end{tikzpicture}
+%
+%\onslide<2>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[edge, taken] (1) to node[l] {$1$} (2);
+%		\draw[edge, od] (1) to (2);
+%\end{tikzpicture}
+%
+%\onslide<3>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[draw=none] (20) at  (0, 1) {};
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (0,-1) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[edge, taken] (1) to node[l] {$1$} (2);
+%		\draw[edge, optimal] (3) to (2);
+%		\draw[edge, optimal] (1) to (4);
+%\end{tikzpicture}
+%
+%\onslide<4>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (0,-1) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[edge, taken] (1) to node[l] {$1$} (2);
+%		\draw[edge, optimal] (3) to (2);
+%		\draw[edge, optimal] (1) to (4);
+%		\pocket{}
+%\end{tikzpicture}
+%
+%\onslide<5>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (0,-1) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[dashed] (1) to node[l] {$2$} (2);
+%		\draw[edge, taken] (3) to node[l] {$1$} (2);
+%		\draw[edge, taken] (1) to node[lr] {$1$} (4);
+%		\draw[edge, od] (3) to (2);
+%		\draw[edge, od] (1) to (4);
+%		\pocket{}
+%\end{tikzpicture}
+%
+%\onslide<6>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (0,-1) {};
+%		\node[vertex] (5) at  (3,0) {};
+%		\node[vertex] (6) at  (1,-1) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[edge, optimal] (1) to node[l] {$2$} (2);
+%		\draw[edge, taken] (3) to node[l] {$1$} (2);
+%		\draw[edge, taken] (1) to node[lr] {$1$} (4);
+%		\draw[edge, optimal] (6) to (4);
+%		\draw[edge, optimal] (3) to (5);
+%		\pocket{}
+%\end{tikzpicture}
+%
+%\onslide<7>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (0,-1) {};
+%		\node[vertex] (5) at  (3,0) {};
+%		\node[vertex] (6) at  (1,-1) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[edge, taken] (1) to (2);
+%		\draw[edge, od] (1) to node[l] {$3$} (2);
+%		\draw[dashed] (3) to node[l] {$2$} (2);
+%		\draw[dashed] (1) to node[lr] {$2$} (4);
+%		\draw[edge, taken] (6) to node[l] {$1$} (4);
+%		\draw[edge, od] (6) to (4);
+%		\draw[edge, taken] (3) to node[l] {$1$} (5);
+%		\draw[edge, od] (3) to (5);
+%		\pocket{}
+%\end{tikzpicture}
+%
+%\onslide<8>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]		
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (0,-1) {};
+%		\node[vertex] (5) at  (3,0) {};
+%		\node[vertex] (6) at  (1,-1) {};
+%		\node[vertex] (7) at  (4,0) {};
+%		\node[vertex] (8) at  (2,-1) {};
+%		\node[vertex] (9) at  (0,1) {};
+%		\node[vertex] (10) at  (1,1) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[edge, taken] (1) to node[l] {$3$} (2);
+%		\draw[dashed] (3) to node[l] {$2$} (2);
+%		\draw[dashed] (1) to node[lr] {$2$} (4);
+%		\draw[edge, taken] (6) to node[l] {$1$} (4);
+%		\draw[edge, od] (6) to (4);
+%		\draw[edge, taken] (3) to node[l] {$1$} (5);
+%		\draw[edge, optimal] (3) to (8);
+%		\draw[edge, optimal] (7) to (5);
+%		\draw[edge, optimal] (9) to (1);
+%		\draw[edge, optimal] (10) to (2);
+%		\pocket{}
+%\end{tikzpicture}
+%
+%\onslide<9>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\filldraw[draw=none, fill=lightgray, rounded corners] (1.7,0.6) rectangle (4.3,-1.3);
+%		\filldraw[draw=none, fill=lightgray, rounded corners] (-4.3,-2.4) rectangle (-1.7,-4.3);		
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (0,-1) {};
+%		\node[vertex] (5) at  (3,0) {};
+%		\node[vertex] (6) at  (1,-1) {};
+%		\node[vertex] (7) at  (4,0) {};
+%		\node[vertex] (8) at  (2,-1) {};
+%		\node[vertex] (9) at  (0,1) {};
+%		\node[vertex] (10) at  (1,1) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\draw[edge, taken] (1) to node[l] {$3$} (2);
+%		\draw[dashed] (3) to node[l] {$2$} (2);
+%		\draw[dashed] (1) to node[lr] {$2$} (4);
+%		\draw[edge, taken] (6) to node[l] {$1$} (4);
+%		\draw[edge, od] (6) to (4);
+%		\draw[edge, taken] (3) to node[l] {$1$} (5);
+%		\draw[edge, optimal] (3) to (8);
+%		\draw[edge, optimal] (7) to (5);
+%		\draw[edge, optimal] (9) to (1);
+%		\draw[edge, optimal] (10) to (2);
+%		\pocket{}
+%\end{tikzpicture}
+%
+%\onslide<10>\hspace*{1cm}\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\filldraw[draw=none, fill=lightgray, rounded corners] (3.7,0.6) rectangle (6.3,-1.3);
+%		\filldraw[draw=none, fill=lightgray, rounded corners] (-4.3,-2.4) rectangle (-1.7,-4.3);		
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[vertex] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[vertex] (4) at  (0,-1) {};
+%		\node[vertex] (5) at  (3,0) {};
+%		\node[vertex] (6) at  (1,-1) {};
+%		\node[vertex] (7) at  (4,0) {};
+%		\node[vertex] (8) at  (2,-1) {};
+%		\node[vertex] (9) at  (0,1) {};
+%		\node[vertex] (10) at  (1,1) {};
+%		\node[vertex] (11) at  (6,0) {};
+%		\node[vertex] (12) at  (5,0) {};
+%		\node[vertex] (13) at  (3,-1) {};
+%		\node[vertex] (14) at  (2,1) {};
+%		\node[vertex] (15) at  (3,1) {};
+%		\node[vertex] (16) at  (4,-1) {};
+%		\node[draw=none] (20) at  (6, 1) {};
+%		\node[draw=none] (21) at  (-4.5,-4) {};
+%		\node[vertex, draw=none] (20) at  (0,-1) {};
+%		\draw[edge, taken] (1) to node[l] {$3$} (2);
+%		\draw[dashed] (3) to node[l] {$2$} (2);
+%		\draw[dashed] (1) to node[lr] {$2$} (4);
+%		\draw[edge, taken] (6) to node[l] {$1$} (4);
+%		\draw[edge, od] (6) to (4);
+%		\draw[edge, taken] (3) to node[l] {$3$} (5);
+%		\draw[dashed] (7) to node[l] {$2$} (5);
+%		\draw[edge, optimal] (9) to (1);
+%		\draw[edge, optimal] (10) to (2);
+%		\draw[edge, taken] (13) to node[l] {$1$} (8);
+%		\draw[edge, od] (13) to (8);
+%		\draw[dashed] (3) to node[lr] {$2$} (8);
+%		\draw[edge, optimal] (14) to (3);
+%		\draw[edge, optimal] (15) to (5);
+%		\draw[edge, optimal] (16) to (7);
+%		\draw[edge, optimal] (11) to (12);
+%		\draw[edge, taken] (12) to node[l] {$1$} (7);
+%		\pocket{}
+%\end{tikzpicture}
+%
+%
+%\end{overprint}
+%\end{center}
+%\end{frame}
+%
+%\begin{frame}{Lower bound for $k > 3$}
+%	\centering\includegraphics[height=7.5 
+%	cm]{lowerBound}
+%\end{frame}
+%
+%\begin{frame}{The edge arrival/departure model}
+%\begin{block}{Limited departure model}
+%	Edges arrive and depart. An edge cannot be removed while it is matched by the online matching.
+%\end{block}
+%\begin{block}{Full departure model}
+%	An edge can be removed at any time.
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}{Bounds in the full departure model}
+%\begin{block}{Lower bound of 2}
+%\centering\begin{tikzpicture}[baseline=(current bounding box.center)]
+%		\tikzset{vertex}
+%		\tikzset{edge}
+%		\node[draw=none] (1) at  (0,0) {};
+%		\node[vertex] (2) at  (1,0) {};
+%		\node[vertex] (3) at  (2,0) {};
+%		\node[draw=none] (4) at  (3,0) {};
+%		\draw[edge, taken] (2) to node[l] {$1$} (3);
+%		\draw[edge, od] (2) to (3);
+%		
+%		\node[vertex] (11) at  (0,-1) {};
+%		\node[vertex] (12) at  (1,-1) {};
+%		\node[vertex] (13) at  (2,-1) {};
+%		\node[vertex] (14) at  (3,-1) {};
+%		\draw[dashed] (12) to node[l] {$2$} (13);
+%		\draw[edge, taken] (11) to node[l] {$1$} (12);
+%		\draw[edge, od] (11) to node[l] {$1$} (12);
+%		\draw[edge, taken] (13) to node[l] {$1$} (14);
+%		\draw[edge, od] (13) to node[l] {$1$} (14);
+%		
+%		\node[draw=none] (21) at  (0,-2) {};
+%		\node[vertex] (22) at  (1,-2) {};
+%		\node[vertex] (23) at  (2,-2) {};
+%		\node[draw=none] (24) at  (3,-2) {};
+%		\draw[edge, taken] (22) to node[l] {$3$} (23);
+%		\draw[edge, od] (22) to (23);
+%		
+%		\node[vertex] (31) at  (0,-3) {};
+%		\node[vertex] (32) at  (1,-3) {};
+%		\node[vertex] (33) at  (2,-3) {};
+%		\node[vertex] (34) at  (3,-3) {};
+%		\draw[dashed] (32) to node[l] {$4$} (33);
+%		\draw[edge, taken] (31) to node[l] {$1$} (32);
+%		\draw[edge, od] (31) to node[l] {$1$} (32);
+%		\draw[edge, taken] (33) to node[l] {$1$} (34);
+%		\draw[edge, od] (33) to node[l] {$1$} (34);
+%		
+%		\node[draw=none] (42) at  (1,-4) {};
+%		\node[draw=none] (43) at  (2,-4) {};
+%		\draw[draw=none] (42) to node[l] {$\dots$} (43);
+%	\end{tikzpicture}
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}{Lower bound for limited departure model}
+%\begin{block}{The adversary}
+%		The adversary maintains a graph such that the symmetric difference between $AL$ and $OPT$ consists only of augmenting paths, has no alternating cycles or alternating paths of even length.
+%	\begin{itemize}
+%		\item We consider the game as played on collection of alternating strings.\\
+%		\item Augmenting a path translates to incrementing type of each edge. E.g. $01210 \rightarrow 12321$.\\		
+%		\item The moves available to adversary are:
+%	\begin{itemize}		
+%		\item Splitting string: \ $12321 \rightarrow 123,1$ or $12321 \rightarrow 1,3,1$.
+%		\item Merge, with $0$: \ $1,1 \rightarrow 101$.
+%		\item Append $0$s when needed: \ $101 \rightarrow 01010$.
+%	\end{itemize}
+%	\end{itemize}
+%\end{block}
+%\end{frame}
+%
+%\begin{frame}{The game}
+%	$k = 4$, competetive ratio of $10/7$
+%	\centering\includegraphics[height=4cm]{adversary}
+%\end{frame}
+%
+%\begin{frame}{Real, hard numbers}
+%	\centering\includegraphics[height=5cm]{theWorld}
+%\end{frame}
+
+
+
+\end{document}
