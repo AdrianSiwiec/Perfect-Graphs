@@ -1,4 +1,5 @@
 #include "diamonds.h"
+#include <cassert>
 #include <iostream>
 
 using namespace std;
@@ -9,4 +10,6 @@ int main() {
   t.a = 0;
   increment(t);
   cout << t.a << endl;
+
+  assert(0 == 0);
 }

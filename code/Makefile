@@ -9,22 +9,32 @@ CXX=g++
 CXXINC=-I ./$(INCDIR)/
 CXXFLAGS=-O2 -std=c++11 $(CXXINC)
 
-OBJFILES=$(patsubst %.cpp, obj/%.o, $(wildcard src/*.cpp))
+OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(wildcard $(SRCDIR)/*.cpp))
+TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
 
-
+$(info $(OBJFILES))
+$(info $(TESTFILES))
 
 #Targets
-test: $(OBJDIR)/$(TESTDIR)/diamonds.e
+test: $(TESTFILES)
 
 $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CXXINC) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(OBJDIR)/%.e: %.cpp
+$(OBJDIR)/%.e: %.cpp $(OBJFILES) Makefile
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CXXINC) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(OBJFILES) $< -o $@
 
-.PHONY: test clean
+.PHONY: test clean run-tests retest
+
+run-tests: test
+	for test in obj/test/*.e; do \
+		echo "Running $$test"; \
+		./$$test; \
+	done &&	echo "ALL OK"
+
+retest: clean run-tests
 
 clean:
 	rm -rf obj *.e
