@@ -1,21 +1,28 @@
-#include <vector>
+#pragma once
 
-template <typename T> struct ranged_vec : public std::vector<T> {
-  using std::vector<T>::vector;
+#include <vector>
+using namespace std;
+
+template <typename T> struct vec : public vector<T> {
+  using vector<T>::vector;
 
   // Range checking
-  T &operator[](int i) { return std::vector<T>::at(i); }
-  const T &operator[](int i) const { return std::vector<T>::at(i); }
+  T &operator[](int i) { return vector<T>::at(i); }
+  const T &operator[](int i) const { return vector<T>::at(i); }
 };
 
 struct Graph {
-  const int n;
+  int n;
+
   Graph(int n) : n(n), _tab(n) {
     for (int i = 0; i < n; i++)
       _tab[i].resize(n);
   }
-  ranged_vec<int> &operator[](int index) { return _tab[index]; }
+  vec<int> &operator[](int index) { return _tab[index]; }
+  const vec<int> &operator[](int index) const { return _tab[index]; }
 
 private:
-  ranged_vec<ranged_vec<int>> _tab;
+  vec<vec<int>> _tab;
 };
+
+vec<vec<int>> getTriangles(const Graph &G);
