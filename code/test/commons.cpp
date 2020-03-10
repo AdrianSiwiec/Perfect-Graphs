@@ -14,13 +14,13 @@ void testGraph() {
 
   for (int i = 0; i < 10; i++) {
     for (int j = 0; j < 10; j++) {
-      g[i][j] = i + j;
+      g[i][j] = (i + j) % 2;
     }
   }
 
   for (int i = 0; i < 10; i++) {
     for (int j = 0; j < 10; j++) {
-      assert(g[i][j] == i + j);
+      assert(g[i][j] == (i + j) % 2);
     }
   }
 }
@@ -41,7 +41,7 @@ void testGetTriangles() {
 
     auto triangles = getTriangles(G);
     assert(triangles.size() == numTriangles);
-    for(auto t: triangles) {
+    for (auto t : triangles) {
       assert(G[t[0]][t[1]]);
       assert(G[t[0]][t[2]]);
       assert(G[t[1]][t[0]]);
@@ -52,7 +52,55 @@ void testGetTriangles() {
   }
 }
 
+void testVec() {
+  vec<int> v(3);
+  v[0] = 0;
+  v[1] = 1;
+  v[2] = 2;
+
+  bool thrown = 0;
+  try {
+    v[3] = 3;
+  } catch (std::out_of_range e) {
+    thrown = 1;
+  }
+
+  assert(thrown);
+}
+
+void testEmptyStarTriangles() {
+  for (int i = 0; i < 15; i++) {
+    Graph G = getRandomGraph(10, 0.7);
+
+    int numEmptyStars = 0;
+    for (int a = 0; a < 10; a++) {
+      for (int s0 = 0; s0 < 10; s0++) {
+        if (s0 == a)
+          continue;
+        for (int s1 = 0; s1 < 10; s1++) {
+          if (s1==a || s1 == s0)
+            continue;
+          for (int s2 = 0; s2 < 10; s2++) {
+            if (s2==a || s2 == s0 || s2 == s1)
+              continue;
+            if (G[a][s0] && G[a][s1] && G[a][s2] && !G[s0][s1] && !G[s0][s2] &&
+                !G[s1][s2])
+              numEmptyStars++;
+          }
+        }
+      }
+    }
+    assert((numEmptyStars % 6) ==
+           0); // sanity check, we count each permutation of s1, s2, s3
+
+    auto emptyStars = getEmptyStarTriangles(G);
+    assert(numEmptyStars / 6 == emptyStars.size());
+  }
+}
+
 int main() {
   testGraph();
   testGetTriangles();
+  testVec();
+  testEmptyStarTriangles();
 }

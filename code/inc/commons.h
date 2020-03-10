@@ -3,6 +3,10 @@
 #include <vector>
 using namespace std;
 
+#define mp make_pair
+#define st first
+#define nd second
+
 template <typename T> struct vec : public vector<T> {
   using vector<T>::vector;
 
@@ -26,3 +30,6 @@ private:
 };
 
 vec<vec<int>> getTriangles(const Graph &G);
+// EmptyStarTriangle is a four (a, s1, s2, s3), where each si is connected to a
+// and none si and sj are connected to each other
+vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G);

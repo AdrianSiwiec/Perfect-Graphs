@@ -15,3 +15,24 @@ vec<vec<int>> getTriangles(const Graph &G) {
 
   return ret;
 }
+
+vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G) {
+  vec<pair<int, vec<int>>> ret;
+  for (int a = 0; a < G.n; a++) {
+    for (int s1 = 0; s1 < G.n; s1++) {
+      if (!G[a][s1])
+        continue;
+      for (int s2 = s1 + 1; s2 < G.n; s2++) {
+        if (!G[a][s2] || G[s1][s2])
+          continue;
+        for (int s3 = s2 + 1; s3 < G.n; s3++) {
+          if (!G[a][s3] || G[s1][s3] || G[s2][s3])
+            continue;
+          ret.push_back(mp(a, vec<int>{s1, s2, s3}));
+        }
+      }
+    }
+  }
+
+  return ret;
+}
