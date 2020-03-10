@@ -30,8 +30,8 @@ $(OBJDIR)/%.e: %.cpp $(OBJFILES) Makefile
 
 run-tests: test
 	for test in obj/test/*.e; do \
-		echo "Running $$test"; \
-		./$$test; \
+		echo "Running $$test" && \
+		./$$test || exit; \
 	done &&	echo "ALL OK"
 
 retest: clean run-tests

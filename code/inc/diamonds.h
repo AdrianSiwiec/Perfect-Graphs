@@ -1,3 +1,5 @@
+#include "commons.h"
+
 struct test {
   int a;
 };
