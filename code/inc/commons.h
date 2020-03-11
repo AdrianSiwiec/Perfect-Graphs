@@ -30,11 +30,15 @@ struct Graph {
 
   Graph(int n);
   Graph(int n, string s);
-  vec<int> &operator[](int index) { return _tab[index]; }
-  const vec<int> &operator[](int index) const { return _tab[index]; }
+  Graph(vec<vec<int>> neighbours);
+  vec<int> &operator[](int index) { return _neighbours[index]; }
+  const vec<int> &operator[](int index) const { return _neighbours[index]; }
+  bool areNeighbours(int a, int b) const { return _matrix[a][b]; }
 
 private:
-  vec<vec<int>> _tab;
+  vec<vec<int>> _neighbours;
+  vec<vec<int>> _matrix;
+  void checkSymmetry();
 };
 
 // Returns triangles: [b1, b2, b3], such that b1<b2<b3

@@ -12,9 +12,9 @@ void testRandomGraphs() {
     for (int v = 0; v < 12; v++) {
       for (int u = 0; u < 12; u++)
         if (u != v)
-          assert(graphs[i][u][v] == 1);
+          assert(graphs[i].areNeighbours(u, v) == 1);
         else
-          assert(graphs[i][u][v] == 0);
+          assert(graphs[i].areNeighbours(u, v) == 0);
     }
   }
 
@@ -22,7 +22,7 @@ void testRandomGraphs() {
   for (int i = 0; i < 15; i++) {
     for (int v = 0; v < 15; v++) {
       for (int u = 0; u < 15; u++) {
-        assert(graphs[i][u][v] == graphs[i][v][u]);
+        assert(graphs[i].areNeighbours(u, v) == graphs[i].areNeighbours(v, u));
       }
     }
   }

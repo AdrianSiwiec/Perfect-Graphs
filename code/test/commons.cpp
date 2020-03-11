@@ -9,19 +9,7 @@ void testGraph() {
   Graph g(10);
   assert(g.n == 10);
   for (int i = 0; i < 10; i++) {
-    assert(g[i].size() == 10);
-  }
-
-  for (int i = 0; i < 10; i++) {
-    for (int j = 0; j < 10; j++) {
-      g[i][j] = (i + j) % 2;
-    }
-  }
-
-  for (int i = 0; i < 10; i++) {
-    for (int j = 0; j < 10; j++) {
-      assert(g[i][j] == (i + j) % 2);
-    }
+    assert(g[i].size() == 0);
   }
 
   bool caught = false;
@@ -58,9 +46,13 @@ void testGraph() {
   ");
   for (int i = 0; i < 5; i++) {
     for (int j = 0; j < 5; j++) {
-      assert(g[i][j] == ((i == 0) ^ (j == 0)));
+      assert(g.areNeighbours(i, j) == ((i == 0) ^ (j == 0)));
     }
   }
+
+  assert(g[0].size() == 4);
+  for (int i = 1; i < 5; i++)
+    assert(g[i].size() == 1);
 }
 
 void testGetTriangles() {
@@ -71,7 +63,7 @@ void testGetTriangles() {
     for (int i = 0; i < 10; i++) {
       for (int j = i; j < 10; j++) {
         for (int k = j; k < 10; k++) {
-          if (G[i][j] && G[i][k] && G[k][j])
+          if (G.areNeighbours(i, j) && G.areNeighbours(j, k) && G.areNeighbours(i, k))
             numTriangles++;
         }
       }
@@ -80,12 +72,12 @@ void testGetTriangles() {
     auto triangles = getTriangles(G);
     assert(triangles.size() == numTriangles);
     for (auto t : triangles) {
-      assert(G[t[0]][t[1]]);
-      assert(G[t[0]][t[2]]);
-      assert(G[t[1]][t[0]]);
-      assert(G[t[1]][t[2]]);
-      assert(G[t[2]][t[0]]);
-      assert(G[t[2]][t[1]]);
+      assert(G.areNeighbours(t[0], t[1]));
+      assert(G.areNeighbours(t[0], t[2]));
+      assert(G.areNeighbours(t[1], t[0]));
+      assert(G.areNeighbours(t[1], t[2]));
+      assert(G.areNeighbours(t[2], t[0]));
+      assert(G.areNeighbours(t[2], t[1]));
     }
   }
 }
@@ -121,15 +113,14 @@ void testEmptyStarTriangles() {
           for (int s2 = 0; s2 < 10; s2++) {
             if (s2 == a || s2 == s0 || s2 == s1)
               continue;
-            if (G[a][s0] && G[a][s1] && G[a][s2] && !G[s0][s1] && !G[s0][s2] &&
-                !G[s1][s2])
+            if (G.areNeighbours(a, s0) && G.areNeighbours(a, s1) && G.areNeighbours(a, s2) &&
+                !G.areNeighbours(s0, s1) && !G.areNeighbours(s0, s2) && !G.areNeighbours(s1, s2))
               numEmptyStars++;
           }
         }
       }
     }
-    assert((numEmptyStars % 6) ==
-           0); // sanity check, we count each permutation of s1, s2, s3
+    assert((numEmptyStars % 6) == 0); // sanity check, we count each permutation of s1, s2, s3
 
     auto emptyStars = getEmptyStarTriangles(G);
     assert(numEmptyStars == emptyStars.size());

@@ -19,7 +19,7 @@ void printGraph(const Graph &G) {
     if (i < 10)
       cout << " ";
     for (int j = 0; j < G.n; j++) {
-      cout << (G[i][j] ? "X " : ". ");
+      cout << (G.areNeighbours(i, j) ? "X " : ". ");
     }
     cout << endl;
   }
@@ -27,16 +27,17 @@ void printGraph(const Graph &G) {
 }
 
 Graph getRandomGraph(int size, double p) {
-  Graph G(size);
+  vec<vec<int>> neighbours(size);
   for (int i = 0; i < size; i++) {
     for (int j = i + 1; j < size; j++) {
       if (probTrue(p)) {
-        G[i][j] = G[j][i] = 1;
+        neighbours[i].push_back(j);
+        neighbours[j].push_back(i);
       }
     }
   }
 
-  return G;
+  return Graph(neighbours);
 }
 
 vec<Graph> getRandomGraphs(int size, double p, int howMany) {
@@ -78,11 +79,11 @@ vec<vec<int>> generateTuples(int size, int max) {
 }
 
 void handler(int sig) {
-  void *array[10];
+  void *array[100];
   size_t size;
 
   // get void*'s for all entries on the stack
-  size = backtrace(array, 10);
+  size = backtrace(array, 100);
 
   // print out all the frames to stderr
   fprintf(stderr, "Error: signal %d:\n", sig);
@@ -90,7 +91,8 @@ void handler(int sig) {
 
   /* skip first stack frame (points here) */
   for (int i = 1; i < size && messages != NULL; ++i) {
-    if (messages[i][1] != 'l' || messages[i][2] != 'i' || messages[i][3] != 'b')
+    if ((messages[i][1] != 'l' || messages[i][2] != 'i' || messages[i][3] != 'b') &&
+        (messages[i][1] != 'u' || messages[i][2] != 's' || messages[i][3] != 'r'))
       fprintf(stderr, "\t[bt]: (%d) %s\n", i, messages[i]);
   }
 
