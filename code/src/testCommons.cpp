@@ -48,3 +48,56 @@ vec<Graph> getRandomGraphs(int size, double p, int howMany) {
 
   return ret;
 }
+bool isAllZeros(vec<int> v) {
+  for (int a : v)
+    if (a != 0)
+      return false;
+  return true;
+}
+
+vec<int> nextTuple(vec<int> v, int max) {
+  v[0]++;
+  for (int i = 0; i < v.size() && v[i] >= max; i++) {
+    v[i] = 0;
+    if (i + 1 < v.size())
+      v[i + 1]++;
+  }
+
+  return v;
+}
+
+vec<vec<int>> generateTuples(int size, int max) {
+  vec<vec<int>> ret;
+  vec<int> current = vec<int>(size);
+  do {
+    ret.push_back(current);
+    current = nextTuple(current, max);
+  } while (!isAllZeros(current));
+
+  return ret;
+}
+
+void handler(int sig) {
+  void *array[10];
+  size_t size;
+
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 10);
+
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  auto messages = backtrace_symbols(array, size);
+
+  /* skip first stack frame (points here) */
+  for (int i = 1; i < size && messages != NULL; ++i) {
+    if (messages[i][1] != 'l' || messages[i][2] != 'i' || messages[i][3] != 'b')
+      fprintf(stderr, "\t[bt]: (%d) %s\n", i, messages[i]);
+  }
+
+  exit(1);
+}
+
+void init() {
+  signal(SIGSEGV, handler);
+  signal(SIGABRT, handler);
+}

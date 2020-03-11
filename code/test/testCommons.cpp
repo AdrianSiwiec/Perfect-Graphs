@@ -2,10 +2,9 @@
 #include "commons.h"
 #include <cstdlib>
 #include <iostream>
-
-
 // Unit test of testCommons
-int main() {
+
+void testRandomGraphs() {
   auto graphs = getRandomGraphs(12, 1, 15);
   assert(graphs.size() == 15);
   for (int i = 0; i < 15; i++) {
@@ -27,4 +26,21 @@ int main() {
       }
     }
   }
+}
+
+void testTuples() {
+  assert(isAllZeros({0, 0, 0, 0}));
+  assert(!isAllZeros({1, 0, 0, 0, 0, 0}));
+  assert(!isAllZeros({0, 0, 0, 0, 0, 1}));
+
+  assert(nextTuple({1, 0, 0, 1}, 3) == vec<int>({2, 0, 0, 1}));
+  assert(nextTuple({2, 0, 0, 1}, 3) == vec<int>({0, 1, 0, 1}));
+
+  assert(generateTuples(4, 3).size() == 3 * 3 * 3 * 3);
+}
+
+int main() {
+  init();
+  testRandomGraphs();
+  testTuples();
 }
