@@ -106,12 +106,96 @@ void testPyramidsSimple() {
   ");
 
   auto pyramide = findPyramide(G);
-
   assert(get<0>(pyramide) == (vec<int>{0, 1, 2}));
   assert(get<1>(pyramide) == 6);
   assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}}));
 
-  // TODO more tests
+  G = Graph(9, "\
+  .XXX.....\
+  X...X....\
+  X....X...\
+  X.....X..\
+  .X.....X.\
+  ..X....XX\
+  ...X....X\
+  ....XX..X\
+  .....XXX.\
+  ");
+
+  pyramide = findPyramide(G);
+  assert(get<0>(pyramide) == (vec<int>{5, 7, 8}));
+  assert(get<1>(pyramide) == 0);
+  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{2, 5}, vec<int>{1, 4, 7}, vec<int>{3, 6, 8}}));
+
+  G = Graph(9, "\
+  ....X...X\
+  ...X.X.X.\
+  ...X..X.X\
+  .XX....X.\
+  X....X...\
+  .X..X....\
+  ..X....X.\
+  .X.X..X..\
+  X.X......\
+  ");
+
+  pyramide = findPyramide(G);
+  assert(get<0>(pyramide) == (vec<int>{1, 3, 7}));
+  assert(get<1>(pyramide) == 2);
+  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{8, 0, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
+
+  G = Graph(9, "\
+  ....X...X\
+  ...X.X.X.\
+  ...X...XX\
+  .XX....X.\
+  X....X...\
+  .X..X....\
+  .........\
+  .XXX.....\
+  X.X......\
+  ");
+
+  pyramide = findPyramide(G);
+  assert(get<0>(pyramide).empty());
+  assert(get<1>(pyramide) == -1);
+  assert(get<2>(pyramide).empty());
+
+
+  G = Graph(9, "\
+  ....X...X\
+  ...X.X.X.\
+  ...X..X.X\
+  .XX....X.\
+  X....X..X\
+  .X..X....\
+  ..X....X.\
+  .X.X..X..\
+  X.X.X....\
+  ");
+
+  pyramide = findPyramide(G);
+  assert(get<0>(pyramide) == (vec<int>{1, 3, 7}));
+  assert(get<1>(pyramide) == 2);
+  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{8, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
+
+
+  G = Graph(9, "\
+  ....X...X\
+  ...X.X.X.\
+  ...X..X.X\
+  .XX....X.\
+  X....X..X\
+  .X..X...X\
+  ..X....X.\
+  .X.X..X..\
+  X.X.XX...\
+  ");
+
+  pyramide = findPyramide(G);
+  assert(get<0>(pyramide) == (vec<int>{1, 3, 7}));
+  assert(get<1>(pyramide) == 2);
+  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{8, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
 }
 
 int main() {
@@ -120,5 +204,5 @@ int main() {
   testShortestPath();
   testVectorsCutEmpty();
   testNoEdgeBetweenVectors();
-  testPyramids();
+  testPyramidsSimple();
 }

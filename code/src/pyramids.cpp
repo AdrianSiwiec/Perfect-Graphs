@@ -125,10 +125,12 @@ vec<vec<vec<int>>> calculatePPaths(const Graph &G, const vec<int> &b, const vec<
           return true;
         if (!M[v])
           return false;
-        for (int i = 0; i < 3; i++) {
-          if (b[i] == v || s[i] == v)
+        for (int j = 0; j < 3; j++) {
+          if (i == j)
             continue;
-          if (G.areNeighbours(b[i], v) || G.areNeighbours(s[i], v))
+          // if (b[i] == v || s[i] == v)
+          // continue;
+          if (G.areNeighbours(b[j], v) || G.areNeighbours(s[j], v))
             return false;
         }
 
@@ -141,6 +143,9 @@ vec<vec<vec<int>>> calculatePPaths(const Graph &G, const vec<int> &b, const vec<
     }
   }
 
+  // cout << "s: " << s << endl;
+  // cout << "b: " << b << endl;
+
   vec<vec<vec<int>>> P(3);
   for (int i = 0; i < 3; i++) {
     P[i].resize(G.n);
@@ -148,9 +153,6 @@ vec<vec<vec<int>>> calculatePPaths(const Graph &G, const vec<int> &b, const vec<
       P[i][b[i]] = vec<int>{b[i]};
     } else {
       for (int m = 0; m < G.n; m++) {
-        // cout << "S_" << i << "(" << s[i] << "," << m << ")= " << S[i][m] << "\t";
-        // cout << "T_" << i << "(" << m << "," << b[i] << ")= " << T[i][m] << "\t";
-
         // if (!M[m]) {
         // cout << endl;
         // continue;
@@ -187,7 +189,11 @@ vec<vec<vec<int>>> calculatePPaths(const Graph &G, const vec<int> &b, const vec<
           P[i][m].insert(P[i][m].end(), S[i][m].begin(), S[i][m].end());
           P[i][m].insert(P[i][m].end(), T[i][m].begin() + 1, T[i][m].end());
         }
-        // cout << "  P[" << i << "][" << m << "]= " << P[i][m] << endl;
+        if (P[i][m].size() > 0 || S[i][m].size() > 0 || T[i][m].size() > 0) {
+          // cout << "S_" << i << "(" << s[i] << "," << m << ")= " << S[i][m] << "\t";
+          // cout << "T_" << i << "(" << m << "," << b[i] << ")= " << T[i][m] << "\t";
+          // cout << "  P[" << i << "][" << m << "](" << s[i] << "," << b[i] << ")= " << P[i][m] << endl;
+        }
       }
     }
   } // P calculated
