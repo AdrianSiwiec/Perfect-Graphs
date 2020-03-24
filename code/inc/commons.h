@@ -43,6 +43,9 @@ private:
   void checkSymmetry();
 };
 
+ostream &operator<<(ostream &os, Graph const &G);
+
+
 // Returns triangles: [b1, b2, b3], such that b1<b2<b3
 vec<vec<int>> getTriangles(const Graph &G);
 

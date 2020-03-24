@@ -17,6 +17,10 @@ bool noEdgesBetweenVectors(const Graph &G, vec<int>::iterator aBegin, vec<int>::
 
 // If pyramide found, returns [b1, b2, b3], a, [P1, P2, P3]
 // Returns empty vector, -1 and emty vector if none found
-tuple<vec<int>, int, vec<vec<int>>> findPyramide(const Graph &G);
+tuple<vec<int>, int, vec<vec<int>>> findPyramid(const Graph &G);
 
-bool containsPyramide(const Graph &G);
+// Checks if [b1, b2, b3], a, [P1, P2, P3] is a pyramide
+// used only in tests
+bool isPyramid(const Graph &G, vec<int> b, int a, vec<vec<int>> P);
+
+bool containsPyramid(const Graph &G);

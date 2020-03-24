@@ -37,6 +37,30 @@ void testCheckPrerequisites() {
   }
 
   assert(passedCount == 2);
+
+  G = Graph(9, "\
+  ....X.X.X\
+  ...X.X.X.\
+  ...XX.X.X\
+  .XX....X.\
+  X.X..X...\
+  .X..X..X.\
+  X.X....X.\
+  .X.X.XX..\
+  X.X......\
+  ");
+  assert(checkPrerequisites(G, {1, 5, 7}, 2, {3, 4, 6}) == false);
+
+  G = Graph(7, "\
+  .XXXXX.\
+  X.X..XX\
+  XX.X.X.\
+  X.X...X\
+  X....XX\
+  XXX.X..\
+  .X.XX..\
+  ");
+  assert(checkPrerequisites(G, {1, 2, 5}, 0, {1, 3, 4}) == false);
 }
 
 void testShortestPath() {
@@ -94,7 +118,51 @@ void testNoEdgeBetweenVectors() {
   assert(noEdgesBetweenVectors(G, a.begin(), a.end(), b.begin() + 2, b.end()));
 }
 
-void testPyramidsSimple() {
+void testIsPyramid() {
+  Graph G(7, "\
+  .XXX...\
+  X.X..X.\
+  XX..X..\
+  X.....X\
+  ..X...X\
+  .X....X\
+  ...XXX.\
+  ");
+  assert(isPyramid(G, {0, 1, 2}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {0, 1}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {0, 1, 2}, 5, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {0, 1, 2}, 6, (vec<vec<int>>{vec<int>{3}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {0, 1, 2}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {0, 1, 2}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4}})));
+  assert(!isPyramid(G, {0, 1, 2}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{2}})));
+  assert(!isPyramid(G, {0, 1, 2}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {0, 1, 3}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {2, 1, 0}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {2, 0, 1}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {1, 2, 0}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {1, 0, 2}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+  assert(!isPyramid(G, {0, 2, 1}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
+
+  G = Graph(9, "\
+  ....X.X.X\
+  ...X.X.X.\
+  ...X..X.X\
+  .XX....X.\
+  X....X...\
+  .X..X....\
+  X.X....X.\
+  .X.X..X..\
+  X.X......\
+  ");
+
+  assert(isPyramid(G, {1, 3, 7}, 6, (vec<vec<int>>{vec<int>{0, 4, 5, 1}, vec<int>{2, 3}, vec<int>{7}})));
+  assert(!isPyramid(G, {1, 3, 7}, 6, (vec<vec<int>>{vec<int>{0, 5, 1}, vec<int>{2, 3}, vec<int>{7}})));
+  assert(!isPyramid(G, {1, 3, 7}, 6, (vec<vec<int>>{vec<int>{4, 5, 1}, vec<int>{2, 3}, vec<int>{7}})));
+  assert(!isPyramid(G, {1, 3, 7}, 6, (vec<vec<int>>{vec<int>{0, 4, 1}, vec<int>{2, 3}, vec<int>{7}})));
+  assert(!isPyramid(G, {1, 3, 7}, 6, (vec<vec<int>>{vec<int>{0, 4, 5}, vec<int>{2, 3}, vec<int>{7}})));
+}
+
+void testPyramidsHand() {
   Graph G(7, "\
   .XXX...\
   X.X..X.\
@@ -105,10 +173,11 @@ void testPyramidsSimple() {
   ...XXX.\
   ");
 
-  auto pyramide = findPyramide(G);
-  assert(get<0>(pyramide) == (vec<int>{0, 1, 2}));
-  assert(get<1>(pyramide) == 6);
-  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}}));
+  auto pyramid = findPyramid(G);
+  assert(isPyramid(G, get<0>(pyramid), get<1>(pyramid), get<2>(pyramid)));
+  assert(get<0>(pyramid) == (vec<int>{0, 1, 2}));
+  assert(get<1>(pyramid) == 6);
+  assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}}));
 
   G = Graph(9, "\
   .XXX.....\
@@ -122,10 +191,11 @@ void testPyramidsSimple() {
   .....XXX.\
   ");
 
-  pyramide = findPyramide(G);
-  assert(get<0>(pyramide) == (vec<int>{5, 7, 8}));
-  assert(get<1>(pyramide) == 0);
-  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{2, 5}, vec<int>{1, 4, 7}, vec<int>{3, 6, 8}}));
+  pyramid = findPyramid(G);
+  assert(isPyramid(G, get<0>(pyramid), get<1>(pyramid), get<2>(pyramid)));
+  assert(get<0>(pyramid) == (vec<int>{5, 7, 8}));
+  assert(get<1>(pyramid) == 0);
+  assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{2, 5}, vec<int>{1, 4, 7}, vec<int>{3, 6, 8}}));
 
   G = Graph(9, "\
   ....X...X\
@@ -139,10 +209,11 @@ void testPyramidsSimple() {
   X.X......\
   ");
 
-  pyramide = findPyramide(G);
-  assert(get<0>(pyramide) == (vec<int>{1, 3, 7}));
-  assert(get<1>(pyramide) == 2);
-  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{8, 0, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
+  pyramid = findPyramid(G);
+  assert(isPyramid(G, get<0>(pyramid), get<1>(pyramid), get<2>(pyramid)));
+  assert(get<0>(pyramid) == (vec<int>{1, 3, 7}));
+  assert(get<1>(pyramid) == 2);
+  assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{8, 0, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
 
   G = Graph(9, "\
   ....X...X\
@@ -156,11 +227,10 @@ void testPyramidsSimple() {
   X.X......\
   ");
 
-  pyramide = findPyramide(G);
-  assert(get<0>(pyramide).empty());
-  assert(get<1>(pyramide) == -1);
-  assert(get<2>(pyramide).empty());
-
+  pyramid = findPyramid(G);
+  assert(get<0>(pyramid).empty());
+  assert(get<1>(pyramid) == -1);
+  assert(get<2>(pyramid).empty());
 
   G = Graph(9, "\
   ....X...X\
@@ -174,11 +244,11 @@ void testPyramidsSimple() {
   X.X.X....\
   ");
 
-  pyramide = findPyramide(G);
-  assert(get<0>(pyramide) == (vec<int>{1, 3, 7}));
-  assert(get<1>(pyramide) == 2);
-  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{8, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
-
+  pyramid = findPyramid(G);
+  assert(isPyramid(G, get<0>(pyramid), get<1>(pyramid), get<2>(pyramid)));
+  assert(get<0>(pyramid) == (vec<int>{1, 3, 7}));
+  assert(get<1>(pyramid) == 2);
+  assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{8, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
 
   G = Graph(9, "\
   ....X...X\
@@ -192,10 +262,77 @@ void testPyramidsSimple() {
   X.X.XX...\
   ");
 
-  pyramide = findPyramide(G);
-  assert(get<0>(pyramide) == (vec<int>{1, 3, 7}));
-  assert(get<1>(pyramide) == 2);
-  assert(get<2>(pyramide) == (vec<vec<int>>{vec<int>{8, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
+  pyramid = findPyramid(G);
+  assert(isPyramid(G, get<0>(pyramid), get<1>(pyramid), get<2>(pyramid)));
+  assert(get<0>(pyramid) == (vec<int>{1, 3, 7}));
+  assert(get<1>(pyramid) == 2);
+  assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{8, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
+
+  G = Graph(9, "\
+  ....X.X.X\
+  ...X.X.X.\
+  ...X..X.X\
+  .XX....X.\
+  X....X...\
+  .X..X....\
+  X.X....X.\
+  .X.X..X..\
+  X.X......\
+  ");
+
+  pyramid = findPyramid(G);
+  assert(isPyramid(G, get<0>(pyramid), get<1>(pyramid), get<2>(pyramid)));
+  assert(get<0>(pyramid) == (vec<int>{1, 3, 7}));
+  assert(get<1>(pyramid) == 6);
+  assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{0, 4, 5, 1}, vec<int>{2, 3}, vec<int>{7}}));
+
+  G = Graph(9, "\
+  ....X.X.X\
+  ...X.X.X.\
+  ...XX.X.X\
+  .XX....X.\
+  X.X..X...\
+  .X..X....\
+  X.X....X.\
+  .X.X..X..\
+  X.X......\
+  ");
+
+  pyramid = findPyramid(G);
+  assert(isPyramid(G, get<0>(pyramid), get<1>(pyramid), get<2>(pyramid)));
+  assert(get<0>(pyramid) == (vec<int>{1, 3, 7}));
+  assert(get<1>(pyramid) == 2);
+  assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
+
+  G = Graph(9, "\
+  ....X.X.X\
+  ...X.X.X.\
+  ...XX.X.X\
+  .XX....X.\
+  X.X..X...\
+  .X..X..X.\
+  X.X....X.\
+  .X.X.XX..\
+  X.X......\
+  ");
+
+  pyramid = findPyramid(G);
+  assert(get<0>(pyramid).empty());
+  assert(get<1>(pyramid) == -1);
+  assert(get<2>(pyramid).empty());
+}
+
+void testPyramidsAreCorrect() {
+  int numPyramids = 0;
+  for (int iTest = 0; iTest < 1000; iTest++) {
+    Graph G = getRandomGraph(10, 0.5);
+    auto pyramid = findPyramid(G);
+    if (get<0>(pyramid).size() > 0) {
+      numPyramids++;
+      assert(isPyramid(G, get<0>(pyramid), get<1>(pyramid), get<2>(pyramid)));
+    }
+  }
+  // cout << "Num pyramids: " << numPyramids << endl;
 }
 
 int main() {
@@ -204,5 +341,7 @@ int main() {
   testShortestPath();
   testVectorsCutEmpty();
   testNoEdgeBetweenVectors();
-  testPyramidsSimple();
+  testIsPyramid();
+  testPyramidsHand();
+  testPyramidsAreCorrect();
 }

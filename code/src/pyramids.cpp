@@ -9,8 +9,8 @@ bool checkPrerequisites(const Graph &G, const vec<int> &b, const int a, const ve
 
   int aAdjB = 0;
 
-  for (int i = 0; i < 2; i++) {
-    for (int j = 0; j < 2; j++) {
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
       if (i == j)
         continue;
       if (b[i] == s[j]) {
@@ -22,7 +22,7 @@ bool checkPrerequisites(const Graph &G, const vec<int> &b, const int a, const ve
     }
   }
 
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 3; i++) {
     if (!G.areNeighbours(a, s[i]))
       return false;
 
@@ -105,7 +105,7 @@ bool noEdgesBetweenVectors(const Graph &G, vec<int>::iterator aBegin, vec<int>::
 }
 
 bool containsPyramide(const Graph &G) {
-  auto t = findPyramide(G);
+  auto t = findPyramid(G);
   return get<0>(t).size() > 0;
 }
 
@@ -189,18 +189,18 @@ vec<vec<vec<int>>> calculatePPaths(const Graph &G, const vec<int> &b, const vec<
           P[i][m].insert(P[i][m].end(), S[i][m].begin(), S[i][m].end());
           P[i][m].insert(P[i][m].end(), T[i][m].begin() + 1, T[i][m].end());
         }
-        if (P[i][m].size() > 0 || S[i][m].size() > 0 || T[i][m].size() > 0) {
-          // cout << "S_" << i << "(" << s[i] << "," << m << ")= " << S[i][m] << "\t";
-          // cout << "T_" << i << "(" << m << "," << b[i] << ")= " << T[i][m] << "\t";
-          // cout << "  P[" << i << "][" << m << "](" << s[i] << "," << b[i] << ")= " << P[i][m] << endl;
-        }
+        // if (P[i][m].size() > 0 || S[i][m].size() > 0 || T[i][m].size() > 0) {
+        //   cout << "S_" << i << "(" << s[i] << "," << m << ")= " << S[i][m] << "\t";
+        //   cout << "T_" << i << "(" << m << "," << b[i] << ")= " << T[i][m] << "\t";
+        //   cout << "  P[" << i << "][" << m << "](" << s[i] << "," << b[i] << ")= " << P[i][m] << endl;
+        // }
       }
     }
   } // P calculated
   return P;
 }
 
-tuple<vec<int>, int, vec<vec<int>>> findPyramide(const Graph &G) {
+tuple<vec<int>, int, vec<vec<int>>> findPyramid(const Graph &G) {
   auto triangles = getTriangles(G);
   auto emptyStars = getEmptyStarTriangles(G);
 
@@ -253,7 +253,6 @@ tuple<vec<int>, int, vec<vec<int>>> findPyramide(const Graph &G) {
             bool isOk = true;
             for (int i : P[pair[1]][m2])
               if (color[i]) {
-                cout << i << endl;
                 isOk = false;
                 break;
               }
@@ -277,13 +276,17 @@ tuple<vec<int>, int, vec<vec<int>>> findPyramide(const Graph &G) {
         }
 
         if (isOk) {
-          vec<int> okA(G.n, 0);
-          for (int k = 0; k < 3; k++)
-            for (int i : G[P[k][triple[k]][0]]) {
-              okA[i]++;
-              if (okA[i] == 3)
-                return make_tuple(b, i, vec<vec<int>>{P[0][triple[0]], P[1][triple[1]], P[2][triple[2]]});
-            }
+          // vec<int> okA(G.n, 0);
+          // for (int k = 0; k < 3; k++)
+          //   for (int i : G[P[k][triple[k]][0]]) {
+          //     okA[i]++;
+          //     if (okA[i] == 3) {
+          //       cout << "AAAA" << endl;
+          //       cout << b << " " << a << " " << s << endl;
+          //       return make_tuple(b, i, vec<vec<int>>{P[0][triple[0]], P[1][triple[1]], P[2][triple[2]]});
+          //     }
+          //   }
+          return make_tuple(b, a, vec<vec<int>>{P[0][triple[0]], P[1][triple[1]], P[2][triple[2]]});
 
           // should not happen
           throw logic_error("Algorithm Error: Could not find suitable a for existing pyramid");
@@ -293,4 +296,69 @@ tuple<vec<int>, int, vec<vec<int>>> findPyramide(const Graph &G) {
   }
 
   return make_tuple(vec<int>(), -1, vec<vec<int>>());
+}
+
+bool isPyramid(const Graph &G, vec<int> b, int a, vec<vec<int>> P) {
+  if (b.size() != 3 || a < 0 || a >= G.n || P.size() != 3)
+    return false;
+
+  for (int k = 0; k < 3; k++) {
+    if (P[k].size() == 0)
+      return false;
+  }
+
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      if (i == j)
+        continue;
+      if (!G.areNeighbours(b[i], b[j]))
+        return false;
+      if (b[i] == b[j])
+        return false;
+      if (P[i][0] == P[j][0])
+        return false;
+      if (G.areNeighbours(P[i][0], P[j][0]))
+        return false;
+    }
+  }
+
+  for (int i = 0; i < 3; i++) {
+    if (!G.areNeighbours(a, P[i][0]))
+      return false;
+
+    if (P[i].back() != b[i])
+      return false;
+  }
+
+  for (int k = 0; k < 3; k++) {
+    for (int i = 1; i < P[k].size(); i++) {
+      if (!G.areNeighbours(P[k][i - 1], P[k][i]))
+        return false;
+    }
+  }
+
+  for (int i = 0; i < 3; i++) {
+    for (int j = i + 1; j < 3; j++) {
+      int numEdges = 0;
+      for (int a : P[i]) {
+        for (int b : P[j]) {
+          if (G.areNeighbours(a, b))
+            numEdges++;
+        }
+      }
+
+      if (numEdges != 1)
+        return false;
+    }
+  }
+
+  int adjA = 0;
+  for (int i = 0; i < 3; i++) {
+    if (G.areNeighbours(a, b[i]))
+      adjA++;
+  }
+  if (adjA > 1)
+    return false;
+
+  return true;
 }

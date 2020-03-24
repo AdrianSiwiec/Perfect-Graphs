@@ -120,3 +120,24 @@ vec<vec<int>> generateTuples(int size, int max) {
 
   return ret;
 }
+
+ostream &operator<<(ostream &os, Graph const &G) {
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      if (G.areNeighbours(i, j))
+        cout << "X";
+      else
+        cout << ".";
+    }
+    cout << endl;
+  }
+
+  for (int i = 0; i < G.n; i++) {
+    cout << i << ": ";
+    for(int j:G[i])
+      cout << j << " ";
+    cout << endl;
+  }
+
+  return os;
+}
