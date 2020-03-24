@@ -49,34 +49,7 @@ vec<Graph> getRandomGraphs(int size, double p, int howMany) {
 
   return ret;
 }
-bool isAllZeros(vec<int> v) {
-  for (int a : v)
-    if (a != 0)
-      return false;
-  return true;
-}
 
-vec<int> nextTuple(vec<int> v, int max) {
-  v[0]++;
-  for (int i = 0; i < v.size() && v[i] >= max; i++) {
-    v[i] = 0;
-    if (i + 1 < v.size())
-      v[i + 1]++;
-  }
-
-  return v;
-}
-
-vec<vec<int>> generateTuples(int size, int max) {
-  vec<vec<int>> ret;
-  vec<int> current = vec<int>(size);
-  do {
-    ret.push_back(current);
-    current = nextTuple(current, max);
-  } while (!isAllZeros(current));
-
-  return ret;
-}
 
 void handler(int sig) {
   void *array[100];

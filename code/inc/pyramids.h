@@ -9,7 +9,14 @@ bool checkPrerequisites(const Graph &G, const vec<int> &b, const int a, const ve
 // Returns empty vector if none exist
 vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test);
 
-// Returns empty vector, 0 and emty vector if none found
+bool vectorsCutEmpty(vec<int>::iterator aBegin, vec<int>::iterator aEnd, vec<int>::iterator bBegin,
+                     vec<int>::iterator bEnd);
+
+bool noEdgesBetweenVectors(const Graph &G, vec<int>::iterator aBegin, vec<int>::iterator aEnd,
+                           vec<int>::iterator bBegin, vec<int>::iterator bEnd);
+
+// If pyramide found, returns [b1, b2, b3], a, [P1, P2, P3]
+// Returns empty vector, -1 and emty vector if none found
 tuple<vec<int>, int, vec<vec<int>>> findPyramide(const Graph &G);
 
 bool containsPyramide(const Graph &G);

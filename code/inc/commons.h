@@ -23,6 +23,8 @@ template <typename T> ostream &operator<<(ostream &os, vec<T> const &v) {
     os << v[i] << (i + 1 < v.size() ? ", " : "");
   }
   os << "]";
+
+  return os;
 }
 
 struct Graph {
@@ -48,3 +50,7 @@ vec<vec<int>> getTriangles(const Graph &G);
 // a and none si and sj are connected to each other.
 // Returns every permutation.
 vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G);
+
+vec<vec<int>> generateTuples(int size, int max);
+bool isAllZeros(vec<int> v);
+vec<int> nextTuple(vec<int> v, int max);

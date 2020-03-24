@@ -14,9 +14,6 @@ void printGraph(const Graph &G);
 Graph getRandomGraph(int size, double p);
 vec<Graph> getRandomGraphs(int size, double p, int howMany);
 
-bool isAllZeros(vec<int> v);
-vec<int> nextTuple(vec<int> v, int max);
-vec<vec<int>> generateTuples(int size, int max);
 
 void handler(int sig);
 void init();

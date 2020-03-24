@@ -7,7 +7,7 @@ TESTDIR=test
 #GCC compiler settings
 CXX=g++
 CXXINC=-I ./$(INCDIR)/
-CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic
+CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
 OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(wildcard $(SRCDIR)/*.cpp))
 TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
