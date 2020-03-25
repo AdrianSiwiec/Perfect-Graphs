@@ -1,5 +1,6 @@
 #include "commons.h"
 #include <queue>
+#include <set>
 
 Graph::Graph(int n) : n(n), _neighbours(n), _matrix(n) {
   for (int i = 0; i < n; i++) {
@@ -93,20 +94,31 @@ vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G) {
   return ret;
 }
 
-bool isAllZeros(vec<int> v) {
+bool isAllZeros(const vec<int> &v) {
   for (int a : v)
     if (a != 0)
       return false;
   return true;
 }
+bool isDistinctValues(const vec<int> &v) {
+  set<int> s;
+  for (int i : v)
+    s.insert(i);
 
-vec<int> nextTuple(vec<int> v, int max) {
+  return s.size() == v.size();
+}
+
+void nextTupleInPlace(vec<int> &v, int max) {
   v[0]++;
   for (int i = 0; i < v.size() && v[i] >= max; i++) {
     v[i] = 0;
     if (i + 1 < v.size())
       v[i + 1]++;
   }
+}
+
+vec<int> nextTuple(vec<int> v, int max) {
+  nextTupleInPlace(v, max);
 
   return v;
 }

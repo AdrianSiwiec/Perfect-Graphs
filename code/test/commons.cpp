@@ -98,6 +98,22 @@ void testVec() {
   assert(thrown);
 }
 
+void testSimpleVec() {
+  assert(isAllZeros({0, 0, 0, 0}));
+  assert(isAllZeros({0}));
+  assert(isAllZeros({}));
+  assert(!isAllZeros({1}));
+  assert(!isAllZeros({0, 2, 0, 0}));
+  assert(!isAllZeros({0, 0, 0, -3}));
+  assert(!isAllZeros({-6, 0, 0, 0}));
+
+  assert(isDistinctValues({0}));
+  assert(!isDistinctValues({0, 0}));
+  assert(isDistinctValues({0, 1}));
+  assert(isDistinctValues({100}));
+  assert(isDistinctValues({}));
+}
+
 void testEmptyStarTriangles() {
   for (int i = 0; i < 15; i++) {
     Graph G = getRandomGraph(10, 0.7);
@@ -147,6 +163,7 @@ void testShortestPath() {
 int main() {
   init();
   testGraph();
+  testSimpleVec();
   testGetTriangles();
   testVec();
   testEmptyStarTriangles();

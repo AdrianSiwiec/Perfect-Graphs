@@ -59,5 +59,7 @@ vec<vec<int>> getTriangles(const Graph &G);
 vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G);
 
 vec<vec<int>> generateTuples(int size, int max);
-bool isAllZeros(vec<int> v);
+bool isAllZeros(const vec<int> &v);
+bool isDistinctValues(const vec<int> &v);
 vec<int> nextTuple(vec<int> v, int max);
+void nextTupleInPlace(vec<int> &v, int max);

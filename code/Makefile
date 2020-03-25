@@ -22,11 +22,14 @@ $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(OBJDIR)/%.e: %.cpp $(OBJFILES) Makefile
+$(OBJDIR)/%.e: %.cpp $(OBJFILES) 
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(OBJFILES) $< -o $@
 
 .PHONY: test clean run-tests retest
+
+# Do not delete OBJFILES by default (shortens make time)
+.OBJ: $(OBJFILES)
 
 run-tests: test
 	for test in obj/test/*.e; do \

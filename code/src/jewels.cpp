@@ -46,7 +46,7 @@ vec<int> findJewelNaive(const Graph &G) {
     if (isJewel(G, v))
       return v;
 
-    v = nextTuple(v, G.n);
+    nextTupleInPlace(v, G.n);
   } while (!isAllZeros(v));
 
   return vec<int>();
