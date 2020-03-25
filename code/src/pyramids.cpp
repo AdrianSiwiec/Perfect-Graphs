@@ -38,40 +38,7 @@ bool checkPrerequisites(const Graph &G, const vec<int> &b, const int a, const ve
   return true;
 }
 
-vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test) {
-  if (start == end)
-    return vec<int>{start};
 
-  vector<int> father(G.n, -1);
-  queue<int> Q;
-  Q.push(start);
-
-  while (!Q.empty()) {
-    int v = Q.front();
-    Q.pop();
-    for (int i : G[v]) {
-      if (father[i] == -1 && test(i)) {
-        father[i] = v;
-        Q.push(i);
-        if (i == end)
-          break;
-      }
-    }
-  }
-
-  if (father[end] == -1) {
-    return vec<int>();
-  } else {
-    vec<int> ret;
-    for (int v = end; v != start; v = father[v]) {
-      ret.push_back(v);
-    }
-    ret.push_back(start);
-    reverse(ret.begin(), ret.end());
-
-    return ret;
-  }
-}
 
 bool vectorsCutEmpty(vec<int>::iterator aBegin, vec<int>::iterator aEnd, vec<int>::iterator bBegin,
                      vec<int>::iterator bEnd) {

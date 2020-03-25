@@ -127,10 +127,28 @@ void testEmptyStarTriangles() {
   }
 }
 
+void testShortestPath() {
+  Graph G(5, "\
+  .X..X\
+  X.X..\
+  .X.X.\
+  ..X.X\
+  X..X.\
+  ");
+
+  auto noFour = [](int v) { return v != 4; };
+
+  assert(findShortestPathWithPredicate(G, 2, 2, noFour) == vec<int>{2});
+  assert(findShortestPathWithPredicate(G, 2, 2, [](int v) { return false; }) == (vec<int>{2}));
+  assert(findShortestPathWithPredicate(G, 0, 3, noFour) == (vec<int>{0, 1, 2, 3}));
+  assert(findShortestPathWithPredicate(G, 0, 3, [](int v) { return true; }) == (vec<int>{0, 4, 3}));
+}
+
 int main() {
   init();
   testGraph();
   testGetTriangles();
   testVec();
   testEmptyStarTriangles();
+  testShortestPath();
 }

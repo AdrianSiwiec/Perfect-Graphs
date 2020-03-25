@@ -63,23 +63,6 @@ void testCheckPrerequisites() {
   assert(checkPrerequisites(G, {1, 2, 5}, 0, {1, 3, 4}) == false);
 }
 
-void testShortestPath() {
-  Graph G(5, "\
-  .X..X\
-  X.X..\
-  .X.X.\
-  ..X.X\
-  X..X.\
-  ");
-
-  auto noFour = [](int v) { return v != 4; };
-
-  assert(findShortestPathWithPredicate(G, 2, 2, noFour) == vec<int>{2});
-  assert(findShortestPathWithPredicate(G, 2, 2, [](int v) { return false; }) == (vec<int>{2}));
-  assert(findShortestPathWithPredicate(G, 0, 3, noFour) == (vec<int>{0, 1, 2, 3}));
-  assert(findShortestPathWithPredicate(G, 0, 3, [](int v) { return true; }) == (vec<int>{0, 4, 3}));
-}
-
 void testVectorsCutEmpty() {
   vec<int> a{1, 2, 3, 4, 5};
   vec<int> b{5, 6, 7, 8};
@@ -338,7 +321,6 @@ void testPyramidsAreCorrect() {
 int main() {
   init();
   testCheckPrerequisites();
-  testShortestPath();
   testVectorsCutEmpty();
   testNoEdgeBetweenVectors();
   testIsPyramid();

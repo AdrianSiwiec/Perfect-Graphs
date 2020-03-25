@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <functional>
 #include <iostream>
 #include <tuple>
 #include <vector>
@@ -45,6 +46,9 @@ private:
 
 ostream &operator<<(ostream &os, Graph const &G);
 
+// Finds shortest path from start to end in G, where every vertex inside satisfies predicate.
+// Returns empty vector if none exist
+vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test);
 
 // Returns triangles: [b1, b2, b3], such that b1<b2<b3
 vec<vec<int>> getTriangles(const Graph &G);

@@ -1,4 +1,5 @@
 #include "commons.h"
+#include <queue>
 
 Graph::Graph(int n) : n(n), _neighbours(n), _matrix(n) {
   for (int i = 0; i < n; i++) {
@@ -134,10 +135,45 @@ ostream &operator<<(ostream &os, Graph const &G) {
 
   for (int i = 0; i < G.n; i++) {
     cout << i << ": ";
-    for(int j:G[i])
+    for (int j : G[i])
       cout << j << " ";
     cout << endl;
   }
 
   return os;
+}
+
+vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test) {
+  if (start == end)
+    return vec<int>{start};
+
+  vector<int> father(G.n, -1);
+  queue<int> Q;
+  Q.push(start);
+
+  while (!Q.empty()) {
+    int v = Q.front();
+    Q.pop();
+    for (int i : G[v]) {
+      if (father[i] == -1 && (test(i) || i == end)) {
+        father[i] = v;
+        Q.push(i);
+        if (i == end)
+          break;
+      }
+    }
+  }
+
+  if (father[end] == -1) {
+    return vec<int>();
+  } else {
+    vec<int> ret;
+    for (int v = end; v != start; v = father[v]) {
+      ret.push_back(v);
+    }
+    ret.push_back(start);
+    reverse(ret.begin(), ret.end());
+
+    return ret;
+  }
 }
