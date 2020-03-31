@@ -38,7 +38,10 @@ struct Graph {
   const vec<int> &operator[](int index) const { return _neighbours[index]; }
   bool areNeighbours(int a, int b) const { return _matrix[a][b]; }
 
-  Graph getComplement();
+  Graph getComplement() const;
+  // Returns G' - Graph induced on X. Set of vertices is left the same, and edge is in G' if it is in G and
+  // both it's ends are in X.
+  Graph getInduced(vec<int> X) const;
 
 private:
   vec<vec<int>> _neighbours;
@@ -60,8 +63,11 @@ vec<vec<int>> getTriangles(const Graph &G);
 // Returns every permutation.
 vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G);
 
-// Returns a vector of all X-complete vertices in G.
+// Return whether v is X-complete in G
 // v is X-complete, if v is not in X and v is adjacent to every vertex of X.
+bool isComplete(const Graph &G, const vec<int> &X, int v);
+
+// Returns a vector of all X-complete vertices in G.
 vec<int> getCompleteVertices(const Graph &G, const vec<int> &X);
 
 // Runs dfs on a Graph G, with visited as an input-output of visited vertices. In addition action(v) will be

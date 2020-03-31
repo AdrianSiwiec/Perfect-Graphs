@@ -60,12 +60,29 @@ Graph::Graph(vec<vec<int>> neighbours) : n(neighbours.size()), _neighbours(neigh
   checkSymmetry();
 }
 
-Graph Graph::getComplement() {
-  Graph ret = Graph(n);
+Graph Graph::getComplement() const {
+  Graph ret(n);
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       if (i != j)
         ret._matrix[i][j] = !_matrix[i][j];
+    }
+  }
+
+  return ret;
+}
+
+Graph Graph::getInduced(vec<int> X) const {
+  set<int> S;
+  for (int i : X)
+    S.insert(i);
+
+  Graph ret(n);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (areNeighbours(i, j) && S.count(i) > 0 && S.count(j) > 0) {
+        ret._matrix[i][j] = true;
+      }
     }
   }
 
@@ -107,18 +124,22 @@ vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G) {
   return ret;
 }
 
+bool isComplete(const Graph &G, const vec<int> &X, int v) {
+  bool isComplete = true;
+  for (int i : X) {
+    if (v == i || !G.areNeighbours(v, i)) {
+      isComplete = false;
+      break;
+    }
+  }
+
+  return isComplete;
+}
+
 vec<int> getCompleteVertices(const Graph &G, const vec<int> &X) {
   vec<int> ret;
   for (int v = 0; v < G.n; v++) {
-    bool isComplete = true;
-    for (int i : X) {
-      if (v == i || !G.areNeighbours(v, i)) {
-        isComplete = false;
-        break;
-      }
-    }
-
-    if (isComplete)
+    if (isComplete(G, X, v))
       ret.push_back(v);
   }
 

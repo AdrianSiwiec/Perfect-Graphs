@@ -66,6 +66,26 @@ void testGraph() {
   }
 }
 
+void testGraphGetInduced() {
+  Graph G(7, "\
+  ...X...\
+  ..X.XX.\
+  .X...X.\
+  X......\
+  .X.....\
+  .XX....\
+  .......\
+  ");
+
+  Graph Gprim = G.getInduced({1, 2, 5});
+  for (int i = 0; i < 7; i++) {
+    for (int j = 0; j < 7; j++) {
+      assert(Gprim.areNeighbours(i, j) ==
+             (i != j && (i == 1 || i == 2 || i == 5) && (j == 1 || j == 2 || j == 5)));
+    }
+  }
+}
+
 void testGetTriangles() {
   for (int i = 0; i < 15; i++) {
     Graph G = getRandomGraph(10, 0.7);
@@ -164,6 +184,13 @@ void testGetCompleteVertices() {
   .XX...\
   ");
 
+  assert(isComplete(G, {1, 2}, 0) == false);
+  assert(isComplete(G, {1, 2}, 1) == false);
+  assert(isComplete(G, {1, 2}, 2) == false);
+  assert(isComplete(G, {1, 2}, 3) == false);
+  assert(isComplete(G, {1, 2}, 4) == true);
+  assert(isComplete(G, {1, 2}, 5) == true);
+
   assert(getCompleteVertices(G, {4}) == (vec<int>{1, 2, 3}));
   assert(getCompleteVertices(G, {1, 2}) == (vec<int>{4, 5}));
   assert(getCompleteVertices(G, {1, 2, 3}) == (vec<int>{4}));
@@ -231,6 +258,7 @@ void testComponents() {
 int main() {
   init();
   testGraph();
+  testGraphGetInduced();
   testSimpleVec();
   testGetTriangles();
   testVec();

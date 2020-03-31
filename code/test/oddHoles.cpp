@@ -51,7 +51,35 @@ void testIsT1() {
   assert(isT1(G, {0, 1, 2, 3, 4}));
 }
 
+void testFindT2() {
+  Graph G(9, "\
+  .XX.XX...\
+  X.X..XX..\
+  XX.X.X...\
+  ..X.X....\
+  X..X.X..X\
+  XXX.X....\
+  .X.....X.\
+  ......X.X\
+  ....X..X.\
+  ");
+
+  auto t = findT2(G);
+  auto v = get<0>(t);
+  auto P = get<1>(t);
+  auto X = get<2>(t);
+
+  cout << v << endl << P << endl << X << endl;
+  // is
+  // [0, 1, 2, 3]
+  // [0, 4, 3]
+  // [2]
+  // OK? X is in v
+
+}
+
 int main() {
   init();
   testIsT1();
+  testFindT2();
 }
