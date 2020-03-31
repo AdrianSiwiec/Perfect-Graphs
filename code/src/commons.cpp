@@ -12,7 +12,8 @@ void Graph::checkSymmetry() {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       if (_matrix[i][j] != _matrix[j][i]) {
-        throw invalid_argument("Graph initialization from string failed. Input graph is not symmetrical.");
+        throw invalid_argument("Graph initialization from string failed. Input graph is not symmetrical. (" +
+                               to_string(i) + ", " + to_string(j) + ").");
       }
     }
   }
@@ -59,6 +60,18 @@ Graph::Graph(vec<vec<int>> neighbours) : n(neighbours.size()), _neighbours(neigh
   checkSymmetry();
 }
 
+Graph Graph::getComplement() {
+  Graph ret = Graph(n);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i != j)
+        ret._matrix[i][j] = !_matrix[i][j];
+    }
+  }
+
+  return ret;
+}
+
 vec<vec<int>> getTriangles(const Graph &G) {
   vec<vec<int>> ret;
   for (int i = 0; i < G.n; i++) {
@@ -92,6 +105,48 @@ vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G) {
   }
 
   return ret;
+}
+
+vec<int> getCompleteVertices(const Graph &G, const vec<int> &X) {
+  vec<int> ret;
+  for (int v = 0; v < G.n; v++) {
+    bool isComplete = true;
+    for (int i : X) {
+      if (v == i || !G.areNeighbours(v, i)) {
+        isComplete = false;
+        break;
+      }
+    }
+
+    if (isComplete)
+      ret.push_back(v);
+  }
+
+  return ret;
+}
+
+void dfsWith(const Graph &G, vec<int> &visited, int start, function<void(int)> action) {
+  if (visited[start])
+    return;
+  action(start);
+  visited[start] = true;
+  for (int i : G[start]) {
+    if (!visited[i])
+      dfsWith(G, visited, i, action);
+  }
+}
+
+vec<vec<int>> getComponents(const Graph &G) {
+  vec<int> visited(G.n);
+  vec<vec<int>> components;
+  for (int i = 0; i < G.n; i++) {
+    if (!visited[i]) {
+      components.push_back(vec<int>());
+      dfsWith(G, visited, i, [&](int v) -> void { components.back().push_back(v); });
+    }
+  }
+
+  return components;
 }
 
 bool isAllZeros(const vec<int> &v) {

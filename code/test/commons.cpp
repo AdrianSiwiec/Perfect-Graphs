@@ -53,6 +53,17 @@ void testGraph() {
   assert(g[0].size() == 4);
   for (int i = 1; i < 5; i++)
     assert(g[i].size() == 1);
+
+  g = getRandomGraph(10, 0.5);
+  Graph gc = g.getComplement();
+  for (int i = 0; i < 10; i++) {
+    for (int j = 0; j < 10; j++) {
+      if (i == j)
+        assert(!gc.areNeighbours(i, j));
+      else
+        assert(g.areNeighbours(i, j) != gc.areNeighbours(j, i));
+    }
+  }
 }
 
 void testGetTriangles() {
@@ -143,6 +154,22 @@ void testEmptyStarTriangles() {
   }
 }
 
+void testGetCompleteVertices() {
+  Graph G(6, "\
+  ...X..\
+  ....XX\
+  ....XX\
+  X...X.\
+  .XXX..\
+  .XX...\
+  ");
+
+  assert(getCompleteVertices(G, {4}) == (vec<int>{1, 2, 3}));
+  assert(getCompleteVertices(G, {1, 2}) == (vec<int>{4, 5}));
+  assert(getCompleteVertices(G, {1, 2, 3}) == (vec<int>{4}));
+  assert(getCompleteVertices(G, {5, 4}) == (vec<int>{1, 2}));
+}
+
 void testShortestPath() {
   Graph G(5, "\
   .X..X\
@@ -160,6 +187,47 @@ void testShortestPath() {
   assert(findShortestPathWithPredicate(G, 0, 3, [](int v) { return true; }) == (vec<int>{0, 4, 3}));
 }
 
+void testDfsWith() {
+  string s;
+  auto writeToS = [&](int v) { s += to_string(v); };
+
+  Graph G(6, "\
+  .XX...\
+  X.XX..\
+  XX....\
+  .X..X.\
+  ...X.X\
+  ....X.\
+  ");
+  vec<int> visited(G.n);
+
+  dfsWith(G, visited, 3, writeToS);
+  assert(visited == vec<int>(G.n, true));
+  assert(s == "310245");
+
+  s = "";
+  visited = vec<int>{0, 0, 0, 0, 1, 0};
+  dfsWith(G, visited, 3, writeToS);
+  assert(visited == (vec<int>{1, 1, 1, 1, 1, 0}));
+  assert(s == "3102");
+}
+
+void testComponents() {
+  Graph G(3);
+  assert(getComponents(G) == (vec<vec<int>>{{0}, {1}, {2}}));
+
+  G = Graph(7, "\
+  ...X...\
+  ..X.XX.\
+  .X...X.\
+  X......\
+  .X.....\
+  .XX....\
+  .......\
+  ");
+  assert(getComponents(G) == (vec<vec<int>>{{0, 3}, {1, 2, 5, 4}, {6}}));
+}
+
 int main() {
   init();
   testGraph();
@@ -167,5 +235,8 @@ int main() {
   testGetTriangles();
   testVec();
   testEmptyStarTriangles();
+  testGetCompleteVertices();
   testShortestPath();
+  testDfsWith();
+  testComponents();
 }

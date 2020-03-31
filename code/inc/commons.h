@@ -38,6 +38,8 @@ struct Graph {
   const vec<int> &operator[](int index) const { return _neighbours[index]; }
   bool areNeighbours(int a, int b) const { return _matrix[a][b]; }
 
+  Graph getComplement();
+
 private:
   vec<vec<int>> _neighbours;
   vec<vec<int>> _matrix;
@@ -57,6 +59,17 @@ vec<vec<int>> getTriangles(const Graph &G);
 // a and none si and sj are connected to each other.
 // Returns every permutation.
 vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G);
+
+// Returns a vector of all X-complete vertices in G.
+// v is X-complete, if v is not in X and v is adjacent to every vertex of X.
+vec<int> getCompleteVertices(const Graph &G, const vec<int> &X);
+
+// Runs dfs on a Graph G, with visited as an input-output of visited vertices. In addition action(v) will be
+// performed on each visited vertex.
+void dfsWith(const Graph &G, vec<int> &visited, int start, function<void(int)> action);
+
+// Returns a vector of all components of G.
+vec<vec<int>> getComponents(const Graph &G);
 
 vec<vec<int>> generateTuples(int size, int max);
 bool isAllZeros(const vec<int> &v);
