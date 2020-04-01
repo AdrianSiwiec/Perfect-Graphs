@@ -2,6 +2,58 @@
 #include "commons.h"
 #include <set>
 
+bool isHole(const Graph &G, const vec<int> &v) {
+  if (v.size() <= 3)
+    return false;
+
+  if (!isDistinctValues(v))
+    return false;
+
+  for (int i : v)
+    if (i < 0 || i >= G.n)
+      return false;
+
+  for (int i = 0; i < v.size(); i++) {
+    for (int j = i + 1; j < v.size(); j++) {
+      if (abs(i - j) == 1 || abs(i - j) == (v.size() - 1)) {
+        if (!G.areNeighbours(v[i], v[j]))
+          return false;
+      } else {
+        if (G.areNeighbours(v[i], v[j]))
+          return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+bool constainsHoleOfSize(const Graph &G, int size) {
+  if (size <= 3)
+    return false;
+
+  vec<int> v;
+  while (true) {
+    nextPathInPlace(G, v, size);
+    if (v.size() == size && isHole(G, v))
+      return true;
+
+    if (v.empty())
+      break;
+  }
+
+  return false;
+}
+
+bool containsOddHoleNaive(const Graph &G) {
+  for (int size = 5; size <= G.n; size += 2) {
+    if (constainsHoleOfSize(G, size))
+      return true;
+  }
+
+  return false;
+}
+
 bool isT1(const Graph &G, const vec<int> &v) {
   if (v.size() != 5)
     return false;

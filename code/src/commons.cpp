@@ -265,3 +265,44 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
     return ret;
   }
 }
+
+bool isAPath(const Graph &G, const vec<int> &v) {
+  if (v.size() <= 1)
+    return false;
+
+  if (!isDistinctValues(v))
+    return false;
+
+  for (int i = 0; i < v.size() - 1; i++) {
+    if (!G.areNeighbours(v[i], v[i + 1]))
+      return false;
+  }
+
+  return true;
+}
+
+void nextPathInPlace(const Graph &G, vec<int> &v, int len) {
+  // TODO faster, do not iterate over all permutations. Have a "pointer" to next neighbour in G?
+  if (len <= 1) {
+    throw invalid_argument("Length of next path must be at least 2");
+  }
+  if (!v.empty() && v.size() != len) {
+    throw invalid_argument("Length of next path must be equal to length of given path.");
+  }
+
+  if (v.empty()) {
+    v = vec<int>(len);
+  }
+
+  while (true) {
+    nextTupleInPlace(v, G.n);
+    if (isAllZeros(v)) {
+      v = vec<int>();
+      return;
+    }
+
+    if (isAPath(G, v)) {
+      return;
+    }
+  }
+}

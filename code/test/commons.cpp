@@ -255,6 +255,67 @@ void testComponents() {
   assert(getComponents(G) == (vec<vec<int>>{{0, 3}, {1, 2, 5, 4}, {6}}));
 }
 
+void testIsAPath() {
+  Graph G(6, "\
+  .XX...\
+  X.XX..\
+  XX....\
+  .X..X.\
+  ...X.X\
+  ....X.\
+  ");
+
+  assert(isAPath(G, {0, 1}));
+  assert(isAPath(G, {0, 2}));
+  assert(!isAPath(G, {0, 3}));
+  assert(isAPath(G, {0, 1, 3}));
+  assert(isAPath(G, {0, 1, 2}));
+  assert(!isAPath(G, {0, 1, 0}));
+  assert(!isAPath(G, {0, 1, 2, 0}));
+  assert(isAPath(G, {0, 1, 3, 4, 5}));
+  assert(!isAPath(G, {0, 1, 3, 5}));
+}
+
+void testNextPathInPlace() {
+  Graph G(6, "\
+  .XX...\
+  X.XX..\
+  XX....\
+  .X..X.\
+  ...X.X\
+  ....X.\
+  ");
+
+  vec<int> v;
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{1, 0}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{2, 0}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{0, 1}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{2, 1}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{3, 1}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{0, 2}));
+
+  v = vec<int>{4, 5};
+  nextPathInPlace(G, v, 2);
+  assert(v == vec<int>());
+
+  nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{2, 1, 0}));
+  nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{3, 1, 0}));
+  nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{1, 2, 0}));
+
+  v = vec<int>();
+  nextPathInPlace(G, v, 5);
+  assert(v == (vec<int>{5, 4, 3, 1, 0}));
+}
+
 int main() {
   init();
   testGraph();
@@ -267,4 +328,6 @@ int main() {
   testShortestPath();
   testDfsWith();
   testComponents();
+  testIsAPath();
+  testNextPathInPlace();
 }

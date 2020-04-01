@@ -2,6 +2,110 @@
 #include "commons.h"
 #include "testCommons.h"
 
+void testIsHole() {
+  Graph G(6, "\
+  .X..X.\
+  X.X...\
+  .X.X..\
+  ..X.X.\
+  X..X..\
+  ......\
+  ");
+
+  assert(isHole(G, {0, 1, 2, 3, 4}));
+  assert(isHole(G, {3, 2, 1, 0, 4}));
+  assert(!isHole(G, {0, 2, 3, 4}));
+  assert(!isHole(G, {1, 2, 3, 4}));
+  assert(!isHole(G, {0, 2, 1, 3, 4}));
+
+  G = Graph(6, "\
+  .X.XX.\
+  X.X...\
+  .X.X..\
+  X.X.X.\
+  X..X..\
+  ......\
+  ");
+  assert(!isHole(G, {0, 1, 2, 3, 4}));
+  assert(!isHole(G, {3, 2, 1, 0, 4}));
+  assert(isHole(G, {0, 1, 2, 3}));
+  assert(!isHole(G, {1, 2, 3, 4}));
+  assert(!isHole(G, {0, 2, 1, 3, 4}));
+}
+
+void testContainsHoleOfSize() {
+  Graph G(6, "\
+  .XX...\
+  X.XX..\
+  XX....\
+  .X..X.\
+  ...X.X\
+  ....X.\
+  ");
+
+  assert(!constainsHoleOfSize(G, 3));
+  assert(!constainsHoleOfSize(G, 4));
+  assert(!constainsHoleOfSize(G, 5));
+  assert(!constainsHoleOfSize(G, 6));
+
+  G = Graph(6, "\
+  .XX...\
+  X.XX..\
+  XX..X.\
+  .X..X.\
+  ..XX.X\
+  ....X.\
+  ");
+  assert(constainsHoleOfSize(G, 4));
+  assert(!constainsHoleOfSize(G, 3));
+  assert(!constainsHoleOfSize(G, 5));
+  assert(!constainsHoleOfSize(G, 6));
+
+  G = Graph(6, "\
+  .XX...\
+  X.XX..\
+  XX...X\
+  .X..X.\
+  ...X.X\
+  ..X.X.\
+  ");
+  assert(constainsHoleOfSize(G, 5));
+  assert(!constainsHoleOfSize(G, 3));
+  assert(!constainsHoleOfSize(G, 4));
+  assert(!constainsHoleOfSize(G, 6));
+}
+
+void testContainsOddHoleNaive() {
+  Graph G(6, "\
+  .XX...\
+  X.XX..\
+  XX...X\
+  .X..X.\
+  ...X.X\
+  ..X.X.\
+  ");
+  assert(containsOddHoleNaive(G));
+
+  G = Graph(6, "\
+  .XX...\
+  X.XX..\
+  XX..XX\
+  .X..X.\
+  ..XX.X\
+  ..X.X.\
+  ");
+  assert(!containsOddHoleNaive(G));
+
+  G = Graph(5, "\
+  .X..X\
+  X.X..\
+  .X.X.\
+  ..X.X\
+  X..X.\
+  ");
+  assert(containsOddHoleNaive(G));
+}
+
 void testIsT1() {
   Graph G(5, "\
   .X..X\
@@ -51,6 +155,20 @@ void testIsT1() {
   assert(isT1(G, {0, 1, 2, 3, 4}));
 }
 
+void testT1IsOddHole() {
+  int t1s = 0;
+  int oddHoles = 0;
+  for (int i = 0; i < (bigTests? 1000 : 100); i++) {
+    Graph G = getRandomGraph(bigTests? 10 : 7, 0.5);
+
+    auto t1 = findT1(G);
+    if (!t1.empty()) {
+      assert(isHole(G, t1));
+      assert(containsOddHoleNaive(G));
+    }
+  }
+}
+
 void testFindT2() {
   Graph G(9, "\
   .XX.XX...\
@@ -75,11 +193,14 @@ void testFindT2() {
   // [0, 4, 3]
   // [2]
   // OK? X is in v
-
 }
 
 int main() {
   init();
+  testIsHole();
+  testContainsHoleOfSize();
+  testContainsOddHoleNaive();
   testIsT1();
+  testT1IsOddHole();
   testFindT2();
 }

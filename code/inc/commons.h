@@ -80,5 +80,13 @@ vec<vec<int>> getComponents(const Graph &G);
 vec<vec<int>> generateTuples(int size, int max);
 bool isAllZeros(const vec<int> &v);
 bool isDistinctValues(const vec<int> &v);
+
 vec<int> nextTuple(vec<int> v, int max);
 void nextTupleInPlace(vec<int> &v, int max);
+
+// Returns whether v is a path in G. A path must have all vertices distinct.
+bool isAPath(const Graph &G, const vec<int> &v);
+
+// Returns (in &v) next path of length len in G (in some order). If v is empty returns first path. If v is
+// the last path returns empty vec. Iterating from empty vector to empty vector gives all paths of length len.
+void nextPathInPlace(const Graph &G, vec<int> &v, int len);
