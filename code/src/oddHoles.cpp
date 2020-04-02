@@ -1,5 +1,6 @@
 #include "oddHoles.h"
 #include "commons.h"
+#include <algorithm>
 #include <set>
 
 bool isHole(const Graph &G, const vec<int> &v) {
@@ -156,7 +157,7 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
                     return true;
                   });
 
-          set<int> F(F.begin(), F.end());
+          set<int> F(Fprim.begin(), Fprim.end());
           for (int fp : Fprim) {
             for (int v : G[fp]) {
               if (F.count(v) == 0 && isComplete(G, X, v) && !G.areNeighbours(v, v1) &&
@@ -199,11 +200,13 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
                   break;
                 }
               }
+              if (!v3HasNonNeighbourInX)
+                continue;
 
               auto P =
                   findShortestPathWithPredicate(G, v6, v5, [&](int v) -> bool { return Fprim.count(v) > 0; });
 
-              if (P.empty()) {
+              if (P.empty()) { // Should not happen
                 throw logic_error("Algorithm Error: Could not find path P in T3.");
               }
 
@@ -216,4 +219,76 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
   }
 
   return make_tuple(vec<int>(), vec<int>(), vec<int>());
+}
+
+bool isT3(const Graph &G, const vec<int> &_v, const vec<int> &P, const vec<int> &_X) {
+  if (_v.size() != 6 || P.empty() || _X.empty())
+    return false;
+
+  vec<int> v(_v.begin(), _v.end());
+  v.insert(v.begin(), -1); // To have v1,... v6
+
+  if (!isDistinctValues(v))
+    return false;
+
+  auto edges = vec<vec<int>>{{1, 2}, {3, 4}, {1, 4}, {2, 3}, {3, 5}, {4, 6}};
+  auto nonEdges = vec<vec<int>>{{1, 3}, {2, 4}, {1, 5}, {2, 5}, {1, 6}, {2, 6}, {4, 5}};
+
+  for (auto e : edges) {
+    if (!G.areNeighbours(v[e[0]], v[e[1]]))
+      return false;
+  }
+
+  for (auto e : nonEdges) {
+    if (G.areNeighbours(v[e[0]], v[e[1]]))
+      return false;
+  }
+
+  auto antiC = getComponentsOfInducedGraph(G.getComplement(), getCompleteVertices(G, {v[1], v[2], v[5]}));
+
+  vec<int> X(_X.begin(), _X.end());
+  sort(X.begin(), X.end());
+
+  bool isXAnticomponent = false;
+  for (auto ac : antiC) {
+    sort(ac.begin(), ac.end());
+    if (X == ac) {
+      isXAnticomponent = true;
+      break;
+    }
+  }
+  if (!isXAnticomponent)
+    return false;
+
+  if (isComplete(G, X, v[3]) || isComplete(G, X, v[4]))
+    return false;
+
+  if ((P[0] != v[5] || P.back() != v[6]) && (P[0] != v[6] || P.back() != v[5]))
+    return false;
+
+  if (!isAPath(G, P))
+    return false;
+
+  for (int i = 1; i < P.size() - 1; i++) {
+    int u = P[i];
+    for (int i = 1; i <= 4; i++) {
+      if (u == v[i])
+        return false;
+    }
+    for (int x : X) {
+      if (u == x)
+        return false;
+    }
+
+    if (isComplete(G, X, u))
+      return false;
+
+    if (G.areNeighbours(v[1], u) || G.areNeighbours(v[2], u))
+      return false;
+  }
+
+  if (G.areNeighbours(v[5], v[6]) && isComplete(G, X, v[6]))
+    return false;
+
+  return true;
 }

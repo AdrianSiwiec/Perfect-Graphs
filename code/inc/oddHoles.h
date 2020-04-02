@@ -21,3 +21,5 @@ tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G);
 // If T3 is found returns [v1, ..., v6], P, X
 // Returns three empty vectors if none found
 tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G);
+// Checks whether v, P, X form a T3. It is used for testing.
+bool isT3(const Graph &G, const vec<int> &v, const vec<int> &P, const vec<int> &X);

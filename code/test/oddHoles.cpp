@@ -244,6 +244,133 @@ void testT2IsOddHole() {
   }
 }
 
+void testIsT3() {
+  Graph G(8, "\
+  .XX..X..\
+  X.X.X...\
+  XX.X....\
+  ..X.XX..\
+  .X.X..X.\
+  X..X...X\
+  ....X..X\
+  .....XX.\
+  ");
+
+  assert(isT3(G, {1, 2, 3, 4, 5, 6}, {6, 7, 5}, {0}));
+  assert(isT3(G, {0, 2, 3, 5, 4, 7}, {7, 6, 4}, {1}));
+  assert(isT3(G, {0, 2, 3, 5, 4, 7}, {4, 6, 7}, {1}));
+}
+
+void testFindT3() {
+  Graph G(8, "\
+  .XX..X..\
+  X.X.X...\
+  XX.X....\
+  ..X.XX..\
+  .X.X..X.\
+  X..X...X\
+  ....X..X\
+  .....XX.\
+  ");
+
+  auto t = findT3(G);
+  auto v = get<0>(t);
+  auto P = get<1>(t);
+  auto X = get<2>(t);
+  assert(isT3(G, v, P, X));
+  assert(v == (vec<int>{0, 2, 3, 5, 4, 7}));
+  assert(P == (vec<int>{7, 6, 4}));
+  assert(X == (vec<int>{1}));
+
+  G = Graph(8, "\
+  .XXX.X..\
+  X.X.X...\
+  XX.X....\
+  X.X.XX..\
+  .X.X..X.\
+  X..X...X\
+  ....X..X\
+  .....XX.\
+  ");
+  t = findT3(G);
+  v = get<0>(t);
+  P = get<1>(t);
+  X = get<2>(t);
+  assert(v.empty());
+  assert(P.empty());
+  assert(X.empty());
+
+  G = Graph(8, "\
+  .XX..X.X\
+  X.X.X...\
+  XX.X....\
+  ..X.XX..\
+  .X.X..X.\
+  X..X...X\
+  ....X..X\
+  X....XX.\
+  ");
+  t = findT3(G);
+  v = get<0>(t);
+  P = get<1>(t);
+  X = get<2>(t);
+  assert(v.empty());
+  assert(P.empty());
+  assert(X.empty());
+
+  G = Graph(8, "\
+  .XX..X..\
+  X.X.X...\
+  XX.X....\
+  ..X.XX.X\
+  .X.X..X.\
+  X..X...X\
+  ....X..X\
+  ...X.XX.\
+  ");
+  t = findT3(G);
+  v = get<0>(t);
+  P = get<1>(t);
+  X = get<2>(t);
+  assert(isT3(G, v, P, X));
+  assert(v == (vec<int>{0, 2, 3, 5, 4, 7}));
+  assert(P == (vec<int>{7, 6, 4}));
+  assert(X == (vec<int>{1}));
+
+  G = Graph(8, "\
+  .XX..X..\
+  X.X.X...\
+  XX.X....\
+  ..X.XX.X\
+  .X.X.XX.\
+  X..XX..X\
+  ....X..X\
+  ...X.XX.\
+  ");
+  t = findT3(G);
+  v = get<0>(t);
+  P = get<1>(t);
+  X = get<2>(t);
+  assert(v.empty());
+  assert(P.empty());
+  assert(X.empty());
+}
+
+void testT3IsOddHole() {
+  for (int i = 0; i < (bigTests ? 20000 : 400); i++) {
+    Graph G = getRandomGraph(8, 0.5);
+
+    auto t = findT3(G);
+    auto v = get<0>(t);
+    auto P = get<1>(t);
+    auto X = get<2>(t);
+    if (!v.empty()) {
+      assert(isT3(G, v, P, X));
+      assert(containsOddHoleNaive(G));
+    }
+  }
+}
+
 int main() {
   init();
   testIsHole();
@@ -253,4 +380,7 @@ int main() {
   testT1IsOddHole();
   testFindT2();
   testT2IsOddHole();
+  testIsT3();
+  testFindT3();
+  testT3IsOddHole();
 }

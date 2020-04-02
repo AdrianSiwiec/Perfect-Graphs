@@ -38,8 +38,6 @@ bool checkPrerequisites(const Graph &G, const vec<int> &b, const int a, const ve
   return true;
 }
 
-
-
 bool vectorsCutEmpty(vec<int>::iterator aBegin, vec<int>::iterator aEnd, vec<int>::iterator bBegin,
                      vec<int>::iterator bEnd) {
   unordered_set<int> a;
@@ -243,20 +241,7 @@ tuple<vec<int>, int, vec<vec<int>>> findPyramid(const Graph &G) {
         }
 
         if (isOk) {
-          // vec<int> okA(G.n, 0);
-          // for (int k = 0; k < 3; k++)
-          //   for (int i : G[P[k][triple[k]][0]]) {
-          //     okA[i]++;
-          //     if (okA[i] == 3) {
-          //       cout << "AAAA" << endl;
-          //       cout << b << " " << a << " " << s << endl;
-          //       return make_tuple(b, i, vec<vec<int>>{P[0][triple[0]], P[1][triple[1]], P[2][triple[2]]});
-          //     }
-          //   }
           return make_tuple(b, a, vec<vec<int>>{P[0][triple[0]], P[1][triple[1]], P[2][triple[2]]});
-
-          // should not happen
-          // throw logic_error("Algorithm Error: Could not find suitable a for existing pyramid");
         }
       }
     }
