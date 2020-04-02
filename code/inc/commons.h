@@ -47,6 +47,7 @@ private:
   vec<vec<int>> _neighbours;
   vec<vec<int>> _matrix;
   void checkSymmetry();
+  void calculateNeighboursLists();
 };
 
 ostream &operator<<(ostream &os, Graph const &G);
@@ -76,6 +77,10 @@ void dfsWith(const Graph &G, vec<int> &visited, int start, function<void(int)> a
 
 // Returns a vector of all components of G.
 vec<vec<int>> getComponents(const Graph &G);
+
+// Returns components of G induced on X. This is not the same of getComponents(G.induced(X)), as here every
+// component must all be contained in X.
+vec<vec<int>> getComponentsOfInducedGraph(const Graph &G, const vec<int> &X);
 
 vec<vec<int>> generateTuples(int size, int max);
 bool isAllZeros(const vec<int> &v);

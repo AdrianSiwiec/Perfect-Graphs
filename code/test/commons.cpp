@@ -57,12 +57,20 @@ void testGraph() {
   g = getRandomGraph(10, 0.5);
   Graph gc = g.getComplement();
   for (int i = 0; i < 10; i++) {
+    vec<int> nl;
+
     for (int j = 0; j < 10; j++) {
       if (i == j)
         assert(!gc.areNeighbours(i, j));
-      else
+      else {
         assert(g.areNeighbours(i, j) != gc.areNeighbours(j, i));
+        if (!g.areNeighbours(i, j)) {
+          nl.push_back(j);
+        }
+      }
     }
+
+    assert(nl == gc[i]);
   }
 }
 
@@ -78,6 +86,10 @@ void testGraphGetInduced() {
   ");
 
   Graph Gprim = G.getInduced({1, 2, 5});
+  assert(Gprim[1] == (vec<int>{2, 5}));
+  assert(Gprim[2] == (vec<int>{1, 5}));
+  assert(Gprim[5] == (vec<int>{1, 2}));
+
   for (int i = 0; i < 7; i++) {
     for (int j = 0; j < 7; j++) {
       assert(Gprim.areNeighbours(i, j) ==
@@ -255,6 +267,19 @@ void testComponents() {
   assert(getComponents(G) == (vec<vec<int>>{{0, 3}, {1, 2, 5, 4}, {6}}));
 }
 
+void testGetComponentsOfInducedGraph() {
+  Graph G(7, "\
+  ...X...\
+  ..X.XX.\
+  .X...X.\
+  X......\
+  .X.....\
+  .XX....\
+  .......\
+  ");
+  assert(getComponentsOfInducedGraph(G, vec<int>{1, 2, 3, 4}) == (vec<vec<int>>{{1, 2, 4}, {3}}));
+}
+
 void testIsAPath() {
   Graph G(6, "\
   .XX...\
@@ -336,6 +361,7 @@ int main() {
   testShortestPath();
   testDfsWith();
   testComponents();
+  testGetComponentsOfInducedGraph();
   testIsAPath();
   testNextPathInPlace();
 }

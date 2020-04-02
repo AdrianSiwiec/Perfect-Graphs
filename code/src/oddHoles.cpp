@@ -108,24 +108,10 @@ tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {
           if (!isAPath(G, vec<int>{v1, v2, v3, v4}))
             continue;
           auto Y = getCompleteVertices(G, {v1, v2, v4});
-          auto antiCY = getComponents(G.getComplement().getInduced(Y));
-
-          set<int> sY;
-          for (int i : Y)
-            sY.insert(i);
+          auto antiCY = getComponentsOfInducedGraph(G.getComplement(), Y);
 
           for (auto X : antiCY) {
-            bool containsOnlyY = true;
-            for (auto v : X) {
-              if (sY.count(v) == 0) {
-                containsOnlyY = false;
-                break;
-              }
-            }
-            if (!containsOnlyY)
-              continue;
-
-            auto predicate = [&](int v) -> bool {
+            auto P = findShortestPathWithPredicate(G, v1, v4, [&](int v) -> bool {
               if (v == v2 || v == v3)
                 return false;
               if (G.areNeighbours(v, v2) || G.areNeighbours(v, v3))
@@ -134,9 +120,7 @@ tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {
                 return false;
 
               return true;
-            };
-
-            auto P = findShortestPathWithPredicate(G, v1, v4, predicate);
+            });
 
             if (!P.empty()) {
               return make_tuple(vec<int>{v1, v2, v3, v4}, P, X);

@@ -8,6 +8,17 @@ Graph::Graph(int n) : n(n), _neighbours(n), _matrix(n) {
   }
 }
 
+void Graph::calculateNeighboursLists() {
+  _neighbours.clear();
+  for (int i = 0; i < n; i++) {
+    _neighbours.push_back(vec<int>());
+    for (int j = 0; j < n; j++) {
+      if (areNeighbours(i, j))
+        _neighbours[i].push_back(j);
+    }
+  }
+}
+
 void Graph::checkSymmetry() {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
@@ -33,12 +44,12 @@ Graph::Graph(int n, string s) : Graph(n) {
       if (i == j || s[i * n + j] != 'X')
         _matrix[i][j] = 0;
       else {
-        _neighbours[i].push_back(j);
         _matrix[i][j] = 1;
       }
     }
   }
 
+  calculateNeighboursLists();
   checkSymmetry();
 }
 
@@ -69,6 +80,7 @@ Graph Graph::getComplement() const {
     }
   }
 
+  ret.calculateNeighboursLists();
   return ret;
 }
 
@@ -86,6 +98,7 @@ Graph Graph::getInduced(vec<int> X) const {
     }
   }
 
+  ret.calculateNeighboursLists();
   return ret;
 }
 
@@ -168,6 +181,25 @@ vec<vec<int>> getComponents(const Graph &G) {
   }
 
   return components;
+}
+
+vec<vec<int>> getComponentsOfInducedGraph(const Graph &G, const vec<int> &X) {
+  set<int> sX(X.begin(), X.end());
+  vec<vec<int>> components = getComponents(G.getInduced(X));
+  vec<vec<int>> ret;
+  for (auto c : components) {
+    bool isOk = true;
+    for (auto v : c) {
+      if (sX.count(v) == 0) {
+        isOk = false;
+        break;
+      }
+    }
+    if (isOk)
+      ret.push_back(c);
+  }
+
+  return ret;
 }
 
 bool isAllZeros(const vec<int> &v) {
