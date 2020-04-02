@@ -266,7 +266,7 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
   }
 }
 
-bool isAPath(const Graph &G, const vec<int> &v) {
+bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk) {
   if (v.size() <= 1)
     return false;
 
@@ -274,14 +274,23 @@ bool isAPath(const Graph &G, const vec<int> &v) {
     return false;
 
   for (int i = 0; i < v.size() - 1; i++) {
-    if (!G.areNeighbours(v[i], v[i + 1]))
-      return false;
+    for (int j = i + 1; j < v.size(); j++) {
+      if (j == i + 1) {
+        if (!G.areNeighbours(v[i], v[j]))
+          return false;
+      } else {
+        if (isCycleOk && i == 0 && j == v.size() - 1)
+          continue;
+        if (G.areNeighbours(v[i], v[j]))
+          return false;
+      }
+    }
   }
 
   return true;
 }
 
-void nextPathInPlace(const Graph &G, vec<int> &v, int len) {
+void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk) {
   // TODO faster, do not iterate over all permutations. Have a "pointer" to next neighbour in G?
   if (len <= 1) {
     throw invalid_argument("Length of next path must be at least 2");
@@ -301,7 +310,7 @@ void nextPathInPlace(const Graph &G, vec<int> &v, int len) {
       return;
     }
 
-    if (isAPath(G, v)) {
+    if (isAPath(G, v, isCycleOk)) {
       return;
     }
   }

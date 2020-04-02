@@ -28,31 +28,36 @@ bool isHole(const Graph &G, const vec<int> &v) {
   return true;
 }
 
-bool constainsHoleOfSize(const Graph &G, int size) {
+vec<int> findHoleOfSize(const Graph &G, int size) {
   if (size <= 3)
-    return false;
+    return vec<int>();
 
   vec<int> v;
   while (true) {
-    nextPathInPlace(G, v, size);
+    nextPathInPlace(G, v, size, true);
     if (v.size() == size && isHole(G, v))
-      return true;
+      return v;
 
     if (v.empty())
       break;
   }
 
-  return false;
+  return vec<int>();
 }
 
-bool containsOddHoleNaive(const Graph &G) {
+bool constainsHoleOfSize(const Graph &G, int size) { return !findHoleOfSize(G, size).empty(); }
+
+vec<int> findOddHoleNaive(const Graph &G) {
   for (int size = 5; size <= G.n; size += 2) {
-    if (constainsHoleOfSize(G, size))
-      return true;
+    auto v = findHoleOfSize(G, size);
+    if (!v.empty())
+      return v;
   }
 
-  return false;
+  return vec<int>();
 }
+
+bool containsOddHoleNaive(const Graph &G) { return !findOddHoleNaive(G).empty(); }
 
 bool isT1(const Graph &G, const vec<int> &v) {
   if (v.size() != 5)
@@ -109,28 +114,44 @@ tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {
 
           for (auto X : antiCY) {
             bool containsOnlyY = true;
+            bool containsV = false;
             for (auto v : X) {
               if (sY.count(v) == 0) {
                 containsOnlyY = false;
                 break;
               }
+              if (v == v1 || v == v2 || v == v3 || v == v4)
+                containsV = true;
             }
-            if (!containsOnlyY)
+            if (!containsOnlyY || containsV)
               continue;
 
-            auto P = findShortestPathWithPredicate(G, v1, v4, [&](int v) -> bool {
-              if (v == v2 || v == v3)
-                return false;
-              if (G.areNeighbours(v, v2) || G.areNeighbours(v, v3))
-                return false;
-              if (isComplete(G, X, v))
-                return false;
+            for (auto nV1 : G[v1]) { // This is to make sure the path is not [v1, v4] as this
+              auto predicate = [&](int v) -> bool {
+                if (v == v1)
+                  return false;
+                if (v == v2 || v == v3)
+                  return false;
+                if (G.areNeighbours(v, v2) || G.areNeighbours(v, v3))
+                  return false;
+                for (auto x : X) // TODO faster?
+                  if (x == v)
+                    return false;
+                if (isComplete(G, X, v))
+                  return false;
 
-              return true;
-            });
+                return true;
+              };
 
-            if (!P.empty())
-              return make_tuple(vec<int>{v1, v2, v3, v4}, P, X);
+              if (!predicate(nV1)) // seems to be wrong
+                continue;
+              auto P = findShortestPathWithPredicate(G, nV1, v4, predicate);
+
+              if (!P.empty()) {
+                P.insert(P.begin(), v1);
+                return make_tuple(vec<int>{v1, v2, v3, v4}, P, X);
+              }
+            }
           }
         }
       }

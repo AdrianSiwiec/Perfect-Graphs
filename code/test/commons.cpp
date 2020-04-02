@@ -269,7 +269,7 @@ void testIsAPath() {
   assert(isAPath(G, {0, 2}));
   assert(!isAPath(G, {0, 3}));
   assert(isAPath(G, {0, 1, 3}));
-  assert(isAPath(G, {0, 1, 2}));
+  assert(!isAPath(G, {0, 1, 2}));
   assert(!isAPath(G, {0, 1, 0}));
   assert(!isAPath(G, {0, 1, 2, 0}));
   assert(isAPath(G, {0, 1, 3, 4, 5}));
@@ -305,10 +305,18 @@ void testNextPathInPlace() {
   assert(v == vec<int>());
 
   nextPathInPlace(G, v, 3);
-  assert(v == (vec<int>{2, 1, 0}));
-  nextPathInPlace(G, v, 3);
   assert(v == (vec<int>{3, 1, 0}));
   nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{4, 3, 1}));
+  nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{3, 1, 2}));
+
+  v = vec<int>();
+  nextPathInPlace(G, v, 3, true);
+  assert(v == (vec<int>{2, 1, 0}));
+  nextPathInPlace(G, v, 3, true);
+  assert(v == (vec<int>{3, 1, 0}));
+  nextPathInPlace(G, v, 3, true);
   assert(v == (vec<int>{1, 2, 0}));
 
   v = vec<int>();

@@ -57,6 +57,7 @@ void testContainsHoleOfSize() {
   ....X.\
   ");
   assert(constainsHoleOfSize(G, 4));
+  assert(findHoleOfSize(G, 4) == (vec<int>{3, 4, 2, 1}));
   assert(!constainsHoleOfSize(G, 3));
   assert(!constainsHoleOfSize(G, 5));
   assert(!constainsHoleOfSize(G, 6));
@@ -85,6 +86,7 @@ void testContainsOddHoleNaive() {
   ..X.X.\
   ");
   assert(containsOddHoleNaive(G));
+  assert(findOddHoleNaive(G) == (vec<int>{3, 4, 5, 2, 1}));
 
   G = Graph(6, "\
   .XX...\
@@ -104,6 +106,7 @@ void testContainsOddHoleNaive() {
   X..X.\
   ");
   assert(containsOddHoleNaive(G));
+  assert(findOddHoleNaive(G) == (vec<int>{4, 3, 2, 1, 0}));
 }
 
 void testIsT1() {
@@ -158,8 +161,8 @@ void testIsT1() {
 void testT1IsOddHole() {
   int t1s = 0;
   int oddHoles = 0;
-  for (int i = 0; i < (bigTests? 1000 : 100); i++) {
-    Graph G = getRandomGraph(bigTests? 10 : 7, 0.5);
+  for (int i = 0; i < (bigTests ? 1000 : 100); i++) {
+    Graph G = getRandomGraph(bigTests ? 10 : 7, 0.5);
 
     auto t1 = findT1(G);
     if (!t1.empty()) {
@@ -170,15 +173,27 @@ void testT1IsOddHole() {
 }
 
 void testFindT2() {
+  // Graph G(9, "\
+  // .XX.XX...\
+  // X.X..XX..\
+  // XX.X.X...\
+  // ..X.X....\
+  // X..X.X..X\
+  // XXX.X....\
+  // .X.....X.\
+  // ......X.X\
+  // ....X..X.\
+  // ");
+
   Graph G(9, "\
   .XX.XX...\
-  X.X..XX..\
+  X.X..X...\
   XX.X.X...\
   ..X.X....\
   X..X.X..X\
   XXX.X....\
-  .X.....X.\
-  ......X.X\
+  .........\
+  ........X\
   ....X..X.\
   ");
 
@@ -188,6 +203,8 @@ void testFindT2() {
   auto X = get<2>(t);
 
   cout << v << endl << P << endl << X << endl;
+  cout << findHoleOfSize(G, 5) << endl;
+  cout << findHoleOfSize(G, 7) << endl;
   // is
   // [0, 1, 2, 3]
   // [0, 4, 3]
