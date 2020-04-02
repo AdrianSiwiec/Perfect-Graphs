@@ -72,8 +72,9 @@ bool isComplete(const Graph &G, const vec<int> &X, int v);
 vec<int> getCompleteVertices(const Graph &G, const vec<int> &X);
 
 // Runs dfs on a Graph G, with visited as an input-output of visited vertices. In addition action(v) will be
-// performed on each visited vertex.
-void dfsWith(const Graph &G, vec<int> &visited, int start, function<void(int)> action);
+// performed on each visited vertex. Each visited vertex (except start) must satisfy test predicate.
+void dfsWith(const Graph &G, vec<int> &visited, int start, function<void(int)> action,
+             function<bool(int)> test = [](int v) -> bool { return true; });
 
 // Returns a vector of all components of G.
 vec<vec<int>> getComponents(const Graph &G);

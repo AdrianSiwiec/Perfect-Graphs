@@ -240,7 +240,8 @@ void testDfsWith() {
   ");
   vec<int> visited(G.n);
 
-  dfsWith(G, visited, 3, writeToS);
+  dfsWith(G, visited, 3, writeToS,
+          [](int v) -> bool { return v != 3; }); // test should do nothing, we start from 3
   assert(visited == vec<int>(G.n, true));
   assert(s == "310245");
 
@@ -249,6 +250,12 @@ void testDfsWith() {
   dfsWith(G, visited, 3, writeToS);
   assert(visited == (vec<int>{1, 1, 1, 1, 1, 0}));
   assert(s == "3102");
+
+  s = "";
+  visited = vec<int>{0, 0, 0, 0, 1, 0};
+  dfsWith(G, visited, 3, writeToS, [](int v) -> bool { return v > 0; });
+  assert(visited == (vec<int>{0, 1, 1, 1, 1, 0}));
+  assert(s == "312");
 }
 
 void testComponents() {

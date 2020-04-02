@@ -256,7 +256,7 @@ tuple<vec<int>, int, vec<vec<int>>> findPyramid(const Graph &G) {
           return make_tuple(b, a, vec<vec<int>>{P[0][triple[0]], P[1][triple[1]], P[2][triple[2]]});
 
           // should not happen
-          throw logic_error("Algorithm Error: Could not find suitable a for existing pyramid");
+          // throw logic_error("Algorithm Error: Could not find suitable a for existing pyramid");
         }
       }
     }

@@ -159,14 +159,15 @@ vec<int> getCompleteVertices(const Graph &G, const vec<int> &X) {
   return ret;
 }
 
-void dfsWith(const Graph &G, vec<int> &visited, int start, function<void(int)> action) {
+void dfsWith(const Graph &G, vec<int> &visited, int start, function<void(int)> action,
+             function<bool(int)> test) {
   if (visited[start])
     return;
   action(start);
   visited[start] = true;
   for (int i : G[start]) {
-    if (!visited[i])
-      dfsWith(G, visited, i, action);
+    if (!visited[i] && test(i))
+      dfsWith(G, visited, i, action, test);
   }
 }
 

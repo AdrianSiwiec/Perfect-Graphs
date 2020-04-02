@@ -14,7 +14,10 @@ bool containsOddHoleNaive(const Graph &G);
 bool isT1(const Graph &G, const vec<int> &v);
 vec<int> findT1(const Graph &G);
 
-// If T2 is found returns [x1, ..., x4], P, X
+// If T2 is found returns [v1, ..., v4], P, X
 // Returns three empty vectors if none found
 tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G);
 
+// If T3 is found returns [v1, ..., v6], P, X
+// Returns three empty vectors if none found
+tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G);
