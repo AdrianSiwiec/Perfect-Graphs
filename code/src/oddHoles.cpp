@@ -105,6 +105,8 @@ tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {
         for (int v4 : G[v3]) {
           if (v4 == v1 || v4 == v2)
             continue;
+          if (!isAPath(G, vec<int>{v1, v2, v3, v4}))
+            continue;
           auto Y = getCompleteVertices(G, {v1, v2, v4});
           auto antiCY = getComponents(G.getComplement().getInduced(Y));
 
@@ -114,43 +116,30 @@ tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {
 
           for (auto X : antiCY) {
             bool containsOnlyY = true;
-            bool containsV = false;
             for (auto v : X) {
               if (sY.count(v) == 0) {
                 containsOnlyY = false;
                 break;
               }
-              if (v == v1 || v == v2 || v == v3 || v == v4)
-                containsV = true;
             }
-            if (!containsOnlyY || containsV)
+            if (!containsOnlyY)
               continue;
 
-            for (auto nV1 : G[v1]) { // This is to make sure the path is not [v1, v4] as this
-              auto predicate = [&](int v) -> bool {
-                if (v == v1)
-                  return false;
-                if (v == v2 || v == v3)
-                  return false;
-                if (G.areNeighbours(v, v2) || G.areNeighbours(v, v3))
-                  return false;
-                for (auto x : X) // TODO faster?
-                  if (x == v)
-                    return false;
-                if (isComplete(G, X, v))
-                  return false;
+            auto predicate = [&](int v) -> bool {
+              if (v == v2 || v == v3)
+                return false;
+              if (G.areNeighbours(v, v2) || G.areNeighbours(v, v3))
+                return false;
+              if (isComplete(G, X, v))
+                return false;
 
-                return true;
-              };
+              return true;
+            };
 
-              if (!predicate(nV1)) // seems to be wrong
-                continue;
-              auto P = findShortestPathWithPredicate(G, nV1, v4, predicate);
+            auto P = findShortestPathWithPredicate(G, v1, v4, predicate);
 
-              if (!P.empty()) {
-                P.insert(P.begin(), v1);
-                return make_tuple(vec<int>{v1, v2, v3, v4}, P, X);
-              }
+            if (!P.empty()) {
+              return make_tuple(vec<int>{v1, v2, v3, v4}, P, X);
             }
           }
         }

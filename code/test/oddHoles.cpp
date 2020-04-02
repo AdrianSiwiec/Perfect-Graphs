@@ -173,19 +173,27 @@ void testT1IsOddHole() {
 }
 
 void testFindT2() {
-  // Graph G(9, "\
-  // .XX.XX...\
-  // X.X..XX..\
-  // XX.X.X...\
-  // ..X.X....\
-  // X..X.X..X\
-  // XXX.X....\
-  // .X.....X.\
-  // ......X.X\
-  // ....X..X.\
-  // ");
-
   Graph G(9, "\
+  .XX.XX...\
+  X.X..XX..\
+  XX.X.X...\
+  ..X.X....\
+  X..X.X..X\
+  XXX.X....\
+  .X.....X.\
+  ......X.X\
+  ....X..X.\
+  ");
+
+  auto t = findT2(G);
+  auto v = get<0>(t);
+  auto P = get<1>(t);
+  auto X = get<2>(t);
+  assert(v == (vec<int>{1, 2, 3, 4}));
+  assert(P == (vec<int>{1, 6, 7, 8, 4}));
+  assert(X == (vec<int>{0}));
+
+  G = Graph(9, "\
   .XX.XX...\
   X.X..X...\
   XX.X.X...\
@@ -196,20 +204,44 @@ void testFindT2() {
   ........X\
   ....X..X.\
   ");
+  t = findT2(G);
+  v = get<0>(t);
+  P = get<1>(t);
+  X = get<2>(t);
+  assert(v.empty());
+  assert(P.empty());
+  assert(X.empty());
 
-  auto t = findT2(G);
-  auto v = get<0>(t);
-  auto P = get<1>(t);
-  auto X = get<2>(t);
+  G = Graph(9, "\
+  .XX.XX...\
+  X.X..XX..\
+  XX.X.X...\
+  ..X.X....\
+  X..X.X..X\
+  XXX.X....\
+  .X.....XX\
+  ......X.X\
+  ....X.XX.\
+  ");
 
-  cout << v << endl << P << endl << X << endl;
-  cout << findHoleOfSize(G, 5) << endl;
-  cout << findHoleOfSize(G, 7) << endl;
-  // is
-  // [0, 1, 2, 3]
-  // [0, 4, 3]
-  // [2]
-  // OK? X is in v
+  t = findT2(G);
+  v = get<0>(t);
+  P = get<1>(t);
+  X = get<2>(t);
+  assert(v == (vec<int>{1, 2, 3, 4}));
+  assert(P == (vec<int>{1, 6, 8, 4}));
+  assert(X == (vec<int>{0}));
+}
+
+void testT2IsOddHole() {
+  for (int i = 0; i < (bigTests ? 10000 : 200); i++) {
+    Graph G = getRandomGraph(8, 0.5);
+
+    auto t2 = findT2(G);
+    if (!get<0>(t2).empty()) {
+      assert(containsOddHoleNaive(G));
+    }
+  }
 }
 
 int main() {
@@ -220,4 +252,5 @@ int main() {
   testIsT1();
   testT1IsOddHole();
   testFindT2();
+  testT2IsOddHole();
 }
