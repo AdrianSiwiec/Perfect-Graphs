@@ -50,7 +50,6 @@ vec<Graph> getRandomGraphs(int size, double p, int howMany) {
   return ret;
 }
 
-
 void handler(int sig) {
   void *array[100];
   size_t size;
@@ -73,6 +72,10 @@ void handler(int sig) {
 }
 
 void init() {
+  if (srandTime) {
+    srand(time(NULL));
+  }
+
   signal(SIGSEGV, handler);
   signal(SIGABRT, handler);
 }

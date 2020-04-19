@@ -26,7 +26,7 @@ $(OBJDIR)/%.e: %.cpp $(OBJFILES)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(OBJFILES) $< -o $@
 
-.PHONY: test clean run-tests retest
+.PHONY: test clean run-tests retest rt
 
 # Do not delete OBJFILES by default (shortens make time)
 .OBJ: $(OBJFILES)

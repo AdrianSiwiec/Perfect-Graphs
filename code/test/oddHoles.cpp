@@ -119,6 +119,7 @@ void testIsT1() {
   ");
 
   assert(!findT1(G).empty());
+  assert(containsT1(G));
   assert(isT1(G, {0, 1, 2, 3, 4}));
   assert(isT1(G, {2, 3, 4, 0, 1}));
   assert(!isT1(G, {3, 4, 0, 1}));
@@ -132,6 +133,7 @@ void testIsT1() {
   ");
   assert(!isT1(G, {0, 1, 2, 3, 4}));
   assert(findT1(G).empty());
+  assert(!containsT1(G));
 
   G = Graph(6, "\
   .X..X.\
@@ -143,6 +145,7 @@ void testIsT1() {
   ");
 
   assert(!findT1(G).empty());
+  assert(containsT1(G));
   assert(isT1(G, {0, 1, 2, 3, 4}));
 
   G = Graph(6, "\
@@ -192,6 +195,7 @@ void testFindT2() {
   assert(v == (vec<int>{1, 2, 3, 4}));
   assert(P == (vec<int>{1, 6, 7, 8, 4}));
   assert(X == (vec<int>{0}));
+  assert(containsT2(G));
 
   G = Graph(9, "\
   .XX.XX...\
@@ -211,6 +215,7 @@ void testFindT2() {
   assert(v.empty());
   assert(P.empty());
   assert(X.empty());
+  assert(!containsT2(G));
 
   G = Graph(9, "\
   .XX.XX...\
@@ -231,6 +236,7 @@ void testFindT2() {
   assert(v == (vec<int>{1, 2, 3, 4}));
   assert(P == (vec<int>{1, 6, 8, 4}));
   assert(X == (vec<int>{0}));
+  assert(containsT2(G));
 }
 
 void testT2IsOddHole() {
@@ -259,6 +265,7 @@ void testIsT3() {
   assert(isT3(G, {1, 2, 3, 4, 5, 6}, {6, 7, 5}, {0}));
   assert(isT3(G, {0, 2, 3, 5, 4, 7}, {7, 6, 4}, {1}));
   assert(isT3(G, {0, 2, 3, 5, 4, 7}, {4, 6, 7}, {1}));
+  assert(containsT3(G));
 }
 
 void testFindT3() {
@@ -281,6 +288,7 @@ void testFindT3() {
   assert(v == (vec<int>{0, 2, 3, 5, 4, 7}));
   assert(P == (vec<int>{7, 6, 4}));
   assert(X == (vec<int>{1}));
+  assert(containsT3(G));
 
   G = Graph(8, "\
   .XXX.X..\
@@ -299,6 +307,7 @@ void testFindT3() {
   assert(v.empty());
   assert(P.empty());
   assert(X.empty());
+  assert(!containsT3(G));
 
   G = Graph(8, "\
   .XX..X.X\

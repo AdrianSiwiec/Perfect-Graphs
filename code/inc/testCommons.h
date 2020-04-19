@@ -13,6 +13,10 @@
 const bool bigTests = false;
 // const bool bigTests = true;
 
+// Whether to init rand with time or constant. Constant is helpful for debugging, time for (parallel) testing.
+// const bool srandTime = false;
+const bool srandTime = true;
+
 bool probTrue(double p);
 void printGraph(const Graph &G);
 Graph getRandomGraph(int size, double p);

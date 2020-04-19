@@ -20,6 +20,8 @@ void testIsJewel() {
   assert(!isJewel(G, vec<int>{3, 4, 5, 1, 2}));
   assert(!isJewel(G, vec<int>{4, 5, 1, 2, 3}));
 
+  assert(containsJewelNaive(G));
+
   G = Graph(6, "\
   .X.XX.\
   X.X..X\
@@ -67,6 +69,7 @@ void testFindJewelNaive() {
   auto jewel = findJewelNaive(G);
   // Not only one possible, but correct
   assert(jewel == (vec<int>{4, 3, 2, 1, 0}));
+  assert(containsJewelNaive(G));
 }
 
 int main() {

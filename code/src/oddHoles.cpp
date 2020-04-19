@@ -96,6 +96,7 @@ vec<int> findT1(const Graph &G) {
 
   return vec<int>();
 }
+bool containsT1(const Graph &G) { return !findT1(G).empty(); }
 
 tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {
   for (int v1 = 0; v1 < G.n; v1++) {
@@ -134,6 +135,7 @@ tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {
 
   return make_tuple(vec<int>(), vec<int>(), vec<int>());
 }
+bool containsT2(const Graph &G) { return !get<0>(findT2(G)).empty(); }
 
 tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
   for (int v1 = 0; v1 < G.n; v1++) {
@@ -220,6 +222,7 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
 
   return make_tuple(vec<int>(), vec<int>(), vec<int>());
 }
+bool containsT3(const Graph &G) { return !get<0>(findT3(G)).empty(); }
 
 bool isT3(const Graph &G, const vec<int> &_v, const vec<int> &P, const vec<int> &_X) {
   if (_v.size() != 6 || P.empty() || _X.empty())

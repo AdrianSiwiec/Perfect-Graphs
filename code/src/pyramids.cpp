@@ -69,7 +69,7 @@ bool noEdgesBetweenVectors(const Graph &G, vec<int>::iterator aBegin, vec<int>::
   return true;
 }
 
-bool containsPyramide(const Graph &G) {
+bool containsPyramid(const Graph &G) {
   auto t = findPyramid(G);
   return get<0>(t).size() > 0;
 }
