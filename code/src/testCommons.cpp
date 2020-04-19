@@ -71,7 +71,7 @@ void handler(int sig) {
   exit(1);
 }
 
-void init() {
+void init(bool srandTime) {
   if (srandTime) {
     srand(time(NULL));
   }

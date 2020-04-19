@@ -3,6 +3,7 @@ INCDIR=inc
 SRCDIR=src
 OBJDIR=obj
 TESTDIR=test
+PERMATESTDIR=permaTest
 
 #GCC compiler settings
 CXX=g++
@@ -11,12 +12,15 @@ CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
 OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(wildcard $(SRCDIR)/*.cpp))
 TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
+PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
 
 $(info $(OBJFILES))
 $(info $(TESTFILES))
+$(info $(PERMATESTFILES))
 
 #Targets
 test: $(TESTFILES)
+permaTest: $(PERMATESTFILES)
 
 $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
@@ -38,6 +42,9 @@ run-tests: test
 	done &&	echo "ALL OK"
 
 retest: clean run-tests
+
+permaTest: test
+	./obj/permaTest/perfect.e
 
 clean:
 	rm -rf obj *.e
