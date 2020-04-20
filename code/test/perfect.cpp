@@ -41,8 +41,15 @@ void testHand() {
 
 void testPerfectVsNaive() {
   for (int i = 0; i < (bigTests ? 30 : 100); i++) {
-    Graph G = getRandomGraph(bigTests? 8 : 6, 0.5);
+    Graph G = getRandomGraph(bigTests ? 8 : 6, 0.5);
     testGraph(G);
+  }
+}
+
+void testNonPerfect() {
+  for (int i = 0; i < 100; i++) {
+    Graph G = getNonPerfectGraph(9, 10, 0.5);
+    assert(isPerfectGraph(G) == false);
   }
 }
 
@@ -50,4 +57,5 @@ int main() {
   init();
   testHand();
   testPerfectVsNaive();
+  testNonPerfect();
 }

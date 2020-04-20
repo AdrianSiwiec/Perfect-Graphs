@@ -50,6 +50,40 @@ vec<Graph> getRandomGraphs(int size, double p, int howMany) {
   return ret;
 }
 
+Graph getNonPerfectGraph(int holeSize, int reminderSize, double p) {
+  if (holeSize < 5 || holeSize % 2 == 0) {
+    throw invalid_argument("Trying to generate Non perfect graph with incorrect hole size.");
+  }
+
+  int size = holeSize + reminderSize;
+  vec<vec<int>> neighbours(size);
+
+  for (int i = 1; i < holeSize; i++) {
+    neighbours[i - 1].push_back(i);
+    neighbours[i].push_back(i - 1);
+  }
+  neighbours[0].push_back(holeSize - 1);
+  neighbours[holeSize - 1].push_back(0);
+
+  Graph reminder = getRandomGraph(reminderSize, p);
+  for (int i = 0; i < reminderSize; i++) {
+    for (int v : reminder[i]) {
+      neighbours[i + holeSize].push_back(v + holeSize);
+    }
+  }
+
+  for (int i = 0; i < holeSize; i++) {
+    for (int j = holeSize; j < size; j++) {
+      if (probTrue(p)) {
+        neighbours[i].push_back(j);
+        neighbours[j].push_back(i);
+      }
+    }
+  }
+
+  return Graph(neighbours);
+}
+
 void handler(int sig) {
   void *array[100];
   size_t size;
@@ -78,4 +112,10 @@ void init(bool srandTime) {
 
   signal(SIGSEGV, handler);
   signal(SIGABRT, handler);
+}
+
+RaiiTimer::RaiiTimer(string msg) : msg(msg) { startTimer = clock(); }
+RaiiTimer::~RaiiTimer() {
+  double duration = (clock() - startTimer) / (double)CLOCKS_PER_SEC;
+  cout << msg << ": " << duration << "s" << endl;
 }
