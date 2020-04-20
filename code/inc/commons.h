@@ -34,14 +34,18 @@ struct Graph {
   Graph(int n);
   Graph(int n, string s);
   Graph(vec<vec<int>> neighbours);
+  // List of neighbors is not necessarily sorted
   vec<int> &operator[](int index) { return _neighbours[index]; }
   const vec<int> &operator[](int index) const { return _neighbours[index]; }
+  bool operator==(const Graph &c) const { return _matrix == c._matrix; }
   bool areNeighbours(int a, int b) const { return _matrix[a][b]; }
 
   Graph getComplement() const;
   // Returns G' - Graph induced on X. Set of vertices is left the same, and edge is in G' if it is in G and
   // both it's ends are in X.
   Graph getInduced(vec<int> X) const;
+  Graph getShuffled() const;
+  Graph getLineGraph() const;
 
 private:
   vec<vec<int>> _neighbours;

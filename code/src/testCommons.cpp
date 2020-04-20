@@ -81,7 +81,21 @@ Graph getNonPerfectGraph(int holeSize, int reminderSize, double p) {
     }
   }
 
-  return Graph(neighbours);
+  return Graph(neighbours).getShuffled();
+}
+
+Graph getBipariteGraph(int size, double p) {
+  vec<vec<int>> neighbours(size);
+  for (int i = 0; i < size / 2; i++) {
+    for (int j = size / 2; j < size; j++) {
+      if (probTrue(p)) {
+        neighbours[i].push_back(j);
+        neighbours[j].push_back(i);
+      }
+    }
+  }
+
+  return Graph(neighbours).getShuffled();
 }
 
 void handler(int sig) {

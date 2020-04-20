@@ -9,7 +9,7 @@ double allNaive = 0;
 double allPerfect = 0;
 
 void testGraph(const Graph &G) {
-  cout << "Testing " << G.n << endl;
+  cout << "Testing " << G.n << " vs naive" << endl;
 
   clock_t startNaive;
   startNaive = clock();
@@ -38,32 +38,51 @@ void testGraph(const Graph &G) {
   cout << allNaive << "\t" << allPerfect << endl;
 }
 
-void testPerfectVsNaive() {
-  std::default_random_engine generator;
-  std::normal_distribution<double> distribution(0.5, 0.15);
+void testGraph(const Graph &G, bool result) {
+  RaiiTimer timer("Line Biparite, n=" + to_string(G.n));
 
-  cout << rand() << endl;
+  bool perfect = isPerfectGraph(G);
 
-  for (int i = 0; i < 1000000; i++) {
-    int r = rand() % 100;
-
-    double distr = distribution(generator);
-    if (distr <= 0 || distr > 1)
-      distr = 0.5;
-
-    if (r == 0) {
-      Graph G = getRandomGraph(9, distr);
-      testGraph(G);
-    } else {
-      Graph G = getRandomGraph(8, distr);
-      testGraph(G);
-    }
-
-    cout << "Test #" << i << endl;
+  if (perfect != result) {
+    cout << "Error Line biparite" << endl;
+    cout << G << endl;
   }
+
+  assert(perfect == result);
+}
+
+std::default_random_engine generator;
+std::normal_distribution<double> distribution(0.5, 0.15);
+
+void testPerfectVsNaive() {
+  int r = rand() % 100;
+
+  double distr = distribution(generator);
+  if (distr <= 0 || distr > 1)
+    distr = 0.5;
+
+  if (r == 0) {
+    Graph G = getRandomGraph(9, distr);
+    testGraph(G);
+  } else {
+    Graph G = getRandomGraph(8, distr);
+    testGraph(G);
+  }
+}
+
+void testLineBiparite() {
+  double distr = distribution(generator);
+  if (distr <= 0 || distr > 1)
+    distr = 0.5;
+
+  Graph G = getBipariteGraph(8 + (rand() % 3), distr).getLineGraph();
+  testGraph(G, true);
 }
 
 int main() {
   init(true);
-  testPerfectVsNaive();
+  while (1) {
+    testPerfectVsNaive();
+    testLineBiparite();
+  }
 }
