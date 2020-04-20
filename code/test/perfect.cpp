@@ -37,6 +37,17 @@ void testHand() {
   .XX.X..X\
   XX....X.\
 "));
+
+  testGraph(Graph(8, "\
+  .XXXXX..\
+  X..XX.XX\
+  X..X.X.X\
+  XXX.X..X\
+  XX.X.X..\
+  X.X.X.XX\
+  .X...X.X\
+  .XXX.XX.\
+  "));
 }
 
 void testPerfectVsNaive() {

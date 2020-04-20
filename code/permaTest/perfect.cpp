@@ -3,23 +3,75 @@
 #include "oddHoles.h"
 #include "testCommons.h"
 #include <ctime>
+#include <map>
 #include <random>
 
 double allNaive = 0;
 double allPerfect = 0;
 
+map<pair<int, bool>, double> sumTime;
+map<pair<int, bool>, int> casesTested;
+
+map<pair<int, bool>, double> sumTimeNaive;
+map<pair<int, bool>, int> casesTestedNaive;
+
+bool testWithStats(const Graph &G, bool naive) {
+  clock_t start;
+  start = clock();
+  bool result = naive ? isPerfectGraphNaive(G) : isPerfectGraph(G);
+  double duration = (clock() - start) / (double)CLOCKS_PER_SEC;
+
+  if (naive) {
+    sumTimeNaive[make_pair(G.n, result)] += duration;
+    casesTestedNaive[make_pair(G.n, result)]++;
+  } else {
+    sumTime[make_pair(G.n, result)] += duration;
+    casesTested[make_pair(G.n, result)]++;
+  }
+
+  return result;
+}
+
+void printStats() {
+  cout << "Naive: " << endl;
+  for (auto it = sumTimeNaive.begin(); it != sumTimeNaive.end(); it++) {
+    int cases = casesTestedNaive[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+  cout << "Perfect: " << endl;
+  for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+    if (!it->first.second)
+      continue;
+    int cases = casesTested[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+  for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+    if (it->first.second)
+      continue;
+    int cases = casesTested[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+}
+
+std::default_random_engine generator;
+std::normal_distribution<double> distribution(0.5, 0.15);
+double getDistr() {
+  double distr = distribution(generator);
+  if (distr <= 0 || distr > 1)
+    distr = 0.5;
+
+  return distr;
+}
+
 void testGraph(const Graph &G) {
   cout << "Testing " << G.n << " vs naive" << endl;
 
-  clock_t startNaive;
-  startNaive = clock();
-  bool naivePerfect = isPerfectGraphNaive(G);
-  double durationNaive = (std::clock() - startNaive) / (double)CLOCKS_PER_SEC;
+  bool naivePerfect = testWithStats(G, true);
 
-  clock_t startPerfect;
-  startPerfect = clock();
-  bool perfect = isPerfectGraph(G);
-  double durationPerfect = (std::clock() - startPerfect) / (double)CLOCKS_PER_SEC;
+  bool perfect = testWithStats(G, false);
 
   if (naivePerfect != perfect) {
     cout << "ERROR: " << endl << "naive=" << naivePerfect << endl << "perfect=" << perfect << endl;
@@ -29,54 +81,42 @@ void testGraph(const Graph &G) {
   }
 
   assert(naivePerfect == perfect);
-
-  cout << "Durations:        ";
-  cout << durationNaive << "\t" << durationPerfect << endl;
-  allNaive += durationNaive;
-  allPerfect += durationPerfect;
-  cout << "Sum of durations: ";
-  cout << allNaive << "\t" << allPerfect << endl;
 }
 
 void testGraph(const Graph &G, bool result) {
-  RaiiTimer timer("Line Biparite, n=" + to_string(G.n));
+  cout << "Testing " << G.n << " vs " << result << endl;
 
-  bool perfect = isPerfectGraph(G);
+  bool perfect = testWithStats(G, false);
 
   if (perfect != result) {
-    cout << "Error Line biparite" << endl;
+    cout << "Error Test Graph" << endl;
     cout << G << endl;
+    cout << "Expected " << result << ", got " << perfect << endl;
   }
 
   assert(perfect == result);
 }
 
-std::default_random_engine generator;
-std::normal_distribution<double> distribution(0.5, 0.15);
-
 void testPerfectVsNaive() {
   int r = rand() % 100;
 
-  double distr = distribution(generator);
-  if (distr <= 0 || distr > 1)
-    distr = 0.5;
-
   if (r == 0) {
-    Graph G = getRandomGraph(9, distr);
+    Graph G = getRandomGraph(9, getDistr());
     testGraph(G);
   } else {
-    Graph G = getRandomGraph(8, distr);
+    Graph G = getRandomGraph(8, getDistr());
     testGraph(G);
   }
 }
 
 void testLineBiparite() {
-  double distr = distribution(generator);
-  if (distr <= 0 || distr > 1)
-    distr = 0.5;
-
-  Graph G = getBipariteGraph(8 + (rand() % 3), distr).getLineGraph();
+  Graph G = getBipariteGraph(6 + (getDistr()*7), getDistr()).getLineGraph();
   testGraph(G, true);
+}
+
+void testNonPerfect() {
+  Graph G = getNonPerfectGraph(5 + (rand() % 7) * 2, 3 + (getDistr() * 20), getDistr());
+  testGraph(G, false);
 }
 
 int main() {
@@ -84,5 +124,8 @@ int main() {
   while (1) {
     testPerfectVsNaive();
     testLineBiparite();
+    testNonPerfect();
+
+    printStats();
   }
 }
