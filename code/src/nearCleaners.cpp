@@ -2,13 +2,11 @@
 #include "commons.h"
 #include <set>
 
-bool containsOddHoleWithNearCleanerX(const Graph &G, const vec<int> &X) {
+bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX) {
   vec<vec<vec<int>>> R(G.n);
   for (int i = 0; i < G.n; i++) {
     R[i].resize(G.n);
   }
-
-  set<int> sX(X.begin(), X.end());
 
   for (int x = 0; x < G.n; x++) {
     for (int y = 0; y < G.n; y++) {
@@ -57,7 +55,7 @@ bool containsOddHoleWithNearCleanerX(const Graph &G, const vec<int> &X) {
            ))
         continue;
 
-      cout << "X: " << X << endl;
+      cout << "sX: " << sX << endl;
       cout << "x1: " << x1 << endl;
       cout << "x2: " << x2 << endl;
       cout << "x3: " << x3 << endl;
@@ -96,7 +94,7 @@ bool isRelevantTriple(const Graph &G, vec<int> v) {
   return true;
 }
 
-vec<int> getXforRelevantTriple(const Graph &G, vec<int> v) {
+set<int> getXforRelevantTriple(const Graph &G, vec<int> v) {
   int a = v[0], b = v[1], c = v[2];
 
   auto antiCompsNab = getComponentsOfInducedGraph(G.getComplement(), getCompleteVertices(G, {a, b}));
@@ -137,10 +135,10 @@ vec<int> getXforRelevantTriple(const Graph &G, vec<int> v) {
   set<int> sX(Y.begin(), Y.end());
   sX.insert(Z.begin(), Z.end());
 
-  return vec<int>(sX.begin(), sX.end());
+  return sX;
 }
 
-set<vec<int>> getPossibleNearCleaners(const Graph &G) {
+set<set<int>> getPossibleNearCleaners(const Graph &G) {
   vec<vec<int>> Ns;
   for (int u = 0; u < G.n; u++) {
     for (int v : G[u]) {
@@ -148,7 +146,7 @@ set<vec<int>> getPossibleNearCleaners(const Graph &G) {
     }
   }
 
-  vec<vec<int>> Xs;
+  vec<set<int>> Xs;
   for (int a = 0; a < G.n; a++) {
     for (int b = 0; b < G.n; b++) {
       if (a == b || G.areNeighbours(a, b))
@@ -161,13 +159,13 @@ set<vec<int>> getPossibleNearCleaners(const Graph &G) {
     }
   }
 
-  set<vec<int>> res;
+  set<set<int>> res;
   for (auto N : Ns) {
     for (auto X : Xs) {
       // TODO smarter
       set<int> tmpS(N.begin(), N.end());
       tmpS.insert(X.begin(), X.end());
-      res.insert(vec<int>(tmpS.begin(), tmpS.end()));
+      res.insert(tmpS);
     }
   }
 

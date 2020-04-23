@@ -314,6 +314,8 @@ ostream &operator<<(ostream &os, Graph const &G) {
   return os;
 }
 
+
+
 vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test) {
   if (start == end)
     return vec<int>{start};

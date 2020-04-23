@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <set>
 #include <tuple>
 #include <vector>
 using namespace std;
@@ -55,6 +56,15 @@ private:
 };
 
 ostream &operator<<(ostream &os, Graph const &G);
+template <typename T> ostream &operator<<(ostream &os, const set<T> &G) {
+  os << "{";
+  for (auto it = G.begin(); it != G.end(); it++) {
+    os << *it << (next(it) == G.end() ? "" : ", ");
+  }
+  os << "}";
+
+  return os;
+}
 
 // Finds shortest path from start to end in G, where every vertex inside satisfies predicate.
 // Returns empty vector if none exist

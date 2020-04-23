@@ -145,7 +145,6 @@ void testGetLineGraph() {
   .X.X.\
   "));
 
-
   G = Graph(5, "\
   .XXX.\
   X...X\

@@ -41,6 +41,7 @@ bool checkPrerequisites(const Graph &G, const vec<int> &b, const int a, const ve
 bool vectorsCutEmpty(vec<int>::iterator aBegin, vec<int>::iterator aEnd, vec<int>::iterator bBegin,
                      vec<int>::iterator bEnd) {
   unordered_set<int> a;
+  a.reserve(aEnd - aBegin);
   for (auto it = aBegin; it != aEnd; it++) {
     a.insert(*it);
   }
@@ -55,6 +56,7 @@ bool vectorsCutEmpty(vec<int>::iterator aBegin, vec<int>::iterator aEnd, vec<int
 bool noEdgesBetweenVectors(const Graph &G, vec<int>::iterator aBegin, vec<int>::iterator aEnd,
                            vec<int>::iterator bBegin, vec<int>::iterator bEnd) {
   unordered_set<int> aTouches;
+  aTouches.reserve(aEnd - aBegin);
   for (auto it = aBegin; it != aEnd; it++) {
     for (int i : G[*it]) {
       aTouches.insert(i);

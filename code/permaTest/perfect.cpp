@@ -110,7 +110,7 @@ void testPerfectVsNaive() {
 }
 
 void testLineBiparite() {
-  Graph G = getBipariteGraph(6 + (getDistr()*7), getDistr()).getLineGraph();
+  Graph G = getBipariteGraph(6 + (getDistr()*5), getDistr()).getLineGraph();
   testGraph(G, true);
 }
 
