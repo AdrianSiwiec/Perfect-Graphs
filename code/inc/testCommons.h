@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <execinfo.h>
+#include <map>
+#include <random>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,11 +30,32 @@ void handler(int sig);
 void init(bool srandTime = false);
 
 struct RaiiTimer {
-  string msg;
-
   RaiiTimer(string msg);
   ~RaiiTimer();
 
 private:
   clock_t startTimer;
+  string msg;
+};
+
+bool testWithStats(const Graph &G, bool naive);
+void printStats();
+double getDistr();
+void testGraph(const Graph &G, bool verbose);
+void testGraph(const Graph &G, bool result, bool verbose);
+
+void printTimeHumanReadable(long long time);
+
+struct RaiiProgressBar {
+  RaiiProgressBar(int allTests);
+  ~RaiiProgressBar();
+
+  void update(int testsDone);
+
+private:
+  int allTests;
+  clock_t startTimer;
+  const int width = 80;
+
+  int getFilled(int testsDone);
 };

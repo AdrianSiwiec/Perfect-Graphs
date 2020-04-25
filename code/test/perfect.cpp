@@ -8,7 +8,7 @@
 double allNaive = 0;
 double allPerfect = 0;
 
-void testGraph(const Graph &G) {
+void testGraphSimple(const Graph &G) {
   bool naivePerfect = isPerfectGraphNaive(G);
   bool perfect = isPerfectGraph(G);
 
@@ -16,7 +16,7 @@ void testGraph(const Graph &G) {
 }
 
 void testHand() {
-  testGraph(Graph(8, "\
+  testGraphSimple(Graph(8, "\
   .XXXX...\
   X..XX..X\
   X...X.XX\
@@ -27,7 +27,7 @@ void testHand() {
   .XXX.XX.\
   "));
 
-  testGraph(Graph(8, "\
+  testGraphSimple(Graph(8, "\
   ..X..X.X\
   ......XX\
   X...XXX.\
@@ -38,7 +38,7 @@ void testHand() {
   XX....X.\
 "));
 
-  testGraph(Graph(8, "\
+  testGraphSimple(Graph(8, "\
   .XXXXX..\
   X..XX.XX\
   X..X.X.X\
@@ -54,7 +54,7 @@ void testPerfectVsNaive() {
   RaiiTimer timer("Perfect vs naive ");
   for (int i = 0; i < (bigTests ? 30 : 100); i++) {
     Graph G = getRandomGraph(bigTests ? 8 : 6, 0.5);
-    testGraph(G);
+    testGraphSimple(G);
   }
 }
 

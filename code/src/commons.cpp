@@ -41,7 +41,7 @@ Graph::Graph(int n, string s) : Graph(n) {
 
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
-      if (i == j || s[i * n + j] != 'X')
+      if (i == j || (s[i * n + j] != 'X' && s[i * n + j] != '1'))
         _matrix[i][j] = 0;
       else {
         _matrix[i][j] = 1;
@@ -313,8 +313,6 @@ ostream &operator<<(ostream &os, Graph const &G) {
 
   return os;
 }
-
-
 
 vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test) {
   if (start == end)

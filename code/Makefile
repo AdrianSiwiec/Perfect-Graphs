@@ -4,6 +4,8 @@ SRCDIR=src
 OBJDIR=obj
 TESTDIR=test
 PERMATESTDIR=permaTest
+NETTESTDIR=netTest
+DOWNLOADSDIR=$(NETTESTDIR)/downloaded
 
 #GCC compiler settings
 CXX=g++
@@ -13,14 +15,17 @@ CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(wildcard $(SRCDIR)/*.cpp))
 TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
 PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
+NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 
-$(info $(OBJFILES))
-$(info $(TESTFILES))
-$(info $(PERMATESTFILES))
+
+# $(info $(OBJFILES))
+# $(info $(TESTFILES))
+# $(info $(PERMATESTFILES))
 
 #Targets
 test: $(TESTFILES)
 permaTest: $(PERMATESTFILES)
+netTest: $(NETTESTFILES)
 
 $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
@@ -30,7 +35,7 @@ $(OBJDIR)/%.e: %.cpp $(OBJFILES)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(OBJFILES) $< -o $@
 
-.PHONY: test clean run-tests retest rt
+.PHONY: test clean run-tests retest netTest
 
 # Do not delete OBJFILES by default (shortens make time)
 .OBJ: $(OBJFILES)
@@ -43,8 +48,14 @@ run-tests: test
 
 retest: clean run-tests
 
-permaTest: test
+permaTest: 
 	./obj/permaTest/perfect.e
+
+netTest:
+	./netTest/prepare.sh
 
 clean:
 	rm -rf obj *.e
+
+cleanDownloads:
+	rm $(DOWNLOADSDIR) -rf
