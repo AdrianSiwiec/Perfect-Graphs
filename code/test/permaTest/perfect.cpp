@@ -11,21 +11,21 @@ void testPerfectVsNaive() {
 
   if (r == 0) {
     Graph G = getRandomGraph(9, getDistr());
-    testGraph(G);
+    testGraph(G, true);
   } else {
     Graph G = getRandomGraph(8, getDistr());
-    testGraph(G);
+    testGraph(G, true);
   }
 }
 
 void testLineBiparite() {
-  Graph G = getBipariteGraph(6 + (getDistr()*5), getDistr()).getLineGraph();
-  testGraph(G, true);
+  Graph G = getBipariteGraph(6 + (getDistr() * 5), getDistr()).getLineGraph();
+  testGraph(G, true, true);
 }
 
 void testNonPerfect() {
   Graph G = getNonPerfectGraph(5 + (rand() % 7) * 2, 3 + (getDistr() * 20), getDistr());
-  testGraph(G, false);
+  testGraph(G, false, true);
 }
 
 int main() {

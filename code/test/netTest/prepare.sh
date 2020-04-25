@@ -10,14 +10,15 @@ showgPath="$downloadedDir/show_linux64"
 testAddresses=(
   "https://users.cecs.anu.edu.au/~bdm/data/perfect5.g6"
   "https://users.cecs.anu.edu.au/~bdm/data/perfect6.g6"
-  "https://users.cecs.anu.edu.au/~bdm/data/perfect7.g6"
-  "https://users.cecs.anu.edu.au/~bdm/data/perfect8.g6"
-  "https://users.cecs.anu.edu.au/~bdm/data/perfect9.g6"
-  "https://users.cecs.anu.edu.au/~bdm/data/perfect10.g6"
+  # "https://users.cecs.anu.edu.au/~bdm/data/perfect7.g6"
+  # "https://users.cecs.anu.edu.au/~bdm/data/perfect8.g6"
+  # "https://users.cecs.anu.edu.au/~bdm/data/perfect9.g6"
+  # "https://users.cecs.anu.edu.au/~bdm/data/perfect10.g6"
+
   # "https://users.cecs.anu.edu.au/~bdm/data/perfect11.g6.gz"
 )
 
-testerExecPath="$scriptDir/../obj/netTest/perfect.e"
+testerExecPath="$scriptDir/../../obj/test/netTest/perfect.e"
 
 mkdir -p $downloadedDir
 
@@ -53,6 +54,13 @@ do
   testPath=$downloadedDir/$(basename $test)
   testDecodedPath=$testPath.t.in
   $testerExecPath <$testDecodedPath
+  res=$?
+  if [ ! $res -eq 0 ]
+  then
+    echo "Net test failed on test $testDecodedPath"
+    exit 1
+  fi
+
 done 
 
 echo "Net tests done!"

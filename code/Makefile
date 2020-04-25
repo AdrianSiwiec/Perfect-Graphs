@@ -3,8 +3,9 @@ INCDIR=inc
 SRCDIR=src
 OBJDIR=obj
 TESTDIR=test
-PERMATESTDIR=permaTest
-NETTESTDIR=netTest
+UNITTESTDIR=$(TESTDIR)/unitTest
+PERMATESTDIR=$(TESTDIR)/permaTest
+NETTESTDIR=$(TESTDIR)/netTest
 DOWNLOADSDIR=$(NETTESTDIR)/downloaded
 
 #GCC compiler settings
@@ -14,6 +15,7 @@ CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
 OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(wildcard $(SRCDIR)/*.cpp))
 TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
+UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp))
 PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 
@@ -24,6 +26,7 @@ NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 
 #Targets
 test: $(TESTFILES)
+unitTest: $(UNITTESTFILES)
 permaTest: $(PERMATESTFILES)
 netTest: $(NETTESTFILES)
 
@@ -35,24 +38,21 @@ $(OBJDIR)/%.e: %.cpp $(OBJFILES)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(OBJFILES) $< -o $@
 
-.PHONY: test clean run-tests retest netTest
+.PHONY: test clean run-tests unitTest retest netTest
 
 # Do not delete OBJFILES by default (shortens make time)
 .OBJ: $(OBJFILES)
 
-run-tests: test
-	for test in obj/test/*.e; do \
-		echo "Running $$test" && \
-		./$$test || exit; \
-	done &&	echo "ALL OK"
+unitTest: 
+	./test/unitTest/runUnitTest.sh
 
-retest: clean run-tests
+retest: clean unitTest
 
 permaTest: 
-	./obj/permaTest/perfect.e
+	./obj/test/permaTest/perfect.e
 
 netTest:
-	./netTest/prepare.sh
+	./test/netTest/prepare.sh
 
 clean:
 	rm -rf obj *.e
