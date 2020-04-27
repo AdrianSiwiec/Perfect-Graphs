@@ -3,7 +3,9 @@
 #include "commons.h"
 #include <cassert>
 #include <cstdlib>
-#include <execinfo.h>
+#ifndef __CYGWIN__
+  #include <execinfo.h>
+#endif
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
