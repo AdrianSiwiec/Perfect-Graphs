@@ -221,11 +221,11 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
   return make_tuple(vec<int>(), vec<int>(), vec<int>());
 }
 
-bool isT3(const Graph &G, const vec<int> &_v, const vec<int> &P, const vec<int> &_X) {
-  if (_v.size() != 6 || P.empty() || _X.empty())
+bool isT3(const Graph &G, const vec<int> &v_const, const vec<int> &P, const vec<int> &X_const) {
+  if (v_const.size() != 6 || P.empty() || X_const.empty())
     return false;
 
-  vec<int> v(_v.begin(), _v.end());
+  vec<int> v(v_const.begin(), v_const.end());
   v.insert(v.begin(), -1); // To have v1,... v6
 
   if (!isDistinctValues(v))
@@ -246,7 +246,7 @@ bool isT3(const Graph &G, const vec<int> &_v, const vec<int> &P, const vec<int> 
 
   auto antiC = getComponentsOfInducedGraph(G.getComplement(), getCompleteVertices(G, {v[1], v[2], v[5]}));
 
-  vec<int> X(_X.begin(), _X.end());
+  vec<int> X(X_const.begin(), X_const.end());
   sort(X.begin(), X.end());
 
   bool isXAnticomponent = false;

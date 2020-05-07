@@ -50,24 +50,27 @@ vec<Graph> getRandomGraphs(int size, double p, int howMany) {
   return ret;
 }
 
-
 void handler(int sig) {
   void *array[100];
   size_t size;
 
-  // get void*'s for all entries on the stack
-  size = backtrace(array, 100);
+  #ifdef __CYGWIN__
+    fprintf(stderr, "Error: signal %d:\n", sig);
+  #else
+    // get void*'s for all entries on the stack
+    size = backtrace(array, 100);
 
-  // print out all the frames to stderr
-  fprintf(stderr, "Error: signal %d:\n", sig);
-  auto messages = backtrace_symbols(array, size);
+    // print out all the frames to stderr
+    fprintf(stderr, "Error: signal %d:\n", sig);
+    auto messages = backtrace_symbols(array, size);
 
-  /* skip first stack frame (points here) */
-  for (int i = 1; i < size && messages != NULL; ++i) {
-    if ((messages[i][1] != 'l' || messages[i][2] != 'i' || messages[i][3] != 'b') &&
-        (messages[i][1] != 'u' || messages[i][2] != 's' || messages[i][3] != 'r'))
-      fprintf(stderr, "\t[bt]: (%d) %s\n", i, messages[i]);
-  }
+    /* skip first stack frame (points here) */
+    for (int i = 1; i < size && messages != NULL; ++i) {
+      if ((messages[i][1] != 'l' || messages[i][2] != 'i' || messages[i][3] != 'b') &&
+          (messages[i][1] != 'u' || messages[i][2] != 's' || messages[i][3] != 'r'))
+        fprintf(stderr, "\t[bt]: (%d) %s\n", i, messages[i]);
+    }
+  #endif
 
   exit(1);
 }
