@@ -1,0 +1,223 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
+\usepackage{hyperref} 
+\usetikzlibrary{arrows}
+\usepackage[linesnumbered,vlined]{algorithm2e}
+\usepackage{amssymb}
+\usepackage{graphicx}
+ \usepackage{color}
+ \usepackage{transparent}
+
+\definecolor{c1}{HTML}{8D75A0}
+\definecolor{c2}{HTML}{8B9CD6}
+\definecolor{c3}{HTML}{F4F1BB}
+\definecolor{c4}{HTML}{DB9D47}
+\definecolor{c5}{HTML}{FF784F}
+
+\graphicspath{ {./img/} }
+
+\SetNlSty{}{}{}
+\SetKwInput{KwData}{Input}
+\SetKwInput{KwResult}{Output}
+\DontPrintSemicolon
+\newcommand{\NULL}{\textsc{null}}
+\SetAlgoVlined
+\LinesNumbered
+
+\SetKwBlock{IfNoEnd}{if}{}
+\SetKwBlock{IfNoBegin}{}{End}
+
+\let\oldnl\nl% Store \nl in \oldnl
+\newcommand\nonl{%
+  \renewcommand{\nl}{\let\nl\oldnl}}% Remove line number for one line
+\newcommand{\pushline}{\Indp}% Indent
+\newcommand{\popline}{\Indm}% Undent
+\newcommand{\Assert}[2][]{\nonl ASSERT: #2 \ifthenelse{\equal{#1}{}}{}{(as in #1)} \; }
+% \newcommand{\Assert}[1]{}
+\newcommand{\mycbox}[1]{\tikz{\path[draw=white,fill=white] (0,0) rectangle (8cm,.5cm);}}
+\newcommand{\mycboxx}[1]{\tikz{\path[draw=white,fill=white] (0,0) rectangle (.5cm,.8cm);}}
+
+\newcommand{\unfinishedAlg}[2][]{
+\begin{minipage}[t]{\textwidth}
+\vspace{0pt} 
+\begin{algorithm}[H]
+#2
+\end{algorithm}
+\vspace*{#1}
+\mycbox{}
+\end{minipage}
+}
+
+\SetKwFor{GreyWhile}{\transparent{0.4}{// while}}{\transparent{0.4}{do}}{}
+\SetKwFor{GreyWhile}{\transparent{0.4}{// while}}{\transparent{0.4}{do}}{}
+\SetKwIF{GreyIf}{GreyElseIf}{GreyElse}{\transparent{0.4}{// if}}{\transparent{0.4}{then}}{\transparent{0.4}{// else if}}{\transparent{0.4}{else}}{}
+
+\newcommand{\continueAlg}[2][]{
+  \begin{minipage}[t]{\textwidth}
+    \vspace{0pt} 
+    \begin{algorithm}[H]
+    #2
+    \end{algorithm}
+    \vspace*{#1}
+    \mycboxx{}
+    \vspace*{-#1}
+    \end{minipage}
+}
+
+\author{Adrian Siwiec}
+\date{\today{}}
+\begin{document}
+
+\begin{algorithm}[H]
+	\KwData{this text}
+	\KwResult{how to write algorithm with \LaTeX2e   }
+	initialization\;
+	\While{not at end of this document}{
+		read current\;
+		\eIf{understand}{
+			go to next section test test\;
+			current section becomes this one\;
+			}{
+			go back to the beginning of current section\;
+		}
+	}
+	% \caption{How to write algorithms}
+\end{algorithm}
+
+\unfinishedAlg[-.45cm]{
+	\KwData{this text}
+	\KwResult{how to write algorithm with \LaTeX2e   }
+	initialization\;
+	\While{not at end of this document}{
+		read current\;
+		\eIf{understand}{
+			go to next section test test\;
+			current section becomes this one\;
+			}{
+			go back to the beginning of current section\;
+		}
+	}
+	% \caption{How to write algorithms}
+}
+
+\continueAlg[-2.9cm]{
+	\GreyWhile{\transparent{0.4}{not at end of this document}}{
+		\GreyIf{\transparent{.4}{understand}}{
+			go to next section test test\;
+			current section becomes this one\;
+			aaa \;
+			}{
+			go back to the beginning of current section\;
+		}
+	}
+	% \caption{How to write algorithms}
+}
+
+\pagebreak
+
+
+\begin{algorithm}{H}
+		  
+	\SetKwFunction{printlcs}{\textsc{Print}-LCS}
+	\Indm\nonl\printlcs{$b,X,i,j$}\\
+	\KwData{this text}
+	\KwResult{how to write algorithm with asd asdw asd a \LaTeX2e }
+	\Indp
+	\If{$i=0$ or $j=0$}{\KwRet{}}
+	\If{$b[i,j]=\text{``}\nwarrow\hspace{-3pt}\text{''}$}{
+		\printlcs{$b,X,i-1,j-1$}\\
+		print $x_i$
+	}
+	\ElseIf{$b[i,j]=\text{``}\uparrow\hspace{-3pt}\text{''}$}{
+		\printlcs{$b,X,i-1,j$}
+	}
+	\Else{\printlcs{$b,X,i,j-1$}}
+	\caption{Second algorithm to see}
+\end{algorithm}
+	
+\begin{algorithm}
+	\SetKwFunction{colorGraph}{\textsc{Color-Graph}}
+\end{algorithm}
+  
+\unfinishedAlg[-.45cm]{
+	\SetNoFillComment
+	\SetKwFunction{colorGoodPartition}{\textsc{Color-Good-Partition}}
+	\Indm\nonl\colorGoodPartition{$G, K_1, K_2, K_3, L, R, c_1, c_2$}\\
+	\KwData{$G$ -- square-free, Berge graph \newline
+		($K_1, K_2, K_3, L, R)$ -- good partition \newline
+		$c_1$, $c_2$ -- colorings of $G \setminus R$ and $G \setminus L$ (possibly $\NULL$)}
+	\KwResult{$\omega(G)$-coloring of $G$}
+	\Indp
+	$G_1 \gets G\setminus R$\;
+	$G_2 \gets G\setminus L$\;
+	\If{$c_1, c_2 = \NULL$}{
+		$c_1 \gets$ \colorGraph{$G_1$}\;
+		$c_2 \gets$ \colorGraph{$G_2$}\;
+	}
+	\ForEach{$u \in K_1 \cup K_2$ 
+		}{relabel $c_2$, so that $c_1(u) = c_2(u)$}
+	$B \gets \{ u \in K_3: c_1(u) \neq c_2(u) \}$\;
+	\lIf{$B = \emptyset$ }{\Return $c_1 \cup c_2$ } 
+	\ForEach{$h \in [2]$, $\textup{distinct colors}$ $i, j$
+		}{ $G_h^{i,j} \gets $ subgraph induced on $G_h$ by $\{ v \in G_h : c_h(v) \in \{1,2\} \}$}
+	\ForEach{$u \in K_3$}{
+		$C_h^{i, j}(u) \gets$ component of $G_h^{i, j}$ containing $u$}
+								
+	\Assert{$C_h^{c_1(u), c_2(u)}(u) \cap K_2 = \emptyset$}  
+								
+	\If{$\exists u \in B, h \in [2]: C_h^{c_1(u), c_2(u)}(u) \cap K_1 = \emptyset $
+		}{ $c_1' \gets c_1$ with colors $i$ and $j$ swapped in $C_1^{i, j}(u)$\;
+		\Assert{$c_1'$ and $c_2$ agree on $K_1 \cup K_2$}
+		\Assert{$\forall u \in K_3 \setminus B : c_1'(u) = c_1(u)$}
+		\Assert{$c_1'(u) = j = c_2(u)$}
+		\Return \colorGoodPartition{$G, K_1, K_2, K_3, L, R, c_1', c_2$}}
+	\Else{
+		$w \gets$ vertex of $B$ with nost neighbors in $K_1$\;
+													
+		\Assert{$\forall u \in B: N(u) \cap K_1 \subset N(w) \cap K_1$}
+													
+		relabel $c_1, c_2$, so that $c_1(w) = 1, c_2(w) = 2$\;
+													
+		$P \gets$ chordless path $w - p_1 - \ldots - p_k - a$ in $C_1^{1, 2}(w)$ so that\; \nonl
+		\pushline $k \geq 1$, $p_1 \in K_3 \cup L$, $p_2 \ldots p_k \in L$, $a \in K$, $c_1(a) \in [2]$ \; \popline
+													
+		$Q \gets$ chordless path $w - q_1 - \ldots - q_l - a$ in $C_2^{1, 2}(w)$ so that\; \nonl
+		\pushline $l \geq 1$, $q_1 \in K_3 \cup R$, $q_2 \ldots q_l \in R$, $a \in K$, $c_2(a) \in [2]$\; \popline
+													
+		$i \gets c_1(a)$\;
+		$j \gets 3 - i$\;
+													
+		\Assert[Lemma 2.2.(3)]{ exactly one of the colors $1$ and $2$ appears in $K_1$ }
+		\Assert{ $|P|$ and $|Q|$ have different parities }
+		\Assert[Lemma 2.2.(4)]{ $p_1 \in K_3 \lor p_2 \in K_3$ }
+		\Assert[Lemma 2.2.(5)]{ $\nexists y \in K_3: c_1(y) = 2 \land c_2(y) = 1$ }
+													    
+		\If{$p_1 \in K_3$}{
+			\Assert{$c_2(p_1) \notin [2]$}
+			relabel $c_2$, so that $c_2(p_1) = 3$ \;
+		}
+	}
+}
+
+\continueAlg[-3cm]{
+	\setcounter{AlgoLine}{23}
+	\GreyElse{
+		\GreyIf{\transparent{.4}{$p_1 \in K_3$}}{
+			\Assert{color $3$ does not appear in $K_2$}
+			\Assert{color $3$ does not appear in $K_1$}
+			\Assert{$C_2^{j, 3}(p_1) \cap K_1 = \emptyset$}
+			$c_2' \gets c_2$ with colors $j$ and $3$ swapped in $C_2^{j, 3}(TODO)$ 
+		}
+	}
+}
+	
+\end{document}
