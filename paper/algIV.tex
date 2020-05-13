@@ -1,0 +1,32 @@
+\begin{algorithm}
+	\SetKwFunction{GoodPartitionEvenH}{\textsc{Good-Partition-From-Even-Hyperprism}}
+	\Indm\nonl\GoodPartitionEvenH{$G, H, M$}\\
+	\KwData{$G$ -- square-free, Berge graph containing no \LGBSK \newline
+		$H = (A_1, \ldots, B_3)$  -- maximal even hyperprism in $G$ \newline
+		$M$ -- set of major neighbors of $H$}
+	\KwResult{A good partition of $G$}
+	\Indp	
+	$Z \gets \bigcup\{V(C)$ : $C$ is a component of $G \setminus \{V(H) \cup M \}$ with no attachments in $H \}$  \;
+
+	relabel strips of $H$, so that $M \cup A_1$ and $M \cup B_1$ are cliques \;
+	
+	$F_1 \gets \bigcup\{ V(C)$ : $C$ is a component of $G \setminus \{H \cup M \cup Z \}$ that
+	attaches to $A_1 \cup B_1 \cup C_1$  $\}$ \;
+
+	% $F_A \gets \bigcup \{ V(C) $ : $C$ is a component of $G \setminus \{ H \cup M \cup Z \cup F_1 \cup F_2 \cup F_3 \}$
+	% that attaches to $A_1 \cup A_2 \cup A_3$  $\}$ \;
+
+	% $F_B \gets \bigcup \{ V(C) $ : $C$ is a component of $G \setminus \{ H \cup M \cup Z \cup F_1 \cup F_2 \cup F_3 \}$
+	% that attaches to $B_1 \cup B_2 \cup B_3$  $\}$ \;
+
+	% \Assert{$F_1, F_2, F_3, F_A, F_B$ are pairwise anticomplete}
+	% \Assert{$V(G) = H \cup M \cup Z \cup F_1 \cup F_2 \cup F_3 \cup F_a \cup F_B$}
+	\Assert{$M$ is a clique}
+	\Assert{$M \cup A_i$ is a clique for at least two values of $i$}
+	\Assert{$M \cup B_j$ is a clique for at least two values of $j$}
+
+	$K_1 \gets A_1$, $K_2 \gets M$, $K_3 \gets B_1$ \;
+	$R \gets C_1 \cup F_1 \cup Z $ \;
+	$L \gets G \setminus \{K_1 \cup K_2 \cup K_3 \cup R\}$ \;
+	\Return $(K_1, K_2, K_3, L, R)$\;
+\end{algorithm}
