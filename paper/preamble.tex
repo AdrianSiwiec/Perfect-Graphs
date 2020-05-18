@@ -16,6 +16,7 @@
 \usepackage{graphicx}
  \usepackage{color}
  \usepackage{transparent}
+ \usepackage{amssymb,stackengine}
 
 \definecolor{c1}{HTML}{8D75A0}
 \definecolor{c2}{HTML}{8B9CD6}
@@ -43,6 +44,7 @@
 
 \newcommand{\Assert}[2][]{\nonl ASSERT: #2 \ifthenelse{\equal{#1}{}}{}{(as in #1)} \; }
 % \newcommand{\Assert}[2][]{}
+\newcommand{\TODO}[1]{\nonl \textcolor{red}{\# TODO:} #1 \;}
 
 \newcommand{\mycbox}[1]{\tikz{\path[draw=white,fill=white] (0,0) rectangle (8cm,.5cm);}}
 \newcommand{\mycboxx}[1]{\tikz{\path[draw=red,fill=white] (0,0) rectangle (.5cm,.8cm);}}
@@ -79,3 +81,7 @@
 }
 
 \newcommand{\LGBSK}{$L(BS(K_4))$}
+\newcommand{\xor}{\veebar}
+\newcommand{\nsquare}{\ensurestackMath{\stackinset{c}{}{c}{}{/}{\square}}}
+\newcommand{\setComplete}{\ \blacksquare\ }
+\newcommand{\setAntiComplete}{\ \nsquare\ }
