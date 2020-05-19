@@ -1,11 +1,48 @@
+\subsubsection{Notes}
+\begin{itemize}
+	\item $T_{uv} := N_u \cap N_v$
+	\item Strip $S_{uv}$ is \emph{rich} iff $S_{uv} \setminus T_{uv} \neq \emptyset$
+\end{itemize}
+
 \begin{algorithm}
-  \SetKwFunction{GoodPartitionJStrip}{\textsc{Good-Partition-From-J-Strip-System}}
+	\SetKwFunction{GoodPartitionJStrip}{\textsc{Good-Partition-From-J-Strip-System}}
 	\Indm\nonl\GoodPartitionJStrip{$G, J, (S, N), M$}\\
-  \KwData{$G$ -- square-free, Berge graph \newline
-    $J$ -- a maximal $3$-connected graph with appearance in $G$ \newline
-    $(S, N)$ -- a maximal $J$-strip system \newline
-    $M$ -- a set of major vertices w.r.t. $(S, N)$
-  }
+	\KwData{$G$ -- square-free, Berge graph \newline
+		$J$ -- a maximal $3$-connected graph with appearance in $G$ \newline
+		$(S, N)$ -- a maximal $J$-strip system \newline
+		$M$ -- a set of major vertices w.r.t. $(S, N)$
+	}
 	\KwResult{A good partition of $G$}
-  \Indp	
+	\Indp	
+	$S^*_{uv} \gets S_{uv} \cup$ $($ components of $G\setminus V(S,N)$ that attach in $S_{uv}$ only $)$\;
+	$T_{uv} \gets N_u \cap N_v$\;
+	\Assert{$T_{uv} \setComplete N_u \setminus N_{uv}$, $T_{uv} \setComplete N_v \setminus N_{vu}$}
+	\Assert{$M \cup T_{uv}$ is a clique}
+	\If{$\exists S_{uv}$ -- a rich strip in $(S,N)$} {
+		\If{$\exists S_{uv}$ -- a rich strip in $(S, N)$, such that
+			$M \cup(N_u \setminus N_{uv})$ and $M \cup(N_v \setminus N_{vu})$ are cliques
+			}{
+			$K_1 \gets N_u \setminus N_{uv}$, $K_2 \gets M \cup T_{uv}$, $K_3 \gets N_v \setminus N_{vu}$\;
+			$L \gets (S^*_{uv} \setminus T_{uv}) \cup ($ components of $G\setminus V(S, N)$ that attach only to $N_u$
+			and those that attach only to $N_v$ $)$\;
+			$R \gets G \setminus (K_1 \cup K_2 \cup K_3 \cup L)$\;
+			\Return $(K_1, K_2, K_3, L, R)$\;
+		}
+		\Else{
+			$S_{uv} \gets$ a rich strip in $(S, N)$, such that
+			$M \cup(N_u \setminus N_{uv})$ is not a clique and $M \cup(N_v \setminus N_{vu})$ is a clique \;
+			$K_1 \gets N_{uv} \setminus T_{uv}$, $K_2 \gets M \cup T_{uv}$, $K_3 \gets N_v \setminus N_{vu}$\;
+			$R \gets (S^*_{uv} \setminus N_u) \cup ($ components of $G\setminus V(S,U)$ that attach only to $N_v$ $)$\;
+			$L \gets G \setminus (K_1 \cup K_2 \cup K_3 \cup R)$\;
+			\Return $(K_1, K_2, K_3, L, R)$\;
+		}
+	}
+	\Else {
+		\Assert{$\forall uv \in E(J): S_{uv} = T_{uv}, S_{uv}$ is a clique}
+		$S_{uv} \gets $ any strip\;
+		$K_1 \gets N_u \setminus S_{uv}$, $K_2 \gets M$, $K_3 \gets N_v \setminus S_{uv}$\;
+    $L \gets S^*_{uv} \cup ($ components of $G\setminus V(S,N)$ that attach only to $N_u$ and only to $N_v$ $)$\;
+		$R \gets G \setminus (K_1 \cup K_2 \cup K_3 \cup L)$\;
+		\Return $(K_1, K_2, K_3, L, R)$\;
+	}
 \end{algorithm}
