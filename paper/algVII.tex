@@ -1,0 +1,13 @@
+\begin{algorithm}
+  \SetKwFunction{FindSpecialK}{\textsc{Find-Special-K4-Strip-System}}
+	\Indm\nonl\FindSpecialK{$G, J, (S, N), m$}\\
+  \KwData{$G$ -- square-free, Berge graph \newline
+    $J$ -- a $3$-connected graph with appearance in $G$ \newline
+    $(S, N)$ -- a $J$-strip system \newline
+    $m \in G \setminus (S, N)$ that is major w.r.t. some choice of rungs of $(S, N)$ but not w.r.t. $(S, N)$
+  }
+  \KwResult{$(S', N')$ -- A special $K_4$-strip system, or \newline
+  $(S'', N'')$ -- a bigger $J$-strip system
+  }
+  \Indp	
+\end{algorithm}

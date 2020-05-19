@@ -1,0 +1,35 @@
+\begin{algorithm}
+	\SetKwFunction{GoodPartitionSpecialStrip}{\textsc{Good-Partition-From-Special-Strip-System}}
+	\Indm\nonl\GoodPartitionJStrip{$G, J, (S, N), M$}\\
+	\KwData{$G$ -- square-free, Berge graph \newline
+		$(S, N)$ -- a special $K_4$ strip system \newline
+		$M$ -- a set of major vertices w.r.t. $(S, N)$
+	}
+	\KwResult{A good partition of $G$}
+	\Indp	
+	$\forall_{i,j \in [4]} O_{ij} \gets$ set of vertices in $V(G) \setminus V(S,N)$ that are
+	complete to $(N_i \cup N_j) \setminus S_{ij}$ and 
+  anticomplete to $V(S, N) \setminus (N_i \cup N_j \cup S_{ij})$\;
+
+	\If{$(N_1 \setminus N_{12}) \cup M \cup O_{12}$ and $(N_2 \setminus N_{12}) \cup M \cup O_{12}$ are cliques}{
+		$K_1 \gets N_1 \setminus N_{12}$, $K_2 \gets O_{12} \cup M$, $K_3 \gets N_2 \setminus N_{12}$\;
+		$L \gets$ union of those components of $G \setminus (K_1 \cup K_2 \cup K_3)$ that contain
+		vertices of $S_{12}$\;
+		$R \gets G \setminus (K_1 \cup K_2 \cup K_3 \cup L)$\;
+		\Return $(K_1, K_2, K_3, L, R)$\;
+	}
+	\Else {
+		relabel $G$ so that $(N_1 \setminus N_{12}) \cup M \cup O_{12}$ is not a clique\;
+		\Assert{$N_{12} \cup M \cup O_{12}$ is a clique}
+		\If{$N_{21} \cup M \cup O_{12}$ is a clique}{
+			$X \gets N_{21}$ \;
+		}
+		\Else {
+			$X \gets N_2 \setminus N_{21}$\;
+		}
+		$K_1 \gets N_{12}$, $K_2 \gets M \cup O_{12}$, $K_3 \gets X$\;
+		$L \gets$ component of $G \setminus (K_1 \cup K_2 \cup K_3)$ that contains $N_1 \setminus N_{12}$\;
+		$R \gets G \setminus (K_1 \cup K_2 \cup K_3 \cup L)$\;
+		\Return $(K_1, K_2, K_3, L, R)$\;
+	}
+\end{algorithm}
