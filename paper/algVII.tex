@@ -10,4 +10,39 @@
   $(S'', N'')$ -- a bigger $J$-strip system
   }
   \Indp	
+  $X \gets N(m)$\;
+  $M \gets$ vertices of $G\setminus V(S,N)$ major w.r.t. $(S,N)$\;
+  $M^* \gets$ vertices of $G\setminus V(S,N)$ major w.r.t. some choice of rungs\;
+  \Assert[SPGT 8.4]{$J = K_4$}
+  $V(J) \gets [4]$\;
+  $\forall_{i\neq j \in [4]}$: choose rungs $R_{ij}, R_{ij}$, forming line graphs $L(H)$ and $L(H')$ so that $X$ 
+  saturates $L(H)$ but does not saturate $L(H')$\;
+  \Assert{$R_{ij} \neq R'_{ij} \iff \{i, j\} = [2]$}
+  $r_{ij}, r_{ji} \gets$ ends of each $R_{ij}$\;
+  $r'_{ij}, r'_{ji} \gets$ ends of each $R'_{ij}$\;
+  $\forall_{i \in [4]} T_i \gets \{r_{ij}, j \in [4] \setminus \{i\} \}$\;
+  $\forall_{i \in [4]} T'_i \gets \{r'_{ij}, j \in [4] \setminus \{i\} \}$\;
+  \Assert{$X$ has at least two members in each $T_1, \ldots T_4$}
+  \Assert{There is $T'_i$ that contains at most one member of $X$}
+  \Assert{$T_3 = T'_3, T_4 = T'_4$}
+  relabel $G$ and $J$, so that $|X \cap T_1| = 2$ and $|X \cap T'_1| = 1$\;
+  \Assert{$r_{12} \in X, r'_{12} \notin X$}
+  \Assert{$r_{13} \in X \xor r_{14} \in X$}
+  relabel $G$ and $J$, so that $r_{13} \in X, r_{14} \notin X$\;
+  \Assert[6.3.(3)]{$R_{34}$ is even and $[X \cap V(L(H'))] \setminus V(R_{34}) = \{r_{31}, r_{32}, r_{41}, r_{42} \}$}
+  \Assert[6.3.(4)]{$R_{14}$ has odd length, $r_{21} \in X$}
+  \Assert[6.3.(5)]{$R_{12}$ has length $0$, every $12$-rung has even length}
+  \Assert[6.3.(6)]{$R_{24}$ has length $0$ and $R_{23}$ has odd length}
+  \Assert[6.3.(7)]{Every $34$-rung has non-zero even length}
+  $\forall_{i \neq j \in [4]} O_{ij} \gets$ set of vertices that are not major w.r.t $L(H')$ and
+  are complete to $(T'_i \cup T'_j) \setminus R'_{ij}$\;
+  \Assert{$r_{12} = r_{21} \in O_{12}$, $m \in O_{34}$}
+  \Assert{$O_{34} = M^* \setminus M$}
+  $(S', N') \gets$ strip system obtained from $(S, N)$ by replacing $S_{12}$ with $S_{12} \setminus O_{12}$\;
+  \If{$\exists_{rung R}: $ adding $R$ to $S'_{12}$ produces enlargement of $(S, N)$}{
+    \Return $(S'', N'')$ -- an enlargement of $(S, N)$\;
+  }
+  \Else{
+    \Return $(S', N')$ -- a special $K_4$ strip system\;
+  }
 \end{algorithm}
