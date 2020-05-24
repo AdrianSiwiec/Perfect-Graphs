@@ -19,7 +19,9 @@
 		\Return $(K_1, K_2, K_3, L, R)$\;
 	}
 	\Else {
-		relabel $G$ so that $(N_1 \setminus N_{12}) \cup M \cup O_{12}$ is not a clique\;
+		\If { $(N_1 \setminus N_{12}) \cup M \cup O_{12}$ is a clique } {
+		relabel 1 and 2 in $J$ so that $(N_1 \setminus N_{12}) \cup M \cup O_{12}$ is not a clique\; 
+		}
 		\Assert{$N_{12} \cup M \cup O_{12}$ is a clique}
 		\If{$N_{21} \cup M \cup O_{12}$ is a clique}{
 			$X \gets N_{21}$ \;

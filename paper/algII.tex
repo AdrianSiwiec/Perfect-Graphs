@@ -3,9 +3,9 @@
 \unfinishedAlg[-.45cm]{
 	\SetNoFillComment
 	\SetKwFunction{colorGoodPartition}{\textsc{Color-Good-Partition}}
-	\Indm\nonl\colorGoodPartition{$G, K_1, K_2, K_3, L, R, c_1, c_2$}\\
+	\Indm\nonl\colorGoodPartition{$G, (K_1, K_2, K_3, L, R), c_1, c_2$}\\
 	\KwData{$G$ -- square-free, Berge graph \newline
-		$K_1, K_2, K_3, L, R$ -- good partition \newline
+		$(K_1, K_2, K_3, L, R)$ -- good partition \newline
 		$c_1$, $c_2$ -- colorings of $G \setminus R$ and $G \setminus L$ (possibly $\NULL$)}
 	\KwResult{$\omega(G)$-coloring of $G$}
 	\Indp
@@ -20,7 +20,7 @@
 	$B \gets \{ u \in K_3: c_1(u) \neq c_2(u) \}$\;
 	\lIf{$B = \emptyset$ }{\Return $c_1 \cup c_2$ } 
 	\ForEach{$h \in [2]$, $\textup{distinct colors}$ $i, j$
-		}{ $G_h^{i,j} \gets $ subgraph induced on $G_h$ by $\{ v \in G_h : c_h(v) \in \{1,2\} \}$}
+		}{ $G_h^{i,j} \gets $ subgraph induced on $G_h$ by $\{ v \in G_h : c_h(v) \in \{i,j\} \}$}
 	\ForEach{$u \in K_3$}{
 		$C_h^{i, j}(u) \gets$ component of $G_h^{i, j}$ containing $u$}
 													
