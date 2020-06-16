@@ -15,8 +15,9 @@ CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
 INCFILES=$(wildcard $(INCDIR)/*.h)
 SRCFILES=$(wildcard $(SRCDIR)/*.cpp)
+TESTFILES=$(wildcard $(TESTDIR)/*/*.cpp)
+
 OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCFILES))
-TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
 UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp))
 PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
@@ -27,7 +28,7 @@ NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 # $(info $(PERMATESTFILES))
 
 #Targets
-test: $(TESTFILES)
+# test: $(TESTFILES)
 unitTest: $(UNITTESTFILES)
 permaTest: $(PERMATESTFILES)
 netTest: $(NETTESTFILES)
@@ -63,4 +64,4 @@ cleanDownloads:
 	rm $(DOWNLOADSDIR) -rf
 
 lint:
-	~/.local/bin/cpplint --linelength=120 --extensions=cpp,h --filter=-legal/copyright,-runtime/references,-build/include_subdir $(SRCFILES) $(INCFILES)
+	~/.local/bin/cpplint --linelength=120 --extensions=cpp,h --filter=-legal/copyright,-runtime/references,-build/include_subdir,-readability/multiline_string $(SRCFILES) $(INCFILES) $(TESTFILES)

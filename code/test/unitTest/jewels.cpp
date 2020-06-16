@@ -3,7 +3,8 @@
 #include "testCommons.h"
 
 void testIsJewel() {
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .X..X.\
   X.X..X\
   .X.X..\
@@ -22,7 +23,8 @@ void testIsJewel() {
 
   assert(containsJewelNaive(G));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .X.XX.\
   X.X..X\
   .X.X..\
@@ -33,7 +35,8 @@ void testIsJewel() {
 
   assert(!isJewel(G, vec<int>{1, 2, 3, 4, 5}));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .XX.X.\
   X.X..X\
   XX.X..\
@@ -44,7 +47,8 @@ void testIsJewel() {
 
   assert(!isJewel(G, vec<int>{1, 2, 3, 4, 5}));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .X..XX\
   X.X..X\
   .X.X..\
@@ -57,7 +61,8 @@ void testIsJewel() {
 }
 
 void testFindJewelNaive() {
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .X..X.\
   X.X..X\
   .X.X..\

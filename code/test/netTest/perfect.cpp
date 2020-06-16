@@ -1,7 +1,7 @@
-#include "commons.h"
-#include "testCommons.h"
 #include <algorithm>
 #include <istream>
+#include "commons.h"
+#include "testCommons.h"
 
 bool isEmpty(istream &pFile) { return pFile.peek() == istream::traits_type::eof(); }
 
@@ -21,7 +21,7 @@ int main() {
     Graph G(n, m);
     Gs.push_back(G);
   }
-  
+
   // To make time predictions better...
   random_shuffle(Gs.begin(), Gs.end());
 

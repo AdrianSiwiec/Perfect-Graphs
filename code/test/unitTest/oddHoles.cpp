@@ -3,7 +3,8 @@
 #include "testCommons.h"
 
 void testIsHole() {
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .X..X.\
   X.X...\
   .X.X..\
@@ -18,7 +19,8 @@ void testIsHole() {
   assert(!isHole(G, {1, 2, 3, 4}));
   assert(!isHole(G, {0, 2, 1, 3, 4}));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .X.XX.\
   X.X...\
   .X.X..\
@@ -34,7 +36,8 @@ void testIsHole() {
 }
 
 void testContainsHoleOfSize() {
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .XX...\
   X.XX..\
   XX....\
@@ -48,7 +51,8 @@ void testContainsHoleOfSize() {
   assert(!constainsHoleOfSize(G, 5));
   assert(!constainsHoleOfSize(G, 6));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .XX...\
   X.XX..\
   XX..X.\
@@ -62,7 +66,8 @@ void testContainsHoleOfSize() {
   assert(!constainsHoleOfSize(G, 5));
   assert(!constainsHoleOfSize(G, 6));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .XX...\
   X.XX..\
   XX...X\
@@ -77,7 +82,8 @@ void testContainsHoleOfSize() {
 }
 
 void testContainsOddHoleNaive() {
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .XX...\
   X.XX..\
   XX...X\
@@ -88,7 +94,8 @@ void testContainsOddHoleNaive() {
   assert(containsOddHoleNaive(G));
   assert(findOddHoleNaive(G) == (vec<int>{3, 4, 5, 2, 1}));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .XX...\
   X.XX..\
   XX..XX\
@@ -98,7 +105,8 @@ void testContainsOddHoleNaive() {
   ");
   assert(!containsOddHoleNaive(G));
 
-  G = Graph(5, "\
+  G = Graph(5,
+            "\
   .X..X\
   X.X..\
   .X.X.\
@@ -110,7 +118,8 @@ void testContainsOddHoleNaive() {
 }
 
 void testIsT1() {
-  Graph G(5, "\
+  Graph G(5,
+          "\
   .X..X\
   X.X..\
   .X.X.\
@@ -124,7 +133,8 @@ void testIsT1() {
   assert(isT1(G, {2, 3, 4, 0, 1}));
   assert(!isT1(G, {3, 4, 0, 1}));
 
-  G = Graph(5, "\
+  G = Graph(5,
+            "\
   .XX.X\
   X.X..\
   XX.X.\
@@ -135,7 +145,8 @@ void testIsT1() {
   assert(findT1(G).empty());
   assert(!containsT1(G));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .X..X.\
   X.X...\
   .X.X..\
@@ -148,7 +159,8 @@ void testIsT1() {
   assert(containsT1(G));
   assert(isT1(G, {0, 1, 2, 3, 4}));
 
-  G = Graph(6, "\
+  G = Graph(6,
+            "\
   .X..XX\
   X.X..X\
   .X.X.X\
@@ -176,7 +188,8 @@ void testT1IsOddHole() {
 }
 
 void testFindT2() {
-  Graph G(9, "\
+  Graph G(9,
+          "\
   .XX.XX...\
   X.X..XX..\
   XX.X.X...\
@@ -197,7 +210,8 @@ void testFindT2() {
   assert(X == (vec<int>{0}));
   assert(containsT2(G));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   .XX.XX...\
   X.X..X...\
   XX.X.X...\
@@ -217,7 +231,8 @@ void testFindT2() {
   assert(X.empty());
   assert(!containsT2(G));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   .XX.XX...\
   X.X..XX..\
   XX.X.X...\
@@ -251,7 +266,8 @@ void testT2IsOddHole() {
 }
 
 void testIsT3() {
-  Graph G(8, "\
+  Graph G(8,
+          "\
   .XX..X..\
   X.X.X...\
   XX.X....\
@@ -269,7 +285,8 @@ void testIsT3() {
 }
 
 void testFindT3() {
-  Graph G(8, "\
+  Graph G(8,
+          "\
   .XX..X..\
   X.X.X...\
   XX.X....\
@@ -290,7 +307,8 @@ void testFindT3() {
   assert(X == (vec<int>{1}));
   assert(containsT3(G));
 
-  G = Graph(8, "\
+  G = Graph(8,
+            "\
   .XXX.X..\
   X.X.X...\
   XX.X....\
@@ -309,7 +327,8 @@ void testFindT3() {
   assert(X.empty());
   assert(!containsT3(G));
 
-  G = Graph(8, "\
+  G = Graph(8,
+            "\
   .XX..X.X\
   X.X.X...\
   XX.X....\
@@ -327,7 +346,8 @@ void testFindT3() {
   assert(P.empty());
   assert(X.empty());
 
-  G = Graph(8, "\
+  G = Graph(8,
+            "\
   .XX..X..\
   X.X.X...\
   XX.X....\
@@ -346,7 +366,8 @@ void testFindT3() {
   assert(P == (vec<int>{7, 6, 4}));
   assert(X == (vec<int>{1}));
 
-  G = Graph(8, "\
+  G = Graph(8,
+            "\
   .XX..X..\
   X.X.X...\
   XX.X....\

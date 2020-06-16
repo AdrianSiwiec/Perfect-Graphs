@@ -1,13 +1,13 @@
 #include "perfect.h"
-#include "commons.h"
-#include "oddHoles.h"
-#include "testCommons.h"
 #include <ctime>
 #include <map>
 #include <random>
+#include "commons.h"
+#include "oddHoles.h"
+#include "testCommons.h"
 
 void testPerfectVsNaive() {
-  int r = rand() % 100;
+  int r = rand_r() % 100;
 
   if (r == 0) {
     Graph G = getRandomGraph(9, getDistr());
@@ -24,7 +24,7 @@ void testLineBiparite() {
 }
 
 void testNonPerfect() {
-  Graph G = getNonPerfectGraph(5 + (rand() % 7) * 2, 3 + (getDistr() * 20), getDistr());
+  Graph G = getNonPerfectGraph(5 + (rand_r() % 7) * 2, 3 + (getDistr() * 20), getDistr());
   testGraph(G, false, true);
 }
 

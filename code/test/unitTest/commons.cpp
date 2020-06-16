@@ -1,9 +1,7 @@
 #include "commons.h"
-#include "testCommons.h"
 #include <cassert>
 #include <iostream>
-
-using namespace std;
+#include "testCommons.h"
 
 void testGraph() {
   Graph g(10);
@@ -14,7 +12,8 @@ void testGraph() {
 
   bool caught = false;
   try {
-    g = Graph(5, "\
+    g = Graph(5,
+              "\
     XXXXX\
     XXXXX\
     XXXXX");
@@ -25,7 +24,8 @@ void testGraph() {
 
   caught = false;
   try {
-    g = Graph(5, "\
+    g = Graph(5,
+              "\
     .....\
     .....\
     .....\
@@ -37,7 +37,8 @@ void testGraph() {
   }
   assert(caught);
 
-  g = Graph(5, "\
+  g = Graph(5,
+            "\
   .XXXX\
   X....\
   X....\
@@ -51,8 +52,7 @@ void testGraph() {
   }
 
   assert(g[0].size() == 4);
-  for (int i = 1; i < 5; i++)
-    assert(g[i].size() == 1);
+  for (int i = 1; i < 5; i++) assert(g[i].size() == 1);
 
   g = getRandomGraph(10, 0.5);
   Graph gc = g.getComplement();
@@ -60,9 +60,9 @@ void testGraph() {
     vec<int> nl;
 
     for (int j = 0; j < 10; j++) {
-      if (i == j)
+      if (i == j) {
         assert(!gc.areNeighbours(i, j));
-      else {
+      } else {
         assert(g.areNeighbours(i, j) != gc.areNeighbours(j, i));
         if (!g.areNeighbours(i, j)) {
           nl.push_back(j);
@@ -75,7 +75,8 @@ void testGraph() {
 }
 
 void testGraphGetInduced() {
-  Graph G(7, "\
+  Graph G(7,
+          "\
   ...X...\
   ..X.XX.\
   .X...X.\
@@ -112,10 +113,8 @@ void testGraphGetShuffled() {
     for (int j = 0; j < G.n; j++) {
       assert(GS.areNeighbours(i, j) == GS.areNeighbours(j, i));
 
-      if (G.areNeighbours(i, j))
-        ns++;
-      if (GS.areNeighbours(i, j))
-        sns++;
+      if (G.areNeighbours(i, j)) ns++;
+      if (GS.areNeighbours(i, j)) sns++;
     }
 
     sumSize += G[i].size();
@@ -128,7 +127,8 @@ void testGraphGetShuffled() {
 }
 
 void testGetLineGraph() {
-  Graph G(7, "\
+  Graph G(7,
+          "\
   ...X...\
   ..X.XX.\
   .X...X.\
@@ -137,7 +137,8 @@ void testGetLineGraph() {
   .XX....\
   .......\
   ");
-  assert(G.getLineGraph() == Graph(5, "\
+  assert(G.getLineGraph() == Graph(5,
+                                   "\
   .....\
   ..XXX\
   .X.X.\
@@ -145,14 +146,16 @@ void testGetLineGraph() {
   .X.X.\
   "));
 
-  G = Graph(5, "\
+  G = Graph(5,
+            "\
   .XXX.\
   X...X\
   X..X.\
   X.X.X\
   .X.X.\
   ");
-  assert(G.getLineGraph() == Graph(6, "\
+  assert(G.getLineGraph() == Graph(6,
+                                   "\
   .XXX..\
   X.X.X.\
   XX..XX\
@@ -170,8 +173,7 @@ void testGetTriangles() {
     for (int i = 0; i < 10; i++) {
       for (int j = i; j < 10; j++) {
         for (int k = j; k < 10; k++) {
-          if (G.areNeighbours(i, j) && G.areNeighbours(j, k) && G.areNeighbours(i, k))
-            numTriangles++;
+          if (G.areNeighbours(i, j) && G.areNeighbours(j, k) && G.areNeighbours(i, k)) numTriangles++;
         }
       }
     }
@@ -228,14 +230,11 @@ void testEmptyStarTriangles() {
     int numEmptyStars = 0;
     for (int a = 0; a < 10; a++) {
       for (int s0 = 0; s0 < 10; s0++) {
-        if (s0 == a)
-          continue;
+        if (s0 == a) continue;
         for (int s1 = 0; s1 < 10; s1++) {
-          if (s1 == a || s1 == s0)
-            continue;
+          if (s1 == a || s1 == s0) continue;
           for (int s2 = 0; s2 < 10; s2++) {
-            if (s2 == a || s2 == s0 || s2 == s1)
-              continue;
+            if (s2 == a || s2 == s0 || s2 == s1) continue;
             if (G.areNeighbours(a, s0) && G.areNeighbours(a, s1) && G.areNeighbours(a, s2) &&
                 !G.areNeighbours(s0, s1) && !G.areNeighbours(s0, s2) && !G.areNeighbours(s1, s2))
               numEmptyStars++;
@@ -243,7 +242,7 @@ void testEmptyStarTriangles() {
         }
       }
     }
-    assert((numEmptyStars % 6) == 0); // sanity check, we count each permutation of s1, s2, s3
+    assert((numEmptyStars % 6) == 0);  // sanity check, we count each permutation of s1, s2, s3
 
     auto emptyStars = getEmptyStarTriangles(G);
     assert(numEmptyStars == emptyStars.size());
@@ -251,7 +250,8 @@ void testEmptyStarTriangles() {
 }
 
 void testGetCompleteVertices() {
-  Graph G(6, "\
+  Graph G(6,
+          "\
   ...X..\
   ....XX\
   ....XX\
@@ -274,7 +274,8 @@ void testGetCompleteVertices() {
 }
 
 void testShortestPath() {
-  Graph G(5, "\
+  Graph G(5,
+          "\
   .X..X\
   X.X..\
   .X.X.\
@@ -292,9 +293,10 @@ void testShortestPath() {
 
 void testDfsWith() {
   string s;
-  auto writeToS = [&](int v) { s += to_string(v); };
+  auto writeToS = [&](int v) { s += std::to_string(v); };
 
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .XX...\
   X.XX..\
   XX....\
@@ -305,7 +307,7 @@ void testDfsWith() {
   vec<int> visited(G.n);
 
   dfsWith(G, visited, 3, writeToS,
-          [](int v) -> bool { return v != 3; }); // test should do nothing, we start from 3
+          [](int v) -> bool { return v != 3; });  // test should do nothing, we start from 3
   assert(visited == vec<int>(G.n, true));
   assert(s == "310245");
 
@@ -326,7 +328,8 @@ void testComponents() {
   Graph G(3);
   assert(getComponents(G) == (vec<vec<int>>{{0}, {1}, {2}}));
 
-  G = Graph(7, "\
+  G = Graph(7,
+            "\
   ...X...\
   ..X.XX.\
   .X...X.\
@@ -339,7 +342,8 @@ void testComponents() {
 }
 
 void testGetComponentsOfInducedGraph() {
-  Graph G(7, "\
+  Graph G(7,
+          "\
   ...X...\
   ..X.XX.\
   .X...X.\
@@ -352,7 +356,8 @@ void testGetComponentsOfInducedGraph() {
 }
 
 void testIsAPath() {
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .XX...\
   X.XX..\
   XX....\
@@ -373,7 +378,8 @@ void testIsAPath() {
 }
 
 void testNextPathInPlace() {
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .XX...\
   X.XX..\
   XX....\
