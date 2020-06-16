@@ -1,19 +1,24 @@
 #pragma once
 
-#include "commons.h"
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
 #include <map>
 #include <random>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <string>
+#include "commons.h"
 
 #ifndef __CYGWIN__
-  #include <execinfo.h>
+#include <execinfo.h>
 #endif
+
+using std::get;
+using std::invalid_argument;
+using std::map;
 
 // Whether to run big tests. These take more time.
 const bool bigTests = false;
@@ -33,10 +38,10 @@ void handler(int sig);
 void init(bool srandTime = false);
 
 struct RaiiTimer {
-  RaiiTimer(string msg);
+  explicit RaiiTimer(string msg);
   ~RaiiTimer();
 
-private:
+ private:
   clock_t startTimer;
   string msg;
 };
@@ -47,15 +52,15 @@ double getDistr();
 void testGraph(const Graph &G, bool verbose);
 void testGraph(const Graph &G, bool result, bool verbose);
 
-void printTimeHumanReadable(long long time);
+void printTimeHumanReadable(int64_t time);
 
 struct RaiiProgressBar {
-  RaiiProgressBar(int allTests);
+  explicit RaiiProgressBar(int allTests);
   ~RaiiProgressBar();
 
   void update(int testsDone);
 
-private:
+ private:
   int allTests;
   clock_t startTimer;
   const int width = 80;

@@ -3,6 +3,12 @@
 #include <queue>
 #include <set>
 
+using std::invalid_argument;
+using std::make_pair;
+using std::map;
+using std::queue;
+using std::to_string;
+
 Graph::Graph(int n) : n(n), _neighbours(n), _matrix(n) {
   for (int i = 0; i < n; i++) {
     _matrix[i].resize(n);
@@ -14,8 +20,7 @@ void Graph::calculateNeighboursLists() {
   for (int i = 0; i < n; i++) {
     _neighbours.push_back(vec<int>());
     for (int j = 0; j < n; j++) {
-      if (areNeighbours(i, j))
-        _neighbours[i].push_back(j);
+      if (areNeighbours(i, j)) _neighbours[i].push_back(j);
     }
   }
 }
@@ -34,7 +39,7 @@ Graph::Graph(int n, string s) : Graph(n) {
   s.erase(remove_if(s.begin(), s.end(), ::isspace), s.end());
   if (s.size() != n * n) {
     char buff[100];
-    sprintf(buff, "Graph initialization from string failed. Expected string of size %d, got %d.", n * n,
+    snprintf(buff, sizeof(buff), "Graph initialization from string failed. Expected string of size %d, got %d.", n * n,
             s.size());
     throw invalid_argument(buff);
   }
@@ -43,9 +48,8 @@ Graph::Graph(int n, string s) : Graph(n) {
     for (int j = 0; j < n; j++) {
       if (i == j || (s[i * n + j] != 'X' && s[i * n + j] != '1'))
         _matrix[i][j] = 0;
-      else {
+      else
         _matrix[i][j] = 1;
-      }
     }
   }
 
@@ -75,8 +79,7 @@ Graph Graph::getComplement() const {
   Graph ret(n);
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
-      if (i != j)
-        ret._matrix[i][j] = !_matrix[i][j];
+      if (i != j) ret._matrix[i][j] = !_matrix[i][j];
     }
   }
 
@@ -86,8 +89,7 @@ Graph Graph::getComplement() const {
 
 Graph Graph::getInduced(vec<int> X) const {
   set<int> S;
-  for (int i : X)
-    S.insert(i);
+  for (int i : X) S.insert(i);
 
   Graph ret(n);
   for (int i = 0; i < n; i++) {
@@ -104,8 +106,7 @@ Graph Graph::getInduced(vec<int> X) const {
 
 Graph Graph::getShuffled() const {
   vec<int> v(n);
-  for (int i = 0; i < n; i++)
-    v[i] = i;
+  for (int i = 0; i < n; i++) v[i] = i;
 
   random_shuffle(v.begin(), v.end());
 
@@ -140,8 +141,7 @@ Graph Graph::getLineGraph() const {
   for (int i = 0; i < n; i++) {
     for (int v0 : operator[](i)) {
       for (int v1 : operator[](i)) {
-        if (v0 == v1)
-          continue;
+        if (v0 == v1) continue;
         auto p0 = v0 < i ? make_pair(v0, i) : make_pair(i, v0);
         auto p1 = v1 < i ? make_pair(v1, i) : make_pair(i, v1);
         neighbours[M[p0]].push_back(M[p1]);
@@ -157,8 +157,7 @@ vec<vec<int>> getTriangles(const Graph &G) {
   for (int i = 0; i < G.n; i++) {
     for (int j : G[i]) {
       for (int k : G[j]) {
-        if (i < j && j < k && G.areNeighbours(i, k))
-          ret.push_back(vec<int>{i, j, k});
+        if (i < j && j < k && G.areNeighbours(i, k)) ret.push_back(vec<int>{i, j, k});
       }
     }
   }
@@ -171,13 +170,10 @@ vec<pair<int, vec<int>>> getEmptyStarTriangles(const Graph &G) {
   for (int a = 0; a < G.n; a++) {
     for (int s1 : G[a]) {
       for (int s2 : G[a]) {
-        if (s2 == s1 || G.areNeighbours(s1, s2))
-          continue;
+        if (s2 == s1 || G.areNeighbours(s1, s2)) continue;
         for (int s3 : G[a]) {
-          if (s3 == s2 || s3 == s1)
-            continue;
-          if (G.areNeighbours(s1, s3) || G.areNeighbours(s2, s3))
-            continue;
+          if (s3 == s2 || s3 == s1) continue;
+          if (G.areNeighbours(s1, s3) || G.areNeighbours(s2, s3)) continue;
           ret.push_back(mp(a, vec<int>{s1, s2, s3}));
         }
       }
@@ -202,8 +198,7 @@ bool isComplete(const Graph &G, const vec<int> &X, int v) {
 vec<int> getCompleteVertices(const Graph &G, const vec<int> &X) {
   vec<int> ret;
   for (int v = 0; v < G.n; v++) {
-    if (isComplete(G, X, v))
-      ret.push_back(v);
+    if (isComplete(G, X, v)) ret.push_back(v);
   }
 
   return ret;
@@ -211,13 +206,11 @@ vec<int> getCompleteVertices(const Graph &G, const vec<int> &X) {
 
 void dfsWith(const Graph &G, vec<int> &visited, int start, function<void(int)> action,
              function<bool(int)> test) {
-  if (visited[start])
-    return;
+  if (visited[start]) return;
   action(start);
   visited[start] = true;
   for (int i : G[start]) {
-    if (!visited[i] && test(i))
-      dfsWith(G, visited, i, action, test);
+    if (!visited[i] && test(i)) dfsWith(G, visited, i, action, test);
   }
 }
 
@@ -246,8 +239,7 @@ vec<vec<int>> getComponentsOfInducedGraph(const Graph &G, const vec<int> &X) {
         break;
       }
     }
-    if (isOk)
-      ret.push_back(c);
+    if (isOk) ret.push_back(c);
   }
 
   return ret;
@@ -255,14 +247,12 @@ vec<vec<int>> getComponentsOfInducedGraph(const Graph &G, const vec<int> &X) {
 
 bool isAllZeros(const vec<int> &v) {
   for (int a : v)
-    if (a != 0)
-      return false;
+    if (a != 0) return false;
   return true;
 }
 bool isDistinctValues(const vec<int> &v) {
   set<int> s;
-  for (int i : v)
-    s.insert(i);
+  for (int i : v) s.insert(i);
 
   return s.size() == v.size();
 }
@@ -271,8 +261,7 @@ void nextTupleInPlace(vec<int> &v, int max) {
   v[0]++;
   for (int i = 0; i < v.size() && v[i] >= max; i++) {
     v[i] = 0;
-    if (i + 1 < v.size())
-      v[i + 1]++;
+    if (i + 1 < v.size()) v[i + 1]++;
   }
 }
 
@@ -306,8 +295,7 @@ ostream &operator<<(ostream &os, Graph const &G) {
 
   for (int i = 0; i < G.n; i++) {
     cout << i << ": ";
-    for (int j : G[i])
-      cout << j << " ";
+    for (int j : G[i]) cout << j << " ";
     cout << endl;
   }
 
@@ -315,8 +303,7 @@ ostream &operator<<(ostream &os, Graph const &G) {
 }
 
 vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test) {
-  if (start == end)
-    return vec<int>{start};
+  if (start == end) return vec<int>{start};
 
   vector<int> father(G.n, -1);
   queue<int> Q;
@@ -329,8 +316,7 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
       if (father[i] == -1 && (test(i) || i == end)) {
         father[i] = v;
         Q.push(i);
-        if (i == end)
-          break;
+        if (i == end) break;
       }
     }
   }
@@ -350,22 +336,17 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
 }
 
 bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk) {
-  if (v.size() <= 1)
-    return false;
+  if (v.size() <= 1) return false;
 
-  if (!isDistinctValues(v))
-    return false;
+  if (!isDistinctValues(v)) return false;
 
   for (int i = 0; i < v.size() - 1; i++) {
     for (int j = i + 1; j < v.size(); j++) {
       if (j == i + 1) {
-        if (!G.areNeighbours(v[i], v[j]))
-          return false;
+        if (!G.areNeighbours(v[i], v[j])) return false;
       } else {
-        if (isCycleOk && i == 0 && j == v.size() - 1)
-          continue;
-        if (G.areNeighbours(v[i], v[j]))
-          return false;
+        if (isCycleOk && i == 0 && j == v.size() - 1) continue;
+        if (G.areNeighbours(v[i], v[j])) return false;
       }
     }
   }
@@ -374,7 +355,7 @@ bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk) {
 }
 
 void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk) {
-  // TODO faster, do not iterate over all permutations. Have a "pointer" to next neighbour in G?
+  // TODO(Adrian) faster, do not iterate over all permutations. Have a "pointer" to next neighbour in G?
   if (len <= 1) {
     throw invalid_argument("Length of next path must be at least 2");
   }

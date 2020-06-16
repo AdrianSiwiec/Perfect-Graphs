@@ -1,9 +1,14 @@
 #include "testCommons.h"
+#include <cstdlib>
+#include <iostream>
 #include "commons.h"
 #include "oddHoles.h"
 #include "perfect.h"
-#include <cstdlib>
-#include <iostream>
+
+using std::default_random_engine;
+using std::flush;
+using std::make_pair;
+using std::normal_distribution;
 
 bool probTrue(double p) { return rand() / (RAND_MAX + 1.0) < p; }
 
@@ -11,15 +16,13 @@ void printGraph(const Graph &G) {
   cout << "   ";
   for (int i = 0; i < G.n; i++) {
     cout << i;
-    if (i < 10)
-      cout << " ";
+    if (i < 10) cout << " ";
   }
   cout << endl;
   for (int i = 0; i < G.n; i++) {
     cout << i;
     cout << ":";
-    if (i < 10)
-      cout << " ";
+    if (i < 10) cout << " ";
     for (int j = 0; j < G.n; j++) {
       cout << (G.areNeighbours(i, j) ? "X " : ". ");
     }
@@ -104,23 +107,23 @@ void handler(int sig) {
   void *array[100];
   size_t size;
 
-  #ifdef __CYGWIN__
-    fprintf(stderr, "Error: signal %d:\n", sig);
-  #else
-    // get void*'s for all entries on the stack
-    size = backtrace(array, 100);
+#ifdef __CYGWIN__
+  fprintf(stderr, "Error: signal %d:\n", sig);
+#else
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 100);
 
-    // print out all the frames to stderr
-    fprintf(stderr, "Error: signal %d:\n", sig);
-    auto messages = backtrace_symbols(array, size);
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  auto messages = backtrace_symbols(array, size);
 
-    /* skip first stack frame (points here) */
-    for (int i = 1; i < size && messages != NULL; ++i) {
-      if ((messages[i][1] != 'l' || messages[i][2] != 'i' || messages[i][3] != 'b') &&
-          (messages[i][1] != 'u' || messages[i][2] != 's' || messages[i][3] != 'r'))
-        fprintf(stderr, "\t[bt]: (%d) %s\n", i, messages[i]);
-    }
-  #endif
+  /* skip first stack frame (points here) */
+  for (int i = 1; i < size && messages != NULL; ++i) {
+    if ((messages[i][1] != 'l' || messages[i][2] != 'i' || messages[i][3] != 'b') &&
+        (messages[i][1] != 'u' || messages[i][2] != 's' || messages[i][3] != 'r'))
+      fprintf(stderr, "\t[bt]: (%d) %s\n", i, messages[i]);
+  }
+#endif
 
   exit(1);
 }
@@ -136,7 +139,7 @@ void init(bool srandTime) {
 
 RaiiTimer::RaiiTimer(string msg) : msg(msg) { startTimer = clock(); }
 RaiiTimer::~RaiiTimer() {
-  double duration = (clock() - startTimer) / (double)CLOCKS_PER_SEC;
+  double duration = (clock() - startTimer) / static_cast<double>(CLOCKS_PER_SEC);
   cout << msg << ": " << duration << "s" << endl;
 }
 
@@ -153,7 +156,7 @@ bool testWithStats(const Graph &G, bool naive) {
   clock_t start;
   start = clock();
   bool result = naive ? isPerfectGraphNaive(G) : isPerfectGraph(G);
-  double duration = (clock() - start) / (double)CLOCKS_PER_SEC;
+  double duration = (clock() - start) / static_cast<double>(CLOCKS_PER_SEC);
 
   if (naive) {
     sumTimeNaive[make_pair(G.n, result)] += duration;
@@ -167,25 +170,21 @@ bool testWithStats(const Graph &G, bool naive) {
 }
 
 void printStats() {
-  if (!sumTimeNaive.empty())
-    cout << "Naive: " << endl;
+  if (!sumTimeNaive.empty()) cout << "Naive: " << endl;
   for (auto it = sumTimeNaive.begin(); it != sumTimeNaive.end(); it++) {
     int cases = casesTestedNaive[it->first];
     cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
          << ", avgTime=" << it->second / cases << endl;
   }
-  if (!sumTime.empty())
-    cout << "Perfect: " << endl;
+  if (!sumTime.empty()) cout << "Perfect: " << endl;
   for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-    if (!it->first.second)
-      continue;
+    if (!it->first.second) continue;
     int cases = casesTested[it->first];
     cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
          << ", avgTime=" << it->second / cases << endl;
   }
   for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-    if (it->first.second)
-      continue;
+    if (it->first.second) continue;
     int cases = casesTested[it->first];
     cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
          << ", avgTime=" << it->second / cases << endl;
@@ -194,15 +193,13 @@ void printStats() {
 
 double getDistr() {
   double distr = distribution(generator);
-  if (distr <= 0 || distr > 1)
-    distr = 0.5;
+  if (distr <= 0 || distr > 1) distr = 0.5;
 
   return distr;
 }
 
 void testGraph(const Graph &G, bool verbose) {
-  if (verbose)
-    cout << "Testing " << G.n << " vs naive" << endl;
+  if (verbose) cout << "Testing " << G.n << " vs naive" << endl;
 
   bool naivePerfect = testWithStats(G, true);
 
@@ -211,16 +208,14 @@ void testGraph(const Graph &G, bool verbose) {
   if (naivePerfect != perfect) {
     cout << "ERROR: " << endl << "naive=" << naivePerfect << endl << "perfect=" << perfect << endl;
     cout << G << endl;
-    if (!naivePerfect)
-      cout << findOddHoleNaive(G) << endl;
+    if (!naivePerfect) cout << findOddHoleNaive(G) << endl;
   }
 
   assert(naivePerfect == perfect);
 }
 
 void testGraph(const Graph &G, bool result, bool verbose) {
-  if (verbose)
-    cout << "Testing " << G.n << " vs " << result << endl;
+  if (verbose) cout << "Testing " << G.n << " vs " << result << endl;
 
   bool perfect = testWithStats(G, false);
 
@@ -233,8 +228,8 @@ void testGraph(const Graph &G, bool result, bool verbose) {
   assert(perfect == result);
 }
 
-void printTimeHumanReadable(long long time) {
-  double s = time / (double)CLOCKS_PER_SEC;
+void printTimeHumanReadable(int64_t time) {
+  double s = time / static_cast<double>(CLOCKS_PER_SEC);
   int h = s / (60 * 60);
   s -= h * (60 * 60);
   if (h != 0) {
@@ -247,7 +242,7 @@ void printTimeHumanReadable(long long time) {
     cout << m << "m";
   }
 
-  cout << (int)s + 1 << "s";
+  cout << static_cast<int>(s) + 1 << "s";
 }
 
 RaiiProgressBar::RaiiProgressBar(int allTests) : allTests(allTests) {
@@ -258,7 +253,7 @@ RaiiProgressBar::RaiiProgressBar(int allTests) : allTests(allTests) {
 RaiiProgressBar::~RaiiProgressBar() { cout << endl; }
 
 int RaiiProgressBar::getFilled(int testsDone) {
-  double progress = testsDone / ((double)allTests);
+  double progress = testsDone / (static_cast<double>(allTests));
   return width * progress;
 }
 
@@ -272,8 +267,8 @@ void RaiiProgressBar::update(int testsDone) {
     cout << "]";
     if (testsDone > 0) {
       cout << " (about ";
-      long long timeElapsed = clock() - startTimer;
-      long long timeRemaining = timeElapsed * (allTests - testsDone) / testsDone;
+      int64_t timeElapsed = clock() - startTimer;
+      int64_t timeRemaining = timeElapsed * (allTests - testsDone) / testsDone;
       printTimeHumanReadable(timeRemaining);
       cout << " left)";
     }

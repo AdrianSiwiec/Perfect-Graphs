@@ -4,22 +4,36 @@
 #include <functional>
 #include <iostream>
 #include <set>
+#include <string>
 #include <tuple>
+#include <unordered_set>
+#include <utility>
 #include <vector>
-using namespace std;
+
+using std::cout;
+using std::endl;
+using std::function;
+using std::ostream;
+using std::pair;
+using std::set;
+using std::string;
+using std::tuple;
+using std::vector;
 
 #define mp make_pair
 #define st first
 #define nd second
 
-template <typename T> struct vec : public vector<T> {
+template <typename T>
+struct vec : public vector<T> {
   using vector<T>::vector;
 
   // Range checking
   T &operator[](int i) { return vector<T>::at(i); }
   const T &operator[](int i) const { return vector<T>::at(i); }
 };
-template <typename T> ostream &operator<<(ostream &os, vec<T> const &v) {
+template <typename T>
+ostream &operator<<(ostream &os, vec<T> const &v) {
   os << "[";
   for (int i = 0; i < v.size(); i++) {
     os << v[i] << (i + 1 < v.size() ? ", " : "");
@@ -32,9 +46,9 @@ template <typename T> ostream &operator<<(ostream &os, vec<T> const &v) {
 struct Graph {
   int n;
 
-  Graph(int n);
+  explicit Graph(int n);
   Graph(int n, string s);
-  Graph(vec<vec<int>> neighbours);
+  explicit Graph(vec<vec<int>> neighbours);
   // List of neighbors is not necessarily sorted
   vec<int> &operator[](int index) { return _neighbours[index]; }
   const vec<int> &operator[](int index) const { return _neighbours[index]; }
@@ -48,7 +62,7 @@ struct Graph {
   Graph getShuffled() const;
   Graph getLineGraph() const;
 
-private:
+ private:
   vec<vec<int>> _neighbours;
   vec<vec<int>> _matrix;
   void checkSymmetry();
@@ -56,7 +70,8 @@ private:
 };
 
 ostream &operator<<(ostream &os, Graph const &G);
-template <typename T> ostream &operator<<(ostream &os, const set<T> &G) {
+template <typename T>
+ostream &operator<<(ostream &os, const set<T> &G) {
   os << "{";
   for (auto it = G.begin(); it != G.end(); it++) {
     os << *it << (next(it) == G.end() ? "" : ", ");

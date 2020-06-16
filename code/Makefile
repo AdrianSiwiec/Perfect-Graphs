@@ -63,4 +63,4 @@ cleanDownloads:
 	rm $(DOWNLOADSDIR) -rf
 
 lint:
-	cpplint --linelength=120 --extensions=cpp,h --filter=-legal/copyright,-runtime/references $(SRCFILES) $(INCFILES)
+	~/.local/bin/cpplint --linelength=120 --extensions=cpp,h --filter=-legal/copyright,-runtime/references,-build/include_subdir $(SRCFILES) $(INCFILES)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include "commons.h"
 
 bool checkPrerequisites(const Graph &G, const vec<int> &b, const int a, const vec<int> &s);
