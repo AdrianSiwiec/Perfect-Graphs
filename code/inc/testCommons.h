@@ -4,13 +4,16 @@
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
-#include <execinfo.h>
 #include <map>
 #include <random>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#ifndef __CYGWIN__
+  #include <execinfo.h>
+#endif
 
 // Whether to run big tests. These take more time.
 const bool bigTests = false;

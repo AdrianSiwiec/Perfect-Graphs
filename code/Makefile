@@ -13,7 +13,9 @@ CXX=g++
 CXXINC=-I ./$(INCDIR)/
 CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
-OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(wildcard $(SRCDIR)/*.cpp))
+INCFILES=$(wildcard $(INCDIR)/*.h)
+SRCFILES=$(wildcard $(SRCDIR)/*.cpp)
+OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCFILES))
 TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
 UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp))
 PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
@@ -38,7 +40,7 @@ $(OBJDIR)/%.e: %.cpp $(OBJFILES)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(OBJFILES) $< -o $@
 
-.PHONY: test clean run-tests unitTest retest netTest
+.PHONY: test clean run-tests unitTest retest netTest lint
 
 # Do not delete OBJFILES by default (shortens make time)
 .OBJ: $(OBJFILES)
@@ -59,3 +61,6 @@ clean:
 
 cleanDownloads:
 	rm $(DOWNLOADSDIR) -rf
+
+lint:
+	cpplint --linelength=120 --extensions=cpp,h --filter=-legal/copyright,-runtime/references $(SRCFILES) $(INCFILES)
