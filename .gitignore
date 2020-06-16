@@ -2,6 +2,8 @@ lectures/*
 code/obj/*
 code/test/netTest/downloaded/*
 
+code/perfResults/*
+
 # Created by https://www.gitignore.io
 
 ### C++ ###
