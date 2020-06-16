@@ -21,7 +21,7 @@
 	}
 	\ElseIf{$\exists F$ : $F$ is a component of $G\setminus(V(S,N) \cup M)$, 
 		such that no member of $F$ is major w.r.t. $(S, N)$ 
-		and set of attachments of $F$ on $H$ is not local}{
+		and set of attachments of $F$ on $H (?)$ is not local}{
 		\Assert[6.2, or actually SPGT 8.5]{}
 		$F \gets$ minimal (component?) with this property\;
 								
@@ -33,6 +33,7 @@
 			$L(H) \gets \forall_{i,j \in E(J)}$ choose $ij$-rung $R_{ij}$, so that $x \in V(R_{uv}), x' \in V(R_{u'v})$\;
 			\Assert{$\{x, x'\}$ is not local w.r.t. $L(H)$}
 			$D \gets$ a branch of $H$ with ends $d, u$: $\delta_H(d) \setminus E(D) = (X \cap E(H)) \setminus E(D)$\;
+			\TODO{How can we get $H$ from $L(H)$}
 			$P \gets$ a path with ends $p_1, p_2$, so that: \nonl \;
 			\pushline $p_1 \blacktriangleleft N_v \setminus N_{vu}$ and
 			no other vertex of $P$ has neighbors in $N_v \setminus N_{uv}$ \nonl \;
