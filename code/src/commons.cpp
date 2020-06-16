@@ -13,6 +13,8 @@ Graph::Graph(int n) : n(n), _neighbours(n), _matrix(n) {
   for (int i = 0; i < n; i++) {
     _matrix[i].resize(n);
   }
+
+  calculateFirstNextNeighbours();
 }
 
 void Graph::calculateNeighboursLists() {
@@ -21,6 +23,25 @@ void Graph::calculateNeighboursLists() {
     _neighbours.push_back(vec<int>());
     for (int j = 0; j < n; j++) {
       if (areNeighbours(i, j)) _neighbours[i].push_back(j);
+    }
+  }
+}
+
+void Graph::calculateFirstNextNeighbours() {
+  _first_neighbour = vec<int>(n, -1);
+  _next_neighbour = vec<vec<int>>(n);
+  for (int i = 0; i < n; i++) {
+    _next_neighbour[i] = vec<int>(n, -2);
+  }
+
+  for (int i = 0; i < n; i++) {
+    if (!_neighbours[i].empty()) {
+      _first_neighbour[i] = _neighbours[i].front();
+      _next_neighbour[i][_neighbours[i].back()] = -1;
+    }
+
+    for (int j = 1; j < _neighbours[i].size(); j++) {
+      _next_neighbour[i][_neighbours[i][j - 1]] = _neighbours[i][j];
     }
   }
 }
@@ -39,8 +60,8 @@ Graph::Graph(int n, string s) : Graph(n) {
   s.erase(remove_if(s.begin(), s.end(), ::isspace), s.end());
   if (s.size() != n * n) {
     char buff[100];
-    snprintf(buff, sizeof(buff), "Graph initialization from string failed. Expected string of size %d, got %d.", n * n,
-            s.size());
+    snprintf(buff, sizeof(buff),
+             "Graph initialization from string failed. Expected string of size %d, got %d.", n * n, s.size());
     throw invalid_argument(buff);
   }
 
@@ -54,6 +75,7 @@ Graph::Graph(int n, string s) : Graph(n) {
   }
 
   calculateNeighboursLists();
+  calculateFirstNextNeighbours();
   checkSymmetry();
 }
 
@@ -72,7 +94,23 @@ Graph::Graph(vec<vec<int>> neighbours) : n(neighbours.size()), _neighbours(neigh
     }
   }
 
+  calculateFirstNextNeighbours();
   checkSymmetry();
+}
+
+int Graph::getFirstNeighbour(int a) const { return _first_neighbour[a]; }
+
+int Graph::getNextNeighbour(int a, int b) const {
+  int ret = _next_neighbour[a][b];
+
+  if (ret == -2) {
+    char buff[100];
+    snprintf(buff, sizeof(buff), "Graph getNextNeighbour failed. %d is not a neighbour of %d.", b, a);
+
+    throw invalid_argument(buff);
+  }
+
+  return ret;
 }
 
 Graph Graph::getComplement() const {
@@ -84,6 +122,7 @@ Graph Graph::getComplement() const {
   }
 
   ret.calculateNeighboursLists();
+  ret.calculateFirstNextNeighbours();
   return ret;
 }
 
@@ -101,6 +140,7 @@ Graph Graph::getInduced(vec<int> X) const {
   }
 
   ret.calculateNeighboursLists();
+  ret.calculateFirstNextNeighbours();
   return ret;
 }
 
@@ -118,6 +158,7 @@ Graph Graph::getShuffled() const {
   }
 
   ret.calculateNeighboursLists();
+  ret.calculateFirstNextNeighbours();
   ret.checkSymmetry();
   return ret;
 }

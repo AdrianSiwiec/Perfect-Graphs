@@ -54,6 +54,11 @@ struct Graph {
   const vec<int> &operator[](int index) const { return _neighbours[index]; }
   bool operator==(const Graph &c) const { return _matrix == c._matrix; }
   bool areNeighbours(int a, int b) const { return _matrix[a][b]; }
+  // Returns first neighbor of a. Returns -1 if a has no neighbors.
+  int getFirstNeighbour(int a) const;
+  // Returns next neighbor of a, after b. Returns -1 if b is last, throws invalid_argument if b is not a
+  // neighbor of a.
+  int getNextNeighbour(int a, int b) const;
 
   Graph getComplement() const;
   // Returns G' - Graph induced on X. Set of vertices is left the same, and edge is in G' if it is in G and
@@ -65,8 +70,12 @@ struct Graph {
  private:
   vec<vec<int>> _neighbours;
   vec<vec<int>> _matrix;
+  vec<int> _first_neighbour;
+  vec<vec<int>> _next_neighbour;
   void checkSymmetry();
   void calculateNeighboursLists();
+  // Assumes _neighbours has been calculated;
+  void calculateFirstNextNeighbours();
 };
 
 ostream &operator<<(ostream &os, Graph const &G);

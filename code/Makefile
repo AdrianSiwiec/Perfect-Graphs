@@ -11,7 +11,6 @@ PERFTESTDIR=$(TESTDIR)/perfTest
 
 #GCC compiler settings
 CXX=g++
-# CXX=taucxx
 CXXINC=-I ./$(INCDIR)/
 CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 

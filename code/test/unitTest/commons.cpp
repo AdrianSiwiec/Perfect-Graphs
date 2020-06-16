@@ -125,6 +125,55 @@ void testGraphGetShuffled() {
   assert(sumSize == ssumSize);
   assert(ns = ssumSize);
 }
+void testGraphGetNextNeighbor() {
+  Graph G(7,
+          "\
+  ...X...\
+  ..X.XX.\
+  .X...X.\
+  X......\
+  .X.....\
+  .XX....\
+  .......\
+  ");
+
+  assert(G.getFirstNeighbour(0) == 3);
+  assert(G.getNextNeighbour(0, 3) == -1);
+  assert(G.getFirstNeighbour(1) == 2);
+  assert(G.getNextNeighbour(1, 2) == 4);
+  assert(G.getNextNeighbour(1, 4) == 5);
+  assert(G.getNextNeighbour(1, 5) == -1);
+
+  bool caught = false;
+  try {
+    G.getNextNeighbour(0, 1);
+  } catch (invalid_argument &e) {
+    caught = true;
+  }
+  assert(caught);
+
+  assert(G.getFirstNeighbour(6) == -1);
+
+  Graph gPrim({{3}, {2, 4, 5}, {1, 5}, {0}, {1}, {1, 2}, {}});
+  assert(gPrim == G);
+
+  assert(gPrim.getFirstNeighbour(0) == 3);
+  assert(gPrim.getNextNeighbour(0, 3) == -1);
+  assert(gPrim.getFirstNeighbour(1) == 2);
+  assert(gPrim.getNextNeighbour(1, 2) == 4);
+  assert(gPrim.getNextNeighbour(1, 4) == 5);
+  assert(gPrim.getNextNeighbour(1, 5) == -1);
+
+  caught = false;
+  try {
+    gPrim.getNextNeighbour(0, 1);
+  } catch (invalid_argument &e) {
+    caught = true;
+  }
+  assert(caught);
+
+  assert(gPrim.getFirstNeighbour(6) == -1);
+}
 
 void testGetLineGraph() {
   Graph G(7,
@@ -424,6 +473,30 @@ void testNextPathInPlace() {
   v = vec<int>();
   nextPathInPlace(G, v, 5);
   assert(v == (vec<int>{5, 4, 3, 1, 0}));
+
+  v = vec<int>();
+  int counter = 0;
+  do {
+    nextPathInPlace(G, v, 4);
+    counter++;
+  } while (!v.empty());
+  assert(counter == 7);
+
+  v = vec<int>();
+  counter = 0;
+  do {
+    nextPathInPlace(G, v, 3);
+    counter++;
+  } while (!v.empty());
+  assert(counter == 9);
+
+  v = vec<int>();
+  counter = 0;
+  do {
+    nextPathInPlace(G, v, 3, true);
+    counter++;
+  } while (!v.empty());
+  assert(counter == 15);
 }
 
 int main() {
@@ -431,6 +504,7 @@ int main() {
   testGraph();
   testGraphGetInduced();
   testGraphGetShuffled();
+  testGraphGetNextNeighbor();
   testGetLineGraph();
   testSimpleVec();
   testGetTriangles();
