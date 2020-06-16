@@ -98,6 +98,70 @@ void testGraphGetInduced() {
   }
 }
 
+void testGraphGetShuffled() {
+  Graph G = getRandomGraph(10, 0.5);
+  Graph GS = G.getShuffled();
+
+  int ns = 0;
+  int sns = 0;
+
+  int sumSize = 0;
+  int ssumSize = 0;
+
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      assert(GS.areNeighbours(i, j) == GS.areNeighbours(j, i));
+
+      if (G.areNeighbours(i, j))
+        ns++;
+      if (GS.areNeighbours(i, j))
+        sns++;
+    }
+
+    sumSize += G[i].size();
+    ssumSize += GS[i].size();
+  }
+
+  assert(ns == sns);
+  assert(sumSize == ssumSize);
+  assert(ns = ssumSize);
+}
+
+void testGetLineGraph() {
+  Graph G(7, "\
+  ...X...\
+  ..X.XX.\
+  .X...X.\
+  X......\
+  .X.....\
+  .XX....\
+  .......\
+  ");
+  assert(G.getLineGraph() == Graph(5, "\
+  .....\
+  ..XXX\
+  .X.X.\
+  .XX.X\
+  .X.X.\
+  "));
+
+  G = Graph(5, "\
+  .XXX.\
+  X...X\
+  X..X.\
+  X.X.X\
+  .X.X.\
+  ");
+  assert(G.getLineGraph() == Graph(6, "\
+  .XXX..\
+  X.X.X.\
+  XX..XX\
+  X....X\
+  .XX..X\
+  ..XXX.\
+  "));
+}
+
 void testGetTriangles() {
   for (int i = 0; i < 15; i++) {
     Graph G = getRandomGraph(10, 0.7);
@@ -360,6 +424,8 @@ int main() {
   init();
   testGraph();
   testGraphGetInduced();
+  testGraphGetShuffled();
+  testGetLineGraph();
   testSimpleVec();
   testGetTriangles();
   testVec();

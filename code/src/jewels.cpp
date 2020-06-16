@@ -51,3 +51,8 @@ vec<int> findJewelNaive(const Graph &G) {
 
   return vec<int>();
 }
+
+bool containsJewelNaive(const Graph &G) {
+  auto v = findJewelNaive(G);
+  return !v.empty();
+}

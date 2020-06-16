@@ -1,4 +1,5 @@
 #include "commons.h"
+#include <map>
 #include <queue>
 #include <set>
 
@@ -23,8 +24,7 @@ void Graph::checkSymmetry() {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       if (_matrix[i][j] != _matrix[j][i]) {
-        throw invalid_argument("Graph initialization from string failed. Input graph is not symmetrical. (" +
-                               to_string(i) + ", " + to_string(j) + ").");
+        throw invalid_argument("Graph is not symmetrical. (" + to_string(i) + ", " + to_string(j) + ").");
       }
     }
   }
@@ -41,7 +41,7 @@ Graph::Graph(int n, string s) : Graph(n) {
 
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
-      if (i == j || s[i * n + j] != 'X')
+      if (i == j || (s[i * n + j] != 'X' && s[i * n + j] != '1'))
         _matrix[i][j] = 0;
       else {
         _matrix[i][j] = 1;
@@ -100,6 +100,56 @@ Graph Graph::getInduced(vec<int> X) const {
 
   ret.calculateNeighboursLists();
   return ret;
+}
+
+Graph Graph::getShuffled() const {
+  vec<int> v(n);
+  for (int i = 0; i < n; i++)
+    v[i] = i;
+
+  random_shuffle(v.begin(), v.end());
+
+  Graph ret(n);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      ret._matrix[i][j] = _matrix[v[i]][v[j]];
+    }
+  }
+
+  ret.calculateNeighboursLists();
+  ret.checkSymmetry();
+  return ret;
+}
+
+Graph Graph::getLineGraph() const {
+  map<pair<int, int>, int> M;
+  map<int, pair<int, int>> rM;
+
+  for (int i = 0; i < n; i++) {
+    for (int v : operator[](i)) {
+      if (v > i) {
+        int size = M.size();
+        M[make_pair(i, v)] = size;
+        rM[M.size() - 1] = make_pair(i, v);
+      }
+    }
+  }
+
+  vec<vec<int>> neighbours(M.size());
+
+  for (int i = 0; i < n; i++) {
+    for (int v0 : operator[](i)) {
+      for (int v1 : operator[](i)) {
+        if (v0 == v1)
+          continue;
+        auto p0 = v0 < i ? make_pair(v0, i) : make_pair(i, v0);
+        auto p1 = v1 < i ? make_pair(v1, i) : make_pair(i, v1);
+        neighbours[M[p0]].push_back(M[p1]);
+      }
+    }
+  }
+
+  return Graph(neighbours);
 }
 
 vec<vec<int>> getTriangles(const Graph &G) {

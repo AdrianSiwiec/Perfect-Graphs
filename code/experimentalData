@@ -1,0 +1,351 @@
+0.05
+ jewels: 0
+ pyramids: 0
+ oddHoles: 0
+ oddHolesNoJP: 0
+
+0.1
+ jewels: 0
+ pyramids: 0
+ oddHoles: 0
+ oddHolesNoJP: 0
+
+0.15
+ jewels: 1
+ pyramids: 1
+ oddHoles: 1
+ oddHolesNoJP: 0
+
+0.2
+ jewels: 0
+ pyramids: 0
+ oddHoles: 2
+ oddHolesNoJP: 2
+
+0.25
+ jewels: 5
+ pyramids: 3
+ oddHoles: 14
+ oddHolesNoJP: 9
+
+0.3
+ jewels: 11
+ pyramids: 4
+ oddHoles: 20
+ oddHolesNoJP: 9
+
+0.35
+ jewels: 22
+ pyramids: 10
+ oddHoles: 33
+ oddHolesNoJP: 10
+
+0.4
+ jewels: 26
+ pyramids: 15
+ oddHoles: 35
+ oddHolesNoJP: 8
+
+0.45
+ jewels: 29
+ pyramids: 15
+ oddHoles: 35
+ oddHolesNoJP: 6
+
+0.5
+ jewels: 30
+ pyramids: 22
+ oddHoles: 32
+ oddHolesNoJP: 2
+
+0.55
+ jewels: 34
+ pyramids: 16
+ oddHoles: 35
+ oddHolesNoJP: 1
+
+0.6
+ jewels: 27
+ pyramids: 16
+ oddHoles: 30
+ oddHolesNoJP: 3
+
+0.65
+ jewels: 26
+ pyramids: 16
+ oddHoles: 31
+ oddHolesNoJP: 5
+
+0.7
+ jewels: 14
+ pyramids: 9
+ oddHoles: 14
+ oddHolesNoJP: 0
+
+0.75
+ jewels: 9
+ pyramids: 4
+ oddHoles: 10
+ oddHolesNoJP: 1
+
+80.8
+ jewels: 3
+ pyramids: 2
+ oddHoles: 3
+ oddHolesNoJP: 0
+
+0.85
+ jewels: 1
+ pyramids: 0
+ oddHoles: 2
+ oddHolesNoJP: 1
+
+0.9
+ jewels: 1
+ pyramids: 0
+ oddHoles: 1
+ oddHolesNoJP: 0
+
+0.95
+ jewels: 0
+ pyramids: 0
+ oddHoles: 0
+ oddHolesNoJP: 0
+
+Naive: 
+	n=8, result=0, cases=591, avgTime=0.000910377
+	n=8, result=1, cases=1576, avgTime=1.06809
+	n=9, result=0, cases=10, avgTime=0.0011829
+	n=9, result=1, cases=12, avgTime=240.334
+Perfect: 
+	n=0, result=1, cases=8, avgTime=3.125e-06
+	n=1, result=1, cases=33, avgTime=3.48485e-06
+	n=2, result=1, cases=63, avgTime=2.81587e-05
+	n=3, result=1, cases=118, avgTime=0.000220712
+	n=4, result=1, cases=149, avgTime=0.000992369
+	n=5, result=1, cases=194, avgTime=0.00339041
+	n=6, result=1, cases=231, avgTime=0.0103891
+	n=7, result=1, cases=255, avgTime=0.0301484
+	n=8, result=1, cases=1828, avgTime=0.0583845
+	n=9, result=1, cases=225, avgTime=0.214687
+	n=10, result=1, cases=177, avgTime=0.554783
+	n=11, result=1, cases=171, avgTime=1.23758
+	n=12, result=1, cases=116, avgTime=2.67802
+	n=13, result=1, cases=80, avgTime=5.00741
+	n=14, result=1, cases=49, avgTime=8.94028
+	n=15, result=1, cases=41, avgTime=15.6654
+	n=16, result=1, cases=15, avgTime=25.1201
+	n=17, result=1, cases=10, avgTime=43.432
+	n=18, result=1, cases=9, avgTime=69.7201
+	n=19, result=1, cases=3, avgTime=109.001
+	n=20, result=1, cases=1, avgTime=148.66
+	n=24, result=1, cases=1, avgTime=670.106
+	n=8, result=0, cases=591, avgTime=0.00240569
+	n=9, result=0, cases=11, avgTime=0.00234282
+	n=10, result=0, cases=2, avgTime=0.003964
+	n=11, result=0, cases=8, avgTime=0.00092025
+	n=12, result=0, cases=10, avgTime=0.0205816
+	n=13, result=0, cases=15, avgTime=0.00244327
+	n=14, result=0, cases=42, avgTime=0.0030015
+	n=15, result=0, cases=60, avgTime=0.00189333
+	n=16, result=0, cases=76, avgTime=0.014103
+	n=17, result=0, cases=85, avgTime=0.00262824
+	n=18, result=0, cases=112, avgTime=0.0041881
+	n=19, result=0, cases=103, avgTime=0.0285854
+	n=20, result=0, cases=120, avgTime=0.00593003
+	n=21, result=0, cases=175, avgTime=0.00616621
+	n=22, result=0, cases=138, avgTime=0.0133592
+	n=23, result=0, cases=144, avgTime=0.00614339
+	n=24, result=0, cases=171, avgTime=0.00797618
+	n=25, result=0, cases=142, avgTime=0.0109044
+	n=26, result=0, cases=130, avgTime=0.00998756
+	n=27, result=0, cases=141, avgTime=0.0111497
+	n=28, result=0, cases=143, avgTime=0.110067
+	n=29, result=0, cases=119, avgTime=0.0120602
+	n=30, result=0, cases=82, avgTime=0.0135968
+	n=31, result=0, cases=66, avgTime=0.0149266
+	n=32, result=0, cases=43, avgTime=0.0179701
+	n=33, result=0, cases=25, avgTime=0.0202278
+	n=34, result=0, cases=19, avgTime=0.0240124
+	n=35, result=0, cases=5, avgTime=0.017795
+	n=36, result=0, cases=8, avgTime=0.0159835
+	n=37, result=0, cases=3, avgTime=0.00796433
+	n=38, result=0, cases=1, avgTime=0.017869
+
+Naive: 
+	n=8, result=0, cases=604, avgTime=0.00373467
+	n=8, result=1, cases=1562, avgTime=1.06829
+	n=9, result=0, cases=8, avgTime=0.00168988
+	n=9, result=1, cases=12, avgTime=240.578
+Perfect: 
+	n=0, result=1, cases=9, avgTime=3.44444e-06
+	n=1, result=1, cases=34, avgTime=3.58824e-06
+	n=2, result=1, cases=63, avgTime=2.78889e-05
+	n=3, result=1, cases=95, avgTime=0.000220516
+	n=4, result=1, cases=154, avgTime=0.000991344
+	n=5, result=1, cases=191, avgTime=0.00342098
+	n=6, result=1, cases=265, avgTime=0.010362
+	n=7, result=1, cases=266, avgTime=0.0300095
+	n=8, result=1, cases=1785, avgTime=0.0568449
+	n=9, result=1, cases=240, avgTime=0.215244
+	n=10, result=1, cases=181, avgTime=0.550863
+	n=11, result=1, cases=165, avgTime=1.26177
+	n=12, result=1, cases=100, avgTime=2.60553
+	n=13, result=1, cases=80, avgTime=5.0448
+	n=14, result=1, cases=43, avgTime=8.97677
+	n=15, result=1, cases=40, avgTime=15.7094
+	n=16, result=1, cases=25, avgTime=26.2661
+	n=17, result=1, cases=12, avgTime=42.3133
+	n=18, result=1, cases=6, avgTime=73.1764
+	n=19, result=1, cases=4, avgTime=97.9344
+	n=22, result=1, cases=2, avgTime=327.95
+	n=8, result=0, cases=604, avgTime=0.00276361
+	n=9, result=0, cases=8, avgTime=0.00214675
+	n=10, result=0, cases=2, avgTime=0.003164
+	n=11, result=0, cases=4, avgTime=0.00488575
+	n=12, result=0, cases=12, avgTime=0.00299925
+	n=13, result=0, cases=18, avgTime=0.00358117
+	n=14, result=0, cases=34, avgTime=0.00478732
+	n=15, result=0, cases=54, avgTime=0.0162941
+	n=16, result=0, cases=79, avgTime=0.00476547
+	n=17, result=0, cases=89, avgTime=0.00324558
+	n=18, result=0, cases=107, avgTime=0.0345171
+	n=19, result=0, cases=119, avgTime=0.0435121
+	n=20, result=0, cases=121, avgTime=0.00560214
+	n=21, result=0, cases=130, avgTime=0.00716691
+	n=22, result=0, cases=137, avgTime=0.0475358
+	n=23, result=0, cases=153, avgTime=0.00726856
+	n=24, result=0, cases=161, avgTime=0.0464452
+	n=25, result=0, cases=160, avgTime=0.0115205
+	n=26, result=0, cases=138, avgTime=0.0165505
+	n=27, result=0, cases=118, avgTime=0.0106986
+	n=28, result=0, cases=144, avgTime=0.0137689
+	n=29, result=0, cases=124, avgTime=0.01544
+	n=30, result=0, cases=84, avgTime=0.0127845
+	n=31, result=0, cases=77, avgTime=0.0133234
+	n=32, result=0, cases=60, avgTime=0.031904
+	n=33, result=0, cases=34, avgTime=0.0132961
+	n=34, result=0, cases=13, avgTime=0.016868
+	n=35, result=0, cases=10, avgTime=0.0130115
+	n=36, result=0, cases=2, avgTime=0.0153075
+	n=37, result=0, cases=1, avgTime=0.007667
+	n=38, result=0, cases=1, avgTime=0.040122
+Testing 9 vs naive
+
+Naive: 
+	n=8, result=0, cases=599, avgTime=0.00188731
+	n=8, result=1, cases=1553, avgTime=1.06753
+	n=9, result=0, cases=9, avgTime=0.00129178
+	n=9, result=1, cases=15, avgTime=240.32
+Perfect: 
+	n=0, result=1, cases=13, avgTime=2.92308e-06
+	n=1, result=1, cases=21, avgTime=3.90476e-06
+	n=2, result=1, cases=54, avgTime=2.81111e-05
+	n=3, result=1, cases=99, avgTime=0.000221111
+	n=4, result=1, cases=181, avgTime=0.000988254
+	n=5, result=1, cases=204, avgTime=0.0034024
+	n=6, result=1, cases=213, avgTime=0.0103595
+	n=7, result=1, cases=243, avgTime=0.0302761
+	n=8, result=1, cases=1803, avgTime=0.0580696
+	n=9, result=1, cases=248, avgTime=0.214672
+	n=10, result=1, cases=183, avgTime=0.542658
+	n=11, result=1, cases=158, avgTime=1.26059
+	n=12, result=1, cases=126, avgTime=2.6288
+	n=13, result=1, cases=61, avgTime=4.98961
+	n=14, result=1, cases=59, avgTime=9.17122
+	n=15, result=1, cases=39, avgTime=15.5831
+	n=16, result=1, cases=14, avgTime=25.4448
+	n=17, result=1, cases=16, avgTime=43.3788
+	n=18, result=1, cases=5, avgTime=71.5871
+	n=19, result=1, cases=2, avgTime=109.135
+	n=20, result=1, cases=1, avgTime=148.161
+	n=21, result=1, cases=1, avgTime=224.975
+	n=8, result=0, cases=599, avgTime=0.00256394
+	n=9, result=0, cases=9, avgTime=0.00118911
+	n=11, result=0, cases=2, avgTime=0.001957
+	n=12, result=0, cases=9, avgTime=0.00295467
+	n=13, result=0, cases=21, avgTime=0.00870781
+	n=14, result=0, cases=38, avgTime=0.00430779
+	n=15, result=0, cases=61, avgTime=0.00343402
+	n=16, result=0, cases=65, avgTime=0.00394768
+	n=17, result=0, cases=82, avgTime=0.00511859
+	n=18, result=0, cases=96, avgTime=0.00736851
+	n=19, result=0, cases=114, avgTime=0.00575354
+	n=20, result=0, cases=138, avgTime=0.0547335
+	n=21, result=0, cases=129, avgTime=0.0126405
+	n=22, result=0, cases=146, avgTime=0.00502766
+	n=23, result=0, cases=150, avgTime=0.014089
+	n=24, result=0, cases=171, avgTime=0.0162375
+	n=25, result=0, cases=159, avgTime=0.00993862
+	n=26, result=0, cases=145, avgTime=0.0110724
+	n=27, result=0, cases=147, avgTime=0.130157
+	n=28, result=0, cases=120, avgTime=0.0119106
+	n=29, result=0, cases=110, avgTime=0.011002
+	n=30, result=0, cases=83, avgTime=0.0423524
+	n=31, result=0, cases=63, avgTime=0.104419
+	n=32, result=0, cases=47, avgTime=0.0155402
+	n=33, result=0, cases=33, avgTime=0.0171947
+	n=34, result=0, cases=24, avgTime=0.018057
+	n=35, result=0, cases=14, avgTime=0.0168264
+	n=36, result=0, cases=6, avgTime=0.0182693
+	n=37, result=0, cases=1, avgTime=0.025377
+	n=38, result=0, cases=2, avgTime=0.018143
+
+Naive: 
+	n=8, result=0, cases=631, avgTime=0.00163622
+	n=8, result=1, cases=1620, avgTime=1.067
+	n=9, result=0, cases=4, avgTime=0.00093575
+	n=9, result=1, cases=15, avgTime=240.474
+Perfect: 
+	n=0, result=1, cases=10, avgTime=3.6e-06
+	n=1, result=1, cases=37, avgTime=3.75676e-06
+	n=2, result=1, cases=55, avgTime=2.82364e-05
+	n=3, result=1, cases=108, avgTime=0.000220481
+	n=4, result=1, cases=163, avgTime=0.000991129
+	n=5, result=1, cases=169, avgTime=0.003431
+	n=6, result=1, cases=220, avgTime=0.0104404
+	n=7, result=1, cases=293, avgTime=0.0306372
+	n=8, result=1, cases=1894, avgTime=0.0581839
+	n=9, result=1, cases=278, avgTime=0.215815
+	n=10, result=1, cases=203, avgTime=0.546647
+	n=11, result=1, cases=141, avgTime=1.2615
+	n=12, result=1, cases=114, avgTime=2.60906
+	n=13, result=1, cases=79, avgTime=5.0182
+	n=14, result=1, cases=55, avgTime=9.05831
+	n=15, result=1, cases=45, avgTime=15.8886
+	n=16, result=1, cases=24, avgTime=25.1605
+	n=17, result=1, cases=6, avgTime=42.4829
+	n=18, result=1, cases=7, avgTime=70.4382
+	n=19, result=1, cases=2, avgTime=99.8847
+	n=20, result=1, cases=2, avgTime=149.003
+	n=8, result=0, cases=631, avgTime=0.00259342
+	n=9, result=0, cases=5, avgTime=0.0019622
+	n=10, result=0, cases=2, avgTime=0.0102485
+	n=11, result=0, cases=6, avgTime=0.00160283
+	n=12, result=0, cases=9, avgTime=0.00801544
+	n=13, result=0, cases=16, avgTime=0.00364025
+	n=14, result=0, cases=27, avgTime=0.00611307
+	n=15, result=0, cases=52, avgTime=0.00617242
+	n=16, result=0, cases=78, avgTime=0.00699513
+	n=17, result=0, cases=92, avgTime=0.0027197
+	n=18, result=0, cases=111, avgTime=0.0172389
+	n=19, result=0, cases=122, avgTime=0.00460434
+	n=20, result=0, cases=121, avgTime=0.00563345
+	n=21, result=0, cases=136, avgTime=0.0190802
+	n=22, result=0, cases=174, avgTime=0.011106
+	n=23, result=0, cases=137, avgTime=0.0230126
+	n=24, result=0, cases=160, avgTime=0.00877174
+	n=25, result=0, cases=166, avgTime=0.0800921
+	n=26, result=0, cases=157, avgTime=0.0100826
+	n=27, result=0, cases=160, avgTime=0.0156654
+	n=28, result=0, cases=132, avgTime=0.0123963
+	n=29, result=0, cases=116, avgTime=0.0120609
+	n=30, result=0, cases=86, avgTime=0.0142864
+	n=31, result=0, cases=84, avgTime=0.0161545
+	n=32, result=0, cases=51, avgTime=0.0132405
+	n=33, result=0, cases=24, avgTime=0.0172575
+	n=34, result=0, cases=24, avgTime=0.0169665
+	n=35, result=0, cases=15, avgTime=0.0123729
+	n=36, result=0, cases=6, avgTime=0.0101917
+	n=37, result=0, cases=4, avgTime=0.0288555
+	n=38, result=0, cases=1, avgTime=0.08574

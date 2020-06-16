@@ -161,6 +161,7 @@ void testPyramidsHand() {
   assert(get<0>(pyramid) == (vec<int>{0, 1, 2}));
   assert(get<1>(pyramid) == 6);
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}}));
+  assert(containsPyramid(G));
 
   G = Graph(9, "\
   .XXX.....\
@@ -179,6 +180,7 @@ void testPyramidsHand() {
   assert(get<0>(pyramid) == (vec<int>{5, 7, 8}));
   assert(get<1>(pyramid) == 0);
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{2, 5}, vec<int>{1, 4, 7}, vec<int>{3, 6, 8}}));
+  assert(containsPyramid(G));
 
   G = Graph(9, "\
   ....X...X\
@@ -197,6 +199,7 @@ void testPyramidsHand() {
   assert(get<0>(pyramid) == (vec<int>{1, 3, 7}));
   assert(get<1>(pyramid) == 2);
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{8, 0, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
+  assert(containsPyramid(G));
 
   G = Graph(9, "\
   ....X...X\
@@ -214,6 +217,7 @@ void testPyramidsHand() {
   assert(get<0>(pyramid).empty());
   assert(get<1>(pyramid) == -1);
   assert(get<2>(pyramid).empty());
+  assert(!containsPyramid(G));
 
   G = Graph(9, "\
   ....X...X\
