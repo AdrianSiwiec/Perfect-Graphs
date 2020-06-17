@@ -130,9 +130,8 @@ set<set<int>> getPossibleNearCleaners(const Graph &G) {
   set<set<int>> res;
   for (auto N : Ns) {
     for (auto X : Xs) {
-      // TODO(Adrian) smarter
-      set<int> tmpS(N.begin(), N.end());
-      tmpS.insert(X.begin(), X.end());
+      set<int> tmpS(X);
+      tmpS.insert(N.begin(), N.end());
       res.insert(tmpS);
     }
   }

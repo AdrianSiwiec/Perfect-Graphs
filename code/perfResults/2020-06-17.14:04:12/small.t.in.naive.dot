@@ -1,0 +1,28 @@
+digraph {
+	graph [fontname=Arial, nodesep=0.125, ranksep=0.25];
+	node [fontcolor=white, fontname=Arial, height=0, shape=box, style=filled, width=0];
+	edge [fontname=Arial];
+	"(below main)" [color="#ff0200", fontcolor="#ffffff", fontsize="10.00", label="libc-2.24.so\n(below main)\n99.82%\n(0.00%)\n1×"];
+	"(below main)" -> main [arrowsize="1.00", color="#ff0200", fontcolor="#ff0200", fontsize="10.00", label="99.80%\n1×", labeldistance="3.99", penwidth="3.99"];
+	"0x0000000000000c20" [color="#ff0000", fontcolor="#ffffff", fontsize="10.00", label="ld-2.24.so\n0x0000000000000c20\n99.98%\n(0.00%)\n0×"];
+	"0x0000000000000c20" -> "_start" [arrowsize="1.00", color="#ff0200", fontcolor="#ff0200", fontsize="10.00", label="99.82%\n1×", labeldistance="3.99", penwidth="3.99"];
+	"Graph::getNextNeighbour(int, int) const" [color="#0d257a", fontcolor="#ffffff", fontsize="10.00", label="naive.e\nGraph::getNextNeighbour(int, int) const\n5.56%\n(5.56%)\n2250124×"];
+	"_start" [color="#ff0200", fontcolor="#ffffff", fontsize="10.00", label="naive.e\n_start\n99.82%\n(0.00%)\n1×"];
+	"_start" -> "(below main)" [arrowsize="1.00", color="#ff0200", fontcolor="#ff0200", fontsize="10.00", label="99.82%\n1×", labeldistance="3.99", penwidth="3.99"];
+	"containsOddHoleNaive(Graph const&)" [color="#ff0300", fontcolor="#ffffff", fontsize="10.00", label="naive.e\ncontainsOddHoleNaive(Graph const&)\n99.73%\n(0.00%)\n18×"];
+	"containsOddHoleNaive(Graph const&)" -> "findHoleOfSize(Graph const&, int)" [arrowsize="1.00", color="#ff0300", fontcolor="#ff0300", fontsize="10.00", label="99.73%\n42×", labeldistance="3.99", penwidth="3.99"];
+	"findHoleOfSize(Graph const&, int)" [color="#ff0300", fontcolor="#ffffff", fontsize="10.00", label="naive.e\nfindHoleOfSize(Graph const&, int)\n99.73%\n(0.00%)\n42×"];
+	"findHoleOfSize(Graph const&, int)" -> "nextPathInPlace(Graph const&, vec<int>&, int, bool, bool)" [arrowsize="1.00", color="#ff0300", fontcolor="#ff0300", fontsize="10.00", label="99.73%\n172×", labeldistance="3.99", penwidth="3.99"];
+	"isDistinctValues(vec<int> const&)" [color="#22bb09", fontcolor="#ffffff", fontsize="10.00", label="naive.e\nisDistinctValues(vec<int> const&)\n53.50%\n(53.50%)\n7863664×"];
+	"isPerfectGraphNaive(Graph const&)" [color="#ff0300", fontcolor="#ffffff", fontsize="10.00", label="naive.e\nisPerfectGraphNaive(Graph const&)\n99.75%\n(0.00%)\n9×"];
+	"isPerfectGraphNaive(Graph const&)" -> "containsOddHoleNaive(Graph const&)" [arrowsize="1.00", color="#ff0300", fontcolor="#ff0300", fontsize="10.00", label="99.73%\n18×", labeldistance="3.99", penwidth="3.99"];
+	main [color="#ff0200", fontcolor="#ffffff", fontsize="10.00", label="naive.e\nmain\n99.80%\n(0.00%)\n1×"];
+	main -> "testWithStats(Graph const&, bool)" [arrowsize="1.00", color="#ff0300", fontcolor="#ff0300", fontsize="10.00", label="99.75%\n9×", labeldistance="3.99", penwidth="3.99"];
+	"nextPathInPlace(Graph const&, vec<int>&, int, bool, bool)" [color="#ff0300", fontcolor="#ffffff", fontsize="10.00", label="naive.e\nnextPathInPlace(Graph const&, vec<int>&, int, bool, bool)\n99.73%\n(0.00%)\n172×"];
+	"nextPathInPlace(Graph const&, vec<int>&, int, bool, bool)" -> "nextPathInPlaceInternal(Graph const&, vec<int>&, int, bool, bool)" [arrowsize="1.00", color="#ff0300", fontcolor="#ff0300", fontsize="10.00", label="99.73%\n172×", labeldistance="3.99", penwidth="3.99"];
+	"nextPathInPlaceInternal(Graph const&, vec<int>&, int, bool, bool)" [color="#ff0300", fontcolor="#ffffff", fontsize="10.00", label="naive.e\nnextPathInPlaceInternal(Graph const&, vec<int>&, int, bool, bool)\n99.73%\n(40.33%)\n172×"];
+	"nextPathInPlaceInternal(Graph const&, vec<int>&, int, bool, bool)" -> "Graph::getNextNeighbour(int, int) const" [arrowsize="0.35", color="#0d257a", fontcolor="#0d257a", fontsize="10.00", label="5.56%\n2250124×", labeldistance="0.50", penwidth="0.50"];
+	"nextPathInPlaceInternal(Graph const&, vec<int>&, int, bool, bool)" -> "isDistinctValues(vec<int> const&)" [arrowsize="0.73", color="#22bb09", fontcolor="#22bb09", fontsize="10.00", label="53.50%\n7863534×", labeldistance="2.14", penwidth="2.14"];
+	"testWithStats(Graph const&, bool)" [color="#ff0300", fontcolor="#ffffff", fontsize="10.00", label="naive.e\ntestWithStats(Graph const&, bool)\n99.75%\n(0.00%)\n9×"];
+	"testWithStats(Graph const&, bool)" -> "isPerfectGraphNaive(Graph const&)" [arrowsize="1.00", color="#ff0300", fontcolor="#ff0300", fontsize="10.00", label="99.75%\n9×", labeldistance="3.99", penwidth="3.99"];
+}

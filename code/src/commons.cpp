@@ -478,15 +478,8 @@ vec<int> getFirstPath(const Graph &G, int len, bool isCycleOk) {
   return ret;
 }
 
-// We use goto TOP to eliminate tail recursion. Testing showed this is fastest way to do it and this method is
-// crucial for performance.
 void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk) {
   while (true) {
-    if (v.empty() || v == vec<int>{-1}) {
-      v = {};
-      return;
-    }
-
     if (v.back() == -1) {
       v.pop_back();
       if (v.size() == 1) {
@@ -516,11 +509,8 @@ void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleO
 
     do {
       v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
-      if (v.back() == -1) {
-        break;
-        // return nextPathInPlaceInternal(G, v, len, isCycleOk);
-      }
-    } while (!isAPath(G, v, isCycleOk, areChordsOk));
+    } while (v.back() != -1 && !isAPath(G, v, isCycleOk, areChordsOk));
+
     if (v.back() == -1) continue;
 
     return;
@@ -539,6 +529,8 @@ void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool 
   if (v.empty()) {
     v = {0};
   }
+
+  v.reserve(len);
 
   return nextPathInPlaceInternal(G, v, len, isCycleOk, areChordsOk);
 }
