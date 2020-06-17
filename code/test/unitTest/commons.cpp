@@ -340,6 +340,45 @@ void testShortestPath() {
   assert(findShortestPathWithPredicate(G, 0, 3, [](int v) { return true; }) == (vec<int>{0, 4, 3}));
 }
 
+void testAllShortestPaths() {
+  Graph G(5,
+          "\
+  .X..X\
+  X.X..\
+  .X.X.\
+  ..X.X\
+  X..X.\
+  ");
+
+  auto noFour = [](int v) { return v != 4; };
+
+  vec<vec<vec<int>>> R(G.n, vec<vec<int>>(G.n, vec<int>()));
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      R[i][j] = findShortestPathWithPredicate(G, i, j, noFour);
+    }
+  }
+  assert(allShortestPathsWithPredicate(G, noFour) == R);
+
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX.X..\
+  .XX.X.\
+  ...X.X\
+  ....X.\
+  ");
+  auto noOne = [](int v) { return v != 1; };
+  R = vec<vec<vec<int>>>(G.n, vec<vec<int>>(G.n, vec<int>()));
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      R[i][j] = findShortestPathWithPredicate(G, i, j, noOne);
+    }
+  }
+  assert(allShortestPathsWithPredicate(G, noOne) == R);
+}
+
 void testDfsWith() {
   string s;
   auto writeToS = [&](int v) { s += std::to_string(v); };
@@ -550,6 +589,7 @@ int main() {
   testEmptyStarTriangles();
   testGetCompleteVertices();
   testShortestPath();
+  testAllShortestPaths();
   testDfsWith();
   testComponents();
   testGetComponentsOfInducedGraph();

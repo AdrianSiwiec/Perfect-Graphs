@@ -295,6 +295,7 @@ bool isAllZeros(const vec<int> &v) {
 
 // This is a bottleneck in both Perfect and Naive, so it is optimized for speed over readibility
 bool isDistinctValues(const vec<int> &v) {
+  // TODO(Adrian) Create fallback for values outside of [-2,997]
   static vec<int> stamp(1000, 0);
   static int counter = 1;
 
@@ -304,20 +305,12 @@ bool isDistinctValues(const vec<int> &v) {
     counter = 1;
   }
 
-  for (int i = 0; i < v.size(); i++) {
+  for (int i = 0; i < v.size(); ++i) {
     //+2 to accomodate values of -1 and -2
     if (stamp[v[i] + 2] == counter) return false;
     stamp[v[i] + 2] = counter;
   }
   return true;
-
-  // // TODO use stamps without sort or copy
-  // vec<int> vcopy(v);
-  // std::sort(vcopy.begin(), vcopy.end());
-  // for (int i = 1; i < v.size(); i++) {
-  //   if (vcopy[i] == vcopy[i - 1]) return false;
-  // }
-  // return true;
 }
 
 void nextTupleInPlace(vec<int> &v, int max) {
@@ -398,17 +391,66 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
   }
 }
 
+vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test) {
+  int inf = G.n + 10;
+
+  vec<vec<int>> dist(G.n, vec<int>(G.n, inf));
+  vec<vec<int>> lastOnPath(G.n, vec<int>(G.n, -1));
+  for (int i = 0; i < G.n; i++) {
+    dist[i][i] = 0;
+    for (int j : G[i]) {
+      dist[i][j] = 1;
+      lastOnPath[i][j] = i;
+    }
+  }
+
+  for (int k = 0; k < G.n; k++) {
+    for (int i = 0; i < G.n; i++) {
+      if (i == k) continue;
+      for (int j = 0; j < G.n; j++) {
+        if (i == j || k == j) continue;
+        if (test(k)) {
+          if (dist[i][j] > dist[i][k] + dist[k][j]) {
+            dist[i][j] = dist[i][k] + dist[k][j];
+            lastOnPath[i][j] = lastOnPath[k][j];
+          }
+        }
+      }
+    }
+  }
+
+  vec<vec<vec<int>>> R(G.n, vec<vec<int>>(G.n, vec<int>()));
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      if (dist[i][j] == inf) continue;
+      R[i][j].push_back(j);
+      if (i == j) continue;
+
+      int tmp = lastOnPath[i][j];
+      R[i][j].push_back(tmp);
+      while (tmp != i) {
+        tmp = lastOnPath[i][tmp];
+        R[i][j].push_back(tmp);
+      }
+
+      std::reverse(R[i][j].begin(), R[i][j].end());
+    }
+  }
+
+  return R;
+}
+
 bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk, bool areChordsOk) {
   if (v.size() <= 1) return false;
 
   if (!isDistinctValues(v)) return false;
 
-  for (int i = 0; i < v.size() - 1; i++) {
-    for (int j = i + 1; j < v.size(); j++) {
-      if (j == i + 1) {
+  for (int i = v.size() - 1; i > 0; i--) {
+    for (int j = 0; j < i; j++) {
+      if (j == i - 1) {
         if (!G.areNeighbours(v[i], v[j])) return false;
       } else if (!areChordsOk) {
-        if (isCycleOk && i == 0 && j == v.size() - 1) continue;
+        if (isCycleOk && i == v.size() - 1 && j == 0) continue;
         if (G.areNeighbours(v[i], v[j])) return false;
       }
     }

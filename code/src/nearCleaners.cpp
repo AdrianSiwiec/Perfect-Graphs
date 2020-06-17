@@ -3,18 +3,7 @@
 #include "commons.h"
 
 bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX) {
-  vec<vec<vec<int>>> R(G.n);
-  for (int i = 0; i < G.n; i++) {
-    R[i].resize(G.n);
-  }
-
-  for (int x = 0; x < G.n; x++) {
-    for (int y = 0; y < G.n; y++) {
-      if (x == y) continue;
-      // TODO(Adrian) Floyd-Warshall?
-      R[x][y] = findShortestPathWithPredicate(G, x, y, [&](int v) -> bool { return sX.count(v) == 0; });
-    }
-  }
+  auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; });
 
   for (int y1 = 0; y1 < G.n; y1++) {
     if (sX.count(y1) > 0) continue;
