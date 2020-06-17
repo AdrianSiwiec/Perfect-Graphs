@@ -73,16 +73,7 @@ bool isT1(const Graph &G, const vec<int> &v) {
 
   return true;
 }
-vec<int> findT1(const Graph &G) {
-  vec<int> v(5);
-  do {
-    if (isT1(G, v)) return v;
-
-    nextTupleInPlace(v, G.n);
-  } while (!isAllZeros(v));
-
-  return vec<int>();
-}
+vec<int> findT1(const Graph &G) { return findHoleOfSize(G, 5); }
 bool containsT1(const Graph &G) { return !findT1(G).empty(); }
 
 tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {

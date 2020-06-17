@@ -21,8 +21,8 @@ using std::invalid_argument;
 using std::map;
 
 // Whether to run big tests. These take more time.
-const bool bigTests = false;
-// const bool bigTests = true;
+// const bool bigTests = false;
+const bool bigTests = true;
 
 bool probTrue(double p);
 void printGraph(const Graph &G);

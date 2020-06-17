@@ -2,6 +2,7 @@
 #include <map>
 #include <queue>
 #include <set>
+#include <unordered_set>
 
 using std::invalid_argument;
 using std::make_pair;
@@ -291,11 +292,32 @@ bool isAllZeros(const vec<int> &v) {
     if (a != 0) return false;
   return true;
 }
-bool isDistinctValues(const vec<int> &v) {
-  set<int> s;
-  for (int i : v) s.insert(i);
 
-  return s.size() == v.size();
+// This is a bottleneck in both Perfect and Naive, so it is optimized for speed over readibility
+bool isDistinctValues(const vec<int> &v) {
+  static vec<int> stamp(1000, 0);
+  static int counter = 1;
+
+  counter++;
+  if (counter > std::numeric_limits<int>::max() - 2) {
+    stamp = vec<int>(1000, 0);
+    counter = 1;
+  }
+
+  for (int i = 0; i < v.size(); i++) {
+    //+2 to accomodate values of -1 and -2
+    if (stamp[v[i] + 2] == counter) return false;
+    stamp[v[i] + 2] = counter;
+  }
+  return true;
+
+  // // TODO use stamps without sort or copy
+  // vec<int> vcopy(v);
+  // std::sort(vcopy.begin(), vcopy.end());
+  // for (int i = 1; i < v.size(); i++) {
+  //   if (vcopy[i] == vcopy[i - 1]) return false;
+  // }
+  // return true;
 }
 
 void nextTupleInPlace(vec<int> &v, int max) {
@@ -376,7 +398,7 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
   }
 }
 
-bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk) {
+bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk, bool areChordsOk) {
   if (v.size() <= 1) return false;
 
   if (!isDistinctValues(v)) return false;
@@ -385,7 +407,7 @@ bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk) {
     for (int j = i + 1; j < v.size(); j++) {
       if (j == i + 1) {
         if (!G.areNeighbours(v[i], v[j])) return false;
-      } else {
+      } else if (!areChordsOk) {
         if (isCycleOk && i == 0 && j == v.size() - 1) continue;
         if (G.areNeighbours(v[i], v[j])) return false;
       }
@@ -395,7 +417,75 @@ bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk) {
   return true;
 }
 
-void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk) {
+vec<int> getFirstPath(const Graph &G, int len, bool isCycleOk) {
+  vec<int> ret;
+  for (int start = 0; start < G.n; start++) {
+    ret = {start};
+    while (ret.size() < len) {
+      ret.push_back(G.getFirstNeighbour(ret.back()));
+
+      if (ret.back() == -1) {
+        ret.clear();
+        break;
+      }
+    }
+
+    if (ret.size() == len) return ret;
+  }
+
+  return ret;
+}
+
+// We use goto TOP to eliminate tail recursion. Testing showed this is fastest way to do it and this method is
+// crucial for performance.
+void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk) {
+  while (true) {
+    if (v.empty() || v == vec<int>{-1}) {
+      v = {};
+      return;
+    }
+
+    if (v.back() == -1) {
+      v.pop_back();
+      if (v.size() == 1) {
+        v[0]++;
+        if (v[0] >= G.n) {
+          v = {};
+          return;
+        }
+        continue;
+        // return nextPathInPlaceInternal(G, v, len, isCycleOk);
+      } else {
+        v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+        continue;
+        // return nextPathInPlaceInternal(G, v, len, isCycleOk);
+      }
+    }
+
+    if (v.size() < len) {
+      v.push_back(G.getFirstNeighbour(v.back()));
+      if (v.size() == len && isAPath(G, v, isCycleOk, areChordsOk)) {
+        return;
+      } else {
+        continue;
+        // return nextPathInPlaceInternal(G, v, len, isCycleOk);
+      }
+    }
+
+    do {
+      v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+      if (v.back() == -1) {
+        break;
+        // return nextPathInPlaceInternal(G, v, len, isCycleOk);
+      }
+    } while (!isAPath(G, v, isCycleOk, areChordsOk));
+    if (v.back() == -1) continue;
+
+    return;
+  }
+}
+
+void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk) {
   // TODO(Adrian) faster, do not iterate over all permutations. Have a "pointer" to next neighbour in G?
   if (len <= 1) {
     throw invalid_argument("Length of next path must be at least 2");
@@ -405,18 +495,8 @@ void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk) {
   }
 
   if (v.empty()) {
-    v = vec<int>(len);
+    v = {0};
   }
 
-  while (true) {
-    nextTupleInPlace(v, G.n);
-    if (isAllZeros(v)) {
-      v = vec<int>();
-      return;
-    }
-
-    if (isAPath(G, v, isCycleOk)) {
-      return;
-    }
-  }
+  return nextPathInPlaceInternal(G, v, len, isCycleOk, areChordsOk);
 }

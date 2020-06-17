@@ -12,7 +12,7 @@ PERFTESTDIR=$(TESTDIR)/perfTest
 #GCC compiler settings
 CXX=g++
 CXXINC=-I ./$(INCDIR)/
-CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
+CXXFLAGS=-O3 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
 INCFILES=$(wildcard $(INCDIR)/*.h)
 SRCFILES=$(wildcard $(SRCDIR)/*.cpp)

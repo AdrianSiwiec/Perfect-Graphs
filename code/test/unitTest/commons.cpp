@@ -424,6 +424,23 @@ void testIsAPath() {
   assert(!isAPath(G, {0, 1, 2, 0}));
   assert(isAPath(G, {0, 1, 3, 4, 5}));
   assert(!isAPath(G, {0, 1, 3, 5}));
+
+  assert(isAPath(G, {0, 1, 2}, true));
+  assert(!isAPath(G, {2, 0, 1, 3}, true, false));
+  assert(isAPath(G, {2, 0, 1, 3}, true, true));
+
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX.X..\
+  .XX.X.\
+  ...X.X\
+  ....X.\
+  ");
+
+  assert(isAPath(G, {2, 0, 1, 3}, true, true));
+  assert(isAPath(G, {0, 1, 2, 3}, true, true));
 }
 
 void testNextPathInPlace() {
@@ -437,42 +454,43 @@ void testNextPathInPlace() {
   ....X.\
   ");
 
+  // Tests below are implementation-dependent and should be carefully updated when nextPathInPlace is modified
   vec<int> v;
-  nextPathInPlace(G, v, 2);
-  assert(v == (vec<int>{1, 0}));
-  nextPathInPlace(G, v, 2);
-  assert(v == (vec<int>{2, 0}));
   nextPathInPlace(G, v, 2);
   assert(v == (vec<int>{0, 1}));
   nextPathInPlace(G, v, 2);
-  assert(v == (vec<int>{2, 1}));
-  nextPathInPlace(G, v, 2);
-  assert(v == (vec<int>{3, 1}));
-  nextPathInPlace(G, v, 2);
   assert(v == (vec<int>{0, 2}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{1, 0}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{1, 2}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{1, 3}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{2, 0}));
 
-  v = vec<int>{4, 5};
+  v = vec<int>{5, 4};
   nextPathInPlace(G, v, 2);
   assert(v == vec<int>());
 
   nextPathInPlace(G, v, 3);
-  assert(v == (vec<int>{3, 1, 0}));
+  assert(v == (vec<int>{0, 1, 3}));
   nextPathInPlace(G, v, 3);
-  assert(v == (vec<int>{4, 3, 1}));
+  assert(v == (vec<int>{1, 3, 4}));
   nextPathInPlace(G, v, 3);
-  assert(v == (vec<int>{3, 1, 2}));
+  assert(v == (vec<int>{2, 1, 3}));
 
   v = vec<int>();
   nextPathInPlace(G, v, 3, true);
-  assert(v == (vec<int>{2, 1, 0}));
+  assert(v == (vec<int>{0, 1, 2}));
   nextPathInPlace(G, v, 3, true);
-  assert(v == (vec<int>{3, 1, 0}));
+  assert(v == (vec<int>{0, 1, 3}));
   nextPathInPlace(G, v, 3, true);
-  assert(v == (vec<int>{1, 2, 0}));
+  assert(v == (vec<int>{0, 2, 1}));
 
   v = vec<int>();
   nextPathInPlace(G, v, 5);
-  assert(v == (vec<int>{5, 4, 3, 1, 0}));
+  assert(v == (vec<int>{0, 1, 3, 4, 5}));
 
   v = vec<int>();
   int counter = 0;
@@ -497,6 +515,26 @@ void testNextPathInPlace() {
     counter++;
   } while (!v.empty());
   assert(counter == 15);
+
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX.X..\
+  .XX.X.\
+  ...X.X\
+  ....X.\
+  ");
+
+  v = vec<int>();
+  nextPathInPlace(G, v, 4, true, true);
+  assert(v == (vec<int>{0, 1, 2, 3}));
+
+  nextPathInPlace(G, v, 4, true, true);
+  assert(v == (vec<int>{0, 1, 3, 2}));
+
+  nextPathInPlace(G, v, 4, true, true);
+  assert(v == (vec<int>{0, 1, 3, 4}));
 }
 
 int main() {

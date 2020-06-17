@@ -33,14 +33,24 @@ bool isJewel(const Graph &G, const vec<int> &v) {
 
 // returns [v1, ..., v5] or empty vector if none found
 vec<int> findJewelNaive(const Graph &G) {
-  vec<int> v(5);
+  vec<int> v;
+
   do {
     if (isJewel(G, v)) return v;
 
-    nextTupleInPlace(v, G.n);
-  } while (!isAllZeros(v));
+    nextPathInPlace(G, v, 5, true, true);
+  } while (!v.empty());
 
   return vec<int>();
+
+  // vec<int> v(5);
+  // do {
+  //   if (isJewel(G, v)) return v;
+
+  //   nextTupleInPlace(v, G.n);
+  // } while (!isAllZeros(v));
+
+  // return vec<int>();
 }
 
 bool containsJewelNaive(const Graph &G) {

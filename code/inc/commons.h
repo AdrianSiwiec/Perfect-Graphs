@@ -57,7 +57,7 @@ struct Graph {
   // Returns first neighbor of a. Returns -1 if a has no neighbors.
   int getFirstNeighbour(int a) const;
   // Returns next neighbor of a, after b. Returns -1 if b is last, throws invalid_argument if b is not a
-  // neighbor of a.
+  // neighbor of a. Guaranteed to be consistent with G[a] ordering.
   int getNextNeighbour(int a, int b) const;
 
   Graph getComplement() const;
@@ -130,8 +130,8 @@ void nextTupleInPlace(vec<int> &v, int max);
 
 // Returns whether v is a path in G. A path must have all vertices distinct, and edges only between neighbors.
 // If isCycleOk a cycle is also considered a path e.g. [1,2,3,4] if 1-4 is an edge
-bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk = false);
+bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk = false, bool areChordsOk = false);
 
 // Returns (in &v) next path of length len in G (in some order). If v is empty returns first path. If v is
 // the last path returns empty vec. Iterating from empty vector to empty vector gives all paths of length len.
-void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false);
+void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false, bool areChordsOk = false);
