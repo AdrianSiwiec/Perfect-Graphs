@@ -409,11 +409,9 @@ vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(i
       if (i == k) continue;
       for (int j = 0; j < G.n; j++) {
         if (i == j || k == j) continue;
-        if (test(k)) {
-          if (dist[i][j] > dist[i][k] + dist[k][j]) {
-            dist[i][j] = dist[i][k] + dist[k][j];
-            lastOnPath[i][j] = lastOnPath[k][j];
-          }
+        if (dist[i][j] > dist[i][k] + dist[k][j] && test(k)) {
+          dist[i][j] = dist[i][k] + dist[k][j];
+          lastOnPath[i][j] = lastOnPath[k][j];
         }
       }
     }
@@ -423,9 +421,12 @@ vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(i
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
       if (dist[i][j] == inf) continue;
+
+      R[i][j].reserve(dist[i][j] + 1);
       R[i][j].push_back(j);
       if (i == j) continue;
 
+      //TODO(Adrian) smarter: if(tmp < i) ~insert(R[i][tmp])
       int tmp = lastOnPath[i][j];
       R[i][j].push_back(tmp);
       while (tmp != i) {
