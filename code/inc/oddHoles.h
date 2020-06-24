@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include "commons.h"
 
 bool isHole(const Graph &G, const vec<int> &v);

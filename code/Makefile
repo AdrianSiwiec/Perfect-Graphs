@@ -7,19 +7,22 @@ UNITTESTDIR=$(TESTDIR)/unitTest
 PERMATESTDIR=$(TESTDIR)/permaTest
 NETTESTDIR=$(TESTDIR)/netTest
 DOWNLOADSDIR=$(NETTESTDIR)/downloaded
+PERFTESTDIR=$(TESTDIR)/perfTest
 
 #GCC compiler settings
 CXX=g++
 CXXINC=-I ./$(INCDIR)/
-CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
+CXXFLAGS=-O3 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
 INCFILES=$(wildcard $(INCDIR)/*.h)
 SRCFILES=$(wildcard $(SRCDIR)/*.cpp)
+TESTFILES=$(wildcard $(TESTDIR)/*/*.cpp)
+
 OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCFILES))
-TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
 UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp))
 PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
+PERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERFTESTDIR)/*.cpp))
 
 
 # $(info $(OBJFILES))
@@ -27,10 +30,11 @@ NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 # $(info $(PERMATESTFILES))
 
 #Targets
-test: $(TESTFILES)
+# test: $(TESTFILES)
 unitTest: $(UNITTESTFILES)
 permaTest: $(PERMATESTFILES)
 netTest: $(NETTESTFILES)
+perfTest: $(PERFTESTFILES)
 
 $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
@@ -56,6 +60,9 @@ permaTest:
 netTest:
 	./test/netTest/prepare.sh
 
+perfTest:
+	./test/perfTest/run.sh
+
 clean:
 	rm -rf obj *.e
 
@@ -63,4 +70,4 @@ cleanDownloads:
 	rm $(DOWNLOADSDIR) -rf
 
 lint:
-	cpplint --linelength=120 --extensions=cpp,h --filter=-legal/copyright,-runtime/references $(SRCFILES) $(INCFILES)
+	~/.local/bin/cpplint --linelength=120 --extensions=cpp,h --filter=-legal/copyright,-runtime/references,-build/include_subdir,-readability/multiline_string $(SRCFILES) $(INCFILES) $(TESTFILES)

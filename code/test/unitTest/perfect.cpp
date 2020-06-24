@@ -1,9 +1,9 @@
 #include "perfect.h"
+#include <random>
 #include "commons.h"
 #include "ctime"
 #include "oddHoles.h"
 #include "testCommons.h"
-#include <random>
 
 double allNaive = 0;
 double allPerfect = 0;
@@ -16,7 +16,8 @@ void testGraphSimple(const Graph &G) {
 }
 
 void testHand() {
-  testGraphSimple(Graph(8, "\
+  testGraphSimple(Graph(8,
+                        "\
   .XXXX...\
   X..XX..X\
   X...X.XX\
@@ -27,7 +28,8 @@ void testHand() {
   .XXX.XX.\
   "));
 
-  testGraphSimple(Graph(8, "\
+  testGraphSimple(Graph(8,
+                        "\
   ..X..X.X\
   ......XX\
   X...XXX.\
@@ -38,7 +40,8 @@ void testHand() {
   XX....X.\
 "));
 
-  testGraphSimple(Graph(8, "\
+  testGraphSimple(Graph(8,
+                        "\
   .XXXXX..\
   X..XX.XX\
   X..X.X.X\
@@ -77,8 +80,8 @@ void testBiparite() {
 
 void testLineBiparite() {
   RaiiTimer timer("Line Biparite");
-  for (int i = 0; i < (bigTests? 30 : 20); i++) {
-    Graph G = getBipariteGraph(bigTests? 9 : 7, 0.5).getLineGraph();
+  for (int i = 0; i < (bigTests ? 30 : 20); i++) {
+    Graph G = getBipariteGraph(bigTests ? 9 : 7, 0.5).getLineGraph();
 
     assert(isPerfectGraph(G) == true);
   }
