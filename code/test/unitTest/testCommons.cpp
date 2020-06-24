@@ -1,7 +1,7 @@
 #include "testCommons.h"
-#include "commons.h"
 #include <cstdlib>
 #include <iostream>
+#include "commons.h"
 // Unit test of testCommons
 
 void testRandomGraphs() {

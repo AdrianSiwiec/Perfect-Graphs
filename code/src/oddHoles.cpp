@@ -1,27 +1,24 @@
 #include "oddHoles.h"
-#include "commons.h"
 #include <algorithm>
 #include <set>
+#include "commons.h"
+
+using std::get;
 
 bool isHole(const Graph &G, const vec<int> &v) {
-  if (v.size() <= 3)
-    return false;
+  if (v.size() <= 3) return false;
 
-  if (!isDistinctValues(v))
-    return false;
+  if (!isDistinctValues(v)) return false;
 
   for (int i : v)
-    if (i < 0 || i >= G.n)
-      return false;
+    if (i < 0 || i >= G.n) return false;
 
   for (int i = 0; i < v.size(); i++) {
     for (int j = i + 1; j < v.size(); j++) {
       if (abs(i - j) == 1 || abs(i - j) == (v.size() - 1)) {
-        if (!G.areNeighbours(v[i], v[j]))
-          return false;
+        if (!G.areNeighbours(v[i], v[j])) return false;
       } else {
-        if (G.areNeighbours(v[i], v[j]))
-          return false;
+        if (G.areNeighbours(v[i], v[j])) return false;
       }
     }
   }
@@ -30,17 +27,14 @@ bool isHole(const Graph &G, const vec<int> &v) {
 }
 
 vec<int> findHoleOfSize(const Graph &G, int size) {
-  if (size <= 3)
-    return vec<int>();
+  if (size <= 3) return vec<int>();
 
   vec<int> v;
   while (true) {
     nextPathInPlace(G, v, size, true);
-    if (v.size() == size && isHole(G, v))
-      return v;
+    if (v.size() == size && isHole(G, v)) return v;
 
-    if (v.empty())
-      break;
+    if (v.empty()) break;
   }
 
   return vec<int>();
@@ -51,8 +45,7 @@ bool constainsHoleOfSize(const Graph &G, int size) { return !findHoleOfSize(G, s
 vec<int> findOddHoleNaive(const Graph &G) {
   for (int size = 5; size <= G.n; size += 2) {
     auto v = findHoleOfSize(G, size);
-    if (!v.empty())
-      return v;
+    if (!v.empty()) return v;
   }
 
   return vec<int>();
@@ -61,65 +54,44 @@ vec<int> findOddHoleNaive(const Graph &G) {
 bool containsOddHoleNaive(const Graph &G) { return !findOddHoleNaive(G).empty(); }
 
 bool isT1(const Graph &G, const vec<int> &v) {
-  if (v.size() != 5)
-    return false;
+  if (v.size() != 5) return false;
 
-  if (!isDistinctValues(v))
-    return false;
+  if (!isDistinctValues(v)) return false;
 
   for (int i : v)
-    if (i < 0 || i >= G.n)
-      return false;
+    if (i < 0 || i >= G.n) return false;
 
   for (int i = 0; i < 5; i++) {
     for (int j = i + 1; j < 5; j++) {
       if (abs(i - j) == 1 || abs(i - j) == 4) {
-        if (!G.areNeighbours(v[i], v[j]))
-          return false;
+        if (!G.areNeighbours(v[i], v[j])) return false;
       } else {
-        if (G.areNeighbours(v[i], v[j]))
-          return false;
+        if (G.areNeighbours(v[i], v[j])) return false;
       }
     }
   }
 
   return true;
 }
-vec<int> findT1(const Graph &G) {
-  vec<int> v(5);
-  do {
-    if (isT1(G, v))
-      return v;
-
-    nextTupleInPlace(v, G.n);
-  } while (!isAllZeros(v));
-
-  return vec<int>();
-}
+vec<int> findT1(const Graph &G) { return findHoleOfSize(G, 5); }
 bool containsT1(const Graph &G) { return !findT1(G).empty(); }
 
 tuple<vec<int>, vec<int>, vec<int>> findT2(const Graph &G) {
   for (int v1 = 0; v1 < G.n; v1++) {
     for (int v2 : G[v1]) {
       for (int v3 : G[v2]) {
-        if (v3 == v1)
-          continue;
+        if (v3 == v1) continue;
         for (int v4 : G[v3]) {
-          if (v4 == v1 || v4 == v2)
-            continue;
-          if (!isAPath(G, vec<int>{v1, v2, v3, v4}))
-            continue;
+          if (v4 == v1 || v4 == v2) continue;
+          if (!isAPath(G, vec<int>{v1, v2, v3, v4})) continue;
           auto Y = getCompleteVertices(G, {v1, v2, v4});
           auto antiCY = getComponentsOfInducedGraph(G.getComplement(), Y);
 
           for (auto X : antiCY) {
             auto P = findShortestPathWithPredicate(G, v1, v4, [&](int v) -> bool {
-              if (v == v2 || v == v3)
-                return false;
-              if (G.areNeighbours(v, v2) || G.areNeighbours(v, v3))
-                return false;
-              if (isComplete(G, X, v))
-                return false;
+              if (v == v2 || v == v3) return false;
+              if (G.areNeighbours(v, v2) || G.areNeighbours(v, v3)) return false;
+              if (isComplete(G, X, v)) return false;
 
               return true;
             });
@@ -141,8 +113,7 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
   for (int v1 = 0; v1 < G.n; v1++) {
     for (int v2 : G[v1]) {
       for (int v5 = 0; v5 < G.n; v5++) {
-        if (v5 == v1 || v5 == v2 || G.areNeighbours(v5, v1) || G.areNeighbours(v5, v2))
-          continue;
+        if (v5 == v1 || v5 == v2 || G.areNeighbours(v5, v1) || G.areNeighbours(v5, v2)) continue;
 
         auto Y = getCompleteVertices(G, {v1, v2, v5});
         auto antiCY = getComponentsOfInducedGraph(G.getComplement(), Y);
@@ -151,10 +122,8 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
           vec<int> visited(G.n);
           dfsWith(G, visited, v5, [&](int v) -> void { Fprim.insert(v); },
                   [&](int v) -> bool {
-                    if (G.areNeighbours(v1, v) || G.areNeighbours(v2, v))
-                      return false;
-                    if (isComplete(G, X, v))
-                      return false;
+                    if (G.areNeighbours(v1, v) || G.areNeighbours(v2, v)) return false;
+                    if (isComplete(G, X, v)) return false;
 
                     return true;
                   });
@@ -169,8 +138,7 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
           }
 
           for (int v4 : G[v1]) {
-            if (G.areNeighbours(v4, v2) || G.areNeighbours(v4, v5))
-              continue;
+            if (G.areNeighbours(v4, v2) || G.areNeighbours(v4, v5)) continue;
             int v6 = -1;
             for (int f : F) {
               if (G.areNeighbours(v4, f)) {
@@ -178,8 +146,7 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
                 break;
               }
             }
-            if (v6 == -1)
-              continue;
+            if (v6 == -1) continue;
 
             bool v4HasNonNeighbourInX = false;
             for (int x : X) {
@@ -188,12 +155,10 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
                 break;
               }
             }
-            if (!v4HasNonNeighbourInX)
-              continue;
+            if (!v4HasNonNeighbourInX) continue;
 
             for (int v3 : G[v2]) {
-              if (!G.areNeighbours(v3, v4) || !G.areNeighbours(v3, v5) || G.areNeighbours(v3, v1))
-                continue;
+              if (!G.areNeighbours(v3, v4) || !G.areNeighbours(v3, v5) || G.areNeighbours(v3, v1)) continue;
 
               bool v3HasNonNeighbourInX = false;
               for (int x : X) {
@@ -202,14 +167,13 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
                   break;
                 }
               }
-              if (!v3HasNonNeighbourInX)
-                continue;
+              if (!v3HasNonNeighbourInX) continue;
 
               auto P =
                   findShortestPathWithPredicate(G, v6, v5, [&](int v) -> bool { return Fprim.count(v) > 0; });
 
-              if (P.empty()) { // Should not happen
-                throw logic_error("Algorithm Error: Could not find path P in T3.");
+              if (P.empty()) {  // Should not happen
+                throw std::logic_error("Algorithm Error: Could not find path P in T3.");
               }
 
               return make_tuple(vec<int>{v1, v2, v3, v4, v5, v6}, P, X);
@@ -224,32 +188,28 @@ tuple<vec<int>, vec<int>, vec<int>> findT3(const Graph &G) {
 }
 bool containsT3(const Graph &G) { return !get<0>(findT3(G)).empty(); }
 
-bool isT3(const Graph &G, const vec<int> &_v, const vec<int> &P, const vec<int> &_X) {
-  if (_v.size() != 6 || P.empty() || _X.empty())
-    return false;
+bool isT3(const Graph &G, const vec<int> &v_const, const vec<int> &P, const vec<int> &X_const) {
+  if (v_const.size() != 6 || P.empty() || X_const.empty()) return false;
 
-  vec<int> v(_v.begin(), _v.end());
-  v.insert(v.begin(), -1); // To have v1,... v6
+  vec<int> v(v_const.begin(), v_const.end());
+  v.insert(v.begin(), -1);  // To have v1,... v6
 
-  if (!isDistinctValues(v))
-    return false;
+  if (!isDistinctValues(v)) return false;
 
   auto edges = vec<vec<int>>{{1, 2}, {3, 4}, {1, 4}, {2, 3}, {3, 5}, {4, 6}};
   auto nonEdges = vec<vec<int>>{{1, 3}, {2, 4}, {1, 5}, {2, 5}, {1, 6}, {2, 6}, {4, 5}};
 
   for (auto e : edges) {
-    if (!G.areNeighbours(v[e[0]], v[e[1]]))
-      return false;
+    if (!G.areNeighbours(v[e[0]], v[e[1]])) return false;
   }
 
   for (auto e : nonEdges) {
-    if (G.areNeighbours(v[e[0]], v[e[1]]))
-      return false;
+    if (G.areNeighbours(v[e[0]], v[e[1]])) return false;
   }
 
   auto antiC = getComponentsOfInducedGraph(G.getComplement(), getCompleteVertices(G, {v[1], v[2], v[5]}));
 
-  vec<int> X(_X.begin(), _X.end());
+  vec<int> X(X_const.begin(), X_const.end());
   sort(X.begin(), X.end());
 
   bool isXAnticomponent = false;
@@ -260,38 +220,29 @@ bool isT3(const Graph &G, const vec<int> &_v, const vec<int> &P, const vec<int> 
       break;
     }
   }
-  if (!isXAnticomponent)
-    return false;
+  if (!isXAnticomponent) return false;
 
-  if (isComplete(G, X, v[3]) || isComplete(G, X, v[4]))
-    return false;
+  if (isComplete(G, X, v[3]) || isComplete(G, X, v[4])) return false;
 
-  if ((P[0] != v[5] || P.back() != v[6]) && (P[0] != v[6] || P.back() != v[5]))
-    return false;
+  if ((P[0] != v[5] || P.back() != v[6]) && (P[0] != v[6] || P.back() != v[5])) return false;
 
-  if (!isAPath(G, P))
-    return false;
+  if (!isAPath(G, P)) return false;
 
   for (int i = 1; i < P.size() - 1; i++) {
     int u = P[i];
     for (int i = 1; i <= 4; i++) {
-      if (u == v[i])
-        return false;
+      if (u == v[i]) return false;
     }
     for (int x : X) {
-      if (u == x)
-        return false;
+      if (u == x) return false;
     }
 
-    if (isComplete(G, X, u))
-      return false;
+    if (isComplete(G, X, u)) return false;
 
-    if (G.areNeighbours(v[1], u) || G.areNeighbours(v[2], u))
-      return false;
+    if (G.areNeighbours(v[1], u) || G.areNeighbours(v[2], u)) return false;
   }
 
-  if (G.areNeighbours(v[5], v[6]) && isComplete(G, X, v[6]))
-    return false;
+  if (G.areNeighbours(v[5], v[6]) && isComplete(G, X, v[6])) return false;
 
   return true;
 }

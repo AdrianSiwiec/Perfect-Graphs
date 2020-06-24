@@ -6,7 +6,8 @@
 #include "testCommons.h"
 
 void testIsRelevantTriple() {
-  Graph G(7, "\
+  Graph G(7,
+          "\
   .XXXXX.\
   X.X..XX\
   XX.X.X.\

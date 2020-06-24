@@ -4,7 +4,8 @@
 
 void testCheckPrerequisites() {
   // Only b=[4, 5, 6], s=[1, 3, 4] with a=2 should pass checkPrerequisites
-  Graph G(6, "\
+  Graph G(6,
+          "\
   .X....\
   X.XX..\
   .X....\
@@ -38,7 +39,8 @@ void testCheckPrerequisites() {
 
   assert(passedCount == 2);
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X.X.X\
   ...X.X.X.\
   ...XX.X.X\
@@ -51,7 +53,8 @@ void testCheckPrerequisites() {
   ");
   assert(checkPrerequisites(G, {1, 5, 7}, 2, {3, 4, 6}) == false);
 
-  G = Graph(7, "\
+  G = Graph(7,
+            "\
   .XXXXX.\
   X.X..XX\
   XX.X.X.\
@@ -78,7 +81,8 @@ void testVectorsCutEmpty() {
 }
 
 void testNoEdgeBetweenVectors() {
-  Graph G(7, "\
+  Graph G(7,
+          "\
   .X..X..\
   X.X.X..\
   .X.X...\
@@ -102,7 +106,8 @@ void testNoEdgeBetweenVectors() {
 }
 
 void testIsPyramid() {
-  Graph G(7, "\
+  Graph G(7,
+          "\
   .XXX...\
   X.X..X.\
   XX..X..\
@@ -126,7 +131,8 @@ void testIsPyramid() {
   assert(!isPyramid(G, {1, 0, 2}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
   assert(!isPyramid(G, {0, 2, 1}, 6, (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}})));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X.X.X\
   ...X.X.X.\
   ...X..X.X\
@@ -146,7 +152,8 @@ void testIsPyramid() {
 }
 
 void testPyramidsHand() {
-  Graph G(7, "\
+  Graph G(7,
+          "\
   .XXX...\
   X.X..X.\
   XX..X..\
@@ -163,7 +170,8 @@ void testPyramidsHand() {
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{3, 0}, vec<int>{5, 1}, vec<int>{4, 2}}));
   assert(containsPyramid(G));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   .XXX.....\
   X...X....\
   X....X...\
@@ -182,7 +190,8 @@ void testPyramidsHand() {
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{2, 5}, vec<int>{1, 4, 7}, vec<int>{3, 6, 8}}));
   assert(containsPyramid(G));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X...X\
   ...X.X.X.\
   ...X..X.X\
@@ -201,7 +210,8 @@ void testPyramidsHand() {
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{8, 0, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
   assert(containsPyramid(G));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X...X\
   ...X.X.X.\
   ...X...XX\
@@ -219,7 +229,8 @@ void testPyramidsHand() {
   assert(get<2>(pyramid).empty());
   assert(!containsPyramid(G));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X...X\
   ...X.X.X.\
   ...X..X.X\
@@ -237,7 +248,8 @@ void testPyramidsHand() {
   assert(get<1>(pyramid) == 2);
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{8, 4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X...X\
   ...X.X.X.\
   ...X..X.X\
@@ -255,7 +267,8 @@ void testPyramidsHand() {
   assert(get<1>(pyramid) == 2);
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{8, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X.X.X\
   ...X.X.X.\
   ...X..X.X\
@@ -273,7 +286,8 @@ void testPyramidsHand() {
   assert(get<1>(pyramid) == 6);
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{0, 4, 5, 1}, vec<int>{2, 3}, vec<int>{7}}));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X.X.X\
   ...X.X.X.\
   ...XX.X.X\
@@ -291,7 +305,8 @@ void testPyramidsHand() {
   assert(get<1>(pyramid) == 2);
   assert(get<2>(pyramid) == (vec<vec<int>>{vec<int>{4, 5, 1}, vec<int>{3}, vec<int>{6, 7}}));
 
-  G = Graph(9, "\
+  G = Graph(9,
+            "\
   ....X.X.X\
   ...X.X.X.\
   ...XX.X.X\

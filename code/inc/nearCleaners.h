@@ -1,7 +1,7 @@
 #pragma once
 
-#include "commons.h"
 #include <set>
+#include "commons.h"
 
 // Returns true if G has an odd hole.
 // Returns false if there is no shortest odd hole C such that X is a near-cleaner for C.

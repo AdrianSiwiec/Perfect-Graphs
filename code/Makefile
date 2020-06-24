@@ -7,17 +7,22 @@ UNITTESTDIR=$(TESTDIR)/unitTest
 PERMATESTDIR=$(TESTDIR)/permaTest
 NETTESTDIR=$(TESTDIR)/netTest
 DOWNLOADSDIR=$(NETTESTDIR)/downloaded
+PERFTESTDIR=$(TESTDIR)/perfTest
 
 #GCC compiler settings
 CXX=g++
 CXXINC=-I ./$(INCDIR)/
-CXXFLAGS=-O2 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
+CXXFLAGS=-O3 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
-OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(wildcard $(SRCDIR)/*.cpp))
-TESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(TESTDIR)/*.cpp))
+INCFILES=$(wildcard $(INCDIR)/*.h)
+SRCFILES=$(wildcard $(SRCDIR)/*.cpp)
+TESTFILES=$(wildcard $(TESTDIR)/*/*.cpp)
+
+OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCFILES))
 UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp))
 PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
+PERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERFTESTDIR)/*.cpp))
 
 
 # $(info $(OBJFILES))
@@ -25,10 +30,11 @@ NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 # $(info $(PERMATESTFILES))
 
 #Targets
-test: $(TESTFILES)
+# test: $(TESTFILES)
 unitTest: $(UNITTESTFILES)
 permaTest: $(PERMATESTFILES)
 netTest: $(NETTESTFILES)
+perfTest: $(PERFTESTFILES)
 
 $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
@@ -38,7 +44,7 @@ $(OBJDIR)/%.e: %.cpp $(OBJFILES)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(OBJFILES) $< -o $@
 
-.PHONY: test clean run-tests unitTest retest netTest
+.PHONY: test clean run-tests unitTest retest netTest lint
 
 # Do not delete OBJFILES by default (shortens make time)
 .OBJ: $(OBJFILES)
@@ -54,8 +60,14 @@ permaTest:
 netTest:
 	./test/netTest/prepare.sh
 
+perfTest:
+	./test/perfTest/run.sh
+
 clean:
 	rm -rf obj *.e
 
 cleanDownloads:
 	rm $(DOWNLOADSDIR) -rf
+
+lint:
+	~/.local/bin/cpplint --linelength=120 --extensions=cpp,h --filter=-legal/copyright,-runtime/references,-build/include_subdir,-readability/multiline_string $(SRCFILES) $(INCFILES) $(TESTFILES)
