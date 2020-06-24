@@ -7,24 +7,24 @@
 #include "testCommons.h"
 
 void testPerfectVsNaive() {
-  int r = rand_r() % 100;
+  int r = rand() % 20;
 
   if (r == 0) {
-    Graph G = getRandomGraph(9, getDistr());
+    Graph G = getRandomGraph(11, getDistr());
     testGraph(G, true);
   } else {
-    Graph G = getRandomGraph(8, getDistr());
+    Graph G = getRandomGraph(10, getDistr());
     testGraph(G, true);
   }
 }
 
 void testLineBiparite() {
-  Graph G = getBipariteGraph(6 + (getDistr() * 5), getDistr()).getLineGraph();
+  Graph G = getBipariteGraph(9 + (getDistr() * 5), getDistr()).getLineGraph();
   testGraph(G, true, true);
 }
 
 void testNonPerfect() {
-  Graph G = getNonPerfectGraph(5 + (rand_r() % 7) * 2, 3 + (getDistr() * 20), getDistr());
+  Graph G = getNonPerfectGraph(5 + (rand() % 35) * 2, 10 + (getDistr() * 200), getDistr());
   testGraph(G, false, true);
 }
 

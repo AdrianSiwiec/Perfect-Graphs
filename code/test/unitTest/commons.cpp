@@ -125,6 +125,55 @@ void testGraphGetShuffled() {
   assert(sumSize == ssumSize);
   assert(ns = ssumSize);
 }
+void testGraphGetNextNeighbor() {
+  Graph G(7,
+          "\
+  ...X...\
+  ..X.XX.\
+  .X...X.\
+  X......\
+  .X.....\
+  .XX....\
+  .......\
+  ");
+
+  assert(G.getFirstNeighbour(0) == 3);
+  assert(G.getNextNeighbour(0, 3) == -1);
+  assert(G.getFirstNeighbour(1) == 2);
+  assert(G.getNextNeighbour(1, 2) == 4);
+  assert(G.getNextNeighbour(1, 4) == 5);
+  assert(G.getNextNeighbour(1, 5) == -1);
+
+  bool caught = false;
+  try {
+    G.getNextNeighbour(0, 1);
+  } catch (invalid_argument &e) {
+    caught = true;
+  }
+  assert(caught);
+
+  assert(G.getFirstNeighbour(6) == -1);
+
+  Graph gPrim({{3}, {2, 4, 5}, {1, 5}, {0}, {1}, {1, 2}, {}});
+  assert(gPrim == G);
+
+  assert(gPrim.getFirstNeighbour(0) == 3);
+  assert(gPrim.getNextNeighbour(0, 3) == -1);
+  assert(gPrim.getFirstNeighbour(1) == 2);
+  assert(gPrim.getNextNeighbour(1, 2) == 4);
+  assert(gPrim.getNextNeighbour(1, 4) == 5);
+  assert(gPrim.getNextNeighbour(1, 5) == -1);
+
+  caught = false;
+  try {
+    gPrim.getNextNeighbour(0, 1);
+  } catch (invalid_argument &e) {
+    caught = true;
+  }
+  assert(caught);
+
+  assert(gPrim.getFirstNeighbour(6) == -1);
+}
 
 void testGetLineGraph() {
   Graph G(7,
@@ -291,6 +340,45 @@ void testShortestPath() {
   assert(findShortestPathWithPredicate(G, 0, 3, [](int v) { return true; }) == (vec<int>{0, 4, 3}));
 }
 
+void testAllShortestPaths() {
+  Graph G(5,
+          "\
+  .X..X\
+  X.X..\
+  .X.X.\
+  ..X.X\
+  X..X.\
+  ");
+
+  auto noFour = [](int v) { return v != 4; };
+
+  vec<vec<vec<int>>> R(G.n, vec<vec<int>>(G.n, vec<int>()));
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      R[i][j] = findShortestPathWithPredicate(G, i, j, noFour);
+    }
+  }
+  assert(allShortestPathsWithPredicate(G, noFour) == R);
+
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX.X..\
+  .XX.X.\
+  ...X.X\
+  ....X.\
+  ");
+  auto noOne = [](int v) { return v != 1; };
+  R = vec<vec<vec<int>>>(G.n, vec<vec<int>>(G.n, vec<int>()));
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      R[i][j] = findShortestPathWithPredicate(G, i, j, noOne);
+    }
+  }
+  assert(allShortestPathsWithPredicate(G, noOne) == R);
+}
+
 void testDfsWith() {
   string s;
   auto writeToS = [&](int v) { s += std::to_string(v); };
@@ -375,6 +463,23 @@ void testIsAPath() {
   assert(!isAPath(G, {0, 1, 2, 0}));
   assert(isAPath(G, {0, 1, 3, 4, 5}));
   assert(!isAPath(G, {0, 1, 3, 5}));
+
+  assert(isAPath(G, {0, 1, 2}, true));
+  assert(!isAPath(G, {2, 0, 1, 3}, true, false));
+  assert(isAPath(G, {2, 0, 1, 3}, true, true));
+
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX.X..\
+  .XX.X.\
+  ...X.X\
+  ....X.\
+  ");
+
+  assert(isAPath(G, {2, 0, 1, 3}, true, true));
+  assert(isAPath(G, {0, 1, 2, 3}, true, true));
 }
 
 void testNextPathInPlace() {
@@ -388,42 +493,87 @@ void testNextPathInPlace() {
   ....X.\
   ");
 
+  // Tests below are implementation-dependent and should be carefully updated when nextPathInPlace is modified
   vec<int> v;
-  nextPathInPlace(G, v, 2);
-  assert(v == (vec<int>{1, 0}));
-  nextPathInPlace(G, v, 2);
-  assert(v == (vec<int>{2, 0}));
   nextPathInPlace(G, v, 2);
   assert(v == (vec<int>{0, 1}));
   nextPathInPlace(G, v, 2);
-  assert(v == (vec<int>{2, 1}));
-  nextPathInPlace(G, v, 2);
-  assert(v == (vec<int>{3, 1}));
-  nextPathInPlace(G, v, 2);
   assert(v == (vec<int>{0, 2}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{1, 0}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{1, 2}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{1, 3}));
+  nextPathInPlace(G, v, 2);
+  assert(v == (vec<int>{2, 0}));
 
-  v = vec<int>{4, 5};
+  v = vec<int>{5, 4};
   nextPathInPlace(G, v, 2);
   assert(v == vec<int>());
 
   nextPathInPlace(G, v, 3);
-  assert(v == (vec<int>{3, 1, 0}));
+  assert(v == (vec<int>{0, 1, 3}));
   nextPathInPlace(G, v, 3);
-  assert(v == (vec<int>{4, 3, 1}));
+  assert(v == (vec<int>{1, 3, 4}));
   nextPathInPlace(G, v, 3);
-  assert(v == (vec<int>{3, 1, 2}));
+  assert(v == (vec<int>{2, 1, 3}));
 
   v = vec<int>();
   nextPathInPlace(G, v, 3, true);
-  assert(v == (vec<int>{2, 1, 0}));
+  assert(v == (vec<int>{0, 1, 2}));
   nextPathInPlace(G, v, 3, true);
-  assert(v == (vec<int>{3, 1, 0}));
+  assert(v == (vec<int>{0, 1, 3}));
   nextPathInPlace(G, v, 3, true);
-  assert(v == (vec<int>{1, 2, 0}));
+  assert(v == (vec<int>{0, 2, 1}));
 
   v = vec<int>();
   nextPathInPlace(G, v, 5);
-  assert(v == (vec<int>{5, 4, 3, 1, 0}));
+  assert(v == (vec<int>{0, 1, 3, 4, 5}));
+
+  v = vec<int>();
+  int counter = 0;
+  do {
+    nextPathInPlace(G, v, 4);
+    counter++;
+  } while (!v.empty());
+  assert(counter == 7);
+
+  v = vec<int>();
+  counter = 0;
+  do {
+    nextPathInPlace(G, v, 3);
+    counter++;
+  } while (!v.empty());
+  assert(counter == 9);
+
+  v = vec<int>();
+  counter = 0;
+  do {
+    nextPathInPlace(G, v, 3, true);
+    counter++;
+  } while (!v.empty());
+  assert(counter == 15);
+
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX.X..\
+  .XX.X.\
+  ...X.X\
+  ....X.\
+  ");
+
+  v = vec<int>();
+  nextPathInPlace(G, v, 4, true, true);
+  assert(v == (vec<int>{0, 1, 2, 3}));
+
+  nextPathInPlace(G, v, 4, true, true);
+  assert(v == (vec<int>{0, 1, 3, 2}));
+
+  nextPathInPlace(G, v, 4, true, true);
+  assert(v == (vec<int>{0, 1, 3, 4}));
 }
 
 int main() {
@@ -431,6 +581,7 @@ int main() {
   testGraph();
   testGraphGetInduced();
   testGraphGetShuffled();
+  testGraphGetNextNeighbor();
   testGetLineGraph();
   testSimpleVec();
   testGetTriangles();
@@ -438,6 +589,7 @@ int main() {
   testEmptyStarTriangles();
   testGetCompleteVertices();
   testShortestPath();
+  testAllShortestPaths();
   testDfsWith();
   testComponents();
   testGetComponentsOfInducedGraph();

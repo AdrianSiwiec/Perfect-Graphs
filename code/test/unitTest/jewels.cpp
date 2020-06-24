@@ -70,10 +70,12 @@ void testFindJewelNaive() {
   X..X.X\
   .X..X.\
   ");
+  assert(!isJewel(G, {0, 1, 2, 3, 4}));
 
   auto jewel = findJewelNaive(G);
+  assert(isJewel(G, jewel));
   // Not only one possible, but correct
-  assert(jewel == (vec<int>{4, 3, 2, 1, 0}));
+  assert(jewel == (vec<int>{1, 2, 3, 4, 0}));
   assert(containsJewelNaive(G));
 }
 

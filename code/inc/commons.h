@@ -54,6 +54,11 @@ struct Graph {
   const vec<int> &operator[](int index) const { return _neighbours[index]; }
   bool operator==(const Graph &c) const { return _matrix == c._matrix; }
   bool areNeighbours(int a, int b) const { return _matrix[a][b]; }
+  // Returns first neighbor of a. Returns -1 if a has no neighbors.
+  int getFirstNeighbour(int a) const;
+  // Returns next neighbor of a, after b. Returns -1 if b is last, throws invalid_argument if b is not a
+  // neighbor of a. Guaranteed to be consistent with G[a] ordering.
+  int getNextNeighbour(int a, int b) const;
 
   Graph getComplement() const;
   // Returns G' - Graph induced on X. Set of vertices is left the same, and edge is in G' if it is in G and
@@ -65,8 +70,12 @@ struct Graph {
  private:
   vec<vec<int>> _neighbours;
   vec<vec<int>> _matrix;
+  vec<int> _first_neighbour;
+  vec<vec<int>> _next_neighbour;
   void checkSymmetry();
   void calculateNeighboursLists();
+  // Assumes _neighbours has been calculated;
+  void calculateFirstNextNeighbours();
 };
 
 ostream &operator<<(ostream &os, Graph const &G);
@@ -84,6 +93,9 @@ ostream &operator<<(ostream &os, const set<T> &G) {
 // Finds shortest path from start to end in G, where every vertex inside satisfies predicate.
 // Returns empty vector if none exist
 vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test);
+// Finds all shortest paths, where every vertex x inside path a -- b satisfies predicate f(a,b,x)
+// returnVal[a][b] is empty if none exist.
+vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test);
 
 // Returns triangles: [b1, b2, b3], such that b1<b2<b3
 vec<vec<int>> getTriangles(const Graph &G);
@@ -121,8 +133,8 @@ void nextTupleInPlace(vec<int> &v, int max);
 
 // Returns whether v is a path in G. A path must have all vertices distinct, and edges only between neighbors.
 // If isCycleOk a cycle is also considered a path e.g. [1,2,3,4] if 1-4 is an edge
-bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk = false);
+bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk = false, bool areChordsOk = false);
 
 // Returns (in &v) next path of length len in G (in some order). If v is empty returns first path. If v is
 // the last path returns empty vec. Iterating from empty vector to empty vector gives all paths of length len.
-void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false);
+void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false, bool areChordsOk = false);

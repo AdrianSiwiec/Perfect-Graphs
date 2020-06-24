@@ -61,7 +61,7 @@ void testContainsHoleOfSize() {
   ....X.\
   ");
   assert(constainsHoleOfSize(G, 4));
-  assert(findHoleOfSize(G, 4) == (vec<int>{3, 4, 2, 1}));
+  assert(findHoleOfSize(G, 4) == (vec<int>{1, 2, 4, 3}));
   assert(!constainsHoleOfSize(G, 3));
   assert(!constainsHoleOfSize(G, 5));
   assert(!constainsHoleOfSize(G, 6));
@@ -92,7 +92,7 @@ void testContainsOddHoleNaive() {
   ..X.X.\
   ");
   assert(containsOddHoleNaive(G));
-  assert(findOddHoleNaive(G) == (vec<int>{3, 4, 5, 2, 1}));
+  assert(findOddHoleNaive(G) == (vec<int>{1, 2, 5, 4, 3}));
 
   G = Graph(6,
             "\
@@ -114,7 +114,7 @@ void testContainsOddHoleNaive() {
   X..X.\
   ");
   assert(containsOddHoleNaive(G));
-  assert(findOddHoleNaive(G) == (vec<int>{4, 3, 2, 1, 0}));
+  assert(findOddHoleNaive(G) == (vec<int>{0, 1, 2, 3, 4}));
 }
 
 void testIsT1() {

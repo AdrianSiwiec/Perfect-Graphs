@@ -2,6 +2,7 @@
 #include <map>
 #include <queue>
 #include <set>
+#include <unordered_set>
 
 using std::invalid_argument;
 using std::make_pair;
@@ -13,6 +14,8 @@ Graph::Graph(int n) : n(n), _neighbours(n), _matrix(n) {
   for (int i = 0; i < n; i++) {
     _matrix[i].resize(n);
   }
+
+  calculateFirstNextNeighbours();
 }
 
 void Graph::calculateNeighboursLists() {
@@ -21,6 +24,25 @@ void Graph::calculateNeighboursLists() {
     _neighbours.push_back(vec<int>());
     for (int j = 0; j < n; j++) {
       if (areNeighbours(i, j)) _neighbours[i].push_back(j);
+    }
+  }
+}
+
+void Graph::calculateFirstNextNeighbours() {
+  _first_neighbour = vec<int>(n, -1);
+  _next_neighbour = vec<vec<int>>(n);
+  for (int i = 0; i < n; i++) {
+    _next_neighbour[i] = vec<int>(n, -2);
+  }
+
+  for (int i = 0; i < n; i++) {
+    if (!_neighbours[i].empty()) {
+      _first_neighbour[i] = _neighbours[i].front();
+      _next_neighbour[i][_neighbours[i].back()] = -1;
+    }
+
+    for (int j = 1; j < _neighbours[i].size(); j++) {
+      _next_neighbour[i][_neighbours[i][j - 1]] = _neighbours[i][j];
     }
   }
 }
@@ -39,8 +61,8 @@ Graph::Graph(int n, string s) : Graph(n) {
   s.erase(remove_if(s.begin(), s.end(), ::isspace), s.end());
   if (s.size() != n * n) {
     char buff[100];
-    snprintf(buff, sizeof(buff), "Graph initialization from string failed. Expected string of size %d, got %d.", n * n,
-            s.size());
+    snprintf(buff, sizeof(buff),
+             "Graph initialization from string failed. Expected string of size %d, got %d.", n * n, s.size());
     throw invalid_argument(buff);
   }
 
@@ -54,6 +76,7 @@ Graph::Graph(int n, string s) : Graph(n) {
   }
 
   calculateNeighboursLists();
+  calculateFirstNextNeighbours();
   checkSymmetry();
 }
 
@@ -72,7 +95,23 @@ Graph::Graph(vec<vec<int>> neighbours) : n(neighbours.size()), _neighbours(neigh
     }
   }
 
+  calculateFirstNextNeighbours();
   checkSymmetry();
+}
+
+int Graph::getFirstNeighbour(int a) const { return _first_neighbour[a]; }
+
+int Graph::getNextNeighbour(int a, int b) const {
+  int ret = _next_neighbour[a][b];
+
+  if (ret == -2) {
+    char buff[100];
+    snprintf(buff, sizeof(buff), "Graph getNextNeighbour failed. %d is not a neighbour of %d.", b, a);
+
+    throw invalid_argument(buff);
+  }
+
+  return ret;
 }
 
 Graph Graph::getComplement() const {
@@ -84,6 +123,7 @@ Graph Graph::getComplement() const {
   }
 
   ret.calculateNeighboursLists();
+  ret.calculateFirstNextNeighbours();
   return ret;
 }
 
@@ -101,6 +141,7 @@ Graph Graph::getInduced(vec<int> X) const {
   }
 
   ret.calculateNeighboursLists();
+  ret.calculateFirstNextNeighbours();
   return ret;
 }
 
@@ -118,6 +159,7 @@ Graph Graph::getShuffled() const {
   }
 
   ret.calculateNeighboursLists();
+  ret.calculateFirstNextNeighbours();
   ret.checkSymmetry();
   return ret;
 }
@@ -250,11 +292,25 @@ bool isAllZeros(const vec<int> &v) {
     if (a != 0) return false;
   return true;
 }
-bool isDistinctValues(const vec<int> &v) {
-  set<int> s;
-  for (int i : v) s.insert(i);
 
-  return s.size() == v.size();
+// This is a bottleneck in both Perfect and Naive, so it is optimized for speed over readibility
+bool isDistinctValues(const vec<int> &v) {
+  // TODO(Adrian) Create fallback for values outside of [-2,997]
+  static vec<int> stamp(1000, 0);
+  static int counter = 1;
+
+  counter++;
+  if (counter > std::numeric_limits<int>::max() - 2) {
+    stamp = vec<int>(1000, 0);
+    counter = 1;
+  }
+
+  for (int i = 0; i < v.size(); ++i) {
+    //+2 to accomodate values of -1 and -2
+    if (stamp[v[i] + 2] == counter) return false;
+    stamp[v[i] + 2] = counter;
+  }
+  return true;
 }
 
 void nextTupleInPlace(vec<int> &v, int max) {
@@ -335,17 +391,67 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
   }
 }
 
-bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk) {
+vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test) {
+  int inf = G.n + 10;
+
+  vec<vec<int>> dist(G.n, vec<int>(G.n, inf));
+  vec<vec<int>> lastOnPath(G.n, vec<int>(G.n, -1));
+  for (int i = 0; i < G.n; i++) {
+    dist[i][i] = 0;
+    for (int j : G[i]) {
+      dist[i][j] = 1;
+      lastOnPath[i][j] = i;
+    }
+  }
+
+  for (int k = 0; k < G.n; k++) {
+    for (int i = 0; i < G.n; i++) {
+      if (i == k) continue;
+      for (int j = 0; j < G.n; j++) {
+        if (i == j || k == j) continue;
+        if (dist[i][j] > dist[i][k] + dist[k][j] && test(k)) {
+          dist[i][j] = dist[i][k] + dist[k][j];
+          lastOnPath[i][j] = lastOnPath[k][j];
+        }
+      }
+    }
+  }
+
+  vec<vec<vec<int>>> R(G.n, vec<vec<int>>(G.n, vec<int>()));
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      if (dist[i][j] == inf) continue;
+
+      R[i][j].reserve(dist[i][j] + 1);
+      R[i][j].push_back(j);
+      if (i == j) continue;
+
+      //TODO(Adrian) smarter: if(tmp < i) ~insert(R[i][tmp])
+      int tmp = lastOnPath[i][j];
+      R[i][j].push_back(tmp);
+      while (tmp != i) {
+        tmp = lastOnPath[i][tmp];
+        R[i][j].push_back(tmp);
+      }
+
+      std::reverse(R[i][j].begin(), R[i][j].end());
+    }
+  }
+
+  return R;
+}
+
+bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk, bool areChordsOk) {
   if (v.size() <= 1) return false;
 
   if (!isDistinctValues(v)) return false;
 
-  for (int i = 0; i < v.size() - 1; i++) {
-    for (int j = i + 1; j < v.size(); j++) {
-      if (j == i + 1) {
+  for (int i = v.size() - 1; i > 0; i--) {
+    for (int j = 0; j < i; j++) {
+      if (j == i - 1) {
         if (!G.areNeighbours(v[i], v[j])) return false;
-      } else {
-        if (isCycleOk && i == 0 && j == v.size() - 1) continue;
+      } else if (!areChordsOk) {
+        if (isCycleOk && i == v.size() - 1 && j == 0) continue;
         if (G.areNeighbours(v[i], v[j])) return false;
       }
     }
@@ -354,7 +460,65 @@ bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk) {
   return true;
 }
 
-void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk) {
+vec<int> getFirstPath(const Graph &G, int len, bool isCycleOk) {
+  vec<int> ret;
+  for (int start = 0; start < G.n; start++) {
+    ret = {start};
+    while (ret.size() < len) {
+      ret.push_back(G.getFirstNeighbour(ret.back()));
+
+      if (ret.back() == -1) {
+        ret.clear();
+        break;
+      }
+    }
+
+    if (ret.size() == len) return ret;
+  }
+
+  return ret;
+}
+
+void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk) {
+  while (true) {
+    if (v.back() == -1) {
+      v.pop_back();
+      if (v.size() == 1) {
+        v[0]++;
+        if (v[0] >= G.n) {
+          v = {};
+          return;
+        }
+        continue;
+        // return nextPathInPlaceInternal(G, v, len, isCycleOk);
+      } else {
+        v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+        continue;
+        // return nextPathInPlaceInternal(G, v, len, isCycleOk);
+      }
+    }
+
+    if (v.size() < len) {
+      v.push_back(G.getFirstNeighbour(v.back()));
+      if (v.size() == len && isAPath(G, v, isCycleOk, areChordsOk)) {
+        return;
+      } else {
+        continue;
+        // return nextPathInPlaceInternal(G, v, len, isCycleOk);
+      }
+    }
+
+    do {
+      v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+    } while (v.back() != -1 && !isAPath(G, v, isCycleOk, areChordsOk));
+
+    if (v.back() == -1) continue;
+
+    return;
+  }
+}
+
+void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk) {
   // TODO(Adrian) faster, do not iterate over all permutations. Have a "pointer" to next neighbour in G?
   if (len <= 1) {
     throw invalid_argument("Length of next path must be at least 2");
@@ -364,18 +528,10 @@ void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk) {
   }
 
   if (v.empty()) {
-    v = vec<int>(len);
+    v = {0};
   }
 
-  while (true) {
-    nextTupleInPlace(v, G.n);
-    if (isAllZeros(v)) {
-      v = vec<int>();
-      return;
-    }
+  v.reserve(len);
 
-    if (isAPath(G, v, isCycleOk)) {
-      return;
-    }
-  }
+  return nextPathInPlaceInternal(G, v, len, isCycleOk, areChordsOk);
 }
