@@ -313,6 +313,15 @@ bool isDistinctValues(const vec<int> &v) {
   return true;
 }
 
+int countNonZeros(const vec<int> &v) {
+  int res = 0;
+
+  for (int i : v)
+    if (i) res++;
+
+  return res;
+}
+
 void nextTupleInPlace(vec<int> &v, int max) {
   v[0]++;
   for (int i = 0; i < v.size() && v[i] >= max; i++) {
@@ -426,7 +435,7 @@ vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(i
       R[i][j].push_back(j);
       if (i == j) continue;
 
-      //TODO(Adrian) smarter: if(tmp < i) ~insert(R[i][tmp])
+      // TODO(Adrian) smarter: if(tmp < i) ~insert(R[i][tmp])
       int tmp = lastOnPath[i][j];
       R[i][j].push_back(tmp);
       while (tmp != i) {

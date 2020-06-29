@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "commons.h"
+#include "perfect.h"
 // Unit test of testCommons
 
 void testRandomGraphs() {
@@ -28,6 +29,13 @@ void testRandomGraphs() {
   }
 }
 
+void testGetRandomPerfect() {
+  for (int i = 0; i < 10; i++) {
+    Graph G = getRandomPerfectGraph(6, 0.5);
+    assert(isPerfectGraph(G));
+  }
+}
+
 void testTuples() {
   assert(isAllZeros({0, 0, 0, 0}));
   assert(!isAllZeros({1, 0, 0, 0, 0, 0}));
@@ -42,5 +50,6 @@ void testTuples() {
 int main() {
   init();
   testRandomGraphs();
+  testGetRandomPerfect();
   testTuples();
 }

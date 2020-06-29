@@ -27,6 +27,8 @@ const bool bigTests = false; //TODO(Adrian) make bigTests big again (perf)
 bool probTrue(double p);
 void printGraph(const Graph &G);
 Graph getRandomGraph(int size, double p);
+// will loop when impossible or unlikely.
+Graph getRandomPerfectGraph(int size, double p);
 vec<Graph> getRandomGraphs(int size, double p, int howMany);
 
 Graph getNonPerfectGraph(int holeSize, int reminderSize, double p);

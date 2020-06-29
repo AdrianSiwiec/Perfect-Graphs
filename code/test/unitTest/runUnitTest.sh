@@ -1,3 +1,5 @@
+#!/bin/bash
+
 scriptDir=$(dirname $0)
 unitTestDir="$scriptDir/../../obj/test/unitTest"
 

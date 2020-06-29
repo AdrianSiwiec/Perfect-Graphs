@@ -45,6 +45,15 @@ Graph getRandomGraph(int size, double p) {
   return Graph(neighbours);
 }
 
+Graph getRandomPerfectGraph(int size, double p) {
+  Graph G(0);
+  do {
+    G = getRandomGraph(size, p);
+  } while (!isPerfectGraph(G));
+
+  return G;
+}
+
 vec<Graph> getRandomGraphs(int size, double p, int howMany) {
   vec<Graph> ret;
   ret.reserve(howMany);

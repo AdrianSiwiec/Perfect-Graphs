@@ -270,6 +270,11 @@ void testSimpleVec() {
   assert(isDistinctValues({0, 1}));
   assert(isDistinctValues({100}));
   assert(isDistinctValues({}));
+
+  assert(countNonZeros({0, 1, 0, 2}) == 2);
+  assert(countNonZeros({0, 1, 0, 0}) == 1);
+  assert(countNonZeros({2, 1, 0, -1}) == 3);
+  assert(countNonZeros({}) == 0);
 }
 
 void testEmptyStarTriangles() {

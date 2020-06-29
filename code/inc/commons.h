@@ -127,6 +127,7 @@ vec<vec<int>> getComponentsOfInducedGraph(const Graph &G, const vec<int> &X);
 vec<vec<int>> generateTuples(int size, int max);
 bool isAllZeros(const vec<int> &v);
 bool isDistinctValues(const vec<int> &v);
+int countNonZeros(const vec<int> &v);
 
 vec<int> nextTuple(vec<int> v, int max);
 void nextTupleInPlace(vec<int> &v, int max);
