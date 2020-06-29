@@ -49,6 +49,7 @@ struct Graph {
   explicit Graph(int n);
   Graph(int n, string s);
   explicit Graph(vec<vec<int>> neighbours);
+
   // List of neighbors is not necessarily sorted
   vec<int> &operator[](int index) { return _neighbours[index]; }
   const vec<int> &operator[](int index) const { return _neighbours[index]; }
@@ -61,9 +62,12 @@ struct Graph {
   int getNextNeighbour(int a, int b) const;
 
   Graph getComplement() const;
-  // Returns G' - Graph induced on X. Set of vertices is left the same, and edge is in G' if it is in G and
+  // Returns G' - Graph induced on X. Set of nodes is left the same, and edge is in G' if it is in G and
   // both it's ends are in X.
   Graph getInduced(vec<int> X) const;
+  // Returns G' - Graph induced on X. Set of vertices is renamed to match X. e.g. if only node 0 is removed,
+  // all other nodes will have number lowered by 1.
+  Graph getInducedStrong(vec<int> X) const;
   Graph getShuffled() const;
   Graph getLineGraph() const;
 
@@ -128,6 +132,12 @@ vec<vec<int>> generateTuples(int size, int max);
 bool isAllZeros(const vec<int> &v);
 bool isDistinctValues(const vec<int> &v);
 int countNonZeros(const vec<int> &v);
+// Calculates inclusive prefix sum. ret[i] = v[0] + ... + v[i]
+vec<int> getPrefSum(const vec<int> &v);
+
+// returns all vertices of graph of size n not on list X
+// X should be sorted
+vec<int> getComplementNodesVec(int n, const vec<int> &X);
 
 vec<int> nextTuple(vec<int> v, int max);
 void nextTupleInPlace(vec<int> &v, int max);

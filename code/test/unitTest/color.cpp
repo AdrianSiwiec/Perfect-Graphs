@@ -59,6 +59,8 @@ void testMaxStableSetHand() {
 ");
 
   assert(getMaxCardStableSet(G) == (vec<int>{4, 5, 7}));
+
+  assert(getMaxCardClique(G) == (vec<int>{2, 4, 6}));
 }
 
 void testMaxCardStableSet() {
@@ -72,23 +74,115 @@ void testMaxCardStableSet() {
   }
 }
 
-void testColor() {
-  Graph G(8,
+void testMaxSSIntersectingCliques() {
+  Graph G(5,
           "\
-  ..X..X.X\
-  ......XX\
-  X...XXX.\
-  ....XX..\
-  ..XX..X.\
-  X.XX....\
-  .XX.X..X\
-  XX....X.\
-");
+  .XX..\
+  X.X..\
+  XX.XX\
+  ..X.X\
+  ..XX.\
+  ");
+  vec<vec<int>> K = {{0, 1, 2}, {2, 3, 4}};
 
-  // double c = color(G);
-  // std::cout << c << std::endl;
+  assert(getSSIntersectingCliques(G, K) == (vec<int>{2}));
 
-  // assert(false);
+  G = Graph(10,
+            "\
+  .XXX......\
+  X.XX......\
+  XX.XXXXX..\
+  XXX...XX..\
+  ..X..XX...\
+  ..X.X.X...\
+  ..XXXX.XXX\
+  ..XX..X.XX\
+  ......XX.X\
+  ......XXX.\
+  ");
+
+  K = vec<vec<int>>{{0, 1, 2, 3}, {6, 7, 8, 9}};
+  assert(getSSIntersectingCliques(G, K) == (vec<int>{3, 9}));
+
+  K = vec<vec<int>>{{0, 1, 2, 3}, {4, 2, 6, 5}, {6, 7, 8, 9}};
+  assert(getSSIntersectingCliques(G, K) == (vec<int>{3, 5, 9}));
+
+  K = vec<vec<int>>{{2, 3, 7, 6}, {3, 1, 0, 2}, {8, 9, 6, 7}};
+  assert(getSSIntersectingCliques(G, K) == (vec<int>{3, 9}));
+
+  K = vec<vec<int>>{{2, 3, 7, 6}, {2, 5, 6, 4}, {3, 2, 0, 1}, {8, 9, 6, 7}};
+  assert(getSSIntersectingCliques(G, K) == (vec<int>{3, 5, 9}));
+}
+
+void testGetSSIntersectingAllMaxCardCliquesHand() {
+  Graph G(5,
+          "\
+  .XX..\
+  X.X..\
+  XX.XX\
+  ..X.X\
+  ..XX.\
+  ");
+
+  assert(getSSIntersectingAllMaxCardCliques(G) == (vec<int>{2}));
+
+  G = Graph(10,
+            "\
+  .XXX......\
+  X.XX......\
+  XX.XXXXX..\
+  XXX...XX..\
+  ..X..XX...\
+  ..X.X.X...\
+  ..XXXX.XXX\
+  ..XX..X.XX\
+  ......XX.X\
+  ......XXX.\
+  ");
+
+  assert(getSSIntersectingAllMaxCardCliques(G) == (vec<int>{3, 5, 9}));
+}
+
+void testGetSSIntersectingAllMaxCardCliques() {
+  for (int i = 0; i < (bigTests ? 50 : 10); i++) {
+    Graph G = getRandomPerfectGraph(bigTests ? 5 : 7, 0.5);
+
+    auto SS = getSSIntersectingAllMaxCardCliques(G);
+    assert(isStableSet(G, SS));
+
+    Graph Gprim = G.getInducedStrong(getComplementNodesVec(G.n, SS));
+
+    assert(getOmega(G) > getOmega(Gprim));
+  }
+}
+
+void testColorHand() {
+  Graph G(5,
+          "\
+  .XX..\
+  X.X..\
+  XX.XX\
+  ..X.X\
+  ..XX.\
+  ");
+
+  assert(color(G) == (vec<int>{2, 1, 0, 2, 1}));
+
+  G = Graph(10,
+            "\
+  .XXX......\
+  X.XX......\
+  XX.XXXXX..\
+  XXX...XX..\
+  ..X..XX...\
+  ..X.X.X...\
+  ..XXXX.XXX\
+  ..XX..X.XX\
+  ......XX.X\
+  ......XXX.\
+  ");
+
+  assert(color(G) == (vec<int>{3, 2, 1, 0, 3, 0, 2, 3, 1, 0}));
 }
 
 int main() {
@@ -97,7 +191,10 @@ int main() {
   testGetTheta();
   testMaxStableSetHand();
   testMaxCardStableSet();
-  testColor();
+  testMaxSSIntersectingCliques();
+  testGetSSIntersectingAllMaxCardCliquesHand();
+  testGetSSIntersectingAllMaxCardCliques();
+  testColorHand();
 
   return 0;
 }

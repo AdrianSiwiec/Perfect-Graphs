@@ -7,9 +7,20 @@
 tuple<int, int, vec<int>, vec<int>> getGraphEdges(const Graph &G, const vec<int> &isNodeRemoved = vec<int>());
 
 int getTheta(const Graph &G, const vec<int> &isNodeRemoved = vec<int>());
+int getOmega(const Graph &G);
 
 bool isStableSet(const Graph &G, vec<int> nodes);
 
+// Returned vector is sorted
 vec<int> getMaxCardStableSet(const Graph &G);
+// Returned vector is sorted
+vec<int> getMaxCardClique(const Graph &G);
 
-double color(const Graph &G, const vec<int> &);
+// Returns a Stable Set intersecting all given max-card Cliques K[0], ... K.back()
+// Returned vector is sorted.
+vec<int> getSSIntersectingCliques(const Graph &G, vec<vec<int>> K);
+
+// Returns a Stable Set intersecting all max card Cliques
+vec<int> getSSIntersectingAllMaxCardCliques(const Graph &G);
+
+vec<int> color(const Graph &G);
