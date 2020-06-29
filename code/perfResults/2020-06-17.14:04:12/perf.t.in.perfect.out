@@ -1,7 +1,0 @@
-N=12
-[                                                                                ][XXXXXXXXXX                                                                      ] (about 25s left)[XXXXXXXXXXXXXXXXXXXX                                                            ] (about 22s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                  ] (about 22s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                        ] (about 21s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                              ] (about 14s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                    ] (about 10s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX          ] (about 5s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX] (about 1s left)
-
-Perfect: 
-	n=10, result=1, cases=3, avgTime=2.12663
-	n=11, result=1, cases=2, avgTime=3.5991
-	n=12, result=1, cases=3, avgTime=6.82815

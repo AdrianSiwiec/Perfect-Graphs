@@ -1,5 +1,0 @@
-Jewels are naive but use nextPathInPlace.
-isDistinctValues uses stamping.
-T1 now uses nextPathInPlace.
-
-Generating and checking near cleaners is now a major bottleneck.
