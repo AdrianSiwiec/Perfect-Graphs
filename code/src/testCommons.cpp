@@ -1,6 +1,7 @@
 #include "testCommons.h"
 #include <cstdlib>
 #include <iostream>
+#include "color.h"
 #include "commons.h"
 #include "oddHoles.h"
 #include "perfect.h"
@@ -283,4 +284,21 @@ void RaiiProgressBar::update(int testsDone) {
     }
     cout << "\r" << flush;
   }
+}
+
+bool isColoringValid(const Graph &G, const vec<int> &coloring) {
+  if (coloring.size() != G.n) return false;
+
+  int omegaG = getOmega(G);
+  for (int c : coloring) {
+    if (c < 0 || c >= omegaG) return false;
+  }
+
+  for (int i = 0; i < G.n; i++) {
+    for (int j : G[i]) {
+      if (coloring[i] == coloring[j]) return false;
+    }
+  }
+
+  return true;
 }

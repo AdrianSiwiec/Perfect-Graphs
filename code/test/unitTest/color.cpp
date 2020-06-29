@@ -185,6 +185,14 @@ void testColorHand() {
   assert(color(G) == (vec<int>{3, 2, 1, 0, 3, 0, 2, 3, 1, 0}));
 }
 
+void testColor() {
+  for (int i = 0; i < (bigTests ? 20 : 5); i++) {
+    Graph G = getRandomPerfectGraph(bigTests ? 8 : 6, 0.5);
+
+    assert(isColoringValid(G, color(G)));
+  }
+}
+
 int main() {
   init();
   testGetGraphEdges();
@@ -195,6 +203,6 @@ int main() {
   testGetSSIntersectingAllMaxCardCliquesHand();
   testGetSSIntersectingAllMaxCardCliques();
   testColorHand();
-
+  testColor();
   return 0;
 }

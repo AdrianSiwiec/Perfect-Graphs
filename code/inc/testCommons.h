@@ -21,7 +21,7 @@ using std::invalid_argument;
 using std::map;
 
 // Whether to run big tests. These take more time.
-const bool bigTests = false; //TODO(Adrian) make bigTests big again (perf)
+const bool bigTests = false;  // TODO(Adrian) make bigTests big again (perf)
 // const bool bigTests = true;
 
 bool probTrue(double p);
@@ -69,3 +69,5 @@ struct RaiiProgressBar {
 
   int getFilled(int testsDone);
 };
+
+bool isColoringValid(const Graph &G, const vec<int> &coloring);
