@@ -6,6 +6,7 @@ COBJDIR=cobj
 TESTDIR=test
 UNITTESTDIR=$(TESTDIR)/unitTest
 PERMATESTDIR=$(TESTDIR)/permaTest
+COLORPERMATESTDIR=$(TESTDIR)/colorPermaTest
 NETTESTDIR=$(TESTDIR)/netTest
 DOWNLOADSDIR=$(NETTESTDIR)/downloaded
 PERFTESTDIR=$(TESTDIR)/perfTest
@@ -29,6 +30,7 @@ OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCFILES))
 COBJFILES=$(patsubst %.c, $(COBJDIR)/%.o, $(CSRCFILES))
 UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp))
 PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
+COLORPERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(COLORPERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 PERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERFTESTDIR)/*.cpp))
 
@@ -40,6 +42,7 @@ PERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERFTESTDIR)/*.cpp))
 # test: $(TESTFILES)
 unitTest: $(UNITTESTFILES) $(COBJFILES)
 permaTest: $(PERMATESTFILES)
+colorPermaTest: $(COLORPERMATESTFILES)
 netTest: $(NETTESTFILES)
 perfTest: $(PERFTESTFILES)
 
@@ -67,6 +70,9 @@ retest: clean unitTest
 
 permaTest: 
 	./obj/test/permaTest/perfect.e
+
+colorPermaTest: 
+	./obj/test/colorPermaTest/color.e
 
 netTest:
 	./test/netTest/prepare.sh
