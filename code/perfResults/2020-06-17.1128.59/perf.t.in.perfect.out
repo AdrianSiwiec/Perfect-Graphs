@@ -1,0 +1,6 @@
+N=11
+[                                                                                ][XXXXXXXXXXXXXXXX                                                                ] (about 19s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                ] (about 15s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                ] (about 9s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                ] (about 5s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX] (about 1s left)
+
+Perfect: 
+	n=10, result=1, cases=3, avgTime=3.35428
+	n=11, result=1, cases=2, avgTime=4.97482

@@ -1,0 +1,7 @@
+N=9
+[                                                                                ][XXXXXXXX                                                                        ] (about 2s left)[XXXXXXXXXXXXXXXXX                                                               ] (about 1s left)[XXXXXXXXXXXXXXXXXXXXXXXXXX                                                      ] (about 14s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                             ] (about 15s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                    ] (about 10s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                           ] (about 7s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                  ] (about 4s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX         ] (about 2s left)[XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX] (about 1s left)
+
+Naive: 
+	n=7, result=1, cases=3, avgTime=0.106913
+	n=8, result=1, cases=3, avgTime=0.156582
+	n=9, result=1, cases=3, avgTime=5.47499
