@@ -31,13 +31,11 @@ int main() {
     RaiiProgressBar bar(Gs.size());
 
     for (int i = 0; i < Gs.size(); i++) {
-      testGraph(Gs[i], true, false);
       testColorWithStats(Gs[i]);
       bar.update(i + 1);
     }
   }
   cout << endl;
 
-  printStats();
   printStatsColor();
 }

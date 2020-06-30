@@ -10,6 +10,7 @@ COLORPERMATESTDIR=$(TESTDIR)/colorPermaTest
 NETTESTDIR=$(TESTDIR)/netTest
 DOWNLOADSDIR=$(NETTESTDIR)/downloaded
 PERFTESTDIR=$(TESTDIR)/perfTest
+COLORPERFTESTDIR=$(TESTDIR)/colorPerfTest
 
 #G++ compiler settings
 CXX=g++
@@ -33,6 +34,7 @@ PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp
 COLORPERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(COLORPERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 PERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERFTESTDIR)/*.cpp))
+COLORPERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(COLORPERFTESTDIR)/*.cpp))
 
 # $(info $(OBJFILES))
 # $(info $(TESTFILES))
@@ -45,6 +47,7 @@ permaTest: $(PERMATESTFILES)
 colorPermaTest: $(COLORPERMATESTFILES)
 netTest: $(NETTESTFILES)
 perfTest: $(PERFTESTFILES)
+colorPerfTest: $(COLORPERFTESTFILES)
 
 $(COBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
@@ -79,6 +82,9 @@ netTest:
 
 perfTest:
 	./test/perfTest/run.sh
+
+colorPerfTest:
+	./test/colorPerfTest/run.sh
 
 clean:
 	rm -rf obj cobj *.e

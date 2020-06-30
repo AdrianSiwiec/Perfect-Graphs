@@ -50,6 +50,10 @@ struct RaiiTimer {
 
 bool testWithStats(const Graph &G, bool naive);
 void printStats();
+
+void testColorWithStats(const Graph &G);
+void printStatsColor();
+
 double getDistr();
 void testGraph(const Graph &G, bool verbose);
 void testGraph(const Graph &G, bool result, bool verbose);

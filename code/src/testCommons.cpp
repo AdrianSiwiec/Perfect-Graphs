@@ -180,13 +180,13 @@ bool testWithStats(const Graph &G, bool naive) {
 }
 
 void printStats() {
-  if (!sumTimeNaive.empty()) cout << "Naive: " << endl;
+  if (!sumTimeNaive.empty()) cout << "Naive recognition stats: " << endl;
   for (auto it = sumTimeNaive.begin(); it != sumTimeNaive.end(); it++) {
     int cases = casesTestedNaive[it->first];
     cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
          << ", avgTime=" << it->second / cases << endl;
   }
-  if (!sumTime.empty()) cout << "Perfect: " << endl;
+  if (!sumTime.empty()) cout << "Perfect recognition stats: " << endl;
   for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
     if (!it->first.second) continue;
     int cases = casesTested[it->first];
@@ -238,6 +238,31 @@ void testGraph(const Graph &G, bool result, bool verbose) {
   assert(perfect == result);
 }
 
+map<int, double> sumTimeColor;
+map<int, int> casesTestedColor;
+
+void testColorWithStats(const Graph &G) {
+  clock_t start;
+  start = clock();
+
+  auto c = color(G);
+
+  double duration = (clock() - start) / static_cast<double>(CLOCKS_PER_SEC);
+
+  assert(isColoringValid(G, c));
+
+  sumTimeColor[G.n] += duration;
+  casesTestedColor[G.n]++;
+}
+
+void printStatsColor() {
+  cout << "Color stats: " << endl;
+  for (auto it = sumTimeColor.begin(); it != sumTimeColor.end(); it++) {
+    int cases = casesTestedColor[it->first];
+    cout << "\tn=" << it->first << ", cases=" << cases << ", avgTime=" << it->second / cases << endl;
+  }
+}
+
 void printTimeHumanReadable(int64_t time) {
   double s = time / static_cast<double>(CLOCKS_PER_SEC);
   int h = s / (60 * 60);
@@ -269,7 +294,7 @@ int RaiiProgressBar::getFilled(int testsDone) {
 
 void RaiiProgressBar::update(int testsDone) {
   int toFill = getFilled(testsDone);
-  if (testsDone == 0 || testsDone == allTests || toFill != getFilled(testsDone - 1)) {
+  if (testsDone < 10 || testsDone == allTests || toFill != getFilled(testsDone - 1)) {
     cout << "[";
     for (int i = 0; i < width; i++) {
       cout << (i < toFill ? "X" : " ");

@@ -309,6 +309,7 @@ void testSimpleVec() {
   assert(countNonZeros({}) == 0);
 
   assert(getPrefSum({1, 2, 3, -10, 240, 0, 1}) == (vec<int>{1, 3, 6, -4, 236, 236, 237}));
+  assert(getPrefSum({}) == (vec<int>{}));
 }
 
 void testEmptyStarTriangles() {

@@ -9,33 +9,60 @@ extern "C" {
 }
 
 tuple<int, int, vec<int>, vec<int>> getGraphEdges(const Graph &G, const vec<int> &isNodeRemoved) {
+  vec<int> nodeStays(isNodeRemoved.size());
+  for (int i = 0; i < isNodeRemoved.size(); i++) {
+    nodeStays[i] = !isNodeRemoved[i];
+  }
+
+  while (nodeStays.size() < G.n) {
+    nodeStays.push_back(1);
+  }
+
+  vec<int> nodeNr = getPrefSum(nodeStays);
+
   vec<int> from;
   vec<int> to;
 
+  if (nodeNr.empty() || nodeNr.back() == 0) {
+    return {0, 0, from, to};
+  }
+
   int m = 0;
   for (int i = 0; i < G.n; i++) {
-    if (isNodeRemoved.size() > i && isNodeRemoved[i]) continue;
+    if (!nodeStays[i]) continue;
 
     for (auto j : G[i]) {
-      if (isNodeRemoved.size() > j && isNodeRemoved[j]) continue;
+      if (!nodeStays[j]) continue;
 
       if (j > i) {
-        from.push_back(i + 1);
-        to.push_back(j + 1);
+        from.push_back(nodeNr[i]);
+        to.push_back(nodeNr[j]);
         m++;
       }
     }
   }
 
-  return {G.n, m, from, to};
+  return {nodeNr.back(), m, from, to};
 }
 
 int getTheta(const Graph &G, const vec<int> &isNodeRemoved) {
-  if (G.n == 0) {
+  auto e = getGraphEdges(G, isNodeRemoved);
+
+  if (get<0>(e) == 0) {
     return 0;
   }
 
-  auto e = getGraphEdges(G, isNodeRemoved);
+  if (get<0>(e) == 1) {
+    return 1;
+  }
+
+  if (get<0>(e) == 2) {
+    if (get<1>(e) == 0)
+      return 2;
+    else
+      return 1;
+  }
+
   double th = theta(get<0>(e), get<1>(e), get<2>(e).data(), get<3>(e).data());
 
   if (th == -1) {
@@ -52,14 +79,10 @@ int getTheta(const Graph &G, const vec<int> &isNodeRemoved) {
       throw logic_error("Theta returned non-integer for a Perfect Graph");
   }
 
-  return thInt - countNonZeros(isNodeRemoved);
+  return thInt;
 }
 
-int getOmega(const Graph &G) {
-  // TODO(Adrian) faster?
-
-  return getTheta(G.getComplement());
-}
+int getOmega(const Graph &G) { return getTheta(G.getComplement()); }
 
 bool isStableSet(const Graph &G, vec<int> nodes) {
   if (!isDistinctValues(nodes)) return false;

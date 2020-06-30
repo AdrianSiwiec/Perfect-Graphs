@@ -23,10 +23,16 @@ void testGetGraphEdges() {
   assert(get<3>(t) == (vec<int>{2, 3, 5, 3, 6, 4, 5, 6}));
 
   t = getGraphEdges(G, {0, 1, 0, 0});
-  assert(get<0>(t) == 6);
+  assert(get<0>(t) == 5);
   assert(get<1>(t) == 5);
-  assert(get<2>(t) == (vec<int>{1, 1, 3, 4, 5}));
-  assert(get<3>(t) == (vec<int>{3, 5, 4, 5, 6}));
+  assert(get<2>(t) == (vec<int>{1, 1, 2, 3, 4}));
+  assert(get<3>(t) == (vec<int>{2, 4, 3, 4, 5}));
+
+  t = getGraphEdges(G, {1, 1, 0, 0});
+  assert(get<0>(t) == 4);
+  assert(get<1>(t) == 3);
+  assert(get<2>(t) == (vec<int>{1, 2, 3}));
+  assert(get<3>(t) == (vec<int>{2, 3, 4}));
 }
 
 void testGetTheta() {

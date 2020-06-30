@@ -347,6 +347,8 @@ int countNonZeros(const vec<int> &v) {
 }
 
 vec<int> getPrefSum(const vec<int> &v) {
+  if (v.empty()) return vec<int>();
+
   vec<int> ret(v.size());
   ret[0] = v[0];
   for (int i = 1; i < v.size(); i++) {
@@ -370,7 +372,7 @@ vec<int> getComplementNodesVec(int n, const vec<int> &X) {
   for (int i = 0; i < n; i++) {
     while (wsk < X.size() && X[wsk] < i) wsk++;
 
-    if (wsk >=X.size() || X[wsk] != i) res.push_back(i);
+    if (wsk >= X.size() || X[wsk] != i) res.push_back(i);
   }
 
   return res;
