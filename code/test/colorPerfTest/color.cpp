@@ -8,6 +8,8 @@ bool isEmpty(std::istream &pFile) { return pFile.peek() == std::istream::traits_
 int main() {
   std::ios_base::sync_with_stdio(0);
 
+  init(false);
+
   int n;
   vector<Graph> Gs;
   while (std::cin >> n) {

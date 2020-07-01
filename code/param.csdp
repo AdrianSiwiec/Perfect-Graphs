@@ -1,1 +1,5 @@
 printLevel=0
+fastmode=1
+axtol=1.0e-5
+atytol=1.0e-5
+objtol=1.0e-5

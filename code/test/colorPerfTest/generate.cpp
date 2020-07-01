@@ -9,14 +9,17 @@
 int main() {
   srand(time(0));
 
+  int howManyToGenerate = 10;
+  int counter = 0;
+
   while (true) {
-    Graph G = getRandomGraph(6, getDistr());
-    int counter = 0;
-    int howManyToGenerate = 1;
-    if (isPerfectGraph(G)) {
-      cout << G << endl;
-      counter++;
-      if (counter == howManyToGenerate) return 0;
-    }
+    Graph G(0);
+    do {
+      G = getBipariteGraph(15, getDistr()).getLineGraph();
+    } while (G.n != 26);
+
+    cout << G << endl;
+    counter++;
+    if (counter == howManyToGenerate) return 0;
   }
 }

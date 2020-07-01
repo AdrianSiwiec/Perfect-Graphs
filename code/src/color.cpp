@@ -71,12 +71,12 @@ int getTheta(const Graph &G, const vec<int> &isNodeRemoved) {
 
   int thInt = th + 0.5;
 
-  double eps = 0.001;
+  double eps = 0.3;
   if (abs(th - thInt) > eps) {
     if (!isPerfectGraph(G))
       throw invalid_argument("Argument for getTheta should be a perfect graph. Non-perfect graph was given");
     else
-      throw logic_error("Theta returned non-integer for a Perfect Graph");
+      throw logic_error("Theta returned non-integer for a Perfect Graph: " + to_string(th));
   }
 
   return thInt;

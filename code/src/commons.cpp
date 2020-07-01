@@ -404,6 +404,7 @@ vec<vec<int>> generateTuples(int size, int max) {
 }
 
 ostream &operator<<(ostream &os, Graph const &G) {
+  cout<<G.n<<endl;
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
       if (G.areNeighbours(i, j))
