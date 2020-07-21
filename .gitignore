@@ -3,6 +3,7 @@ code/obj/*
 code/test/netTest/downloaded/*
 
 code/perfResults/*
+code/colorPerfResults/*
 
 # Created by https://www.gitignore.io
 

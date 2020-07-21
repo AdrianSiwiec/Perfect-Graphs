@@ -128,6 +128,10 @@ Graph Graph::getComplement() const {
 }
 
 Graph Graph::getInduced(vec<int> X) const {
+  if (!isDistinctValues(X)) {
+    throw invalid_argument("getInducedStrong X is not distinc values.");
+  };
+
   set<int> S;
   for (int i : X) S.insert(i);
 
@@ -135,6 +139,26 @@ Graph Graph::getInduced(vec<int> X) const {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       if (areNeighbours(i, j) && S.count(i) > 0 && S.count(j) > 0) {
+        ret._matrix[i][j] = true;
+      }
+    }
+  }
+
+  ret.calculateNeighboursLists();
+  ret.calculateFirstNextNeighbours();
+  return ret;
+}
+
+Graph Graph::getInducedStrong(vec<int> X) const {
+  if (!isDistinctValues(X)) {
+    throw invalid_argument("getInducedStrong X is not distinc values.");
+  }
+
+  Graph ret(X.size());
+
+  for (int i = 0; i < X.size(); i++) {
+    for (int j = 0; j < X.size(); j++) {
+      if (areNeighbours(X[i], X[j])) {
         ret._matrix[i][j] = true;
       }
     }
@@ -313,6 +337,47 @@ bool isDistinctValues(const vec<int> &v) {
   return true;
 }
 
+int countNonZeros(const vec<int> &v) {
+  int res = 0;
+
+  for (int i : v)
+    if (i) res++;
+
+  return res;
+}
+
+vec<int> getPrefSum(const vec<int> &v) {
+  if (v.empty()) return vec<int>();
+
+  vec<int> ret(v.size());
+  ret[0] = v[0];
+  for (int i = 1; i < v.size(); i++) {
+    ret[i] = ret[i - 1] + v[i];
+  }
+
+  return ret;
+}
+
+vec<int> getComplementNodesVec(int n, const vec<int> &X) {
+  for (int i = 1; i < X.size(); i++) {
+    if (X[i - 1] >= X[i]) {
+      throw invalid_argument("X for getComplementNodesVec should be sorted");
+    }
+  }
+
+  vec<int> res;
+
+  res.reserve(n - X.size());
+  int wsk = 0;
+  for (int i = 0; i < n; i++) {
+    while (wsk < X.size() && X[wsk] < i) wsk++;
+
+    if (wsk >= X.size() || X[wsk] != i) res.push_back(i);
+  }
+
+  return res;
+}
+
 void nextTupleInPlace(vec<int> &v, int max) {
   v[0]++;
   for (int i = 0; i < v.size() && v[i] >= max; i++) {
@@ -339,6 +404,7 @@ vec<vec<int>> generateTuples(int size, int max) {
 }
 
 ostream &operator<<(ostream &os, Graph const &G) {
+  cout<<G.n<<endl;
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
       if (G.areNeighbours(i, j))
@@ -426,7 +492,7 @@ vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(i
       R[i][j].push_back(j);
       if (i == j) continue;
 
-      //TODO(Adrian) smarter: if(tmp < i) ~insert(R[i][tmp])
+      // TODO(Adrian) smarter: if(tmp < i) ~insert(R[i][tmp])
       int tmp = lastOnPath[i][j];
       R[i][j].push_back(tmp);
       while (tmp != i) {

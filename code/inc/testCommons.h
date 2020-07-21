@@ -21,12 +21,14 @@ using std::invalid_argument;
 using std::map;
 
 // Whether to run big tests. These take more time.
-// const bool bigTests = false;
-const bool bigTests = true;
+const bool bigTests = false;  // TODO(Adrian) make bigTests big again (perf)
+// const bool bigTests = true;
 
 bool probTrue(double p);
 void printGraph(const Graph &G);
 Graph getRandomGraph(int size, double p);
+// will loop when impossible or unlikely.
+Graph getRandomPerfectGraph(int size, double p);
 vec<Graph> getRandomGraphs(int size, double p, int howMany);
 
 Graph getNonPerfectGraph(int holeSize, int reminderSize, double p);
@@ -48,6 +50,10 @@ struct RaiiTimer {
 
 bool testWithStats(const Graph &G, bool naive);
 void printStats();
+
+void testColorWithStats(const Graph &G);
+void printStatsColor();
+
 double getDistr();
 void testGraph(const Graph &G, bool verbose);
 void testGraph(const Graph &G, bool result, bool verbose);
@@ -67,3 +73,5 @@ struct RaiiProgressBar {
 
   int getFilled(int testsDone);
 };
+
+bool isColoringValid(const Graph &G, const vec<int> &coloring);
