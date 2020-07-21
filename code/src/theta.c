@@ -18,8 +18,6 @@ struct paramstruc params;
 {
   double gap = trace_prod(X, Z);
 
-  printf("%f %f %f\n", dobj, pobj, gap);
-
   if(gap < 0.1) return 2;
 
   return 0;
