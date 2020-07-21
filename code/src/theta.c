@@ -3,6 +3,8 @@
 #include <string.h>
 #include "declarations.h"
 
+/* This theta.c file is based on  Csdp/theta/theta.c of Csdp project: https://github.com/coin-or/Csdp */
+
 int user_exit(n, k, C, a, dobj, pobj, constant_offset, constraints, X, y, Z, params) int n;
 int k;
 struct blockmatrix C;
