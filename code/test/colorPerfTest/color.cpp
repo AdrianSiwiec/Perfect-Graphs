@@ -8,6 +8,8 @@ bool isEmpty(std::istream &pFile) { return pFile.peek() == std::istream::traits_
 int main() {
   std::ios_base::sync_with_stdio(0);
 
+  init(false);
+
   int n;
   vector<Graph> Gs;
   while (std::cin >> n) {
@@ -31,13 +33,11 @@ int main() {
     RaiiProgressBar bar(Gs.size());
 
     for (int i = 0; i < Gs.size(); i++) {
-      testGraph(Gs[i], true, false);
       testColorWithStats(Gs[i]);
       bar.update(i + 1);
     }
   }
   cout << endl;
 
-  printStats();
   printStatsColor();
 }

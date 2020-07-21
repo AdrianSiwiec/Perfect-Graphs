@@ -1,0 +1,3 @@
+[submodule "code/3rdparty/Csdp"]
+	path = code/3rdparty/Csdp
+	url = git@github.com:AdrianSiwiec/Csdp.git
