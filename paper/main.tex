@@ -1,6 +1,21 @@
 \documentclass{article}
 
 \usepackage{appendix}
+\usepackage{todonotes}
+
+\usepackage[
+	style=alphabetic
+]{biblatex}
+\addbibresource{bbl.bib}
+
+
+\newcommand{\TODO}{\todo[inline]}
+\newcommand\Lovasz{Lovász }
+
+% Language and typesetting notes:
+%
+% - Color, not Colour (American English)
+% - Node not a Vertex of a graph
 
 \author{Adrian Siwiec}
 \date{\today{}}
@@ -50,16 +65,18 @@ TODO
 \pagebreak
 
 \section{Perfect Graphs}
-Definition of perfect graphs.\\
+All graphs in this paper are finite, undirected and have no loops or parallel edges. We denote the chromatic number of graph $G$ by $\chi(G)$ and the cardinality of the largest clique of $G$ by $\omega(G)$. \emph{Coloring} of a graph means assigning every node of a graph a color. A coloring is \emph{valid} iff every two nodes sharing an edge have different colors. An \emph{optimal} coloring (if exists) is a valid coloring using only $\omega(G)$ colors.
 
-Why are they interesting (Some examples of subclasses, and problems that are solvable for perfect graphs, including recognition and coloring).\\
+Given a graph $G = (V,E)$ and a set $X \subseteq V$ by $G[X]$ we will denote a graph induced on $X$. A graph $G = (V,E)$ is \emph{perfect} iff for all $X \subseteq V$ we have $\chi(G[X]) = \omega(G[X])$.
 
-Weak perfect graph theorem.\\
+\TODO{Give some examples why are these interesting, some subclasses, and problems that are solvable for perfect graphs, including recognition and coloring}
 
-Berge graphs.
+Given a graph $G$, its \emph{complement} $\overline{G}$ is a graph with the same vertex set and in which two distinct nodes $u, v$ are connected in $\overline{G}$ iff they are not connected in $G$. For example a clique in a graph becomes an independent set in its complement. A perfect graph theorem, first conjured by Berge in 1961 \cite{CB61} and then proven by \Lovasz in 1972 \cite{LL72} states that a graph is perfect iff its complement graph is also perfect. \todo{Should we give some proof of that here?}
 
 \subsection{Strong Perfect Graph Theorem}
-Cite the paper, brief description of the theorem.
+A \emph{hole} is an induced chordless cycle of length at least 4. An \emph{antihole} is an induced subgraph whose complement is a hole. A \emph{Berge} graph is a graph with no holes or antiholes of odd length.
+
+In 1961 Berge conjured that a graph is perfect iff it is Berge in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}.
 
 
 \section{Recognizing Berge Graphs}
@@ -116,5 +133,9 @@ On its complexity - point to appendix for pseudo-code.
 
 \section{Perfect Graph Coloring algorithm}
 TODO
+
+
+% \bibliographystyle{alpha}
+\printbibliography
 
 \end{document}
