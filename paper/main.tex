@@ -20,6 +20,7 @@
 
 \newcommand{\TODO}{\todo[inline]}
 \newcommand\Lovasz{Lovász }
+\newcommand\T{\mathcal{T}}
 
 % Language and typesetting notes:
 %
@@ -79,8 +80,12 @@ All graphs in this paper are finite, undirected and have no loops or parallel ed
 Given a graph $G = (V,E)$, sometimes by $V(G)$ and $E(G)$ we will denote a set of nodes and edges of $G$. Given a set $X \subseteq V$ by $G[X]$ we will denote a graph induced on $X$. A graph $G$ is \emph{perfect} iff for all $X \subseteq V(G)$ we have $\chi(G[X]) = \omega(G[X])$.
 
 \paragraph{Editorial notes}
-By solid lines we will mark edges, by dashed lines we will mark nonedges, when significant. Sometimes nonedges will not be marked in order not to clutter the image.
-\todo{Where should we put it?}
+\begin{itemize}
+	\item By solid lines we will mark edges, by dashed lines we will mark nonedges, when significant. Sometimes nonedges will not be marked in order not to clutter the image.
+	\todo{Where should we put it?}
+	\item A node is $X$-complete in $G$ iff it is adjacent to all nodes in $X$.
+	\item Given a path $P$, by $P^*$ we will denote its inside.
+\end{itemize}
 
 \TODO{Give some examples why are these interesting, some subclasses, and problems that are solvable for perfect graphs, including recognition and coloring}
 
@@ -158,7 +163,7 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 \paragraph{Jewels}
 
 
-\begin{wrapfigure}[12]{r}{0.35\textwidth}
+\begin{wrapfigure}[7]{r}{0.35\textwidth}
 	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
 	\def\ngon{5}
 	\node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] (p) {};
@@ -192,7 +197,20 @@ Five nodes $v_1, \ldots, v_5$ and a path $P$ is a \emph{jewel} iff:
 	\item $P$ is a path between $v_1$ and $v_4$, such that $v_2, v_3, v_5$ have no neighbors in its inside.
 \end{itemize}
 
-Recognizing simple structures (Pyramids, Jewels, T1, T2, T3).\\
+Most obvious way to find a jewel would be to enumerate all choices of $v_1, \ldots v_5$, check if a choice is correct and if it is try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole algorithms takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we used this simple algorithm.
+
+\paragraph{Configurations of type $\T_1$}
+
+A configuration of type $\T_1$ is a hole of length 5. To find it we simply iterate all choices of paths of length of 4, and check if there exists a fifth node to complete the hole. See paragraph \ref{Optimizations} for more implementation details.
+
+\paragraph{Configurations of type $\T_2$} A configuration of type $\T_2$ is a six $(v_1, v_2, v_3, v_4, P, X)$, such that:
+\begin{itemize}
+	\item $v_1v_2v_3v_4$ is a path in $G$.
+	\item $X$ is an anticomponent of the set of all $\{v_1, v_2, v_4\}$-complete nodes.
+	\item $P$ is a path in $G\setminus(X \cup \{v_2, v_3\})$ between $v_1$ and $v_4$ and no vertex in $P^*$ is $X$-complete or adjacent to $v_2$ or adjacent to $v_3$.
+\end{itemize}
+
+Checking if configuration of type $\T_2$ exists in our graph is straightforward: we enumerate all paths $v_1\ldots v_4$, calculate set of all $\{v_1, v_2, v_4\}$-complete nodes and its anticomponents. Then, for each anticomponent $X$ we check if required path $P$ exists.
 
 Finding and Using Half-Cleaners.\\
 
@@ -202,7 +220,13 @@ Overview of proof of why algorithm using Half-Cleaners is correct.\\
 
 Anything interesting about algo/data structure?\\
 
-Optimizations - Bottlenecks in performance (next path, are vectors distinct etc).\\
+\subsubsection{Optimizations}\label{Optimizations}
+Bottlenecks in performance (next path, are vectors distinct etc).\\
+\TODO{In our graph preprocessing we have a pointer to next edge in order to speed up generating next path.}
+\TODO{We used callgrind to get idea of methods crucial for time.}
+\TODO{In general enumerating all paths is crucial. As is checking if vector has distinct values.}
+\TODO{Jewels -- we iterate all possibly chordal paths and check if they are ok - much faster}
+\TODO{$\T_1$ -- we iterate all paths of length 4 and check if there exists a fifth node to complete the hole - much faster than iterating nodes.}
 
 Validity tests - unit tests, tests of bigger parts, testing vs known answer and vs naive.
 
