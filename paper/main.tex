@@ -4,6 +4,8 @@
 \usepackage{todonotes}
 \usepackage{wrapfig}
 \usepackage{intcalc}
+\usepackage{amsthm}
+\usepackage{cleveref}
 
 \usepackage{tikz}
 \tikzset{%
@@ -11,16 +13,21 @@
 }
 \usetikzlibrary{snakes}
 \usetikzlibrary{shapes.geometric}
+\usetikzlibrary{positioning, fit, calc}
 
 \usepackage[
 	style=alphabetic
 ]{biblatex}
 \addbibresource{bbl.bib}
 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
 
 \newcommand{\TODO}{\todo[inline]}
 \newcommand\Lovasz{Lovász }
 \newcommand\T{\mathcal{T}}
+\crefname{lemma}{Lemma}{Lemmas}
 
 % Language and typesetting notes:
 %
@@ -203,7 +210,47 @@ Most obvious way to find a jewel would be to enumerate all choices of $v_1, \ldo
 
 A configuration of type $\T_1$ is a hole of length 5. To find it we simply iterate all choices of paths of length of 4, and check if there exists a fifth node to complete the hole. See paragraph \ref{Optimizations} for more implementation details.
 
-\paragraph{Configurations of type $\T_2$} A configuration of type $\T_2$ is a six $(v_1, v_2, v_3, v_4, P, X)$, such that:
+\paragraph{Configurations of type $\T_2$}
+
+\begin{wrapfigure}[15]{r}{0.35\textwidth}
+	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
+		\node(v1) at (0,0) {$v_1$};
+		\node(v2) at (1.5,0) {$v_2$};
+		\node(v3) at (3,0) {$v_3$};
+		\node(v4) at (4.5,0) {$v_4$};
+
+		\draw (v1) to (v2);
+		\draw (v2) to (v3);
+		\draw (v3) to (v4);
+
+		\tikzset{decoration={snake,amplitude=.6mm,segment length=6mm,
+                       post length=0mm,pre length=0mm}}
+		\draw[decorate] (v1) to [out=90, in=180] (4.5/2, 3) to [out=0, in=90] (v4);
+		\node[draw=none] at (4.5/2, 3.5) {$P$};
+		
+		\draw[dashed] (v2) to (.7,2.5);
+		\draw[dashed] (v3) to (.7,2.5);
+		\draw[dashed] (v2) to (3.8,2.5);
+		\draw[dashed] (v3) to (3.8,2.5);
+
+		\node[minimum size=4mm](x1) at (1.2, -2){};
+		\node[minimum size=4mm](x2) at (3.3, -2){};
+		\node[draw,dotted,inner sep=3pt, circle,yscale=.5, fit={(x1) (x2)},label=below:{$X$}] {};
+
+		\draw[dashed] (x1) to (x2);
+		\draw(v1) to (x1);
+		\draw(v2) to (x1);
+		\draw(v4) to (x1);
+		\draw(v1) to (x2);
+		\draw(v2) to (x2);
+		\draw(v4) to (x2);
+
+		% \draw (a) to (b2);
+\end{tikzpicture}
+\caption{An example of a $\T_2$.}
+\end{wrapfigure}
+
+A configuration of type $\T_2$ is a six $(v_1, v_2, v_3, v_4, P, X)$, such that:
 \begin{itemize}
 	\item $v_1v_2v_3v_4$ is a path in $G$.
 	\item $X$ is an anticomponent of the set of all $\{v_1, v_2, v_4\}$-complete nodes.
@@ -211,6 +258,30 @@ A configuration of type $\T_1$ is a hole of length 5. To find it we simply itera
 \end{itemize}
 
 Checking if configuration of type $\T_2$ exists in our graph is straightforward: we enumerate all paths $v_1\ldots v_4$, calculate set of all $\{v_1, v_2, v_4\}$-complete nodes and its anticomponents. Then, for each anticomponent $X$ we check if required path $P$ exists.
+
+To prove that existence of $\T_2$ configuration implies that the graph is not berge, we will need the Roussel-Rubio lemma \cite{RR01} as stated in \cite{MC05} that says:
+
+\begin{lemma}[Roussel-Rubio Lemma]\label{Roussel-Rubio}
+	Let $G$ be Berge, $X$ be an anticonnected subset of $V(G)$, $P$ be an odd path $p_1\ldots p_n$ in $G\setminus X$ with length at least 3, such that $p_1$ and $p_n$ are $X$-complete and $p_2, \ldots, p_{n-1}$ are not. Then:
+	\begin{itemize}
+		\item $P$ is of length at least 5 and there exist nonadjacent $x, y \in X$, such that there are exactly two edges between $x, y$ and $P^*$, namely $xp_2$ and $yp_{n-1}$,
+		\item or $P$ is of length 3 and there is an odd antipath joining internal nodes of $P$ with interior in $X$.
+	\end{itemize}
+\end{lemma}
+
+Now, we shall prove the following:
+
+\begin{lemma}
+	If $G$ contains configuration of type $\T_2$ then $G$ is not Berge.
+\end{lemma}
+\begin{proof}
+	Let $(v_1, v_2, v_3, v_4, P, X)$ be a configuration of type $\T_2$. Let us assume that $G$ is not Berge and consider the following:
+	\begin{itemize}
+		\item If $P$ is even, then $v_1, v_2, v_3, v_4, P, v_1$ is an odd hole,
+		\item If $P$ is of length 3. \todo{I merged a couple of proofs from \cite{MC06}, check in the morning if this is correct.} Let us name its nodes $v_1, p_2, p_3, v_4$. It follows from \cref{Roussel-Rubio}, that there exists an odd antipath between $p_2$ and $p_3$ with interior in $X$. We can complete it with $v_2p_2$ and $v_2p_3$ into an odd antihole.
+		\item If $P$ is odd with the length of at least 5 \todo{check in the morning}, it follows from \cref{Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2, x, p_2, \ldots, p_{n-1}, y, v_2$.
+	\end{itemize} 
+\end{proof}
 
 Finding and Using Half-Cleaners.\\
 
@@ -248,7 +319,7 @@ Results and Corollary - almost usable algorithm.
 
 \subsection{Ellipsoid method}
 
-Desctiption.\\
+Description.\\
 
 Implementation.\\
 
