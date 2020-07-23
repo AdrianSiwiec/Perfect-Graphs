@@ -3,11 +3,14 @@
 \usepackage{appendix}
 \usepackage{todonotes}
 \usepackage{wrapfig}
+\usepackage{intcalc}
 
 \usepackage{tikz}
 \tikzset{%
     simplegraph/.style={every node/.style={draw,circle, inner sep=0pt, minimum size=6mm}},
 }
+\usetikzlibrary{snakes}
+\usetikzlibrary{shapes.geometric}
 
 \usepackage[
 	style=alphabetic
@@ -75,6 +78,10 @@ All graphs in this paper are finite, undirected and have no loops or parallel ed
 
 Given a graph $G = (V,E)$, sometimes by $V(G)$ and $E(G)$ we will denote a set of nodes and edges of $G$. Given a set $X \subseteq V$ by $G[X]$ we will denote a graph induced on $X$. A graph $G$ is \emph{perfect} iff for all $X \subseteq V(G)$ we have $\chi(G[X]) = \omega(G[X])$.
 
+\paragraph{Editorial notes}
+By solid lines we will mark edges, by dashed lines we will mark nonedges, when significant. Sometimes nonedges will not be marked in order not to clutter the image.
+\todo{Where should we put it?}
+
 \TODO{Give some examples why are these interesting, some subclasses, and problems that are solvable for perfect graphs, including recognition and coloring}
 
 Given a graph $G$, its \emph{complement} $\overline{G}$ is a graph with the same vertex set and in which two distinct nodes $u, v$ are connected in $\overline{G}$ iff they are not connected in $G$. For example a clique in a graph becomes an independent set in its complement. A perfect graph theorem, first conjured by Berge in 1961 \cite{CB61} and then proven by \Lovasz in 1972 \cite{LL72} states that a graph is perfect iff its complement graph is also perfect. \todo{Should we give some proof of that here? Maybe based on proof in \cite{GC03}}
@@ -100,9 +107,11 @@ Odd holes are not perfect, since their chromatic number is 3 and their largest c
 
 \subsubsection{Simple structures}
 
+\paragraph{Pyramids}
+
 A \emph{path} in $G$ is an induced subgraph that is connected, with at least one node, no cycle and no node of degree larger than 2 (sometimes called chordless path). The \emph{length} of a path or a cycle is the number of edges in it. \todo{Should we move these definitions elsewhere?} A \emph{triangle} in a graph is a set of three pairwise adjacent nodes.
 
-\begin{wrapfigure}{r}{0.35\textwidth}
+\begin{wrapfigure}[12]{r}{0.35\textwidth}
 	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
 	\node(a) at (0,0) {a};
 	\node(b1) at (-2,-6) {$b_1$};
@@ -141,10 +150,47 @@ A \emph{pyramid} in G is an induced subgraph formed by the union of a triangle $
 	\item $a$ is adjacent to at most one of $\{b_1, b_2, b_3\}$.
 \end{itemize}
 
-It is easy to see that every graph containing a pyramid contains an odd hole.
+It is easy to see that every graph containing a pyramid contains an odd hole -- at least two of the paths $P_1$, $P_2$, $P_3$ will have the same parity.
 
 
-\TODO{On recognition of pyramids.}
+\TODO{On recognition of pyramids. Lemma 2.1 from the paper.}
+
+\paragraph{Jewels}
+
+
+\begin{wrapfigure}[12]{r}{0.35\textwidth}
+	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
+	\def\ngon{5}
+	\node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] (p) {};
+	\foreach\x in {1,...,\ngon}{\node[] (p\x) at (p.corner \x){$v_\the\numexpr\intcalcMod{\x+3}{5}+1$};}
+	%p1 - v5, p2 - v1 ...
+	\draw (p1) to (p2);
+	\draw (p2) to (p3);
+	\draw (p3) to (p4);
+	\draw (p4) to (p5);
+	\draw (p1) to (p5);
+
+  \draw[dashed] (p2) to (p5);
+  \draw[dashed] (p2) to (p4);
+	\draw[dashed] (p3) to (p5);
+	
+	\tikzset{decoration={snake,amplitude=.6mm,segment length=6mm,
+                       post length=0mm,pre length=0mm}}
+	\draw[decorate] (p2) to [out=-100, in=180] (0, -5) to [out=0, in=-80] (p5);
+	\node[draw=none] at (0, -4.7) {$P$};
+\end{tikzpicture}
+\caption{An example of a jewel.}
+\end{wrapfigure}
+
+
+Five nodes $v_1, \ldots, v_5$ and a path $P$ is a \emph{jewel} iff:
+
+\begin{itemize}
+	\item $v_1, \ldots, v_5$ are distinct nodes.
+	\item $v_1v_2, v_2v_3, v_3v_4, v_4v_5, v_5v_1$ are edges.
+	\item $v_1v_3, v_2v_4, v_1,v_4$ are nonedges.
+	\item $P$ is a path between $v_1$ and $v_4$, such that $v_2, v_3, v_5$ have no neighbors in its inside.
+\end{itemize}
 
 Recognizing simple structures (Pyramids, Jewels, T1, T2, T3).\\
 
