@@ -283,6 +283,29 @@ Now, we shall prove the following:
 	\end{itemize} 
 \end{proof}
 
+\paragraph{Configurations of type $\T_3$}
+
+A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such that:
+\begin{itemize}
+	\item $v_1, \ldots v_6$ are distinct nodes.
+	\item $v_1v_2$, $v_3v_4$, $v_1v_4$, $v_2v_3$, $v_3v_5$, $v_4v_6$ are edges, and $v_1v_3$, $v_2v_4$, $v_1v_5$, $v_2v_5$, $v_1v_6$, $v_2v_6$, $v_4v_5$ are nonedges.
+	\item $X$ is an anticomponent of the set of all $\{v_1, v_2, v_5\}$-complete nodes, and $v_3$, $v_4$ are not $X$-complete.
+	\item $P$ is a path of $G \setminus ( X \cup \{v_1, v_2, v_3, v_4\} )$ between $v_5$ and $v_6$ and no node in $P*$ is $X$-complete or adjacent to $v_1$ or adjacent to $v_2$.
+	\item If $v_5v_6$ is an edge, then $v_6$ is not $X$-complete.
+\end{itemize}
+
+\TODO{image?}
+
+The following algorithm with running time of $O(|V(G)|^6)$ checks whether $G$ contains a configuration of type $T_3$:
+
+For each triple $v_1, v_2, v_5$ of nodes such that $v_1v_2$ is an edge and $v_1v_5, v_2v_5$ are nonedges find the set $Y$ of all $\{v_1, v_2, v_5\}$-complete nodes. For each anticomponent $X$ of $Y$ find the maximal connected subset $F'$ containing $v_5$ such that $v_1, v_2$ have no neighbors in $F'$ and no node of $F'\setminus\{v_5\}$ is $X$-complete. Let $F$ be the union of $F'$ and the set of all $X$-complete nodes that have a neighbor in $F'$ and are nonadjacent to all of $v_1, v_2$ and $v_5$. 
+
+Then, for each choice of $v_4$ that is adjacent to $v_1$ and not to $v_2$ and $v_5$ and has a neighbor in $F$ (call it $v_6$) and a nonneibhbor in $X$, we test whether there is a node $v_3$, adjacent to $v_2, v_4, v_5$ and not to $v_1$, with a nonneibhbor in $X$. If there is such a node $v_3$, find $P$ -- a path from $v_6$ to $v_5$ with interior in $F'$ and return that $v_1, \ldots v_6, P, X$ is a configuration of type $\T_3$. If we exhaust our search and find none, report that graph does not contain it.
+
+To see that the algorithm below has a running time of $O(|V(G)|^6)$, let us note that for each triple $v_1, v_2, v_5$ we examine, of which there are $O(|V(G)|^3)$, there are linear many choices of $X$, each taking $O(|V(G)|^2)$ time to process and generating a linear many choices of $v_4$ which take a linear time to process in turn. This gives us the total running time of $O(|V(G)|^6)$.
+
+We will skip the proof that each graph containing $\T_3$ is not Berge. \todo{Should we include it?} See \cite{MC05} for the proof.
+
 Finding and Using Half-Cleaners.\\
 
 Overview of proof of why algorithm using Half-Cleaners is correct.\\
