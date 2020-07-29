@@ -306,6 +306,21 @@ To see that the algorithm below has a running time of $O(|V(G)|^6)$, let us note
 
 We will skip the proof that each graph containing $\T_3$ is not Berge. \todo{Should we include it?} See \cite{MC05} for the proof.
 
+\subsubsection{Amenable holes.}
+
+For a shortest odd hole $C$ in $G$, we will call a node $v \in V(G) \setminus V(C)$ $C$-\emph{major} iff the set of its neighbors in C is not contained in any 3-node path of $C$. An odd hole $C$ will be called \emph{clean} if no vertex is $C$-major.
+
+A hole $C$ of $G$ is \emph{amenable} iff C is a shortest odd hole in $G$ of length at least 7, and for every anticonnected set $X$ of $C$-major nodes, there is an $X$-complete edge in $C$ (an edge is $X$-complete iff both its ends are $X$-complete).
+
+The rest of the algorithm rests upon the following theorem:
+
+\begin{theorem}
+	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then every shortest hole in $G$ is amenable.
+	\TODO{Any ideas on what else to say here? List all 9 steps?}
+\end{theorem}
+
+For a shortest odd hole $C$ in $G$, a subset $X$ of $V(G)$ is a \emph{near-cleaner for $C$} iff $X$ contains all $C$-major nodes and $X \cap V(C)$ is a subset of node set of some 3-node path of $C$.
+
 Finding and Using Half-Cleaners.\\
 
 Overview of proof of why algorithm using Half-Cleaners is correct.\\
