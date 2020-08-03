@@ -47,26 +47,9 @@ void testTuples() {
   assert(generateTuples(4, 3).size() == 3 * 3 * 3 * 3);
 }
 
-void testIsColoringValid() {
-  Graph G(5,
-          "\
-  .XX..\
-  X.X..\
-  XX.XX\
-  ..X.X\
-  ..XX.\
-  ");
-
-  assert(isColoringValid(G, {2, 1, 0, 2, 1}));
-  assert(!isColoringValid(G, {2, 1, 0, 2}));
-  assert(!isColoringValid(G, {2, 1, 0, 2, 3}));
-  assert(!isColoringValid(G, {1, 1, 0, 2, 3}));
-}
-
 int main() {
   init();
   testRandomGraphs();
   testGetRandomPerfect();
   testTuples();
-  testIsColoringValid();
 }

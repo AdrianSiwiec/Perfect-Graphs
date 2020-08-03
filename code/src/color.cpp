@@ -8,6 +8,7 @@ extern "C" {
 #include "theta.h"
 }
 
+
 tuple<int, int, vec<int>, vec<int>> getGraphEdges(const Graph &G, const vec<int> &isNodeRemoved) {
   vec<int> nodeStays(isNodeRemoved.size());
   for (int i = 0; i < isNodeRemoved.size(); i++) {

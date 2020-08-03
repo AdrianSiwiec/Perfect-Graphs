@@ -11,6 +11,7 @@ NETTESTDIR=$(TESTDIR)/netTest
 DOWNLOADSDIR=$(NETTESTDIR)/downloaded
 PERFTESTDIR=$(TESTDIR)/perfTest
 COLORPERFTESTDIR=$(TESTDIR)/colorPerfTest
+3RDDIR=3rdparty
 
 #G++ compiler settings
 CXX=g++
@@ -19,6 +20,7 @@ CXXFLAGS=-O3 -std=c++11 $(CXXINC) -g -rdynamic -Werror=return-type
 
 INCFILES=$(wildcard $(INCDIR)/*.h)
 SRCFILES=$(wildcard $(SRCDIR)/*.cpp)
+CUSRCFILES=$(wildcard $(SRCDIR)/*.cu)
 CSRCFILES=$(wildcard $(SRCDIR)/*.c)
 TESTFILES=$(wildcard $(TESTDIR)/*/*.cpp)
 
@@ -27,9 +29,23 @@ GCC=gcc
 GCCLIBS=-L./3rdparty/Csdp/lib -lsdp -llapack -lblas -lgfortran -lquadmath -lm -lgomp -pthread -ldl
 GCCFLAGS=-m64 -march=native -mtune=native -Ofast -fopenmp -ansi -Wall -DBIT64 -DUSEOPENMP -DSETNUMTHREADS -DUSESIGTERM -DUSEGETTIME -I./3rdparty/Csdp/include
 
-OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCFILES))
+# CUDA compiler settings
+CUDA=/usr/local/cuda
+NVCC=$(CUDA)/bin/nvcc
+NVCCSM=sm_50
+NVCCINC=-I $(CUDA)/include \
+		-I $(CUDA)/samples/common/inc \
+		-I ./$(3RDDIR)/moderngpu/src \
+		-I ./$(INCDIR)/ 
+NVCCFLAGS=-arch $(NVCCSM) -O3 -std=c++11 --expt-extended-lambda -w $(NVCCINC)
+LDFLAGS=-L/usr/local/cuda/lib64 -lcudart
+
+OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCFILES)) \
+				 $(patsubst %.cu, $(OBJDIR)/%.o, $(CUSRCFILES))
 COBJFILES=$(patsubst %.c, $(COBJDIR)/%.o, $(CSRCFILES))
-UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp))
+UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp)) \
+						  $(patsubst %.cu, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cu)) \
+						  
 PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
 COLORPERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(COLORPERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
@@ -57,9 +73,18 @@ $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+$(OBJDIR)/%.o: %.cu
+	@mkdir -p $(dir $@)
+	$(NVCC) $(NVCCFLAGS) -c $< -o $@
+
 $(OBJDIR)/%.e: %.cpp $(OBJFILES) $(COBJFILES)
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(OBJFILES) $(COBJFILES) $< $(GCCLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(OBJFILES) $(COBJFILES) $< $(GCCLIBS) -o $@ $(LDFLAGS)
+
+$(OBJDIR)/%.e: %.cu obj/src/perfect.o  obj/src/jewels.o  obj/src/pyramids.o  obj/src/oddHoles.o  obj/src/commons.o  obj/src/testCommons.o  obj/src/cuCommons.o  obj/src/nearCleaners.o
+	@mkdir -p $(dir $@)
+	$(NVCC) $(NVCCFLAGS) obj/src/perfect.o  obj/src/jewels.o  obj/src/pyramids.o  obj/src/oddHoles.o  obj/src/commons.o  obj/src/testCommons.o  obj/src/cuCommons.o  obj/src/nearCleaners.o $<  -o $@ $(LDFLAGS)
+  
 
 .PHONY: test clean run-tests unitTest retest netTest lint
 

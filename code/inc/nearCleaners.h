@@ -8,6 +8,8 @@
 // G should contain no pyramid or jewel.
 bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX);
 
+bool cudaContainsOddHoleWithNearCleaners(const Graph &G, const set<set<int>> &Xs);
+
 bool isRelevantTriple(const Graph &G, vec<int> v);
 
 // Returns X(a, b, c) for v=[a, b, c].

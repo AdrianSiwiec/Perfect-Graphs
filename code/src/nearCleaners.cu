@@ -1,6 +1,19 @@
-#include "nearCleaners.h"
+
+#include <curand_kernel.h>
+
+#include <moderngpu/context.hxx>
+#include <moderngpu/kernel_compact.hxx>
+#include <moderngpu/kernel_mergesort.hxx>
+#include <moderngpu/kernel_reduce.hxx>
+#include <moderngpu/kernel_scan.hxx>
+#include <moderngpu/kernel_segreduce.hxx>
+#include <moderngpu/memory.hxx>
+#include <moderngpu/transform.hxx>
 #include <set>
+
 #include "commons.h"
+#include "nearCleaners.h"
+using namespace mgpu;
 
 bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX) {
   auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; });
@@ -32,7 +45,7 @@ bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX) {
 
       if ((R[x3][y1].size() < n) || (R[x3][y2].size() < n)) continue;
 
-      //TODO(Adrian) remove, use some code coverage tool instead
+      // TODO(Adrian) remove, use some code coverage tool instead
       // cout << "Interesting odd hole: " << endl;
       // cout << "sX: " << sX << endl;
       // cout << "x1: " << x1 << endl;
@@ -49,6 +62,13 @@ bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX) {
       return true;
     }
   }
+
+  return false;
+}
+
+bool cudaContainsOddHoleWithNearCleaners(const Graph &G, const set<set<int>> &Xs) {
+  mgpu::standard_context_t context(0);
+
 
   return false;
 }

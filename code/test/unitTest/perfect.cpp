@@ -1,5 +1,7 @@
 #include "perfect.h"
+
 #include <random>
+
 #include "commons.h"
 #include "ctime"
 #include "oddHoles.h"

@@ -1,4 +1,6 @@
 #include "color.h"
+
+#include "colorTestCommons.h"
 #include "commons.h"
 #include "perfect.h"
 #include "testCommons.h"
