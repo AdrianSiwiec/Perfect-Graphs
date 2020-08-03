@@ -404,7 +404,7 @@ vec<vec<int>> generateTuples(int size, int max) {
 }
 
 ostream &operator<<(ostream &os, Graph const &G) {
-  cout<<G.n<<endl;
+  cout << G.n << endl;
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
       if (G.areNeighbours(i, j))
@@ -585,7 +585,6 @@ void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleO
 }
 
 void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk) {
-  // TODO(Adrian) faster, do not iterate over all permutations. Have a "pointer" to next neighbour in G?
   if (len <= 1) {
     throw invalid_argument("Length of next path must be at least 2");
   }
