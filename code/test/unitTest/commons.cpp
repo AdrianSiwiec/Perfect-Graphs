@@ -99,6 +99,38 @@ void testGraphGetInduced() {
   }
 }
 
+void testGraphGetIncudedStrong() {
+  Graph G(7,
+          "\
+  ...X...\
+  ..X.XX.\
+  .X...X.\
+  X......\
+  .X.....\
+  .XX....\
+  .......\
+  ");
+
+  Graph Gprim = G.getInducedStrong({1, 2, 5});
+  assert(Gprim[0] == (vec<int>{1, 2}));
+  assert(Gprim[1] == (vec<int>{0, 2}));
+  assert(Gprim[2] == (vec<int>{0, 1}));
+
+  assert(Gprim.n == 3);
+
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      if (i != j) assert(Gprim.areNeighbours(i, j));
+    }
+  }
+}
+
+void testGetComplementNodes() {
+  assert(getComplementNodesVec(8, {0, 1, 4}) == (vec<int>{2, 3, 5, 6, 7}));
+  assert(getComplementNodesVec(8, {}) == (vec<int>{0, 1, 2, 3, 4, 5, 6, 7}));
+  assert(getComplementNodesVec(8, {0, 1, 2, 3, 4, 5, 6, 7}) == (vec<int>{}));
+}
+
 void testGraphGetShuffled() {
   Graph G = getRandomGraph(10, 0.5);
   Graph GS = G.getShuffled();
@@ -270,6 +302,14 @@ void testSimpleVec() {
   assert(isDistinctValues({0, 1}));
   assert(isDistinctValues({100}));
   assert(isDistinctValues({}));
+
+  assert(countNonZeros({0, 1, 0, 2}) == 2);
+  assert(countNonZeros({0, 1, 0, 0}) == 1);
+  assert(countNonZeros({2, 1, 0, -1}) == 3);
+  assert(countNonZeros({}) == 0);
+
+  assert(getPrefSum({1, 2, 3, -10, 240, 0, 1}) == (vec<int>{1, 3, 6, -4, 236, 236, 237}));
+  assert(getPrefSum({}) == (vec<int>{}));
 }
 
 void testEmptyStarTriangles() {
@@ -580,12 +620,14 @@ int main() {
   init();
   testGraph();
   testGraphGetInduced();
+  testGraphGetIncudedStrong();
   testGraphGetShuffled();
   testGraphGetNextNeighbor();
   testGetLineGraph();
   testSimpleVec();
   testGetTriangles();
   testVec();
+  testGetComplementNodes();
   testEmptyStarTriangles();
   testGetCompleteVertices();
   testShortestPath();

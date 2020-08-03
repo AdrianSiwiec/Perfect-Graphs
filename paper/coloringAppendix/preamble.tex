@@ -1,0 +1,87 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
+\usepackage{hyperref} 
+\usetikzlibrary{arrows}
+\usepackage[linesnumbered,vlined]{algorithm2e}
+\usepackage{amssymb}
+\usepackage{graphicx}
+ \usepackage{color}
+ \usepackage{transparent}
+ \usepackage{amssymb,stackengine}
+
+\definecolor{c1}{HTML}{8D75A0}
+\definecolor{c2}{HTML}{8B9CD6}
+\definecolor{c3}{HTML}{F4F1BB}
+\definecolor{c4}{HTML}{DB9D47}
+\definecolor{c5}{HTML}{FF784F}
+
+\graphicspath{ {./img/} }
+
+\SetNlSty{}{}{}
+\SetKwInput{KwData}{Input}
+\SetKwInput{KwResult}{Output}
+\DontPrintSemicolon
+\newcommand{\NULL}{\textsc{null}}
+\SetAlgoVlined
+\LinesNumbered
+
+\SetKwBlock{IfNoEnd}{if}{}
+\SetKwBlock{IfNoBegin}{}{End}
+
+\let\oldnl\nl% Store \nl in \oldnl
+\newcommand\nonl{\renewcommand{\nl}{\let\nl\oldnl}}% Remove line number for one line
+\newcommand{\pushline}{\Indp}% Indent
+\newcommand{\popline}{\Indm}% Undent
+
+\newcommand{\Assert}[2][]{\nonl ASSERT: #2 \ifthenelse{\equal{#1}{}}{}{(as in #1)} \; }
+% \newcommand{\Assert}[2][]{}
+\newcommand{\TODO}[1]{\nonl \textcolor{red}{\# TODO:} #1 \;}
+
+\newcommand{\mycbox}[1]{\tikz{\path[draw=white,fill=white] (0,0) rectangle (8cm,.5cm);}}
+\newcommand{\mycboxx}[1]{\tikz{\path[draw=red,fill=white] (0,0) rectangle (.5cm,.8cm);}}
+
+\newcommand{\unfinishedAlg}[2][]{
+\begin{minipage}[t]{\textwidth}
+\vspace{0pt} 
+\begin{algorithm}[H]
+#2
+\end{algorithm}
+\vspace*{#1}
+\mycbox{}
+\end{minipage}
+}
+
+\SetKwFor{GreyWhile}{\transparent{0.4}{// while}}{\transparent{0.4}{do}}{}
+\SetKwFor{GreyWhile}{\transparent{0.4}{// while}}{\transparent{0.4}{do}}{}
+\SetKwIF{GreyIf}{GreyElseIf}{GreyElseAnother}{\transparent{0.4}{// if}}{\transparent{0.4}{then}}{\transparent{0.4}{// else if}}{\transparent{0.4}{else}}{}
+\SetKwIF{GreyElse}{GreyElseIfDummy}{GreyElseAnotherDummy}{\transparent{0.4}{// else}}{}{}{}{}
+
+% \newlength\foo
+\newcommand{\continueAlg}[2][]{
+	\begin{minipage}[t]{\textwidth}
+    \vspace{0pt} 
+% \settoheight\foo{ % for some reason doesn't work. leave for now.
+    \begin{algorithm}[H]
+    #2
+		\end{algorithm}
+% }
+    \vspace*{#1}
+    \mycboxx{}
+    \vspace*{-#1}
+		\end{minipage}
+}
+
+\newcommand{\LGBSK}{$L(BS(K_4))$}
+\newcommand{\xor}{\veebar}
+\newcommand{\nsquare}{\ensurestackMath{\stackinset{c}{}{c}{}{/}{\square}}}
+\newcommand{\setComplete}{\ \blacksquare\ }
+\newcommand{\setAntiComplete}{\ \nsquare\ }

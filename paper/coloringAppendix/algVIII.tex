@@ -1,0 +1,79 @@
+\unfinishedAlg[-.45cm]{
+	\SetKwFunction{GrowJStrip}{\textsc{Growing-J-Strip}}
+	\Indm\nonl\GrowJStrip{$G, J, (S, N)$}\\
+	\KwData{$G$ -- square-free, Berge graph \newline
+		$J$ -- a $3$-connected graph with appearance in $G$ \newline
+		$(S, N)$ -- a $J$-strip system \newline
+		\TODO{make sure def of $J$ is correct}
+	}
+	\KwResult{$J'$ and a maximal $J'$-strip system, or a special strip system}
+	\Indp	
+	$M \gets$ vertices of $G \setminus V(S, N)$ that are major on some choice of Rungs of $(S, N)$\;
+	\TODO{$M$ like ALGI} 
+	\If {$\exists m : m$ is not major on some choice of rungs of $(S, N)$}{
+		$OUT \gets$ \FindSpecialK{$G, J, (S, N), m$} \;
+		\If{$OUT$ is a special strip system}{
+			\Return $OUT$ \;
+		}
+		\Else{
+			\Return \GrowJStrip{$G, OUT$} \;
+		} 
+	}
+	\ElseIf{$\exists F$ : $F$ is a component of $G\setminus(V(S,N) \cup M)$, 
+		such that no member of $F$ is major w.r.t. $(S, N)$ 
+		and set of attachments of $F$ on $H (?)$ is not local}{
+		\Assert[6.2, or actually SPGT 8.5]{}
+		$F \gets$ minimal (component?) with this property\;
+								
+		\If{$\exists v \in V(J): X \subset \bigcup(S_{uv} : uv \in E(J))$}{
+			\TODO{what is X?}
+			$x :\in X \cap S_{uv} \setminus N_v$, for some $uv \in E(J)$\; \TODO{brackets?}
+			$x' :\in X \cap S_{u'v}$, for some $u'v \in E(J), u' \neq u$\;
+			\Assert{$\{x, x'\}$ is not local w.r.t. $(S,N)$}
+			$L(H) \gets \forall_{i,j \in E(J)}$ choose $ij$-rung $R_{ij}$, so that $x \in V(R_{uv}), x' \in V(R_{u'v})$\;
+			\Assert{$\{x, x'\}$ is not local w.r.t. $L(H)$}
+			$D \gets$ a branch of $H$ with ends $d, u$: $\delta_H(d) \setminus E(D) = (X \cap E(H)) \setminus E(D)$\;
+			\TODO{How can we get $H$ from $L(H)$}
+			$P \gets$ a path with ends $p_1, p_2$, so that: \nonl \;
+			\pushline $p_1 \blacktriangleleft N_v \setminus N_{vu}$ and
+			no other vertex of $P$ has neighbors in $N_v \setminus N_{uv}$ \nonl \;
+			$p_2 - x$ and no other vertex of $P$ has neighbors in $S_{uv} \setminus N_v$ \;
+			\popline
+			$(S', N') \gets $ add $p_1$ to $N_v$ and $F$ to $S_{uv}$ \;
+			\Return \GrowJStrip($G, J, (S',N')$)\;
+		}
+		\Else {
+			$K \gets \{uv \in E(J) : X \cap S_{uv} \neq \emptyset \}$\;
+			\Assert[SPGT 8.5.(3)]{There are two disjoint edges in $K$}
+			$F$ is a vertex set of a path $\gets f_1 - \ldots - f_n$\;
+			\Assert{Every choice of rungs is broad}
+		}
+	}
+}
+
+\continueAlg[-9cm]{
+  \setcounter{AlgoLine}{18}
+	\GreyIf{\transparent{.4}{$\exists F \ldots$}} {
+		\GreyElse{\transparent{.4}{ //  $\nexists v \in V(J): X \subset \bigcup(S_{uv} : uv \in E(J))$}}{
+			\Assert{every choice of rungs has the same traversal. (Hard to assert)} 
+			$ij \gets$ the traversal edge\;
+			$A_1 \gets N_i \setminus S_{ij}$, $A_2 \gets N_j \setminus S_{ij}$\;
+			\Assert{$X \cap (V(S,N) \setminus S_{ij}) = A_1 \cup A_2$}
+			\If{$n = 1$} {
+				$(S', N') \gets$ add $f_1$ to $N_i, N_j, S_{ij}$\;
+				\Return \GrowJStrip($G, J, (S',N')$)\;
+			}
+			\Else {
+				$x_1 :\in A_1, x_2 :\in A_2$, so that $x_1$ and $x_2$ are in disjoint strips\;
+				\Assert{$x_1 - f_1 \xor x_1 - f_n$}
+				\If{$x_1 - f_n$}{relabel $f_1 - \ldots - f_n$ front to back}
+				$(S', N') \gets$ add $f_1$ to $N_i$, $f_n$ to $N_j$ and $F$ to $S_{ij}$\;
+				\Return \GrowJStrip($G, J, (S',N')$)\;
+			}
+		}
+	}
+	\Else{
+		\Return $J, (S, N)$ -- a maximal $J$-strip\;
+	}
+}
+  

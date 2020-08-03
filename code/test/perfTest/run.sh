@@ -2,7 +2,7 @@
 scriptDir=$(dirname $0)
 testsDir="$scriptDir/tests"
 
-resultsDir="perfResults/$(date '+%Y-%m-%d.%H:%M:%S')"
+resultsDir="perfResults/$(date '+%Y-%m-%d.%H%M.%S')"
 mkdir -p $resultsDir
 
 perfectExec="$scriptDir/../../obj/test/perfTest/perfect.e"

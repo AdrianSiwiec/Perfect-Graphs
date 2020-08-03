@@ -10,10 +10,10 @@ showgPath="$downloadedDir/show_linux64"
 testAddresses=(
   "https://users.cecs.anu.edu.au/~bdm/data/perfect5.g6"
   "https://users.cecs.anu.edu.au/~bdm/data/perfect6.g6"
-  # "https://users.cecs.anu.edu.au/~bdm/data/perfect7.g6"
-  # "https://users.cecs.anu.edu.au/~bdm/data/perfect8.g6"
-  # "https://users.cecs.anu.edu.au/~bdm/data/perfect9.g6"
-  # "https://users.cecs.anu.edu.au/~bdm/data/perfect10.g6"
+  "https://users.cecs.anu.edu.au/~bdm/data/perfect7.g6"
+  "https://users.cecs.anu.edu.au/~bdm/data/perfect8.g6"
+  "https://users.cecs.anu.edu.au/~bdm/data/perfect9.g6"
+  "https://users.cecs.anu.edu.au/~bdm/data/perfect10.g6"
 
   # "https://users.cecs.anu.edu.au/~bdm/data/perfect11.g6.gz"
 )

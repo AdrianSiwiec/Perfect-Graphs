@@ -1,10 +1,13 @@
 #include "testCommons.h"
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
+#include "color.h"
 #include "commons.h"
 #include "oddHoles.h"
 #include "perfect.h"
 
+using namespace std::chrono;
 using std::default_random_engine;
 using std::flush;
 using std::make_pair;
@@ -32,6 +35,8 @@ void printGraph(const Graph &G) {
 }
 
 Graph getRandomGraph(int size, double p) {
+  cout << "Distribution: " << p << endl;
+
   vec<vec<int>> neighbours(size);
   for (int i = 0; i < size; i++) {
     for (int j = i + 1; j < size; j++) {
@@ -43,6 +48,15 @@ Graph getRandomGraph(int size, double p) {
   }
 
   return Graph(neighbours);
+}
+
+Graph getRandomPerfectGraph(int size, double p) {
+  Graph G(0);
+  do {
+    G = getRandomGraph(size, p);
+  } while (!isPerfectGraph(G));
+
+  return G;
 }
 
 vec<Graph> getRandomGraphs(int size, double p, int howMany) {
@@ -144,25 +158,35 @@ RaiiTimer::~RaiiTimer() {
 }
 
 map<pair<int, bool>, double> sumTime;
+map<pair<int, bool>, double> sumClockTime;
 map<pair<int, bool>, int> casesTested;
 
 map<pair<int, bool>, double> sumTimeNaive;
+map<pair<int, bool>, double> sumClockTimeNaive;
 map<pair<int, bool>, int> casesTestedNaive;
 
 default_random_engine generator;
 normal_distribution<double> distribution(0.5, 0.15);
 
 bool testWithStats(const Graph &G, bool naive) {
-  clock_t start;
-  start = clock();
+  nanoseconds start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+  clock_t start_clock = clock();
+
   bool result = naive ? isPerfectGraphNaive(G) : isPerfectGraph(G);
-  double duration = (clock() - start) / static_cast<double>(CLOCKS_PER_SEC);
+
+  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+  clock_t end_clock = clock();
+
+  double duration = (end_ns.count() - start_ns.count()) / 1e9;
+  double clock_duration = (end_clock - start_clock) / static_cast<double>(CLOCKS_PER_SEC);
 
   if (naive) {
     sumTimeNaive[make_pair(G.n, result)] += duration;
+    sumClockTimeNaive[make_pair(G.n, result)] += clock_duration;
     casesTestedNaive[make_pair(G.n, result)]++;
   } else {
     sumTime[make_pair(G.n, result)] += duration;
+    sumClockTime[make_pair(G.n, result)] += clock_duration;
     casesTested[make_pair(G.n, result)]++;
   }
 
@@ -170,24 +194,27 @@ bool testWithStats(const Graph &G, bool naive) {
 }
 
 void printStats() {
-  if (!sumTimeNaive.empty()) cout << "Naive: " << endl;
+  if (!sumTimeNaive.empty()) cout << "Naive recognition stats: " << endl;
   for (auto it = sumTimeNaive.begin(); it != sumTimeNaive.end(); it++) {
     int cases = casesTestedNaive[it->first];
     cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
+         << ", avgTime=" << it->second / cases
+         << ", parallel factor=" << sumClockTimeNaive[it->first] / it->second << endl;
   }
-  if (!sumTime.empty()) cout << "Perfect: " << endl;
+  if (!sumTime.empty()) cout << "Perfect recognition stats: " << endl;
   for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
     if (!it->first.second) continue;
     int cases = casesTested[it->first];
     cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
+         << ", avgTime=" << it->second / cases << ", parallel factor=" << sumClockTime[it->first] / it->second
+         << endl;
   }
   for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
     if (it->first.second) continue;
     int cases = casesTested[it->first];
     cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
+         << ", avgTime=" << it->second / cases << ", parallel factor=" << sumClockTime[it->first] / it->second
+         << endl;
   }
 }
 
@@ -228,6 +255,38 @@ void testGraph(const Graph &G, bool result, bool verbose) {
   assert(perfect == result);
 }
 
+map<int, double> sumTimeColor;
+map<int, double> sumClockTimeColor;
+map<int, int> casesTestedColor;
+
+void testColorWithStats(const Graph &G) {
+  nanoseconds start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+  clock_t start_clock = clock();
+
+  auto c = color(G);
+
+  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+  clock_t end_clock = clock();
+
+  double duration = (end_ns.count() - start_ns.count()) / 1e9;
+  double clock_duration = (end_clock - start_clock) / static_cast<double>(CLOCKS_PER_SEC);
+
+  assert(isColoringValid(G, c));
+
+  sumTimeColor[G.n] += duration;
+  sumClockTimeColor[G.n] += clock_duration;
+  casesTestedColor[G.n]++;
+}
+
+void printStatsColor() {
+  cout << "Color stats: " << endl;
+  for (auto it = sumTimeColor.begin(); it != sumTimeColor.end(); it++) {
+    int cases = casesTestedColor[it->first];
+    cout << "\tn=" << it->first << ", cases=" << cases << ", avgTime=" << it->second / cases
+         << ", parallel factor=" << sumClockTimeColor[it->first] / it->second << endl;
+  }
+}
+
 void printTimeHumanReadable(int64_t time) {
   double s = time / static_cast<double>(CLOCKS_PER_SEC);
   int h = s / (60 * 60);
@@ -259,7 +318,7 @@ int RaiiProgressBar::getFilled(int testsDone) {
 
 void RaiiProgressBar::update(int testsDone) {
   int toFill = getFilled(testsDone);
-  if (testsDone == 0 || testsDone == allTests || toFill != getFilled(testsDone - 1)) {
+  if (testsDone < 10 || testsDone == allTests || toFill != getFilled(testsDone - 1)) {
     cout << "[";
     for (int i = 0; i < width; i++) {
       cout << (i < toFill ? "X" : " ");
@@ -274,4 +333,21 @@ void RaiiProgressBar::update(int testsDone) {
     }
     cout << "\r" << flush;
   }
+}
+
+bool isColoringValid(const Graph &G, const vec<int> &coloring) {
+  if (coloring.size() != G.n) return false;
+
+  int omegaG = getOmega(G);
+  for (int c : coloring) {
+    if (c < 0 || c >= omegaG) return false;
+  }
+
+  for (int i = 0; i < G.n; i++) {
+    for (int j : G[i]) {
+      if (coloring[i] == coloring[j]) return false;
+    }
+  }
+
+  return true;
 }
