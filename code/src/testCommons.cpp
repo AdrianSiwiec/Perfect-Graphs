@@ -35,8 +35,6 @@ void printGraph(const Graph &G) {
 }
 
 Graph getRandomGraph(int size, double p) {
-  cout << "Distribution: " << p << endl;
-
   vec<vec<int>> neighbours(size);
   for (int i = 0; i < size; i++) {
     for (int j = i + 1; j < size; j++) {

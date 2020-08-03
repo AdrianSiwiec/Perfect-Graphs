@@ -33,18 +33,18 @@ bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX) {
       if ((R[x3][y1].size() < n) || (R[x3][y2].size() < n)) continue;
 
       //TODO(Adrian) remove, use some code coverage tool instead
-      cout << "Interesting odd hole: " << endl;
-      cout << "sX: " << sX << endl;
-      cout << "x1: " << x1 << endl;
-      cout << "x2: " << x2 << endl;
-      cout << "x3: " << x3 << endl;
-      cout << "y1: " << y1 << endl;
-      cout << "y2: " << y2 << endl;
-      cout << "R(x1, y1): " << R[x1][y1] << endl;
-      cout << "R(x2, y1): " << R[x2][y1] << endl;
-      cout << "R(x3, y1): " << R[x3][y1] << endl;
-      cout << "R(x3, y2): " << R[x3][y2] << endl;
-      cout << G << endl;
+      // cout << "Interesting odd hole: " << endl;
+      // cout << "sX: " << sX << endl;
+      // cout << "x1: " << x1 << endl;
+      // cout << "x2: " << x2 << endl;
+      // cout << "x3: " << x3 << endl;
+      // cout << "y1: " << y1 << endl;
+      // cout << "y2: " << y2 << endl;
+      // cout << "R(x1, y1): " << R[x1][y1] << endl;
+      // cout << "R(x2, y1): " << R[x2][y1] << endl;
+      // cout << "R(x3, y1): " << R[x3][y1] << endl;
+      // cout << "R(x3, y2): " << R[x3][y2] << endl;
+      // cout << G << endl;
 
       return true;
     }
