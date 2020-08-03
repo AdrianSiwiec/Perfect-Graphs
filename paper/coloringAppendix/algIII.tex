@@ -1,0 +1,140 @@
+\unfinishedAlg[-.70cm]{
+	\SetKwFunction{growHyperprism}{\textsc{Grow-Hyperprism}}
+	\Indm\nonl\growHyperprism{$G, G, M, F$} \tcp*{Lemma 3.3} \nonl 
+	\KwData{$G$ -- square-free, Berge graph \newline
+		$H = (A_1, \ldots B_3)$ -- a hyperprism in $G$ \newline
+		$M$ -- the set of major neighbors of $H$ in $G$ \newline
+		$F$ -- a minimal component of $G \setminus(H \cup M)$ with a set of attachments in $H$ not local.
+	}
+	\KwResult{$H'$ -- a larger hyperprism, or \newline 
+		$L$ -- a \LGBSK }
+	\Indp
+	$X \gets$ set of attachments of $F$ in $H$\;
+	\If{$\exists i : X \cap C_i \neq \emptyset$}{
+		relabel strips of $H$, so that $X \cap C_1 \neq \emptyset$\;
+		$x_1 :\in X \cap C_1$\;
+		\Assert{$X \cap S_2 \neq \emptyset$}
+		$x_2 :\in X \cap S_2$\;
+		$R_1 \gets 1$-rung of $H$, so that $x_1 \in V(R_1)$\;
+		$R_2 \gets 2$-rung of $H$, so that $x_2 \in V(R_2)$\;
+		$R_3 \gets$ a $ 3$-rung of $H$\;
+		$\forall i \in [3]: a_i, b_i \gets $ends of $R_i$, so that $a_i \in A_i, b_i \in B_i$\;
+		$K \gets $ a prism $(R_1, R_2, R_3)$\;
+		\Assert[SPGT 10.5]{no vertex in $F$ is major w.r.t. $K$}
+		$f_1 - \ldots - f_n \gets$ a minimal path  in $F$, so that \nonl\;
+		\pushline { $f_1 \blacktriangleleft \{a_2, a_3\}$, \nonl\;
+			$f_n - R \setminus \{a_1\}$ \nonl\;
+			there are no other edges between $\{f_1, \ldots f_n\}$ and $V(K) \setminus \{a_1\}$ \;
+      }\popline
+    \Assert{$F = \{f_1, \ldots, f_n \}$}
+    \Assert{$f_1 \blacktriangleleft A_3$ }
+    $A_1' \gets A_1 \cup \{f_1\}$\;
+    $C_1' \gets C_1 \cup \{f_2, \ldots, f_n\}$\;
+    \Return $H' \gets (A_1', A_2, \ldots, B_3, C_1', C_2, C_3)$
+  }
+  \Else {
+    relabel strips of $H$, so that there is $\{x_1 :\in A_1, x_2 :\in A_2\} \subset X$ that is not local\;
+    find a path $x - f_1 - \ldots - f_n - x_2$\;
+    \Assert{$F = \{f_1, \ldots f_n\}$}
+    \If{$n$ \textup{is even and} $H$ \textup{is even, or} $n$ \textup{is odd and} $H$ \textup{is odd}}{
+      \Assert{$f_1 - a_3 \xor f_n - b_3$}
+      \If{$f_1 - a_3$} {
+        $H' \gets $ mirrored $H$ -- every $A_i$ and $B_i$ are swapped\;
+        \TODO{check if $M$ and $F$ are OK}
+        \Return \growHyperprism{$G, H', M, F$}\;
+      } \Else {
+        \If {$f_n \blacktriangleleft B_2 \cup B_3$}{
+          $B_1' \gets B_1 \cup \{f_n\}$ \;
+          $C_1' \gets C_1 \cup \{f_1, \ldots, f_{n-1}\}$\;
+        }
+      }
+    }
+  }
+}
+
+\unfinishedAlg[-.55cm]{
+  \setcounter{AlgoLine}{20}
+  \GreyElse{\transparent{.4}{// $\forall_{i\in[3]} X \cap C_i = \emptyset$}}{
+    \GreyIf{\transparent{.4}{$n$ \textup{is even and} $H$ \textup{is even, or} $n$ \textup{is odd and} $H$ \textup{is odd}}}{
+      \GreyElse{\transparent{.4}{// $f_n - b_3$}}{
+        \GreyIf{\transparent{.4}{$f_n \blacktriangleleft B_2 \cup B_3$}}{
+          \Return $H' \gets \begin{pmatrix}
+            A_1 & C_1' & B_1'\\
+            A_2 & C_2 & B_2\\
+            A_3 & C_3 & B_3
+            \end{pmatrix}$ \;
+        }
+        \Else {
+          $\forall_{i \in [3]} : A_i' \gets$ neighbors of $f_1$ in $A_i$\;
+          $\forall_{i \in [3]} : A_i'' \gets A_i \setminus A_i'$\;
+          $\forall_{i \in [3]} : B_i'' \gets$ neighbors of $f_n$ in $B_i$\;
+          $\forall_{i \in [3]} : B_i' \gets B_i \setminus B_i''$\;
+          \Assert{Every $i$-rung is between $A_i'$ and $B_i'$ or $A_i''$ and $B_i''$}
+          $\forall_{i \in [3]} : C_i' \gets $ union of interiors of $i$-rings between $A_i'$ and $B_i'$\;
+          $\forall_{i \in [3]} : C_i'' \gets $ union of interiors of $i$-rings between $A_i''$ and $B_i''$\;
+          \Assert{$C_i = C_i' \cup C_i''$, $C_i' \cap C_i'' = \emptyset$}
+          \Assert{$A_i' \cup C_i' \setAntiComplete C_i'' \cup B_i''$, $A_i'' \cup C_i'' \setAntiComplete C_i \cup B_i$}
+          \Assert{$A_i' \setComplete A_i''$, $B_i' \setComplete B_i''$}
+          \Assert{$A_1', A_2'', A_3', A_3'' \neq \emptyset$}
+          $H' \gets \begin{pmatrix}
+            A_1' & C_1' & B_1'\\
+            A_2' \cup A_3' & C_2' \cup C_3' & B_2' \cup B_3'\\
+            \bigcup_i  A_i'' \cup \{f_1\} & \bigcup_i C_i'' \cup \{f_2, \ldots, f_n\} & \bigcup_i B_i''
+            \end{pmatrix}$ \;
+          \Return $H'$\;
+        }
+      }
+    }
+    \Else {
+      $a_1 \gets$ neighbor of $f_1$ in $A_1$\;
+      $R_1 \gets 1$-rung with end $a_1$\;
+      $b_1 \gets$ the other end of $R_1$\;
+      
+      $b_2 \gets$ neighbor of $f_2$ in $B_2$\;
+      $R_2 \gets 2$-rung with end $b_2$\;
+      $a_2 \gets$ the other end of $R_2$\;
+      \Assert{$b_1 \in X$, $a_2 \in X$}
+      \Assert{$(b_1 - f_1 \land a_2 - f_n) \xor (b_1 - f_n \land a_2 - f_1)$}
+      \If{$f_1 - b_1$} {
+        \Assert{$H$ is odd}
+        $R_3 \gets$ any $3$-rung with ends $a_3, b_3$, such that $\{a_3, b_3\} \setAntiComplete \{f_1, f_n\}$\;
+        \Return $V(R_1) \cup V(R_2) \cup V(R_3) \cup \{f_1, \ldots, f_n\}$ - a \LGBSK\;
+        \TODO{Is it valid input for part of ALG I?}
+      }
+    }
+  }
+}
+
+\continueAlg[-11.5cm]{
+  \setcounter{AlgoLine}{42}
+  \GreyElse{\transparent{.4}{// $\forall_{i\in[3]} X \cap C_i = \emptyset$}}{ 
+    \GreyElse{\transparent{.4}{ // $n$ \textup{is odd and} $H$ \textup{is even, or} $n$ \textup{is even and} $H$ \textup{is odd}}}{
+      \Else(\tcp*[h]{$f_1 - a_2$}) {
+        $\forall_{i \in [3]} : A_i' \gets A_i \cap X$, $A_i'' \gets A_i \setminus X$\;
+        $\forall_{i \in [3]} : B_i' \gets B_i \cap X$, $B_i'' \gets B_i \setminus X$\;
+        $\forall_{i \in [3]} : C_i' \gets$ union of $i$-rungs between $A_i'$ and $B_i'$\;
+        $\forall_{i \in [3]} : C_i'' \gets$ union of $i$-rungs between $A_i''$ and $B_i''$\;
+        \Assert{$C_i = C_i' \cup C_i''$, $C_i' \cap C_i'' = \emptyset$}
+        \If {$f_1$ is complete to at least two of $A_i$}{
+            relabel strips of $H$, so that $f_1$ is complete to $A_1$ and $A_2$\;
+            \Assert{$f_n$ is complete to $B_1$ and $B_2$}
+            \Assert[SPGT 10.5 \textcolor{red}{OK for odd $H$?}]{$n > 1$}
+            \Return $\begin{pmatrix}
+              A_1 & C_1 & B_1\\
+              A_2 & C_2 & B_2\\
+              A_3 \cup \{f_1\} & C_3 \cup \{f_2, \ldots, f_{n-1}\} & B_3 \cup \{f_n\}
+              \end{pmatrix}$ \;
+        }
+        \Else {
+          \Assert{$A_i' \setComplete A_i''$ \TODO{OK odd H?}}
+          \Assert{$B_i' \setComplete B_i''$ \TODO{OK odd H?}}
+          \Return $\begin{pmatrix}
+            A_1' & C_1' & B_1'\\
+            A_2' \cup A_3' & C_2 \cup C_3' & B_2' \cup C_3'\\
+            \bigcup_i A_i'' \cup  \{f_1\} & \bigcup_i C_i'' \cup \{f_2, \ldots, f_{n-1}\} & \bigcup_i B_i'' \cup \{f_n\}
+            \end{pmatrix}$ \;
+        }
+      }
+    }
+  }
+}

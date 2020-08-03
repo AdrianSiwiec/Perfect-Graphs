@@ -1,0 +1,90 @@
+% \input{preamble.tex}
+
+\unfinishedAlg[-.45cm]{
+	\SetNoFillComment
+	\SetKwFunction{colorGoodPartition}{\textsc{Color-Good-Partition}}
+	\Indm\nonl\colorGoodPartition{$G, (K_1, K_2, K_3, L, R), c_1, c_2$}\\
+	\KwData{$G$ -- square-free, Berge graph \newline
+		$(K_1, K_2, K_3, L, R)$ -- good partition \newline
+		$c_1$, $c_2$ -- colorings of $G \setminus R$ and $G \setminus L$ (possibly $\NULL$)}
+	\KwResult{$\omega(G)$-coloring of $G$}
+	\Indp
+	$G_1 \gets G\setminus R$\;
+	$G_2 \gets G\setminus L$\;
+	\If{$c_1, c_2 = \NULL$}{
+		$c_1 \gets$ \colorGraph{$G_1$}\;
+		$c_2 \gets$ \colorGraph{$G_2$}\;
+	}
+	\ForEach{$u \in K_1 \cup K_2$ 
+		}{relabel $c_2$, so that $c_1(u) = c_2(u)$}
+	$B \gets \{ u \in K_3: c_1(u) \neq c_2(u) \}$\;
+	\lIf{$B = \emptyset$ }{\Return $c_1 \cup c_2$ } 
+	\ForEach{$h \in [2]$, $\textup{distinct colors}$ $i, j$
+		}{ $G_h^{i,j} \gets $ subgraph induced on $G_h$ by $\{ v \in G_h : c_h(v) \in \{i,j\} \}$}
+	\ForEach{$u \in K_3$}{
+		$C_h^{i, j}(u) \gets$ component of $G_h^{i, j}$ containing $u$}
+													
+	\Assert{$C_h^{c_1(u), c_2(u)}(u) \cap K_2 = \emptyset$}  
+													
+	\If{$\exists u \in B, h \in [2]: C_h^{c_1(u), c_2(u)}(u) \cap K_1 = \emptyset $
+		}{ $c_1' \gets c_1$ with colors $i$ and $j$ swapped in $C_1^{i, j}(u)$\;
+		\Assert{$c_1'$ and $c_2$ agree on $K_1 \cup K_2$}
+		\Assert{$\forall u \in K_3 \setminus B : c_1'(u) = c_1(u)$}
+		\Assert{$c_1'(u) = j = c_2(u)$}
+		\Return \colorGoodPartition{$G, K_1, K_2, K_3, L, R, c_1', c_2$}}
+	\Else{
+		$w \gets$ vertex of $B$ with nost neighbors in $K_1$\;
+																							
+		\Assert{$\forall u \in B: N(u) \cap K_1 \subset N(w) \cap K_1$}
+																							
+		relabel $c_1, c_2$, so that $c_1(w) = 1, c_2(w) = 2$\;
+																							
+		$P \gets$ chordless path $w - p_1 - \ldots - p_k - a$ in $C_1^{1, 2}(w)$ so that\; \nonl
+		\pushline $k \geq 1$, $p_1 \in K_3 \cup L$, $p_2 \ldots p_k \in L$, $a \in K$, $c_1(a) \in [2]$ \; \popline
+																							
+		$Q \gets$ chordless path $w - q_1 - \ldots - q_l - a$ in $C_2^{1, 2}(w)$ so that\; \nonl
+		\pushline $l \geq 1$, $q_1 \in K_3 \cup R$, $q_2 \ldots q_l \in R$, $a \in K$, $c_2(a) \in [2]$\; \popline
+																							
+		$i \gets c_1(a)$\;
+		$j \gets 3 - i$\;
+																							
+		\Assert[Lemma 2.2.(3)]{ exactly one of the colors $1$ and $2$ appears in $K_1$ }
+		\Assert{ $|P|$ and $|Q|$ have different parities }
+		\Assert[Lemma 2.2.(4)]{ $p_1 \in K_3 \lor p_2 \in K_3$ }
+		\Assert[Lemma 2.2.(5)]{ $\nexists y \in K_3: c_1(y) = 2 \land c_2(y) = 1$ }
+																							    
+		\If{$p_1 \in K_3$}{
+			\Assert{$c_2(p_1) \notin [2]$}
+			relabel $c_2$, so that $c_2(p_1) = 3$ \;
+		}
+	}
+}
+
+\continueAlg[-10cm]{
+	\setcounter{AlgoLine}{23}
+	\GreyElse{ \transparent{.4}{ // $\nexists u \in B, h \in [2]: C_h^{c_1(u), c_2(u)}(u) \cap K_1 = \emptyset $}}{
+		\GreyIf{\transparent{.4}{$p_1 \in K_3$}}{
+			\Assert{color $3$ does not appear in $K_2$}
+			\Assert{color $3$ does not appear in $K_1$}
+			\Assert{$C_2^{j, 3}(p_1) \cap K_1 = \emptyset$}
+			$c_2' \gets c_2$ with colors $j$ and $3$ swapped in $C_2^{j, 3}(p_1)$ \;
+			\Assert{$j = 2$} 
+			\Return \colorGoodPartition{$G$, $K_1$, $K_2$, $K_3$, $L$, $R$, $c_1$, $c_2'$}
+		}
+		\Else{
+			relabel $c_1$, so that $c_1(q_1) = 3$ \;
+			\If{$3$ does not appear in $K_1$}{
+				\Assert{$C_1^{j,3}(q_1) \cap K_1 = \emptyset$}
+				\Assert{$j = 1$}
+				$c_1' \gets c_1$ with colors $j$ and $3$ swapped in $C_1^{j,3}(q_1)$\;
+				\Return \colorGoodPartition{$G$, $K_1$, $K_2$, $K_3$, $L$, $R$, $c_1'$, $c_2$}
+				} \Else{
+				\Assert{$q_1 \ntriangleleft \{a, a_3\}$}
+				\Assert{$C_1^{i, 3}(q_1) \cap K_1 = \emptyset$}
+				\Assert{$i = 1$}
+				$c_1' \gets c_1$ with colors $i$ and $3$ swapped in $C_1^{i,3}(q_1)$\;
+				\Return \colorGoodPartition{$G$, $K_1$, $K_2$, $K_3$, $L$, $R$, $c_1'$, $c_2$}
+			}
+		}
+	}
+}
