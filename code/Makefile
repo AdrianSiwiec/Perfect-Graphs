@@ -32,7 +32,7 @@ GCCFLAGS=-m64 -march=native -mtune=native -Ofast -fopenmp -ansi -Wall -DBIT64 -D
 # CUDA compiler settings
 CUDA=/usr/local/cuda
 NVCC=$(CUDA)/bin/nvcc
-NVCCSM=sm_50
+NVCCSM=sm_37
 NVCCINC=-I $(CUDA)/include \
 		-I $(CUDA)/samples/common/inc \
 		-I ./$(3RDDIR)/moderngpu/src \

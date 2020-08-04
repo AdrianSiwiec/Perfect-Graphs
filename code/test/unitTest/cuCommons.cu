@@ -3,6 +3,7 @@
 #include "testCommons.h"
 
 void testCuGraph(context_t &context) {
+
   Graph G = getRandomGraph(10, 0.5);
 
   CuGraph CG(G, context);
@@ -21,6 +22,7 @@ void testCuGraph(context_t &context) {
   int *copiedToDevMatrix;
   int *copiedToDevFN;
   int *copiedToDevNN;
+
   CUCHECK(cudaMalloc((void **)&copiedToDevMatrix, sizeof(int) * G.n * G.n));
   CUCHECK(cudaMalloc((void **)&copiedToDevFN, sizeof(int) * G.n));
   CUCHECK(cudaMalloc((void **)&copiedToDevNN, sizeof(int) * G.n * G.n));
