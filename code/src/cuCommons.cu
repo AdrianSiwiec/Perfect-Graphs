@@ -22,7 +22,14 @@ void printArray(int *dev, int n, context_t &context) {
 
 CuGraph::CuGraph(const Graph &G, context_t &context) : n(G.n), context(context) {
   CUCHECK(cudaMalloc((void **)&devMatrix, sizeof(int) * n * n));
+  CUCHECK(cudaMalloc((void **)&devFirstNeighbor, sizeof(int) * n));
+  CUCHECK(cudaMalloc((void **)&devNextNeighbor, sizeof(int) * n * n));
+
+  CUCHECK(cudaMemcpy(devFirstNeighbor, G._first_neighbour.data(), sizeof(int) * n, cudaMemcpyHostToDevice));
+
   for (int i = 0; i < n; i++) {
     CUCHECK(cudaMemcpy(devMatrix + (i * n), G._matrix[i].data(), sizeof(int) * n, cudaMemcpyHostToDevice));
+    CUCHECK(cudaMemcpy(devNextNeighbor + (i * n), G._next_neighbour[i].data(), sizeof(int) * n,
+                       cudaMemcpyHostToDevice));
   }
 }

@@ -17,7 +17,12 @@ struct CuGraph {
   int n;
   context_t &context;
 
+  // of size n*n
   int *devMatrix;
+  // of size n
+  int *devFirstNeighbor;
+  //of size n*n
+  int *devNextNeighbor;
 
   CuGraph(const Graph &G, context_t &context);
 };
