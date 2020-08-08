@@ -16,7 +16,7 @@
 \usetikzlibrary{positioning, fit, calc}
 
 \usepackage[
-	style=alphabetic
+	style=numeric
 ]{biblatex}
 \addbibresource{bbl.bib}
 
@@ -86,17 +86,17 @@ All graphs in this paper are finite, undirected and have no loops or parallel ed
 
 Given a graph $G = (V,E)$, sometimes by $V(G)$ and $E(G)$ we will denote a set of nodes and edges of $G$. Given a set $X \subseteq V$ by $G[X]$ we will denote a graph induced on $X$. A graph $G$ is \emph{perfect} iff for all $X \subseteq V(G)$ we have $\chi(G[X]) = \omega(G[X])$.
 
-\paragraph{Editorial notes}
+\paragraph{Definitions and conventions}
+	\todo{Where should we put it? Should we put all definitions here, or leave them in text?}
 \begin{itemize}
 	\item By solid lines we will mark edges, by dashed lines we will mark nonedges, when significant. Sometimes nonedges will not be marked in order not to clutter the image.
-	\todo{Where should we put it?}
 	\item A node is $X$-complete in $G$ iff it is adjacent to all nodes in $X$.
 	\item Given a path $P$, by $P^*$ we will denote its inside.
 \end{itemize}
 
-\TODO{Give some examples why are these interesting, some subclasses, and problems that are solvable for perfect graphs, including recognition and coloring}
+\TODO{Give some examples why perfect graphs are interesting, some subclasses, and problems that are solvable for perfect graphs, including recognition and coloring}
 
-Given a graph $G$, its \emph{complement} $\overline{G}$ is a graph with the same vertex set and in which two distinct nodes $u, v$ are connected in $\overline{G}$ iff they are not connected in $G$. For example a clique in a graph becomes an independent set in its complement. A perfect graph theorem, first conjured by Berge in 1961 \cite{CB61} and then proven by \Lovasz in 1972 \cite{LL72} states that a graph is perfect iff its complement graph is also perfect. \todo{Should we give some proof of that here? Maybe based on proof in \cite{GC03}}
+Given a graph $G$, its \emph{complement} $\overline{G}$ is a graph with the same vertex set and in which two distinct nodes $u, v$ are connected in $\overline{G}$ iff they are not connected in $G$. For example a clique in a graph becomes an independent set in its complement. A perfect graph theorem, first conjured by Berge in 1961~\cite{CB61} and then proven by \Lovasz in 1972~\cite{LL72} states that a graph is perfect iff its complement graph is also perfect. \todo{Should we give some proof of that here? Maybe based on proof in \cite{GC03}}
 
 A \emph{hole} is an induced chordless cycle of length at least 4. An \emph{antihole} is an induced subgraph whose complement is a hole. A \emph{Berge} graph is a graph with no holes or antiholes of odd length.
 
@@ -104,20 +104,20 @@ In 1961 Berge conjured that a graph is perfect iff it is Berge in what has becom
 
 \subsection{Strong Perfect Graph Theorem}
 
-Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. It is therefore clear, that if a graph is not Berge it is not perfect. To prove that every Berge graph is perfect is the proper part of the strong perfect graph theorem.
+Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. It is therefore clear, that if a graph is not Berge it is not perfect. To prove that every Berge graph is perfect is the proper part of the strong perfect graph theorem.
 
 \TODO{How long and detailed overview of the proof should we provide?}
 
 \section{Recognizing Berge Graphs}
 
-\TODO{Cite the paper and tell this is only a short overview}
+The following is based on the paper by Maria Chudnovsky et al. \citetitle*[]{MC05}. We will not provide full proof of its correctness, but will aim to show the intuition behind the algorithm.
 
 \subsection{Recognition algorithm Overview}
 
-\TODO{Main ideas of the algorithm.}
-\TODO{First we check all on $G$, then on $\overline{G}$}
+Berge graph recognition algorithm could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple structures as a induced subgraph (\ref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole.(\ref{AmenableHoles}).
 
 \subsubsection{Simple structures}
+\label{SimpleStructures}
 
 \paragraph{Pyramids}
 
@@ -204,7 +204,7 @@ Five nodes $v_1, \ldots, v_5$ and a path $P$ is a \emph{jewel} iff:
 	\item $P$ is a path between $v_1$ and $v_4$, such that $v_2, v_3, v_5$ have no neighbors in its inside.
 \end{itemize}
 
-Most obvious way to find a jewel would be to enumerate all choices of $v_1, \ldots v_5$, check if a choice is correct and if it is try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole algorithms takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we used this simple algorithm.
+Most obvious way to find a jewel would be to enumerate all choices of $v_1, \ldots v_5$, check if a choice is correct and if it is try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole algorithms takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
 
 \paragraph{Configurations of type $\T_1$}
 
@@ -294,7 +294,7 @@ A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such 
 	\item If $v_5v_6$ is an edge, then $v_6$ is not $X$-complete.
 \end{itemize}
 
-\TODO{image?}
+\TODO{picture?}
 
 The following algorithm with running time of $O(|V(G)|^6)$ checks whether $G$ contains a configuration of type $T_3$:
 
@@ -307,6 +307,7 @@ To see that the algorithm below has a running time of $O(|V(G)|^6)$, let us note
 We will skip the proof that each graph containing $\T_3$ is not Berge. \todo{Should we include it?} See \cite{MC05} for the proof.
 
 \subsubsection{Amenable holes.}
+\label{AmenableHoles}
 
 For a shortest odd hole $C$ in $G$, we will call a node $v \in V(G) \setminus V(C)$ $C$-\emph{major} iff the set of its neighbors in C is not contained in any 3-node path of $C$. An odd hole $C$ will be called \emph{clean} if no vertex is $C$-major.
 
@@ -321,9 +322,9 @@ The rest of the algorithm rests upon the following theorem:
 
 For a shortest odd hole $C$ in $G$, a subset $X$ of $V(G)$ is a \emph{near-cleaner for $C$} iff $X$ contains all $C$-major nodes and $X \cap V(C)$ is a subset of node set of some 3-node path of $C$.
 
-Finding and Using Half-Cleaners.\\
+\TODO{Finding and Using Half-Cleaners.}
 
-Overview of proof of why algorithm using Half-Cleaners is correct.\\
+\TODO{Overview of proof of why algorithm using Half-Cleaners is correct.}
 
 \subsection{Implementation}
 
