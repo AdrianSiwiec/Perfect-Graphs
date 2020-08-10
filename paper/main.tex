@@ -123,7 +123,7 @@ Berge graph recognition algorithm could be divided into two parts: first we chec
 
 A \emph{path} in $G$ is an induced subgraph that is connected, with at least one node, no cycle and no node of degree larger than 2 (sometimes called chordless path). The \emph{length} of a path or a cycle is the number of edges in it. \todo{Should we move these definitions elsewhere?} A \emph{triangle} in a graph is a set of three pairwise adjacent nodes.
 
-\begin{wrapfigure}[12]{r}{0.35\textwidth}
+\begin{wrapfigure}[14]{r}{0.35\textwidth}
 	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
 	\node(a) at (0,0) {a};
 	\node(b1) at (-2,-6) {$b_1$};
@@ -162,15 +162,59 @@ A \emph{pyramid} in G is an induced subgraph formed by the union of a triangle $
 	\item $a$ is adjacent to at most one of $\{b_1, b_2, b_3\}$.
 \end{itemize}
 
+We will say that $a$ can be \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ \emph{via} the paths $P_1$, $P_2$, $P_3$. Let us notice, that a pyramid is determined by its paths $P_1$, $P_2$, $P_3$.
+
 It is easy to see that every graph containing a pyramid contains an odd hole -- at least two of the paths $P_1$, $P_2$, $P_3$ will have the same parity.
 
+We will give an algorithm finding pyramid, but first we need some additional definitions. If $K$ is a pyramid $(a, b_1, b_2, b_3, P_1, P_2, P_3)$ we say its \emph{frame} is the 10-tuple iff
+\TODO{finish it up}
 
-\TODO{On recognition of pyramids. Lemma 2.1 from the paper.}
+\subparagraph{Finding Pyramids}
+
+First, let us enumerate all 6-tuples $b_1, b_2, b_3, s_1, s_2, s_3$ such that:
+\begin{itemize}
+	\item $\{b_1, b_2, b_3\}$ is a triangle
+	\item for $1 \leq i < j \leq 3$, ${b_i, s_i}$ is disjoint from ${b_j, s_j}$ and $b_ib_j$ is the only edge between them
+	\item there is a node $a$ adjacent to all of $s_1, s_2, s_3$ and to at most one of $b_1, b_2, b_3$, such that if $a$ is adjacent to $b_i$, then $s_i \ b_i$.
+\end{itemize}
+
+There are $O(|V(G)|^6)$ sextuples, and it takes $O(|V(G)|)$ time to check each one. For each such sextuple we follow with the rest of the algorithm. 
+
+We define $M = V(G) \setminus \{b_1, b_2, b_3, s_1, s_2, s_3\}$. Now, for each $m \in M$, we set $S_1(m)$ equal to the shortest path between $s_1$ and $m$ such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists. We set $S_2$ and $S_3$ similarly. Then similarly we set $T_1(m)$ to be the shortest path between $m$ and $b_1$, such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists. We do similar for $T_2$ and $T_3$. It takes $O(|V(G)|^2)$ time to calculate paths $T_i(m)$ for all $i$ and $m$.
+
+Now, we will calculate all possible paths $P_i$. For each $m \in M \cup \{b_1\}$ we will define a path $P_1(m)$ and paths $P_2(m)$, $P_3(m)$ will be defined in a similar manner.
+
+If $s_1 = b_1$ let $P_1(b_1)$ be the one-node path with node $b_1$, and let $P_1(m)$ be undefined for each $m \in M$.
+
+If $s_1 \neq b_1$, then $P_1(b_1)$ is undefined and for all $m \in M$ we will check if all the following are true:
+\begin{itemize}
+	\item $m$ is nonadjacent to all of $b_2, b_3, s_2, s_3$
+	\item $S_1(m)$ and $T_1(m)$ both exist
+	\item $V(S_1(m) \cap T_1(m)) = \{m\}$
+	\item there are no edges between $V(S_1(m) \setminus m)$ and $V(T_1(m) \setminus m)$
+\end{itemize}
+If so, then we assign a path $s_1-S_1(m)-m-T_1(m)-b_1$ to $P_1(m)$, otherwise we let $P_1(m)$ be undefined. It takes $O(|V(G)|^2)$ to check this, given $m$. We assign $P_2$ and $P_3$ in a similar manner. Total time of finding all $P_i(m)$ paths for a given sextuple is $O(|V(G)|^3)$.
+
+Now we want to check if there is a triple $m_1, m_2, m_3$, so that $P_1(m_1)$, $P_2(m_2)$, $P_3(m_3)$ form a pyramid. A most obvious approach of enumerating them all would be too slow, so we do it carefully.
+
+For $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ is a \emph{good $(i, j)$-pair}, iff $m_i \in M \cup \{b_i\}$, $m_j \in M \cup \{b_j\}$, $P_i(m_i)$, $P_j(m_j)$ both exist and the sets $V(P_i(m_i))$,$V(P_j(m_j))$ are both disjoint and $b_ib_j$ is the only edge between them.
+
+We show how to find the list of all good $(1, 2)$-pairs, with similar algorithm for all other good $(i, j)$-pairs. For each $m_1 \in M \cup \{b_1\}$, we find the set of all $m_2$ such that $(m_1, m_2)$ is a good $(1,2)$-pair as follows.
+
+If $P_1(m_1)$ does not exist, there are no such good pairs. If it exists, color black the nodes of $M$ that either belong to $P_1(m_1)$ or have a neighbor in $P_1(m_1)$. Color all other nodes white. (We can do this in $O(|V(G)|^2)$) Then for each $m_2 \in M \cup \{b_2\}$, test whether $P_2(m_2)$ exists and contains no black nodes. We do this for all $m_1$ and get a set of all $(1,2)$-good pairs. In similar way we calculate all good $(1,3)$-pair and $(2,3)$-pairs (in $O(|V(G)|^3)$ time).
+
+Now, we examine all triples $m_1, m_2, m_3$ such that $m_i \in M \cup \{b_i\}$ and test whether $(m_i, m_j)$ is a good $(i, j)$-pair. If we find a triple such that all three pairs are good, we output that G contains a pyramid and stop.
+
+If after examining all choices of $b_1, b_2, b_3, s_1, s_2, s_3$ we find no pyramid, output that $G$ contains no pyramid. Since there are $O(|V(G)|^6)$ such choices and it takes a time of $O(|V(G)|^3)$ to analyze each one, the total time is $O(|V(G)|^9)$.
+
+\TODO{some proofs}
+
 
 \paragraph{Jewels}
 
 
-\begin{wrapfigure}[7]{r}{0.35\textwidth}
+% \begin{wrapfigure}[7]{r}{0.35\textwidth}
+\begin{wrapfigure}{r}{0.35\textwidth}
 	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
 	\def\ngon{5}
 	\node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] (p) {};
@@ -212,7 +256,8 @@ A configuration of type $\T_1$ is a hole of length 5. To find it we simply itera
 
 \paragraph{Configurations of type $\T_2$}
 
-\begin{wrapfigure}[15]{r}{0.35\textwidth}
+% \begin{wrapfigure}[15]{r}{0.35\textwidth}
+\begin{wrapfigure}{r}{0.35\textwidth}
 	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
 		\node(v1) at (0,0) {$v_1$};
 		\node(v2) at (1.5,0) {$v_2$};
