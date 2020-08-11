@@ -4,8 +4,9 @@
 \usepackage{todonotes}
 \usepackage{wrapfig}
 \usepackage{intcalc}
-\usepackage{amsthm}
+\usepackage{amsthm, thmtools}
 \usepackage{cleveref}
+\usepackage{floatflt}
 
 \usepackage{tikz}
 \tikzset{%
@@ -23,6 +24,8 @@
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{defn}{Definition}[section]
+\renewcommand{\listtheoremname}{List of definitions}
 
 \newcommand{\TODO}{\todo[inline]}
 \newcommand\Lovasz{Lovász }
@@ -77,11 +80,18 @@
 TODO
 \end{abstract}
 
+\listoftheorems[ignoreall,show={defn}]
 \tableofcontents
 
 \pagebreak
 
+\section{Definitions}
+\input{definitions.tex}
+
 \section{Perfect Graphs}
+
+
+
 All graphs in this paper are finite, undirected and have no loops or parallel edges. We denote the chromatic number of graph $G$ by $\chi(G)$ and the cardinality of the largest clique of $G$ by $\omega(G)$. \emph{Coloring} of a graph means assigning every node of a graph a color. A coloring is \emph{valid} iff every two nodes sharing an edge have different colors. An \emph{optimal} coloring (if exists) is a valid coloring using only $\omega(G)$ colors.
 
 Given a graph $G = (V,E)$, sometimes by $V(G)$ and $E(G)$ we will denote a set of nodes and edges of $G$. Given a set $X \subseteq V$ by $G[X]$ we will denote a graph induced on $X$. A graph $G$ is \emph{perfect} iff for all $X \subseteq V(G)$ we have $\chi(G[X]) = \omega(G[X])$.
@@ -123,7 +133,9 @@ Berge graph recognition algorithm could be divided into two parts: first we chec
 
 A \emph{path} in $G$ is an induced subgraph that is connected, with at least one node, no cycle and no node of degree larger than 2 (sometimes called chordless path). The \emph{length} of a path or a cycle is the number of edges in it. \todo{Should we move these definitions elsewhere?} A \emph{triangle} in a graph is a set of three pairwise adjacent nodes.
 
-\begin{wrapfigure}[14]{r}{0.35\textwidth}
+% \begin{floatingfigure}{0.35\textwidth}
+	
+\begin{wrapfigure}{r}{0.35\textwidth}
 	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
 	\node(a) at (0,0) {a};
 	\node(b1) at (-2,-6) {$b_1$};
@@ -151,8 +163,10 @@ A \emph{path} in $G$ is an induced subgraph that is connected, with at least one
 	\draw (P33) to (b3);
 
 	\draw (a) to (b2);
-\end{tikzpicture}
-\caption{An example of a pyramid.}
+\end{tikzpicture}%
+\caption{An example  of a pyramid.}%
+\vspace{-1.2cm}
+% \end{floatingfigure}
 \end{wrapfigure}
 
 A \emph{pyramid} in G is an induced subgraph formed by the union of a triangle $\{b_1,b_2,b_3\}$, three paths $\{P_1, P_2, P_3\}$ and another node $a$, so that:
@@ -212,7 +226,6 @@ If after examining all choices of $b_1, b_2, b_3, s_1, s_2, s_3$ we find no pyra
 
 \paragraph{Jewels}
 
-
 % \begin{wrapfigure}[7]{r}{0.35\textwidth}
 \begin{wrapfigure}{r}{0.35\textwidth}
 	\centering\begin{tikzpicture}[scale=0.7,simplegraph]
@@ -236,6 +249,7 @@ If after examining all choices of $b_1, b_2, b_3, s_1, s_2, s_3$ we find no pyra
 	\node[draw=none] at (0, -4.7) {$P$};
 \end{tikzpicture}
 \caption{An example of a jewel.}
+\vspace{-1.5cm}
 \end{wrapfigure}
 
 
@@ -291,8 +305,9 @@ A configuration of type $\T_1$ is a hole of length 5. To find it we simply itera
 		\draw(v4) to (x2);
 
 		% \draw (a) to (b2);
-\end{tikzpicture}
-\caption{An example of a $\T_2$.}
+\end{tikzpicture}%
+\caption{An example of a $\T_2$.}%
+\vspace{-1.5cm}
 \end{wrapfigure}
 
 A configuration of type $\T_2$ is a six $(v_1, v_2, v_3, v_4, P, X)$, such that:
