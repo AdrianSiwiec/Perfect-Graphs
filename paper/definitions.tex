@@ -1,7 +1,7 @@
-We use standard definitions, sourced from the book by \citeauthor{BB98} \citetitle*{BB98} and extended as needed.
+We use standard definitions, sourced from the book by \citeauthor{BB98} \citetitle*{BB98}, modified and extended as needed.
 
 \begin{defn}[graph]
-  A \emph{graph} $G$ is an ordered pair of disjoint sets $(V, E)$ such that $E$ is the subset of the set $V^2$ that is of unordered pairs of $V$.
+  A \emph{graph} $G$ is an ordered pair of disjoint sets $(V, E)$ such that $E$ is the subset of the set $V \choose 2$ that is of unordered pairs of $V$.
 \end{defn}
 
 \begin{wrapfigure}{r}{0.4\textwidth}
@@ -23,7 +23,9 @@ We use standard definitions, sourced from the book by \citeauthor{BB98} \citetit
   \caption{An example graph $G_0$}
 \end{wrapfigure}
 
-We will only consider finite graphs, that is $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{unordered}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
+We will only consider finite graphs, that is $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. The size of the vertex set of a graph $G$ will be called the \emph{cardinality} of $G$.
+
+An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{unordered}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
 
 Figure \ref{fig:examplePath} shows an example of a graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
 
@@ -49,8 +51,37 @@ Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we
   \[ V(C) = \{x_1, x_2, \ldots, x_l\},\quad E(C) = \{x_1x_2, x_2x_3, \ldots, x_{l-1}x_l, x_lx_1\} \]
 \end{defn}
 
-This cycle $C$ is usually denoted by $x_1x_2\ldots x_lx_1$ or $x_1 - x_2 - \ldots - x_l - x_1$. $l = |E(C)|$ is the \emph{length} of the cycle $C$.
+This cycle $C$ is usually denoted by $x_1x_2\ldots x_lx_1$ or $x_1 - x_2 - \ldots - x_l - x_1$. $l = |E(C)|$ is the \emph{length} of the cycle $C$. Sometimes we will denote the cycle of length $l$ as $C_l$.
 
 If a path or a cycle has an odd length, it will be called \emph{odd}. Otherwise, it will be called \emph{even}.
 
-Notice, that a cycle is not a path (nor is a path a cycle). If we add an edge $v_1v_4$ to the path $G_0$ it becomes an even cycle.
+Notice, that a cycle is not a path (nor is a path a cycle). If we add an edge $v_1v_4$ to the path $G_0$ it becomes an even cycle $C_4$.
+
+\begin{defn}[complement]
+  A \emph{complement} of a graph $G = (V, E)$ is a graph $\overline{G} = (V, {V \choose 2} \setminus E)$, that is two vertices $x, y$ are adjacent in $\overline{G}$ iff they are not adjacent in $G$.
+\end{defn}
+
+Sometimes, we will call a complement of a member of a class $\Gamma$ an \emph{anti-
+$\Gamma$}, e.g. graph $G = (\{v_1, v_2, v_3, v_4\}, \{v_1v_3, v_2v_4\})$ is an anticycle.
+
+\begin{defn}[clique]
+  A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected.
+\end{defn}
+
+Therefore an \emph{anticlique} is a graph in which there are no edges. We will also call anticliques \emph{independent sets}. In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subset V$ will be called \emph{independent} (in the context of $G$) iff $G[V']$ is an anticlique.
+
+\begin{defn}[clique number]
+  A \emph{clique number} of a graph $G$, denoted as $\omega(G)$, is a cardinality of its largest induced clique.
+\end{defn}
+
+\begin{defn}[coloring]
+  Given a graph $G$, its \emph{coloring} is a function $c: V(G) \rightarrow \mathbb{N}^+$, such that for every edge $xy \in E(G)$, $c(x)$ is different from $c(y)$. A $k-coloring$ of $G$ (if exists) is a coloring, such that for all vertices $x \in V(G)$, $c(x) \leq k$.
+\end{defn}
+
+\begin{defn}[chromatic number]
+  A \emph{chromatic number} of a graph $G$, denoted as $\chi(G)$, is a smallest natural number $k$, for which there exists a $k$-coloring of $G$.
+\end{defn}
+
+% \begin{defn}[independent set]
+  % An \emph{independent set} or 
+% \end{defn}
