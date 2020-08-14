@@ -11,10 +11,12 @@ void CudaAssert(cudaError_t error, const char *code, const char *file, int line)
 void printArray(int *dev, int n, context_t &context) {
   transform(
       [=] MGPU_DEVICE(int i) {
+        printf("[");
         for (int a = 0; a < n; a++) {
           printf("%d", dev[a]);
+          if (a + 1 < n) printf(", ");
         }
-        printf("\n");
+        printf("]\n");
       },
       1, context);
   context.synchronize();
@@ -32,4 +34,10 @@ CuGraph::CuGraph(const Graph &G, context_t &context) : n(G.n), context(context) 
     CUCHECK(cudaMemcpy(devNextNeighbor + (i * n), G._next_neighbour[i].data(), sizeof(int) * n,
                        cudaMemcpyHostToDevice));
   }
+}
+
+void CuGraph::DeleteCuGraph() {
+  CUCHECK(cudaFree(devMatrix));
+  CUCHECK(cudaFree(devFirstNeighbor));
+  CUCHECK(cudaFree(devNextNeighbor));
 }

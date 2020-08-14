@@ -25,4 +25,5 @@ struct CuGraph {
   int *devNextNeighbor;
 
   CuGraph(const Graph &G, context_t &context);
+  void DeleteCuGraph(); // We cannot use destructor, because moderngpu transforms capture by value
 };

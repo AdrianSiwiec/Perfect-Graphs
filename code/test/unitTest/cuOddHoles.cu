@@ -3,14 +3,16 @@
 #include "cuOddHoles.h"
 #include "testCommons.h"
 
+TODO TESTS
+
 void testCuOddHole(context_t &context) {
-  Graph G = getRandomGraph(10, 0.5);
+  Graph G = getRandomGraph(11, 0.5);
 
   CuGraph CG(G, context);
 
   cuContainsHoleOfSize(CG, 9, context);
 
-  assert(false);
+  assert(false); 
 }
 
 int main() {
