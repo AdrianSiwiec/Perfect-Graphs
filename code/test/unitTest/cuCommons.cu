@@ -3,7 +3,6 @@
 #include "testCommons.h"
 
 void testCuGraph(context_t &context) {
-
   Graph G = getRandomGraph(10, 0.5);
 
   CuGraph CG(G, context);
