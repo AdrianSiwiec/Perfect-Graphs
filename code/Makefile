@@ -81,9 +81,9 @@ $(OBJDIR)/%.e: %.cpp $(OBJFILES) $(COBJFILES)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(OBJFILES) $(COBJFILES) $< $(GCCLIBS) -o $@ $(LDFLAGS)
 
-$(OBJDIR)/%.e: %.cu obj/src/perfect.o  obj/src/jewels.o  obj/src/pyramids.o  obj/src/oddHoles.o  obj/src/commons.o  obj/src/testCommons.o  obj/src/cuCommons.o  obj/src/nearCleaners.o obj/src/cuOddHoles.o
+$(OBJDIR)/%.e: %.cu obj/src/perfect.o  obj/src/jewels.o  obj/src/pyramids.o  obj/src/oddHoles.o  obj/src/commons.o  obj/src/testCommons.o  obj/src/cuCommons.o  obj/src/nearCleaners.o 
 	@mkdir -p $(dir $@)
-	$(NVCC) $(NVCCFLAGS) obj/src/perfect.o  obj/src/jewels.o  obj/src/pyramids.o  obj/src/oddHoles.o  obj/src/commons.o  obj/src/testCommons.o  obj/src/cuCommons.o  obj/src/nearCleaners.o obj/src/cuOddHoles.o $<  -o $@ $(LDFLAGS)
+	$(NVCC) $(NVCCFLAGS) obj/src/perfect.o  obj/src/jewels.o  obj/src/pyramids.o  obj/src/oddHoles.o  obj/src/commons.o  obj/src/testCommons.o  obj/src/cuCommons.o  obj/src/nearCleaners.o $<  -o $@ $(LDFLAGS)
   
 
 .PHONY: test clean run-tests unitTest retest netTest lint

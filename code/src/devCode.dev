@@ -2,9 +2,12 @@
 #include "cuCommons.h"
 #include "cuOddHoles.h"
 
+// README
+// Due to performance constraints and ease of building, all __device__ code is located in a single file
+
 // __device__ int get42() { return 42; }
 
-__device__ void preparePathStart(int code, int len, int n, int *devPath) {
+__device__ void devPreparePathStart(int code, int len, int n, int *devPath) {
   int tmp = 0;
 
   while (tmp < len) {
@@ -25,8 +28,15 @@ __device__ void devPrintArray(int *dev, int n) {
 
 __device__ bool devAreNeighbors(const CuGraph &G, int a, int b) { return G.devMatrix[a * G.n + b]; }
 
-__device__ bool devIsDistinctValues(const CuGraph &G, int *path, int length) {
-  
+__device__ bool devIsDistinctValues(int *path, int length) {
+
+  for (int i = 1; i < length; i++) {
+    for (int j = 0; j < i; j++) {
+      if (path[i] == path[j]) return false;
+    }
+  }
+
+  return true;
 }
 
 __device__ bool devIsAPath(const CuGraph &G, int *path, int length, bool isCycleOk = false,
@@ -53,7 +63,7 @@ bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context) {
   transform(
       [=] MGPU_DEVICE(int id) {
         int path[max_size];
-        preparePathStart(id, kCounter, G.n, path);
+        devPreparePathStart(id, kCounter, G.n, path);
 
         for (int i = 1; i < kCounter; i++) {
           if (!devAreNeighbors(G, path[i], path[i - 1])) return;
