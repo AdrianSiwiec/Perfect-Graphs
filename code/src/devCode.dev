@@ -29,7 +29,6 @@ __device__ void devPrintArray(int *dev, int n) {
 __device__ bool devAreNeighbors(const CuGraph &G, int a, int b) { return G.devMatrix[a * G.n + b]; }
 
 __device__ bool devIsDistinctValues(int *path, int length) {
-
   for (int i = 1; i < length; i++) {
     for (int j = 0; j < i; j++) {
       if (path[i] == path[j]) return false;
@@ -42,6 +41,21 @@ __device__ bool devIsDistinctValues(int *path, int length) {
 __device__ bool devIsAPath(const CuGraph &G, int *path, int length, bool isCycleOk = false,
                            bool areChordsOk = false) {
   if (length <= 0) return false;
+
+  if (!devIsDistinctValues(path, length)) return false;
+
+  for (int i = length - 1; i > 0; i--) {
+    for (int j = 0; j < i; j++) {
+      if (j == i - 1) {
+        if (!devAreNeighbors(G, path[i], path[j])) return false;
+      } else if (!areChordsOk) {
+        if (isCycleOk && i == length - 1 && j == 0) continue;
+        if (devAreNeighbors(G, path[i], path[j])) return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context) {
