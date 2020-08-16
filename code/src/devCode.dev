@@ -28,6 +28,17 @@ __device__ void devPrintArray(int *dev, int n) {
 
 __device__ bool devAreNeighbors(const CuGraph &G, int a, int b) { return G.devMatrix[a * G.n + b]; }
 
+__device__ int devGetFirstNeighbor(const CuGraph &G, int a) { return G.devFirstNeighbor[a]; }
+
+__device__ int devGetNextNeighbor(const CuGraph &G, int a, int b) {
+  int ret = G.devNextNeighbor[a * G.n + b];
+  if (ret == -2) {
+    assert("CUDA devGetNextNeighbor failed" == 0);
+  }
+
+  return ret;
+}
+
 __device__ bool devIsDistinctValues(int *path, int length) {
   for (int i = 1; i < length; i++) {
     for (int j = 0; j < i; j++) {
@@ -56,6 +67,56 @@ __device__ bool devIsAPath(const CuGraph &G, int *path, int length, bool isCycle
   }
 
   return true;
+}
+
+__device__ bool devNextPathInPlace(const CuGraph &G, int *v, int &lenV, int lenPath, bool isCycleOk = false,
+                                   bool areChordsOk = false) {
+  if (lenPath <= 1) {
+    assert(false);  //(DEV ERROR) Length of next path must be at least 2
+  }
+
+  if (lenV > 0 && !devIsAPath(G, v, lenV, isCycleOk, areChordsOk)) {
+    assert(false);  //(DEV ERROR) Input of devNextPath should be a path
+  }
+
+  if (lenV == 0) {
+    v[0] = 0;
+    lenV = 1;
+  }
+
+  while (true) {
+    if (v[lenV - 1] == -1) {
+      lenV--;
+      if (lenV == 1) {
+        v[0]++;
+        if (v[0] >= G.n) {
+          lenV = 0;
+          return;
+        }
+        continue;
+      } else {
+        v[lenV - 1] = devGetNextNeighbor(G, v[lenV - 2], v[lenV - 1]);
+        continue;
+      }
+    }
+
+    if (lenV < lenPath) {
+      v[lenV] = devGetFirstNeighbor(G, v[lenV - 1]);
+      lenV++;
+      if (lenV == lenPath && devIsAPath(G, v, lenV, isCycleOk, areChordsOk))
+        return;
+      else
+        continue;
+    }
+
+    do {
+      v[lenV - 1] = devGetNextNeighbor(G, v[lenV - 1], v[lenV - 1]);
+    } while (v[lenV] != -1 && !devIsAPath(G, v, lenV, isCycleOk, areChordsOk));
+
+    if (v[lenV - 1] == -1) continue;
+
+    return;
+  }
 }
 
 bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context) {

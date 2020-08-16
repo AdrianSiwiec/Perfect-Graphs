@@ -159,6 +159,65 @@ void testDevIsAPath(context_t &context) {
   context.synchronize();
 }
 
+void testDevNextNeighbor(context_t &context) {
+  Graph G(7,
+          "\
+  ...X...\
+  ..X.XX.\
+  .X...X.\
+  X......\
+  .X.....\
+  .XX....\
+  .......\
+  ");
+
+  CuGraph CG(G, context);
+
+  transform(
+      [=] MGPU_DEVICE(int id) {
+        assert(devGetFirstNeighbor(CG, 0) == 3);
+        assert(devGetNextNeighbor(CG, 0, 3) == -1);
+        assert(devGetFirstNeighbor(CG, 1) == 2);
+        assert(devGetNextNeighbor(CG, 1, 2) == 4);
+        assert(devGetNextNeighbor(CG, 1, 4) == 5);
+        assert(devGetNextNeighbor(CG, 1, 5) == -1);
+        assert(devGetFirstNeighbor(CG, 6) == -1);
+
+        assert(CG.devNextNeighbor[0 * CG.n + 1] == -2);
+      },
+      1, context);
+  context.synchronize();
+}
+
+void testDevNextPathInPlace(context_t &context) {
+  Graph G(6,
+          "\
+  .XX...\
+  X.XX..\
+  XX....\
+  .X..X.\
+  ...X.X\
+  ....X.\
+  ");
+
+  CuGraph CG(G, context);
+
+  transform(
+      [=] MGPU_DEVICE(int id) {
+        int v[5] = {100};
+        int lenV = 0;
+        devNextPathInPlace(CG, v, lenV, 2);
+        assert(lenV = 2);
+        devPrintArray(v, 2);
+        assert(v[0] == 0);
+        assert(v[1] == 1);
+
+        assert(v[2] == 42);
+      },
+      1, context);
+  context.synchronize();
+}
+
 void testCuOddHole(context_t &context) {
   Graph G = getRandomGraph(11, 0.5);
 
@@ -170,13 +229,14 @@ void testCuOddHole(context_t &context) {
 }
 
 int main() {
-  return(0);
   init();
   standard_context_t context(0);
   testPreparePathStart(context);
   testDevAreNeighbors(context);
   testDevIsDistinctValues(context);
   testDevIsAPath(context);
+  testDevNextNeighbor(context);
+  testDevNextPathInPlace(context);
   testCuOddHole(context);
 
   context.synchronize();
