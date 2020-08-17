@@ -1,21 +1,36 @@
-Perfect recognition stats: 
-	n=7, result=1, cases=1, avgTime=0.00408632
-	n=8, result=1, cases=5, avgTime=0.00887883
-	n=9, result=1, cases=3, avgTime=0.0213162
-	n=10, result=1, cases=7, avgTime=0.0384876
-	n=11, result=1, cases=2, avgTime=0.10656
-	n=10, result=0, cases=14, avgTime=8.59557e-05
-Naive recognition stats: 
-	n=7, result=1, cases=1, avgTime=0.000313394
-	n=8, result=1, cases=5, avgTime=0.0012829
-	n=9, result=1, cases=3, avgTime=0.0652174
-	n=10, result=1, cases=7, avgTime=0.138836
-	n=11, result=1, cases=2, avgTime=20.8788
-	n=10, result=0, cases=14, avgTime=1.52498e-05
-CUDA recognition stats 100M threads: 
-	n=7, result=1, cases=1, avgTime=0.00452682
-	n=8, result=1, cases=5, avgTime=0.00607583
-	n=9, result=1, cases=3, avgTime=0.0625587
-	n=10, result=1, cases=7, avgTime=0.123975
-	n=11, result=1, cases=2, avgTime=29.4399
-	n=10, result=0, cases=14, avgTime=0.00264092
+CUDA recognition stats: 
+	n=5, result=1, cases=3, avgTime=0.000476824
+	n=6, result=1, cases=1, avgTime=0.000591489
+	n=7, result=1, cases=3, avgTime=0.00142434
+	n=8, result=1, cases=1, avgTime=0.00521
+	n=9, result=1, cases=1, avgTime=0.0592108
+	n=10, result=1, cases=10, avgTime=0.113829
+	n=11, result=1, cases=4, avgTime=12.8039
+	n=12, result=1, cases=1, avgTime=65.2518
+	n=10, result=0, cases=14, avgTime=0.00211359
+	n=11, result=0, cases=18, avgTime=0.00193536
+
+Error CUDA NAIVE
+11
+.X...XXX...
+X.........X
+...X..X....
+..X.X.X....
+...X...X.XX
+X.....XXX..
+X.XX.X.X...
+X...XXX..XX
+.....X...X.
+....X..XX.X
+.X..X..X.X.
+0: 1 5 6 7 
+1: 0 10 
+2: 3 6 
+3: 4 2 6 
+4: 3 7 9 10 
+5: 0 6 7 8 
+6: 0 5 7 2 3 
+7: 0 5 6 4 9 10 
+8: 5 9 
+9: 4 7 10 8 
+10: 4 7 9 1 

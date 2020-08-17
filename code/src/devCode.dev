@@ -1,5 +1,6 @@
 #include "commons.h"
 #include "cuCommons.h"
+#include "oddHoles.h"
 #include "testCommons.h"
 
 // README
@@ -121,14 +122,44 @@ __device__ bool devNextPathInPlace(const CuGraph &G, int *v, int &lenV, int lenP
   }
 }
 
+__device__ bool devContainsHoleWithPrefix(const CuGraph &G, int *v, int lenV, int size) {
+  if (!devIsAPath(G, v, lenV, lenV == size)) return false;
+
+  int inLenV = lenV;
+
+  int mem = v[inLenV - 1];
+
+  if (lenV < size) devNextPathInPlace(G, v, lenV, size, true);
+
+  while (lenV == size && v[inLenV - 1] == mem) {
+    if (devIsAHole(G, v, size)) {
+      // devPrintArray(v, lenV);
+      return true;
+    }
+    devNextPathInPlace(G, v, lenV, size, true);
+  }
+
+  return false;
+}
+
+__device__ bool devContainsHoleWithPrefixCode(const CuGraph &G, int code, int codeLen, int codeMax,
+                                              int size) {
+  static const int max_size = 30;
+  assert(max_size > size);
+
+  if (code >= codeMax) return;
+
+  int v[max_size];
+  devPreparePathStart(code, v, codeLen, G.n);
+  int lenV = codeLen;
+
+  return devContainsHoleWithPrefix(G, v, lenV, size);
+}
+
 // # cu* portion (ran by host, uses __device__ code)
 
 bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context,
                           int maxThreads = _max_threads_to_run) {
-  static const int max_size = 30;
-
-  assert(max_size > size);
-
   int k = G.n;
   int kCounter = 1;
   while (k * G.n <= maxThreads && kCounter < size) {
@@ -139,69 +170,95 @@ bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context,
   int *devOddHoleFound;
   CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 1));
 
-  typedef launch_params_t<256, 16> launch_t;
+  // typedef launch_params_t<256, 16> launch_t;
+  // cout << k << endl;
+  // auto f = [=] MGPU_DEVICE(int tid, int cta) {
+  //   typedef typename launch_t::sm_ptx params_t;
+  //   enum { nt = params_t::nt, vt = params_t::vt };
 
-  auto f = [=] MGPU_DEVICE(int tid, int cta) {
-    typedef typename launch_t::sm_ptx params_t;
-    enum { nt = params_t::nt, vt = params_t::vt };
+  //   int codeStart = ((cta * nt) + tid) * vt;
 
-    int codeStart = ((cta * nt) + tid) * vt;
+  //   for (int i = 0; i < vt; i++) {
+  //     int id = codeStart + i;
 
-    for (int i = 0; i < vt; i++) {
-      int id = codeStart + i;
+  //     if (devContainsHoleWithPrefixCode(G, id, kCounter, k, size)) {
+  //       devOddHoleFound[0] = 1;
+  //       return;
+  //     }
+  //   }
+  // };
 
-      if (id >= k) return;
-
-      int v[max_size];
-      int lenV = kCounter;
-      devPreparePathStart(id, v, kCounter, G.n);
-      int mem = v[kCounter - 1];
-
-      if (!devIsAPath(G, v, lenV, lenV == size)) continue;
-
-      if (lenV < size) devNextPathInPlace(G, v, lenV, size, true);
-
-      while (lenV == size && v[kCounter - 1] == mem) {
-        if (devIsAHole(G, v, size)) {
-          // devPrintArray(v, lenV);
-          devOddHoleFound[0] = 1;
-          return;
-        }
-        devNextPathInPlace(G, v, lenV, size, true);
-      }
-    }
-  };
-
-  cta_transform<launch_t>(f, k, context);
-  context.synchronize();
-
-  // transform(
-  //     [=] MGPU_DEVICE(int id) {
-  //       int v[max_size];
-  //       int lenV = kCounter;
-  //       devPreparePathStart(id, v, kCounter, G.n);
-  //       int mem = v[kCounter - 1];
-
-  //       if (!devIsAPath(G, v, lenV, lenV == size)) return;
-
-  //       if (lenV < size) devNextPathInPlace(G, v, lenV, size, true);
-
-  //       while (lenV == size && v[kCounter - 1] == mem) {
-  //         if (devIsAHole(G, v, size)) {
-  //           // devPrintArray(v, lenV);
-  //           devOddHoleFound[0] = 1;
-  //           return;
-  //         }
-  //         devNextPathInPlace(G, v, lenV, size, true);
-  //       }
-  //     },
-  //     k, context);
+  // cta_transform<launch_t>(f, k, context);
   // context.synchronize();
+
+  transform(
+      [=] MGPU_DEVICE(int id) {
+        if (devContainsHoleWithPrefixCode(G, id, kCounter, k, size)) {
+          devOddHoleFound[0] = 1;
+        }
+      },
+      k, context);
+  context.synchronize();
 
   int oddHoleFound[1];
   CUCHECK(cudaMemcpy(oddHoleFound, devOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
   context.synchronize();
 
+  return oddHoleFound[0];
+}
+
+bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
+  int minThreads = 10000;
+  int threadsToRun = 10000;
+
+  int pathLen = 2;
+  vec<vec<int>> prefixes;
+  vec<int> v;
+
+  do {
+    pathLen++;
+    prefixes = vec<vec<int>>();
+    v = vec<int>();
+
+    do {
+      nextPathInPlace(G, v, pathLen, pathLen == size);
+      prefixes.push_back(v);
+    } while (!v.empty());
+    prefixes.pop_back();
+  } while (pathLen < size && prefixes.size() >= minThreads);
+
+  CuGraph CG(G, context);
+  int *devPaths;
+  CUCHECK(cudaMalloc(&devPaths, sizeof(int) * pathLen * prefixes.size()));
+  for (int i = 0; i < prefixes.size(); i++) {
+    assert(prefixes[i].size() == pathLen);
+    CUCHECK(
+        cudaMemcpy(devPaths + pathLen * i, prefixes[i].data(), prefixes[i].size(), cudaMemcpyHostToDevice));
+  }
+
+  int *devOddHoleFound;
+  CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 1));
+  transform([=] MGPU_DEVICE(int id) { devOddHoleFound[0] = 0; }, 1, context);
+  context.synchronize();
+
+  transform(
+      [=] MGPU_DEVICE(int id, int prefixesSize) {
+        for (int i = id; i < prefixesSize; i += threadsToRun) {
+          if (devContainsHoleWithPrefix(CG, devPaths + pathLen * i, pathLen, size)) {
+            printf("FOUND!\n");
+            devOddHoleFound[0] = 1;
+            return;
+          }
+        }
+      },
+      threadsToRun, context, prefixes.size());
+  context.synchronize();
+
+  int oddHoleFound[1];
+  CUCHECK(cudaMemcpy(oddHoleFound, devOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
+  context.synchronize();
+
+  CUCHECK(cudaFree(devPaths));
   return oddHoleFound[0];
 }
 
@@ -213,17 +270,28 @@ bool cuContainsOddHoleNaive(const CuGraph &G, context_t &context, int maxThreads
   return false;
 }
 
+bool cuContainsOddHoleNaive2(const Graph &G, context_t &context, int maxThreads = _max_threads_to_run) {
+  for (int size = 5; size <= G.n; size += 2) {
+    if (cuContainsHoleOfSize2(G, size, context)) return true;
+  }
+
+  return false;
+}
+
 bool cuIsPerfectNaive(const Graph &G, context_t &context, int maxThreads = _max_threads_to_run) {
-  CuGraph CG = CuGraph(G, context);
-  CuGraph CCG = CuGraph(G.getComplement(), context);
+  standard_context_t c2(0);
 
-  bool res =
-      !cuContainsOddHoleNaive(CG, context, maxThreads) && !cuContainsOddHoleNaive(CCG, context, maxThreads);
+  // CuGraph CG = CuGraph(G, c2);
+  // CuGraph CCG = CuGraph(G.getComplement(), c2);
 
-  CG.deleteCuGraph();
-  CCG.deleteCuGraph();
+  // bool res = !cuContainsOddHoleNaive(CG, c2, maxThreads) && !cuContainsOddHoleNaive(CCG, c2, maxThreads);
+  bool res = !cuContainsOddHoleNaive2(G, c2, maxThreads) &&
+             !cuContainsOddHoleNaive2(G.getComplement(), c2, maxThreads);
 
-  context.synchronize();
+  // CG.deleteCuGraph();
+  // CCG.deleteCuGraph();
+
+  c2.synchronize();
 
   return res;
 }

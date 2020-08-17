@@ -552,7 +552,7 @@ void printCuTestStats() {
          << ", avgTime=" << it->second / cases << endl;
   }
 
-  if (!sumTimeNaiveDev.empty()) cout << "CUDA recognition stats: " << endl;
+  if (!cuSumTimeNaive.empty()) cout << "CUDA recognition stats: " << endl;
   for (auto it = cuSumTimeNaive.begin(); it != cuSumTimeNaive.end(); it++) {
     if (!it->first.second) continue;
     int cases = cuCasesTestedNaive[it->first];
@@ -599,8 +599,10 @@ void cuTestGraphSimpleWithStats(const Graph &G, context_t &context, bool runNaiv
 
   {
     RaiiTimer t("");
-    if (cuIsPerfectNaive(G, context, 1000000000) != res) {
+    int cuRes;
+    if ((cuRes = cuIsPerfectNaive(G, context, 100000000)) != res) {
       cout << "Error CUDA NAIVE" << endl << G << endl;
+      cout << "res: " << res << ", cuRes: " << cuRes << endl;
       exit(1);
     }
     double elapsed = t.getElapsedSeconds();
@@ -627,7 +629,7 @@ void testCuIsPerfectNaiveHand(context_t &context) {
   ...XX...X..\
   ");
 
-  cuTestGraphSimpleWithStats(G, context);
+  cuTestGraphSimpleWithStats(G, context, false);
 
   G = Graph(10,
             "\
@@ -642,7 +644,23 @@ void testCuIsPerfectNaiveHand(context_t &context) {
   .......X.X\
   ..X..X.XX.\
   ");
-  cuTestGraphSimpleWithStats(G, context);
+  cuTestGraphSimpleWithStats(G, context, false);
+
+  G = Graph(11,
+            "\
+    .X...XXX...\
+    X.........X\
+    ...X..X....\
+    ..X.X.X....\
+    ...X...X.XX\
+    X.....XXX..\
+    X.XX.X.X...\
+    X...XXX..XX\
+    .....X...X.\
+    ....X..XX.X\
+    .X..X..X.X.\
+    ");
+  cuTestGraphSimpleWithStats(G, context, false);
 }
 
 void testCuIsPerfectNaive(context_t &context) {
