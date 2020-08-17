@@ -1,0 +1,21 @@
+Perfect recognition stats: 
+	n=7, result=1, cases=1, avgTime=0.00408632
+	n=8, result=1, cases=5, avgTime=0.00887883
+	n=9, result=1, cases=3, avgTime=0.0213162
+	n=10, result=1, cases=7, avgTime=0.0384876
+	n=11, result=1, cases=2, avgTime=0.10656
+	n=10, result=0, cases=14, avgTime=8.59557e-05
+Naive recognition stats: 
+	n=7, result=1, cases=1, avgTime=0.000313394
+	n=8, result=1, cases=5, avgTime=0.0012829
+	n=9, result=1, cases=3, avgTime=0.0652174
+	n=10, result=1, cases=7, avgTime=0.138836
+	n=11, result=1, cases=2, avgTime=20.8788
+	n=10, result=0, cases=14, avgTime=1.52498e-05
+CUDA recognition stats 100M threads: 
+	n=7, result=1, cases=1, avgTime=0.00452682
+	n=8, result=1, cases=5, avgTime=0.00607583
+	n=9, result=1, cases=3, avgTime=0.0625587
+	n=10, result=1, cases=7, avgTime=0.123975
+	n=11, result=1, cases=2, avgTime=29.4399
+	n=10, result=0, cases=14, avgTime=0.00264092

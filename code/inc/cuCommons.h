@@ -21,9 +21,9 @@ struct CuGraph {
   int *devMatrix;
   // of size n
   int *devFirstNeighbor;
-  //of size n*n
+  // of size n*n
   int *devNextNeighbor;
 
   CuGraph(const Graph &G, context_t &context);
-  void DeleteCuGraph(); // We cannot use destructor, because moderngpu transforms capture by value
+  void deleteCuGraph();  // We cannot use destructor, because moderngpu transforms capture by value
 };

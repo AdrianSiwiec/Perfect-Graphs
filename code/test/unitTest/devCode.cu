@@ -1,7 +1,10 @@
 #include "commons.h"
 #include "cuCommons.h"
-#include "cuOddHoles.h"
+#include "perfect.h"
 #include "testCommons.h"
+
+#include <chrono>
+#include <thread>
 
 #include "src/devCode.dev"
 
@@ -11,27 +14,27 @@ void testPreparePathStart(context_t &context) {
 
   transform(
       [=] MGPU_DEVICE(int id) {
-        devPreparePathStart((7 * 11 + 3) * 11 + 5, 3, 11, dev);
+        devPreparePathStart((7 * 11 + 3) * 11 + 5, dev, 3, 11);
         assert(dev[0] == 5);
         assert(dev[1] == 3);
         assert(dev[2] == 7);
         assert(dev[3] == 0);
 
-        devPreparePathStart(((7 * 11 + 3) * 11 + 5) * 11 + 10, 4, 11, dev);
+        devPreparePathStart(((7 * 11 + 3) * 11 + 5) * 11 + 10, dev, 4, 11);
         assert(dev[0] == 10);
         assert(dev[1] == 5);
         assert(dev[2] == 3);
         assert(dev[3] == 7);
         assert(dev[4] == 0);
 
-        devPreparePathStart(7 * 7 * 7 * 7 - 1, 4, 7, dev);
+        devPreparePathStart(7 * 7 * 7 * 7 - 1, dev, 4, 7);
         assert(dev[0] == 6);
         assert(dev[1] == 6);
         assert(dev[2] == 6);
         assert(dev[3] == 6);
         assert(dev[4] == 0);
 
-        devPreparePathStart(7, 4, 7, dev);
+        devPreparePathStart(7, dev, 4, 7);
         assert(dev[0] == 0);
         assert(dev[1] == 1);
         assert(dev[2] == 0);
@@ -199,45 +202,487 @@ void testDevNextPathInPlace(context_t &context) {
   ...X.X\
   ....X.\
   ");
-
   CuGraph CG(G, context);
+
+  Graph G2(6,
+           "\
+  .XX...\
+  X.XX..\
+  XX.X..\
+  .XX.X.\
+  ...X.X\
+  ....X.\
+  ");
+  CuGraph CG2(G2, context);
 
   transform(
       [=] MGPU_DEVICE(int id) {
         int v[5] = {100};
         int lenV = 0;
+
         devNextPathInPlace(CG, v, lenV, 2);
-        assert(lenV = 2);
-        devPrintArray(v, 2);
+        assert(lenV == 2);
         assert(v[0] == 0);
         assert(v[1] == 1);
 
-        assert(v[2] == 42);
+        devNextPathInPlace(CG, v, lenV, 2);
+        assert(lenV == 2);
+        assert(v[0] == 0);
+        assert(v[1] == 2);
+
+        devNextPathInPlace(CG, v, lenV, 2);
+        assert(lenV == 2);
+        assert(v[0] == 1);
+        assert(v[1] == 0);
+
+        devNextPathInPlace(CG, v, lenV, 2);
+        assert(lenV == 2);
+        assert(v[0] == 1);
+        assert(v[1] == 2);
+
+        devNextPathInPlace(CG, v, lenV, 2);
+        assert(lenV == 2);
+        assert(v[0] == 1);
+        assert(v[1] == 3);
+
+        devNextPathInPlace(CG, v, lenV, 2);
+        assert(lenV == 2);
+        assert(v[0] == 2);
+        assert(v[1] == 0);
+
+        v[0] = 5;
+        v[1] = 4;
+        lenV = 2;
+        devNextPathInPlace(CG, v, lenV, 2);
+        assert(lenV == 0);
+
+        devNextPathInPlace(CG, v, lenV, 3);
+        assert(lenV == 3);
+        assert(v[0] == 0);
+        assert(v[1] == 1);
+        assert(v[2] == 3);
+
+        devNextPathInPlace(CG, v, lenV, 3);
+        assert(lenV == 3);
+        assert(v[0] == 1);
+        assert(v[1] == 3);
+        assert(v[2] == 4);
+
+        devNextPathInPlace(CG, v, lenV, 3);
+        assert(lenV == 3);
+        assert(v[0] == 2);
+        assert(v[1] == 1);
+        assert(v[2] == 3);
+
+        lenV = 0;
+        devNextPathInPlace(CG, v, lenV, 3, true);
+        assert(lenV == 3);
+        assert(v[0] == 0);
+        assert(v[1] == 1);
+        assert(v[2] == 2);
+
+        devNextPathInPlace(CG, v, lenV, 3, true);
+        assert(lenV == 3);
+        assert(v[0] == 0);
+        assert(v[1] == 1);
+        assert(v[2] == 3);
+
+        devNextPathInPlace(CG, v, lenV, 3, true);
+        assert(lenV == 3);
+        assert(v[0] == 0);
+        assert(v[1] == 2);
+        assert(v[2] == 1);
+
+        lenV = 0;
+        devNextPathInPlace(CG, v, lenV, 5);
+        assert(lenV == 5);
+        assert(v[0] == 0);
+        assert(v[1] == 1);
+        assert(v[2] == 3);
+        assert(v[3] == 4);
+        assert(v[4] == 5);
+
+        lenV = 0;
+        int counter = 0;
+        do {
+          devNextPathInPlace(CG, v, lenV, 4);
+          assert(lenV == 4 || lenV == 0);
+          counter++;
+        } while (lenV != 0);
+        assert(counter == 7);
+
+        lenV = 0;
+        counter = 0;
+        do {
+          devNextPathInPlace(CG, v, lenV, 3);
+          assert(lenV == 3 || lenV == 0);
+          counter++;
+        } while (lenV != 0);
+        assert(counter == 9);
+
+        lenV = 0;
+        counter = 0;
+        do {
+          devNextPathInPlace(CG, v, lenV, 3, true);
+          assert(lenV == 3 || lenV == 0);
+          counter++;
+        } while (lenV != 0);
+        assert(counter == 15);
+
+        lenV = 0;
+        devNextPathInPlace(CG2, v, lenV, 4, true, true);
+        assert(lenV == 4);
+        assert(v[0] == 0);
+        assert(v[1] == 1);
+        assert(v[2] == 2);
+        assert(v[3] == 3);
+
+        devNextPathInPlace(CG2, v, lenV, 4, true, true);
+        assert(lenV == 4);
+        assert(v[0] == 0);
+        assert(v[1] == 1);
+        assert(v[2] == 3);
+        assert(v[3] == 2);
+
+        devNextPathInPlace(CG2, v, lenV, 4, true, true);
+        assert(lenV == 4);
+        assert(v[0] == 0);
+        assert(v[1] == 1);
+        assert(v[2] == 3);
+        assert(v[3] == 4);
+
+        // Partial paths as an input
+        v[0] = 1;
+        v[1] = 3;
+        lenV = 2;
+        devNextPathInPlace(CG, v, lenV, 3);
+        assert(lenV == 3);
+        assert(v[0] == 1);
+        assert(v[1] == 3);
+        assert(v[2] == 4);
+
+        v[0] = 3;
+        lenV = 1;
+        devNextPathInPlace(CG, v, lenV, 3);
+        assert(lenV == 3);
+        assert(v[0] == 3);
+        assert(v[1] == 1);
+        assert(v[2] == 0);
       },
       1, context);
   context.synchronize();
 }
 
-void testCuOddHole(context_t &context) {
-  Graph G = getRandomGraph(11, 0.5);
-
+void testDevIsAHole(context_t &context) {
+  Graph G(6,
+          "\
+  .X..X.\
+  X.X...\
+  .X.X..\
+  ..X.X.\
+  X..X..\
+  ......\
+  ");
   CuGraph CG(G, context);
 
-  cuContainsHoleOfSize(CG, 9, context);
+  Graph G2(6,
+           "\
+  .X.XX.\
+  X.X...\
+  .X.X..\
+  X.X.X.\
+  X..X..\
+  ......\
+  ");
+  CuGraph CG2(G2, context);
 
-  assert(false);
+  transform(
+      [=] MGPU_DEVICE(int id) {
+        int a1[] = {0, 1, 2, 3, 4};
+        assert(devIsAHole(CG, a1, 5));
+
+        int a2[] = {3, 2, 1, 0, 4};
+        assert(devIsAHole(CG, a2, 5));
+
+        int a3[] = {0, 2, 3, 4};
+        assert(!devIsAHole(CG, a3, 4));
+
+        int a4[] = {1, 2, 3, 4};
+        assert(!devIsAHole(CG, a4, 4));
+
+        int a5[] = {0, 2, 1, 3, 4};
+        assert(!devIsAHole(CG, a5, 5));
+
+        int b1[] = {0, 1, 2, 3, 4};
+        assert(!devIsAHole(CG2, b1, 5));
+
+        int b2[] = {3, 2, 1, 0, 4};
+        assert(!devIsAHole(CG2, b2, 5));
+
+        int b3[] = {0, 1, 2, 3};
+        assert(devIsAHole(CG2, b3, 4));
+        assert(!devIsAHole(CG2, b3, 5));
+
+        int b4[] = {1, 2, 3, 4};
+        assert(!devIsAHole(CG2, b4, 4));
+
+        int b5[] = {0, 2, 1, 3, 4};
+        assert(!devIsAHole(CG2, b5, 5));
+      },
+      1, context);
+  context.synchronize();
+}
+
+void testCuContainsHoleOfSize(context_t &context) {
+  Graph G(6,
+          "\
+  .XX...\
+  X.XX..\
+  XX....\
+  .X..X.\
+  ...X.X\
+  ....X.\
+  ");
+  CuGraph CG(G, context);
+
+  assert(!cuContainsHoleOfSize(CG, 3, context));
+  assert(!cuContainsHoleOfSize(CG, 4, context));
+  assert(!cuContainsHoleOfSize(CG, 5, context));
+  assert(!cuContainsHoleOfSize(CG, 6, context));
+
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX..X.\
+  .X..X.\
+  ..XX.X\
+  ....X.\
+  ");
+  CuGraph CG2(G, context);
+  assert(cuContainsHoleOfSize(CG2, 4, context));
+  assert(!cuContainsHoleOfSize(CG2, 3, context));
+  assert(!cuContainsHoleOfSize(CG2, 5, context));
+  assert(!cuContainsHoleOfSize(CG2, 6, context));
+
+  // assert(!cuContainsHoleOfSize(CG, 3, context, 6));
+  // assert(!cuContainsHoleOfSize(CG, 4, context, 6));
+  // assert(!cuContainsHoleOfSize(CG, 5, context, 6*6));
+  // assert(!cuContainsHoleOfSize(CG, 6, context, 6*6*6));
+
+  // assert(cuContainsHoleOfSize(CG2, 4, context, 6));
+  // assert(!cuContainsHoleOfSize(CG2, 3, context, 6*6));
+  // assert(!cuContainsHoleOfSize(CG2, 5, context, 6*6*6));
+  // assert(!cuContainsHoleOfSize(CG2, 6, context, 6*6*6));
+}
+
+void testCuContainsOddHoleNaive(context_t &context) {
+  Graph G(6,
+          "\
+  .XX...\
+  X.XX..\
+  XX...X\
+  .X..X.\
+  ...X.X\
+  ..X.X.\
+  ");
+  CuGraph CG(G, context);
+
+  assert(cuContainsOddHoleNaive(CG, context));
+
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX..XX\
+  .X..X.\
+  ..XX.X\
+  ..X.X.\
+  ");
+  CuGraph CG2(G, context);
+  assert(!cuContainsOddHoleNaive(CG2, context));
+
+  G = Graph(5,
+            "\
+  .X..X\
+  X.X..\
+  .X.X.\
+  ..X.X\
+  X..X.\
+  ");
+  CuGraph CG3(G, context);
+  assert(cuContainsOddHoleNaive(CG3, context));
+}
+
+map<pair<int, bool>, double> sumTimeDev;
+map<pair<int, bool>, int> casesTestedDev;
+
+map<pair<int, bool>, double> sumTimeNaiveDev;
+map<pair<int, bool>, int> casesTestedNaiveDev;
+
+map<pair<int, bool>, double> cuSumTimeNaive;
+map<pair<int, bool>, int> cuCasesTestedNaive;
+
+void printCuTestStats() {
+  if (!sumTimeDev.empty()) cout << "Perfect recognition stats: " << endl;
+  for (auto it = sumTimeDev.begin(); it != sumTimeDev.end(); it++) {
+    if (!it->first.second) continue;
+    int cases = casesTestedDev[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+  for (auto it = sumTimeDev.begin(); it != sumTimeDev.end(); it++) {
+    if (it->first.second) continue;
+    int cases = casesTestedDev[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+
+  if (!sumTimeNaiveDev.empty()) cout << "Naive recognition stats: " << endl;
+  for (auto it = sumTimeNaiveDev.begin(); it != sumTimeNaiveDev.end(); it++) {
+    if (!it->first.second) continue;
+    int cases = casesTestedNaiveDev[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+  for (auto it = sumTimeNaiveDev.begin(); it != sumTimeNaiveDev.end(); it++) {
+    if (it->first.second) continue;
+    int cases = casesTestedNaiveDev[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+
+  if (!sumTimeNaiveDev.empty()) cout << "CUDA recognition stats: " << endl;
+  for (auto it = cuSumTimeNaive.begin(); it != cuSumTimeNaive.end(); it++) {
+    if (!it->first.second) continue;
+    int cases = cuCasesTestedNaive[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+  for (auto it = cuSumTimeNaive.begin(); it != cuSumTimeNaive.end(); it++) {
+    if (it->first.second) continue;
+    int cases = cuCasesTestedNaive[it->first];
+    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+         << ", avgTime=" << it->second / cases << endl;
+  }
+
+  cout << endl;
+}
+
+void cuTestGraphSimpleWithStats(const Graph &G, context_t &context, bool runNaive = true) {
+  string N = to_string(G.n);
+  bool res;
+
+  {
+    RaiiTimer t("");
+    res = isPerfectGraph(G);
+    pair<int, bool> p = make_pair(G.n, res);
+
+    sumTimeDev[p] += t.getElapsedSeconds();
+
+    casesTestedDev[p]++;
+  }
+
+  if (runNaive) {
+    RaiiTimer t("");
+    if (isPerfectGraphNaive(G) != res) {
+      cout << "Error NAIVE" << endl << G << endl;
+      exit(1);
+    }
+
+    double elapsed = t.getElapsedSeconds();
+
+    auto p = make_pair(G.n, res);
+    sumTimeNaiveDev[p] += elapsed;
+    casesTestedNaiveDev[p]++;
+  }
+
+  {
+    RaiiTimer t("");
+    if (cuIsPerfectNaive(G, context, 1000000000) != res) {
+      cout << "Error CUDA NAIVE" << endl << G << endl;
+      exit(1);
+    }
+    double elapsed = t.getElapsedSeconds();
+    auto p = make_pair(G.n, res);
+    cuSumTimeNaive[p] += elapsed;
+    cuCasesTestedNaive[p]++;
+  }
+
+  printCuTestStats();
+}
+void testCuIsPerfectNaiveHand(context_t &context) {
+  Graph G(11,
+          "\
+  .XXXXX.....\
+  X.XX..X....\
+  XX.X.....X.\
+  XXX.....X.X\
+  X....X....X\
+  X...X.X..X.\
+  .X...X...X.\
+  ........X..\
+  ...X...X..X\
+  ..X..XX....\
+  ...XX...X..\
+  ");
+
+  cuTestGraphSimpleWithStats(G, context);
+
+  G = Graph(10,
+            "\
+  .XXXX.....\
+  X.XX..XX..\
+  XX.X.X...X\
+  XXX.......\
+  X.....X...\
+  ..X......X\
+  .X..X..X..\
+  .X....X.XX\
+  .......X.X\
+  ..X..X.XX.\
+  ");
+  cuTestGraphSimpleWithStats(G, context);
+}
+
+void testCuIsPerfectNaive(context_t &context) {
+  // for (int i = 5; i < 16; i++) {
+  //   Graph G = getRandomGraph(i, 0.5);
+  //   cuTestGraphSimple(G, context);
+  // }
+
+  for (int i = 0; i < 20; i++) {
+    cuTestGraphSimpleWithStats(getRandomGraph(10, 0.5), context);
+  }
+
+  for (int i = 0; i < 20; i++) {
+    cuTestGraphSimpleWithStats(getRandomGraph(11, 0.5), context, false);
+  }
+
+  for (int i = 0; i < 10; i++) {
+    cuTestGraphSimpleWithStats(getBipariteGraph(8, 0.5).getLineGraph(), context);
+  }
+
+  for (int i = 0; i < 30; i++) {
+    cuTestGraphSimpleWithStats(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
+  }
 }
 
 int main() {
   init();
   standard_context_t context(0);
+
   testPreparePathStart(context);
   testDevAreNeighbors(context);
   testDevIsDistinctValues(context);
   testDevIsAPath(context);
   testDevNextNeighbor(context);
   testDevNextPathInPlace(context);
-  testCuOddHole(context);
+  testDevIsAHole(context);
+  testCuContainsHoleOfSize(context);
+  testCuContainsOddHoleNaive(context);
+  testCuIsPerfectNaiveHand(context);
+  testCuIsPerfectNaive(context);
 
   context.synchronize();
 }

@@ -1,21 +1,9 @@
 #include "commons.h"
 #include "cuCommons.h"
-#include "cuOddHoles.h"
+#include "testCommons.h"
 
 // README
 // Due to performance constraints and ease of building, all __device__ code is located in a single file
-
-// __device__ int get42() { return 42; }
-
-__device__ void devPreparePathStart(int code, int len, int n, int *devPath) {
-  int tmp = 0;
-
-  while (tmp < len) {
-    devPath[tmp] = code % n;
-    code /= n;
-    tmp++;
-  }
-}
 
 __device__ void devPrintArray(int *dev, int n) {
   printf("[");
@@ -69,14 +57,28 @@ __device__ bool devIsAPath(const CuGraph &G, int *path, int length, bool isCycle
   return true;
 }
 
+__device__ bool devIsAHole(const CuGraph &G, int *v, int lenV) {
+  return lenV > 3 && devIsAPath(G, v, lenV, true, false) && devAreNeighbors(G, v[0], v[lenV - 1]);
+}
+
+__device__ void devPreparePathStart(int code, int *v, int lenV, int n) {
+  int tmp = 0;
+
+  while (tmp < lenV) {
+    v[tmp] = code % n;
+    code /= n;
+    tmp++;
+  }
+}
+
 __device__ bool devNextPathInPlace(const CuGraph &G, int *v, int &lenV, int lenPath, bool isCycleOk = false,
                                    bool areChordsOk = false) {
   if (lenPath <= 1) {
-    assert(false);  //(DEV ERROR) Length of next path must be at least 2
+    assert("(DEV ERROR) Length of next path must be at least 2" == 0);
   }
 
   if (lenV > 0 && !devIsAPath(G, v, lenV, isCycleOk, areChordsOk)) {
-    assert(false);  //(DEV ERROR) Input of devNextPath should be a path
+    assert("(DEV ERROR) Input of devNextPath should be a path" == 0);
   }
 
   if (lenV == 0) {
@@ -110,8 +112,8 @@ __device__ bool devNextPathInPlace(const CuGraph &G, int *v, int &lenV, int lenP
     }
 
     do {
-      v[lenV - 1] = devGetNextNeighbor(G, v[lenV - 1], v[lenV - 1]);
-    } while (v[lenV] != -1 && !devIsAPath(G, v, lenV, isCycleOk, areChordsOk));
+      v[lenV - 1] = devGetNextNeighbor(G, v[lenV - 2], v[lenV - 1]);
+    } while (v[lenV - 1] != -1 && !devIsAPath(G, v, lenV, isCycleOk, areChordsOk));
 
     if (v[lenV - 1] == -1) continue;
 
@@ -119,12 +121,14 @@ __device__ bool devNextPathInPlace(const CuGraph &G, int *v, int &lenV, int lenP
   }
 }
 
-bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context) {
+// # cu* portion (ran by host, uses __device__ code)
+
+bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context,
+                          int maxThreads = _max_threads_to_run) {
   static const int max_size = 30;
 
   assert(max_size > size);
 
-  int maxThreads = 100000;
   int k = G.n;
   int kCounter = 1;
   while (k * G.n <= maxThreads && kCounter < size) {
@@ -132,19 +136,94 @@ bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context) {
     kCounter++;
   }
 
-  cout << kCounter << endl;
-  cout << k << endl;
+  int *devOddHoleFound;
+  CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 1));
 
-  transform(
-      [=] MGPU_DEVICE(int id) {
-        int path[max_size];
-        devPreparePathStart(id, kCounter, G.n, path);
+  typedef launch_params_t<256, 16> launch_t;
 
-        for (int i = 1; i < kCounter; i++) {
-          if (!devAreNeighbors(G, path[i], path[i - 1])) return;
+  auto f = [=] MGPU_DEVICE(int tid, int cta) {
+    typedef typename launch_t::sm_ptx params_t;
+    enum { nt = params_t::nt, vt = params_t::vt };
+
+    int codeStart = ((cta * nt) + tid) * vt;
+
+    for (int i = 0; i < vt; i++) {
+      int id = codeStart + i;
+
+      if (id >= k) return;
+
+      int v[max_size];
+      int lenV = kCounter;
+      devPreparePathStart(id, v, kCounter, G.n);
+      int mem = v[kCounter - 1];
+
+      if (!devIsAPath(G, v, lenV, lenV == size)) continue;
+
+      if (lenV < size) devNextPathInPlace(G, v, lenV, size, true);
+
+      while (lenV == size && v[kCounter - 1] == mem) {
+        if (devIsAHole(G, v, size)) {
+          // devPrintArray(v, lenV);
+          devOddHoleFound[0] = 1;
+          return;
         }
-      },
-      k, context);
+        devNextPathInPlace(G, v, lenV, size, true);
+      }
+    }
+  };
+
+  cta_transform<launch_t>(f, k, context);
+  context.synchronize();
+
+  // transform(
+  //     [=] MGPU_DEVICE(int id) {
+  //       int v[max_size];
+  //       int lenV = kCounter;
+  //       devPreparePathStart(id, v, kCounter, G.n);
+  //       int mem = v[kCounter - 1];
+
+  //       if (!devIsAPath(G, v, lenV, lenV == size)) return;
+
+  //       if (lenV < size) devNextPathInPlace(G, v, lenV, size, true);
+
+  //       while (lenV == size && v[kCounter - 1] == mem) {
+  //         if (devIsAHole(G, v, size)) {
+  //           // devPrintArray(v, lenV);
+  //           devOddHoleFound[0] = 1;
+  //           return;
+  //         }
+  //         devNextPathInPlace(G, v, lenV, size, true);
+  //       }
+  //     },
+  //     k, context);
+  // context.synchronize();
+
+  int oddHoleFound[1];
+  CUCHECK(cudaMemcpy(oddHoleFound, devOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
+  context.synchronize();
+
+  return oddHoleFound[0];
+}
+
+bool cuContainsOddHoleNaive(const CuGraph &G, context_t &context, int maxThreads = _max_threads_to_run) {
+  for (int size = 5; size <= G.n; size += 2) {
+    if (cuContainsHoleOfSize(G, size, context, maxThreads)) return true;
+  }
+
+  return false;
+}
+
+bool cuIsPerfectNaive(const Graph &G, context_t &context, int maxThreads = _max_threads_to_run) {
+  CuGraph CG = CuGraph(G, context);
+  CuGraph CCG = CuGraph(G.getComplement(), context);
+
+  bool res =
+      !cuContainsOddHoleNaive(CG, context, maxThreads) && !cuContainsOddHoleNaive(CCG, context, maxThreads);
+
+  CG.deleteCuGraph();
+  CCG.deleteCuGraph();
 
   context.synchronize();
+
+  return res;
 }

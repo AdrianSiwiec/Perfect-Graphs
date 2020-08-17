@@ -151,10 +151,18 @@ void init(bool srandTime) {
   signal(SIGABRT, handler);
 }
 
-RaiiTimer::RaiiTimer(string msg) : msg(msg) { startTimer = clock(); }
+RaiiTimer::RaiiTimer(string msg) : msg(msg) {
+  start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+}
 RaiiTimer::~RaiiTimer() {
-  double duration = (clock() - startTimer) / static_cast<double>(CLOCKS_PER_SEC);
-  cout << msg << ": " << duration << "s" << endl;
+  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+  double duration = (end_ns.count() - start_ns.count()) / 1e9;
+  if (msg.size() > 0) cout << msg << ": " << duration << "s" << endl;
+}
+double RaiiTimer::getElapsedSeconds() {
+  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+  double duration = (end_ns.count() - start_ns.count()) / 1e9;
+  return duration;
 }
 
 map<pair<int, bool>, double> sumTime;
@@ -255,8 +263,8 @@ void testGraph(const Graph &G, bool result, bool verbose) {
   assert(perfect == result);
 }
 
-void printTimeHumanReadable(int64_t time) {
-  double s = time / static_cast<double>(CLOCKS_PER_SEC);
+void printTimeHumanReadable(double time) {
+  double s = time;
   int h = s / (60 * 60);
   s -= h * (60 * 60);
   if (h != 0) {
@@ -273,7 +281,7 @@ void printTimeHumanReadable(int64_t time) {
 }
 
 RaiiProgressBar::RaiiProgressBar(int allTests) : allTests(allTests) {
-  startTimer = clock();
+  start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
   update(0);
 }
 
@@ -294,8 +302,9 @@ void RaiiProgressBar::update(int testsDone) {
     cout << "]";
     if (testsDone > 0) {
       cout << " (about ";
-      int64_t timeElapsed = clock() - startTimer;
-      int64_t timeRemaining = timeElapsed * (allTests - testsDone) / testsDone;
+      nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+      double timeElapsed = (end_ns.count() - start_ns.count()) / 1e9;
+      double timeRemaining = timeElapsed * (allTests - testsDone) / testsDone;
       printTimeHumanReadable(timeRemaining);
       cout << " left)";
     }

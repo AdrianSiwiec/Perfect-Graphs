@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <cassert>
+#include <chrono>
 #include <cstdlib>
 #include <ctime>
 #include <map>
@@ -19,10 +20,12 @@
 using std::get;
 using std::invalid_argument;
 using std::map;
+using namespace std::chrono;
 
 // Whether to run big tests. These take more time.
 const bool bigTests = false;  // TODO(Adrian) make bigTests big again (perf)
 // const bool bigTests = true;
+const int _max_threads_to_run = 10000;
 
 bool probTrue(double p);
 void printGraph(const Graph &G);
@@ -40,11 +43,13 @@ void handler(int sig);
 void init(bool srandTime = false);
 
 struct RaiiTimer {
-  explicit RaiiTimer(string msg);
+  explicit RaiiTimer(string msg = "");
   ~RaiiTimer();
 
+  double getElapsedSeconds();
+
  private:
-  clock_t startTimer;
+  nanoseconds start_ns;
   string msg;
 };
 
@@ -65,7 +70,7 @@ struct RaiiProgressBar {
 
  private:
   int allTests;
-  clock_t startTimer;
+  nanoseconds start_ns;
   const int width = 80;
 
   int getFilled(int testsDone);

@@ -36,8 +36,11 @@ CuGraph::CuGraph(const Graph &G, context_t &context) : n(G.n), context(context) 
   }
 }
 
-void CuGraph::DeleteCuGraph() {
+void CuGraph::deleteCuGraph() {
+  // TODO check if deleted in destructor
   CUCHECK(cudaFree(devMatrix));
   CUCHECK(cudaFree(devFirstNeighbor));
   CUCHECK(cudaFree(devNextNeighbor));
+
+  devMatrix = devFirstNeighbor = devNextNeighbor = 0;
 }
