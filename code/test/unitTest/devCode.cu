@@ -686,7 +686,7 @@ void testCuIsPerfectNaive(context_t &context) {
   //   cuTestGraphSimple(G, context);
   // }
 
-  RaiiProgressBar bar(20 + 20 + 10 + 100 + 10);
+  RaiiProgressBar bar(20 + 20 + 10 + 100 + 100 + 100);
 
   for (int i = 0; i < 20; i++) {
     cuTestGraphSimpleWithStats(getRandomGraph(10, 0.5), context);
@@ -708,10 +708,16 @@ void testCuIsPerfectNaive(context_t &context) {
     bar.update(i + 50);
   }
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 100; i++) {
     cuTestGraphSimpleWithStats(getBipariteGraph(10, 0.5).getLineGraph(), context, false);
     bar.update(i + 150);
   }
+
+  // for (int i = 0; i < 10; i++) {
+  //   cuTestGraphSimpleWithStats(getBipariteGraph(11, 0.5).getLineGraph(), context, false);
+  //   bar.update(i*10 + 250);
+  // }
+
 
   printCuTestStats();
 }

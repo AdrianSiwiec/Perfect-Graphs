@@ -10,9 +10,12 @@
 #include "perfect.h"
 
 using namespace std::chrono;
+using std::cerr;
+using std::cout;
 using std::default_random_engine;
 using std::flush;
 using std::make_pair;
+using std::make_tuple;
 using std::normal_distribution;
 
 bool probTrue(double p) { return rand() / (RAND_MAX + 1.0) < p; }
@@ -165,65 +168,102 @@ double RaiiTimer::getElapsedSeconds() {
   return duration;
 }
 
-map<pair<int, bool>, double> sumTime;
-map<pair<int, bool>, double> sumClockTime;
-map<pair<int, bool>, int> casesTested;
+map<tuple<algos, bool, int>, double> sumTime;
+// map<pair<int, bool>, double> sumClockTime;
+map<tuple<algos, bool, int>, int> casesTested;
+string algo_names[] = {"Perfect", "Naive", "CUDA Naive", "Cuda Perfect"};
 
-map<pair<int, bool>, double> sumTimeNaive;
-map<pair<int, bool>, double> sumClockTimeNaive;
-map<pair<int, bool>, int> casesTestedNaive;
+// map<pair<int, bool>, double> sumTimeNaive;
+// map<pair<int, bool>, double> sumClockTimeNaive;
+// map<pair<int, bool>, int> casesTestedNaive;
 
 default_random_engine generator;
 normal_distribution<double> distribution(0.5, 0.15);
 
-bool testWithStats(const Graph &G, bool naive) {
+bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction) {
   nanoseconds start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
   clock_t start_clock = clock();
 
-  bool result = naive ? isPerfectGraphNaive(G) : isPerfectGraph(G);
+  bool result;
+
+  switch (algo) {
+    case algoPerfect:
+      result = isPerfectGraph(G);
+      break;
+
+    case algoNaive:
+      result = isPerfectGraphNaive(G);
+      break;
+
+    case algoCudaNaive:
+      assert(cuFunction != nullptr);
+      result = cuFunction(G);
+      break;
+
+    case algoCudaPerfect:
+      throw invalid_argument("Not implemented");
+
+    default:
+      throw invalid_argument("TestWithStats invalid argument");
+  }
 
   nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
   clock_t end_clock = clock();
 
   double duration = (end_ns.count() - start_ns.count()) / 1e9;
-  double clock_duration = (end_clock - start_clock) / static_cast<double>(CLOCKS_PER_SEC);
 
-  if (naive) {
-    sumTimeNaive[make_pair(G.n, result)] += duration;
-    sumClockTimeNaive[make_pair(G.n, result)] += clock_duration;
-    casesTestedNaive[make_pair(G.n, result)]++;
-  } else {
-    sumTime[make_pair(G.n, result)] += duration;
-    sumClockTime[make_pair(G.n, result)] += clock_duration;
-    casesTested[make_pair(G.n, result)]++;
-  }
+  auto t = make_tuple(algo, result, G.n);
+  sumTime[t] += duration;
+  casesTested[t]++;
 
   return result;
 }
 
 void printStats() {
-  if (!sumTimeNaive.empty()) cout << "Naive recognition stats: " << endl;
-  for (auto it = sumTimeNaive.begin(); it != sumTimeNaive.end(); it++) {
-    int cases = casesTestedNaive[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases
-         << ", parallel factor=" << sumClockTimeNaive[it->first] / it->second << endl;
+  for (int algo = algoPerfect; algo < algo_last; algo++) {
+    int count = 0;
+    for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+      if (get<0>(it->first) == algo) count++;
+    }
+
+    if (count > 0) cout << algo_names[algo] << " recognition stats: " << endl;
+    for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+      if (get<0>(it->first) == algo) {
+        int cases = casesTested[it->first];
+        cout << "\tn=" << get<2>(it->first) << ", result=" << get<1>(it->first) << ", cases=" << cases
+             << ", avgTime=" << it->second / cases << endl;
+      }
+    }
   }
-  if (!sumTime.empty()) cout << "Perfect recognition stats: " << endl;
-  for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-    if (!it->first.second) continue;
-    int cases = casesTested[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << ", parallel factor=" << sumClockTime[it->first] / it->second
-         << endl;
-  }
-  for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-    if (it->first.second) continue;
-    int cases = casesTested[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << ", parallel factor=" << sumClockTime[it->first] / it->second
-         << endl;
-  }
+
+  // if (!sumTimeNaive.empty()) cout << "Naive recognition stats: " << endl;
+  // for (auto it = sumTimeNaive.begin(); it != sumTimeNaive.end(); it++) {
+  //   int cases = casesTestedNaive[it->first];
+  //   cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+  //        << ", avgTime="
+  //        << it->second / cases
+  //        //  << ", parallel factor=" << sumClockTimeNaive[it->first] / it->second
+  //        << endl;
+  // }
+  // if (!sumTime.empty()) cout << "Perfect recognition stats: " << endl;
+  // for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+  //   if (!it->first.second) continue;
+  //   int cases = casesTested[it->first];
+  //   cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+  //        << ", avgTime="
+  //        << it->second / cases
+  //        //  << ", parallel factor=" << sumClockTime[it->first] / it->second
+  //        << endl;
+  // }
+  // for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+  //   if (it->first.second) continue;
+  //   int cases = casesTested[it->first];
+  //   cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
+  //        << ", avgTime="
+  //        << it->second / cases
+  //        // << ", parallel factor=" << sumClockTime[it->first] / it->second
+  //        << endl;
+  // }
 }
 
 double getDistr() {
@@ -236,9 +276,9 @@ double getDistr() {
 void testGraph(const Graph &G, bool verbose) {
   if (verbose) cout << "Testing " << G.n << " vs naive" << endl;
 
-  bool naivePerfect = testWithStats(G, true);
+  bool naivePerfect = testWithStats(G, algoNaive);
 
-  bool perfect = testWithStats(G, false);
+  bool perfect = testWithStats(G, algoPerfect);
 
   if (naivePerfect != perfect) {
     cout << "ERROR: " << endl << "naive=" << naivePerfect << endl << "perfect=" << perfect << endl;
@@ -252,7 +292,7 @@ void testGraph(const Graph &G, bool verbose) {
 void testGraph(const Graph &G, bool result, bool verbose) {
   if (verbose) cout << "Testing " << G.n << " vs " << result << endl;
 
-  bool perfect = testWithStats(G, false);
+  bool perfect = testWithStats(G, algoPerfect);
 
   if (perfect != result) {
     cout << "Error Test Graph" << endl;
@@ -263,29 +303,36 @@ void testGraph(const Graph &G, bool result, bool verbose) {
   assert(perfect == result);
 }
 
-void printTimeHumanReadable(double time) {
+void printTimeHumanReadable(double time, bool use_cerr) {
+  auto &out = use_cerr ? cerr : cout;
+
   double s = time;
   int h = s / (60 * 60);
   s -= h * (60 * 60);
   if (h != 0) {
-    cout << h << "h";
+    out << h << "h";
   }
 
   int m = s / 60;
   s -= m * 60;
   if (m != 0) {
-    cout << m << "m";
+    out << m << "m";
   }
 
-  cout << static_cast<int>(s) + 1 << "s";
+  out << static_cast<int>(s) + 1 << "s";
 }
 
-RaiiProgressBar::RaiiProgressBar(int allTests) : allTests(allTests) {
+RaiiProgressBar::RaiiProgressBar(int allTests, bool use_cerr) : allTests(allTests), use_cerr(use_cerr) {
   start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
   update(0);
 }
 
-RaiiProgressBar::~RaiiProgressBar() { cout << endl; }
+RaiiProgressBar::~RaiiProgressBar() {
+  if (use_cerr)
+    cerr << endl;
+  else
+    cout << endl;
+}
 
 int RaiiProgressBar::getFilled(int testsDone) {
   double progress = testsDone / (static_cast<double>(allTests));
@@ -293,21 +340,23 @@ int RaiiProgressBar::getFilled(int testsDone) {
 }
 
 void RaiiProgressBar::update(int testsDone) {
+  auto &out = use_cerr ? cerr : cout;
+
   int toFill = getFilled(testsDone);
   if (testsDone < 10 || testsDone == allTests || toFill != getFilled(testsDone - 1)) {
-    cout << "[";
+    out << "[";
     for (int i = 0; i < width; i++) {
-      cout << (i < toFill ? "X" : " ");
+      out << (i < toFill ? "X" : " ");
     }
-    cout << "]";
+    out << "]";
     if (testsDone > 0) {
-      cout << " (about ";
+      out << " (about ";
       nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
       double timeElapsed = (end_ns.count() - start_ns.count()) / 1e9;
       double timeRemaining = timeElapsed * (allTests - testsDone) / testsDone;
-      printTimeHumanReadable(timeRemaining);
-      cout << " left)";
+      printTimeHumanReadable(timeRemaining, use_cerr);
+      out << " left)";
     }
-    cout << "\r" << flush;
+    out << "\r" << flush;
   }
 }

@@ -293,19 +293,20 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
         break;
       }
     } while (pathLen < size && pathLen < 9 && prefixes.size() < minPrefixes);
-    pretime = pretimer.getElapsedSeconds();
-  }
 
-  while (pathLen + 1 < size && prefixes.size() < minPrefixes) {
-    vec<vec<int>> savedPrefixes = prefixes;
-    prefixes = vec<vec<int>>();
-    pathLen++;
-    for (auto v : savedPrefixes) {
-      for (int i = 0; i < G.n; i++) {
-        prefixes.push_back(v);
-        prefixes.back().push_back(i);
+    while (pathLen + 1 < size && prefixes.size() < minPrefixes) {
+      vec<vec<int>> savedPrefixes = prefixes;
+      prefixes = vec<vec<int>>();
+      pathLen++;
+      for (auto v : savedPrefixes) {
+        for (int i = 0; i < G.n; i++) {
+          prefixes.push_back(v);
+          prefixes.back().push_back(i);
+        }
       }
     }
+
+    pretime = pretimer.getElapsedSeconds();
   }
 
   {
@@ -383,15 +384,15 @@ bool cuContainsOddHoleNaive2(const Graph &G, context_t &context, int maxThreads 
   return false;
 }
 
-bool cuIsPerfectNaive(const Graph &G, context_t &context, int maxThreads = _max_threads_to_run) {
+bool cuIsPerfectNaive(const Graph &G) {
   standard_context_t c2(0);
 
   // CuGraph CG = CuGraph(G, c2);
   // CuGraph CCG = CuGraph(G.getComplement(), c2);
 
   // bool res = !cuContainsOddHoleNaive(CG, c2, maxThreads) && !cuContainsOddHoleNaive(CCG, c2, maxThreads);
-  bool res = !cuContainsOddHoleNaive2(G, c2, maxThreads) &&
-             !cuContainsOddHoleNaive2(G.getComplement(), c2, maxThreads);
+  bool res = !cuContainsOddHoleNaive2(G, c2) &&
+             !cuContainsOddHoleNaive2(G.getComplement(), c2);
 
   // CG.deleteCuGraph();
   // CCG.deleteCuGraph();

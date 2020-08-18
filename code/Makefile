@@ -10,6 +10,7 @@ COLORPERMATESTDIR=$(TESTDIR)/colorPermaTest
 NETTESTDIR=$(TESTDIR)/netTest
 DOWNLOADSDIR=$(NETTESTDIR)/downloaded
 PERFTESTDIR=$(TESTDIR)/perfTest
+CUPERFTESTDIR=$(TESTDIR)/cuPerfTest
 COLORPERFTESTDIR=$(TESTDIR)/colorPerfTest
 3RDDIR=3rdparty
 
@@ -50,6 +51,8 @@ PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp
 COLORPERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(COLORPERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 PERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERFTESTDIR)/*.cpp))
+CUPERFTESTFILES=$(patsubst %.cu, $(OBJDIR)/%.e, $(wildcard $(CUPERFTESTDIR)/*.cu)) \
+							  $(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(CUPERFTESTDIR)/*.cpp))
 COLORPERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(COLORPERFTESTDIR)/*.cpp))
 
 # $(info $(OBJFILES))
@@ -63,6 +66,7 @@ permaTest: $(PERMATESTFILES)
 colorPermaTest: $(COLORPERMATESTFILES)
 netTest: $(NETTESTFILES)
 perfTest: $(PERFTESTFILES)
+cuPerfTest: $(CUPERFTESTFILES)
 colorPerfTest: $(COLORPERFTESTFILES)
 
 $(COBJDIR)/%.o: %.c
@@ -107,6 +111,9 @@ netTest:
 
 perfTest:
 	./test/perfTest/run.sh
+
+cuPerfTest:
+	./test/cuPerfTest/run.sh
 
 colorPerfTest:
 	./test/colorPerfTest/run.sh

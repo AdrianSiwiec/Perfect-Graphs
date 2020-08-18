@@ -53,23 +53,29 @@ struct RaiiTimer {
   string msg;
 };
 
-bool testWithStats(const Graph &G, bool naive);
+enum algos { algoPerfect, algoNaive, algoCudaNaive, algoCudaPerfect, algo_last };
+extern string algo_names[];
+
+typedef bool (*cuIsPerfectFunction)(const Graph &G);
+
+bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction = nullptr);
 void printStats();
 
 double getDistr();
 void testGraph(const Graph &G, bool verbose);
 void testGraph(const Graph &G, bool result, bool verbose);
 
-void printTimeHumanReadable(int64_t time);
+void printTimeHumanReadable(int64_t time, bool use_cerr = true);
 
 struct RaiiProgressBar {
-  explicit RaiiProgressBar(int allTests);
+  explicit RaiiProgressBar(int allTests, bool use_cerr = true);
   ~RaiiProgressBar();
 
   void update(int testsDone);
 
  private:
   int allTests;
+  bool use_cerr;
   nanoseconds start_ns;
   const int width = 180;
 
