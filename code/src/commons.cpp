@@ -588,10 +588,6 @@ void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool 
   if (len <= 1) {
     throw invalid_argument("Length of next path must be at least 2");
   }
-  if (!v.empty() && v.size() != len) {
-    throw invalid_argument("Length of next path must be equal to length of given path.");
-  }
-
   if (v.empty()) {
     v = {0};
   }

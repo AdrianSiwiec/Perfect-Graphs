@@ -614,6 +614,24 @@ void testNextPathInPlace() {
 
   nextPathInPlace(G, v, 4, true, true);
   assert(v == (vec<int>{0, 1, 3, 4}));
+
+  // Partial paths as an input
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX....\
+  .X..X.\
+  ...X.X\
+  ....X.\
+  ");
+  v = vec<int>{1, 3};
+  nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{1, 3, 4}));
+
+  v = vec<int>{3};
+  nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{3, 1, 0}));
 }
 
 int main() {

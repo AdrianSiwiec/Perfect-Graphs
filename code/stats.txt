@@ -1,40 +1,126 @@
-Perfect recognition stats: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                      ] (about 5s left))
-	n=5, result=1, cases=4, avgTime=0.000494971
-	n=6, result=1, cases=1, avgTime=0.00151869
-	n=7, result=1, cases=4, avgTime=0.00338075
-	n=8, result=1, cases=3, avgTime=0.00795763
-	n=9, result=1, cases=2, avgTime=0.0199723
-	n=10, result=1, cases=20, avgTime=0.043288
-	n=11, result=1, cases=9, avgTime=0.0920405
-	n=12, result=1, cases=4, avgTime=0.198639
-	n=13, result=1, cases=2, avgTime=0.373918
-	n=14, result=1, cases=1, avgTime=0.628943
-	n=16, result=1, cases=1, avgTime=1.63606
-	n=10, result=0, cases=14, avgTime=8.57851e-05
-	n=11, result=0, cases=18, avgTime=3.98884e-05
+Perfect recognition stats: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   ] (about 3s left))
+	n=5, result=1, cases=3, avgTime=0.000538995
+	n=6, result=1, cases=1, avgTime=0.00152799
+	n=7, result=1, cases=4, avgTime=0.00337115
+	n=8, result=1, cases=1, avgTime=0.00899202
+	n=9, result=1, cases=2, avgTime=0.0205763
+	n=10, result=1, cases=13, avgTime=0.0430111
+	n=11, result=1, cases=6, avgTime=0.0894534
+	n=12, result=1, cases=1, avgTime=0.204161
+	n=10, result=0, cases=14, avgTime=8.76065e-05
+	n=11, result=0, cases=18, avgTime=3.94994e-05
 Naive recognition stats: 
-	n=5, result=1, cases=3, avgTime=1.13e-05
-	n=6, result=1, cases=1, avgTime=2.53e-05
-	n=7, result=1, cases=2, avgTime=0.000443646
-	n=8, result=1, cases=1, avgTime=0.000996791
-	n=9, result=1, cases=1, avgTime=0.0722992
-	n=10, result=1, cases=8, avgTime=0.144206
-	n=11, result=1, cases=2, avgTime=7.78217
-	n=10, result=0, cases=14, avgTime=1.48784e-05
-	n=11, result=0, cases=18, avgTime=4.66106e-06
+	n=5, result=1, cases=3, avgTime=1.0933e-05
+	n=6, result=1, cases=1, avgTime=2.57e-05
+	n=7, result=1, cases=2, avgTime=0.000444096
+	n=8, result=1, cases=1, avgTime=0.00119009
+	n=9, result=1, cases=1, avgTime=0.0729989
+	n=10, result=1, cases=8, avgTime=0.141484
+	n=11, result=1, cases=2, avgTime=7.78445
+	n=10, result=0, cases=14, avgTime=1.57713e-05
+	n=11, result=0, cases=18, avgTime=4.69994e-06
 CUDA recognition stats: 
-	n=5, result=1, cases=4, avgTime=0.00050027
-	n=6, result=1, cases=1, avgTime=0.000916892
-	n=7, result=1, cases=4, avgTime=0.00142216
-	n=8, result=1, cases=3, avgTime=0.0142166
-	n=9, result=1, cases=2, avgTime=0.0558511
-	n=10, result=1, cases=20, avgTime=0.138563
-	n=11, result=1, cases=9, avgTime=0.37632
-	n=12, result=1, cases=4, avgTime=0.895646
-	n=13, result=1, cases=2, avgTime=0.629203
-	n=14, result=1, cases=1, avgTime=0.477926
-	n=16, result=1, cases=1, avgTime=1.84313
-	n=10, result=0, cases=14, avgTime=0.00734328
-	n=11, result=0, cases=18, avgTime=0.00848685
+	n=5, result=1, cases=3, avgTime=0.000520062
+	n=6, result=1, cases=1, avgTime=0.00107429
+	n=7, result=1, cases=4, avgTime=0.00170254
+	n=8, result=1, cases=1, avgTime=0.0269632
+	n=9, result=1, cases=2, avgTime=0.0831754
+	n=10, result=1, cases=13, avgTime=0.269868
+	n=11, result=1, cases=6, avgTime=55.7345
+	n=12, result=1, cases=1, avgTime=2.6733
+	n=10, result=0, cases=14, avgTime=0.00775508
+	n=11, result=0, cases=18, avgTime=0.00924912
+
+Pre time: 0.011117	 CUDA time: 4.51385	n=11, prefsize=11
+Pre time: 0.0111261	 CUDA time: 67.3347	n=11, prefsize=11
+Pre time: 0.023881	 CUDA time: 7.33195	n=11, prefsize=8
+Pre time: 0.0240418	 CUDA time: 121.782	n=11, prefsize=8
+Pre time: 0.00962532XXXX CUDA time: 1.42992XXXXXn=12, prefsize=78XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                           ] (about 4s left))
+Pre time: 0.0231113XXXXX CUDA time: 7.21981XXXXXn=11, prefsize=7XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                        ] (about 4s left)
+Pre time: 0.0232114	 CUDA time: 122.464	n=11, prefsize=7
+
+	cpu prefixes up to 8
+
+Perfect recognition stats: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   ] (about 1s left)
+	n=5, result=1, cases=3, avgTime=0.000520596
+	n=6, result=1, cases=1, avgTime=0.00152319
+	n=7, result=1, cases=4, avgTime=0.00337857
+	n=8, result=1, cases=1, avgTime=0.00827343
+	n=9, result=1, cases=2, avgTime=0.0200095
+	n=10, result=1, cases=13, avgTime=0.042792
+	n=11, result=1, cases=6, avgTime=0.0909164
+	n=12, result=1, cases=1, avgTime=0.203155
+	n=10, result=0, cases=14, avgTime=8.62778e-05
+	n=11, result=0, cases=18, avgTime=4.53552e-05
+Naive recognition stats: 
+	n=5, result=1, cases=3, avgTime=1.1033e-05
+	n=6, result=1, cases=1, avgTime=2.5699e-05
+	n=7, result=1, cases=2, avgTime=0.000440846
+	n=8, result=1, cases=1, avgTime=0.00100469
+	n=9, result=1, cases=1, avgTime=0.0731651
+	n=10, result=1, cases=8, avgTime=0.14198
+	n=11, result=1, cases=2, avgTime=7.80965
+	n=10, result=0, cases=14, avgTime=1.50641e-05
+	n=11, result=0, cases=18, avgTime=4.68322e-06
+CUDA recognition stats: 
+	n=5, result=1, cases=3, avgTime=0.000518196
+	n=6, result=1, cases=1, avgTime=0.00106589
+	n=7, result=1, cases=4, avgTime=0.00166669
+	n=8, result=1, cases=1, avgTime=0.0268191
+	n=9, result=1, cases=2, avgTime=0.0827779
+	n=10, result=1, cases=13, avgTime=0.166799
+	n=11, result=1, cases=6, avgTime=0.68578
+	n=12, result=1, cases=1, avgTime=2.66969
+	n=10, result=0, cases=14, avgTime=0.00845687
+	n=11, result=0, cases=18, avgTime=0.00946745
+
+Pre time: 0.00961242XXXX CUDA time: 1.42589XXXXXn=12, prefsize=78XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                           ] (about 4s left))
 
 cpu prefixes up to 9
+
+
+
+
+Perfect recognition stats: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  ] (about 5s left))
+	n=5, result=1, cases=4, avgTime=0.000494096
+	n=6, result=1, cases=3, avgTime=0.00144769
+	n=7, result=1, cases=9, avgTime=0.00359227
+	n=8, result=1, cases=11, avgTime=0.0077405
+	n=9, result=1, cases=16, avgTime=0.0189917
+	n=10, result=1, cases=33, avgTime=0.0440768
+	n=11, result=1, cases=20, avgTime=0.0910285
+	n=12, result=1, cases=10, avgTime=0.202788
+	n=13, result=1, cases=5, avgTime=0.361286
+	n=14, result=1, cases=7, avgTime=0.634019
+	n=15, result=1, cases=2, avgTime=1.06375
+	n=16, result=1, cases=1, avgTime=1.63898
+	n=10, result=0, cases=14, avgTime=8.62779e-05
+	n=11, result=0, cases=18, avgTime=3.93553e-05
+Naive recognition stats: 
+	n=5, result=1, cases=3, avgTime=1.09e-05
+	n=6, result=1, cases=1, avgTime=2.6099e-05
+	n=7, result=1, cases=2, avgTime=0.000487845
+	n=8, result=1, cases=1, avgTime=0.000996691
+	n=9, result=1, cases=1, avgTime=0.0720216
+	n=10, result=1, cases=8, avgTime=0.141015
+	n=11, result=1, cases=2, avgTime=7.68382
+	n=10, result=0, cases=14, avgTime=1.57071e-05
+	n=11, result=0, cases=18, avgTime=4.57222e-06
+CUDA recognition stats: 
+	n=5, result=1, cases=4, avgTime=0.00053367
+	n=6, result=1, cases=3, avgTime=0.000905992
+	n=7, result=1, cases=9, avgTime=0.00260587
+	n=8, result=1, cases=11, avgTime=0.015414
+	n=9, result=1, cases=16, avgTime=0.05956
+	n=10, result=1, cases=33, avgTime=0.204765
+	n=11, result=1, cases=20, avgTime=0.6355
+	n=12, result=1, cases=10, avgTime=2.65653
+	n=13, result=1, cases=5, avgTime=6.36864
+	n=14, result=1, cases=7, avgTime=18.9507
+	n=15, result=1, cases=2, avgTime=103.61
+	n=16, result=1, cases=1, avgTime=243.877
+	n=10, result=0, cases=14, avgTime=0.00801333
+	n=11, result=0, cases=18, avgTime=0.00929066
+
+	100 big tests, cpu prefixes up to 9 (fancy)
+

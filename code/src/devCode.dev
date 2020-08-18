@@ -76,7 +76,8 @@ __device__ void devPreparePathStart(int code, int *v, int lenV, int n) {
 
 __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeighbor,
                                    const int *devFirstNeighbor, int Gn, int *v, int &lenV, int lenPath,
-                                   bool isCycleOk = false, bool areChordsOk = false) {
+                                   bool isCycleOk = false, bool areChordsOk = false,
+                                   bool savePrefix = false) {
   if (lenPath <= 1) {
     assert("(DEV ERROR) Length of next path must be at least 2" == 0);
   }
@@ -84,6 +85,12 @@ __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeigh
   if (lenV > 0 && !devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk)) {
     assert("(DEV ERROR) Input of devNextPath should be a path" == 0);
   }
+
+  // int savedPrefixLen = -1;
+  // if (savePrefix) {
+  //   savedPrefixLen = lenV;
+  // }
+  // int savedPrefix = v[savedPrefixLen - 1];
 
   if (lenV == 0) {
     v[0] = 0;
@@ -93,6 +100,10 @@ __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeigh
   while (true) {
     if (v[lenV - 1] == -1) {
       lenV--;
+      // if (lenV < savedPrefixLen) {
+      //   lenV = 0;
+      //   return;
+      // }
       if (lenV == 1) {
         v[0]++;
         if (v[0] >= Gn) {
@@ -130,19 +141,21 @@ __device__ bool devContainsHoleWithPrefix(const int *devMatrix, const int *devNe
                                           const int *devFirstNeighbor, int Gn, int *v, int lenV, int size) {
   if (!devIsAPath(devMatrix, Gn, v, lenV, lenV == size)) return false;
 
+  if (lenV == size) return devIsAHole(devMatrix, Gn, v, lenV);
+
   int inLenV = lenV;
 
   int mem = v[inLenV - 1];
 
   if (lenV < size) {
-    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true);
+    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false);
   }
 
   while (lenV == size && v[inLenV - 1] == mem) {
     if (devIsAHole(devMatrix, Gn, v, size)) {
       return true;
     }
-    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true);
+    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false);
   }
 
   return false;
@@ -232,9 +245,9 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
 
   {
     RaiiTimer pretimer("");
-    // pathLen = 3;
-    // prefixes = vec<vec<int>>();
-    // v = vec<int>();
+    pathLen = 3;
+    prefixes = vec<vec<int>>();
+    v = vec<int>();
 
     // do {
     //   nextPathInPlace(G, v, pathLen, pathLen == size);
@@ -242,9 +255,28 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
     // } while (!v.empty());
     // prefixes.pop_back();
 
-    // if (prefixes.empty()) {
-    //   break;
+    // if (!prefixes.empty()) {
+    //   do {
+    //     auto prefSave = prefixes;
+
+    //     pathLen++;
+    //     prefixes = vec<vec<int>>();
+
+    //     for (int i = 0; i < prefSave.size(); i++) {
+    //       vec<int> v = prefSave[i];
+    //       do {
+    //         nextPathInPlace(G, v, pathLen, pathLen == size, false, true);
+    //         prefixes.push_back(v);
+    //       } while (!v.empty() && v[pathLen - 2] == prefSave[i][pathLen - 2]);
+    //       prefixes.pop_back();
+    //     }
+
+    //     if (prefixes.empty()) {
+    //       break;
+    //     }
+    //   } while (pathLen < size && pathLen < 9 && prefixes.size() < minPrefixes);
     // }
+    // pretime = pretimer.getElapsedSeconds();
 
     do {
       pathLen++;
@@ -264,11 +296,22 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
     pretime = pretimer.getElapsedSeconds();
   }
 
+  while (pathLen + 1 < size && prefixes.size() < minPrefixes) {
+    vec<vec<int>> savedPrefixes = prefixes;
+    prefixes = vec<vec<int>>();
+    pathLen++;
+    for (auto v : savedPrefixes) {
+      for (int i = 0; i < G.n; i++) {
+        prefixes.push_back(v);
+        prefixes.back().push_back(i);
+      }
+    }
+  }
+
   {
     RaiiTimer cudatimer("");
     CUCHECK(cudaMalloc(&devPaths, sizeof(int) * size * prefixes.size()));
     for (int i = 0; i < prefixes.size(); i++) {
-      assert(prefixes[i].size() == pathLen);
       CUCHECK(cudaMemcpy(devPaths + size * i, prefixes[i].data(), prefixes[i].size() * sizeof(int),
                          cudaMemcpyHostToDevice));
     }
@@ -296,9 +339,9 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
     cudatime = cudatimer.getElapsedSeconds();
   }
 
-  if (cudatime + pretime > 2) {
+  if (cudatime + pretime > 1) {
     cout << "Pre time: " << pretime << "\t CUDA time: " << cudatime << "\t"
-         << "n=" << G.n << ", prefsize=" << prefixes.size() << endl;
+         << "n=" << G.n << ", prefsize=" << prefixes.size() << " prefLen" << pathLen << endl;
   }
   // transform(
   //     [=] MGPU_DEVICE(int id, int prefixesSize, const int *devMatrix, const int *devNextNeighbor,
