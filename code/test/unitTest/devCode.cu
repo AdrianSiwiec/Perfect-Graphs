@@ -1,4 +1,5 @@
 #include "commons.h"
+#include "oddHoles.h"
 #include "cuCommons.h"
 #include "perfect.h"
 #include "testCommons.h"
@@ -661,6 +662,21 @@ void testCuIsPerfectNaiveHand(context_t &context) {
     .X..X..X.X.\
     ");
   cuTestGraphSimpleWithStats(G, context, false);
+
+  G = Graph(10,
+            "\
+    .X..X..XX.\
+    X..XXXXXX.\
+    .....X.X..\
+    .X....XX..\
+    XX....X..X\
+    .XX....XX.\
+    .X.XX...XX\
+    XXXX.X...X\
+    XX...XX...\
+    ....X.XX..\
+    ");
+  cout << findOddHoleNaive(G) << endl;
 }
 
 void testCuIsPerfectNaive(context_t &context) {
@@ -681,9 +697,9 @@ void testCuIsPerfectNaive(context_t &context) {
     cuTestGraphSimpleWithStats(getBipariteGraph(8, 0.5).getLineGraph(), context);
   }
 
-  for (int i = 0; i < 30; i++) {
-    cuTestGraphSimpleWithStats(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
-  }
+  // for (int i = 0; i < 30; i++) {
+  //   cuTestGraphSimpleWithStats(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
+  // }
 }
 
 int main() {

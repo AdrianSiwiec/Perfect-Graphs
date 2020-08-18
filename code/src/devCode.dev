@@ -22,6 +22,7 @@ __device__ int devGetFirstNeighbor(const CuGraph &G, int a) { return G.devFirstN
 __device__ int devGetNextNeighbor(const CuGraph &G, int a, int b) {
   int ret = G.devNextNeighbor[a * G.n + b];
   if (ret == -2) {
+    printf("Dev Get Next Neighbor failed, a=%d, b=%d\n", a, b);
     assert("CUDA devGetNextNeighbor failed" == 0);
   }
 
@@ -106,10 +107,11 @@ __device__ bool devNextPathInPlace(const CuGraph &G, int *v, int &lenV, int lenP
     if (lenV < lenPath) {
       v[lenV] = devGetFirstNeighbor(G, v[lenV - 1]);
       lenV++;
-      if (lenV == lenPath && devIsAPath(G, v, lenV, isCycleOk, areChordsOk))
+      if (lenV == lenPath && devIsAPath(G, v, lenV, isCycleOk, areChordsOk)) {
         return;
-      else
+      } else {
         continue;
+      }
     }
 
     do {
@@ -129,11 +131,12 @@ __device__ bool devContainsHoleWithPrefix(const CuGraph &G, int *v, int lenV, in
 
   int mem = v[inLenV - 1];
 
-  if (lenV < size) devNextPathInPlace(G, v, lenV, size, true);
+  if (lenV < size) {
+    devNextPathInPlace(G, v, lenV, size, true);
+  }
 
   while (lenV == size && v[inLenV - 1] == mem) {
     if (devIsAHole(G, v, size)) {
-      // devPrintArray(v, lenV);
       return true;
     }
     devNextPathInPlace(G, v, lenV, size, true);
@@ -208,8 +211,8 @@ bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context,
 }
 
 bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
-  int minThreads = 10000;
-  int threadsToRun = 10000;
+  int minPrefixes = 1000000;
+  int threadsToRun = 10000000;
 
   int pathLen = 2;
   vec<vec<int>> prefixes;
@@ -225,15 +228,15 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
       prefixes.push_back(v);
     } while (!v.empty());
     prefixes.pop_back();
-  } while (pathLen < size && prefixes.size() >= minThreads);
+  } while (pathLen < size && prefixes.size() < minPrefixes);
 
   CuGraph CG(G, context);
   int *devPaths;
-  CUCHECK(cudaMalloc(&devPaths, sizeof(int) * pathLen * prefixes.size()));
+  CUCHECK(cudaMalloc(&devPaths, sizeof(int) * size * prefixes.size()));
   for (int i = 0; i < prefixes.size(); i++) {
     assert(prefixes[i].size() == pathLen);
-    CUCHECK(
-        cudaMemcpy(devPaths + pathLen * i, prefixes[i].data(), prefixes[i].size(), cudaMemcpyHostToDevice));
+    CUCHECK(cudaMemcpy(devPaths + size * i, prefixes[i].data(), prefixes[i].size() * sizeof(int),
+                       cudaMemcpyHostToDevice));
   }
 
   int *devOddHoleFound;
@@ -244,8 +247,7 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
   transform(
       [=] MGPU_DEVICE(int id, int prefixesSize) {
         for (int i = id; i < prefixesSize; i += threadsToRun) {
-          if (devContainsHoleWithPrefix(CG, devPaths + pathLen * i, pathLen, size)) {
-            printf("FOUND!\n");
+          if (devContainsHoleWithPrefix(CG, devPaths + size * i, pathLen, size)) {
             devOddHoleFound[0] = 1;
             return;
           }
@@ -259,6 +261,7 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
   context.synchronize();
 
   CUCHECK(cudaFree(devPaths));
+  CUCHECK(cudaFree(devOddHoleFound));
   return oddHoleFound[0];
 }
 
