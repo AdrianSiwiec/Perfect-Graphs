@@ -71,7 +71,7 @@ struct RaiiProgressBar {
  private:
   int allTests;
   nanoseconds start_ns;
-  const int width = 80;
+  const int width = 180;
 
   int getFilled(int testsDone);
 };

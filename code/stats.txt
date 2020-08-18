@@ -1,36 +1,40 @@
+Perfect recognition stats: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                      ] (about 5s left))
+	n=5, result=1, cases=4, avgTime=0.000494971
+	n=6, result=1, cases=1, avgTime=0.00151869
+	n=7, result=1, cases=4, avgTime=0.00338075
+	n=8, result=1, cases=3, avgTime=0.00795763
+	n=9, result=1, cases=2, avgTime=0.0199723
+	n=10, result=1, cases=20, avgTime=0.043288
+	n=11, result=1, cases=9, avgTime=0.0920405
+	n=12, result=1, cases=4, avgTime=0.198639
+	n=13, result=1, cases=2, avgTime=0.373918
+	n=14, result=1, cases=1, avgTime=0.628943
+	n=16, result=1, cases=1, avgTime=1.63606
+	n=10, result=0, cases=14, avgTime=8.57851e-05
+	n=11, result=0, cases=18, avgTime=3.98884e-05
+Naive recognition stats: 
+	n=5, result=1, cases=3, avgTime=1.13e-05
+	n=6, result=1, cases=1, avgTime=2.53e-05
+	n=7, result=1, cases=2, avgTime=0.000443646
+	n=8, result=1, cases=1, avgTime=0.000996791
+	n=9, result=1, cases=1, avgTime=0.0722992
+	n=10, result=1, cases=8, avgTime=0.144206
+	n=11, result=1, cases=2, avgTime=7.78217
+	n=10, result=0, cases=14, avgTime=1.48784e-05
+	n=11, result=0, cases=18, avgTime=4.66106e-06
 CUDA recognition stats: 
-	n=5, result=1, cases=3, avgTime=0.000476824
-	n=6, result=1, cases=1, avgTime=0.000591489
-	n=7, result=1, cases=3, avgTime=0.00142434
-	n=8, result=1, cases=1, avgTime=0.00521
-	n=9, result=1, cases=1, avgTime=0.0592108
-	n=10, result=1, cases=10, avgTime=0.113829
-	n=11, result=1, cases=4, avgTime=12.8039
-	n=12, result=1, cases=1, avgTime=65.2518
-	n=10, result=0, cases=14, avgTime=0.00211359
-	n=11, result=0, cases=18, avgTime=0.00193536
+	n=5, result=1, cases=4, avgTime=0.00050027
+	n=6, result=1, cases=1, avgTime=0.000916892
+	n=7, result=1, cases=4, avgTime=0.00142216
+	n=8, result=1, cases=3, avgTime=0.0142166
+	n=9, result=1, cases=2, avgTime=0.0558511
+	n=10, result=1, cases=20, avgTime=0.138563
+	n=11, result=1, cases=9, avgTime=0.37632
+	n=12, result=1, cases=4, avgTime=0.895646
+	n=13, result=1, cases=2, avgTime=0.629203
+	n=14, result=1, cases=1, avgTime=0.477926
+	n=16, result=1, cases=1, avgTime=1.84313
+	n=10, result=0, cases=14, avgTime=0.00734328
+	n=11, result=0, cases=18, avgTime=0.00848685
 
-Error CUDA NAIVE
-11
-.X...XXX...
-X.........X
-...X..X....
-..X.X.X....
-...X...X.XX
-X.....XXX..
-X.XX.X.X...
-X...XXX..XX
-.....X...X.
-....X..XX.X
-.X..X..X.X.
-0: 1 5 6 7 
-1: 0 10 
-2: 3 6 
-3: 4 2 6 
-4: 3 7 9 10 
-5: 0 6 7 8 
-6: 0 5 7 2 3 
-7: 0 5 6 4 9 10 
-8: 5 9 
-9: 4 7 10 8 
-10: 4 7 9 1 
+cpu prefixes up to 9

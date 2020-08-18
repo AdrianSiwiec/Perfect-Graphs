@@ -1,6 +1,6 @@
 #include "commons.h"
-#include "oddHoles.h"
 #include "cuCommons.h"
+#include "oddHoles.h"
 #include "perfect.h"
 #include "testCommons.h"
 
@@ -69,7 +69,7 @@ void testDevAreNeighbors(context_t &context) {
       [=] MGPU_DEVICE(int id) {
         for (int i = 0; i < 10; i++) {
           for (int j = 0; j < 10; j++) {
-            assert(devAns[i * 10 + j] == devAreNeighbors(CG, i, j));
+            assert(devAns[i * 10 + j] == devAreNeighbors(CG.devMatrix, CG.n, i, j));
           }
         }
       },
@@ -113,30 +113,30 @@ void testDevIsAPath(context_t &context) {
   transform(
       [=] MGPU_DEVICE(int id) {
         int a1[] = {0, 1};
-        assert(devIsAPath(CG, a1, 2));
+        assert(devIsAPath(CG.devMatrix, CG.n, a1, 2));
         int a2[] = {0, 2};
-        assert(devIsAPath(CG, a2, 2));
+        assert(devIsAPath(CG.devMatrix, CG.n, a2, 2));
         int a3[] = {0, 3};
-        assert(!devIsAPath(CG, a3, 2));
+        assert(!devIsAPath(CG.devMatrix, CG.n, a3, 2));
         int a4[] = {0, 1, 3};
-        assert(devIsAPath(CG, a4, 3));
+        assert(devIsAPath(CG.devMatrix, CG.n, a4, 3));
         int a5[] = {0, 1, 2};
-        assert(!devIsAPath(CG, a5, 3));
+        assert(!devIsAPath(CG.devMatrix, CG.n, a5, 3));
         int a6[] = {0, 1, 0};
-        assert(!devIsAPath(CG, a6, 3));
+        assert(!devIsAPath(CG.devMatrix, CG.n, a6, 3));
         int a7[] = {0, 1, 2, 0};
-        assert(!devIsAPath(CG, a7, 4));
+        assert(!devIsAPath(CG.devMatrix, CG.n, a7, 4));
         int a8[] = {0, 1, 3, 4, 5};
-        assert(devIsAPath(CG, a8, 5));
+        assert(devIsAPath(CG.devMatrix, CG.n, a8, 5));
         int a9[] = {0, 1, 3, 5};
-        assert(!devIsAPath(CG, a9, 4));
+        assert(!devIsAPath(CG.devMatrix, CG.n, a9, 4));
 
         int a10[] = {0, 1, 2};
-        assert(devIsAPath(CG, a10, 3, true));
+        assert(devIsAPath(CG.devMatrix, CG.n, a10, 3, true));
         int a11[] = {2, 0, 1, 3};
-        assert(!devIsAPath(CG, a11, 4, true, false));
+        assert(!devIsAPath(CG.devMatrix, CG.n, a11, 4, true, false));
         int a12[] = {2, 0, 1, 3};
-        assert(devIsAPath(CG, a12, 4, true, true));
+        assert(devIsAPath(CG.devMatrix, CG.n, a12, 4, true, true));
       },
       1, context);
   context.synchronize();
@@ -155,9 +155,9 @@ void testDevIsAPath(context_t &context) {
   transform(
       [=] MGPU_DEVICE(int id) {
         int a1[] = {2, 0, 1, 3};
-        assert(devIsAPath(CG2, a1, 4, true, true));
+        assert(devIsAPath(CG2.devMatrix, CG2.n, a1, 4, true, true));
         int a2[] = {0, 1, 2, 3};
-        assert(devIsAPath(CG2, a2, 4, true, true));
+        assert(devIsAPath(CG2.devMatrix, CG2.n, a2, 4, true, true));
       },
       1, context);
   context.synchronize();
@@ -179,13 +179,13 @@ void testDevNextNeighbor(context_t &context) {
 
   transform(
       [=] MGPU_DEVICE(int id) {
-        assert(devGetFirstNeighbor(CG, 0) == 3);
-        assert(devGetNextNeighbor(CG, 0, 3) == -1);
-        assert(devGetFirstNeighbor(CG, 1) == 2);
-        assert(devGetNextNeighbor(CG, 1, 2) == 4);
-        assert(devGetNextNeighbor(CG, 1, 4) == 5);
-        assert(devGetNextNeighbor(CG, 1, 5) == -1);
-        assert(devGetFirstNeighbor(CG, 6) == -1);
+        assert(devGetFirstNeighbor(CG.devFirstNeighbor, 0) == 3);
+        assert(devGetNextNeighbor(CG.devNextNeighbor, CG.n, 0, 3) == -1);
+        assert(devGetFirstNeighbor(CG.devFirstNeighbor, 1) == 2);
+        assert(devGetNextNeighbor(CG.devNextNeighbor, CG.n, 1, 2) == 4);
+        assert(devGetNextNeighbor(CG.devNextNeighbor, CG.n, 1, 4) == 5);
+        assert(devGetNextNeighbor(CG.devNextNeighbor, CG.n, 1, 5) == -1);
+        assert(devGetFirstNeighbor(CG.devFirstNeighbor, 6) == -1);
 
         assert(CG.devNextNeighbor[0 * CG.n + 1] == -2);
       },
@@ -221,32 +221,32 @@ void testDevNextPathInPlace(context_t &context) {
         int v[5] = {100};
         int lenV = 0;
 
-        devNextPathInPlace(CG, v, lenV, 2);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 2);
         assert(lenV == 2);
         assert(v[0] == 0);
         assert(v[1] == 1);
 
-        devNextPathInPlace(CG, v, lenV, 2);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 2);
         assert(lenV == 2);
         assert(v[0] == 0);
         assert(v[1] == 2);
 
-        devNextPathInPlace(CG, v, lenV, 2);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 2);
         assert(lenV == 2);
         assert(v[0] == 1);
         assert(v[1] == 0);
 
-        devNextPathInPlace(CG, v, lenV, 2);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 2);
         assert(lenV == 2);
         assert(v[0] == 1);
         assert(v[1] == 2);
 
-        devNextPathInPlace(CG, v, lenV, 2);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 2);
         assert(lenV == 2);
         assert(v[0] == 1);
         assert(v[1] == 3);
 
-        devNextPathInPlace(CG, v, lenV, 2);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 2);
         assert(lenV == 2);
         assert(v[0] == 2);
         assert(v[1] == 0);
@@ -254,48 +254,48 @@ void testDevNextPathInPlace(context_t &context) {
         v[0] = 5;
         v[1] = 4;
         lenV = 2;
-        devNextPathInPlace(CG, v, lenV, 2);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 2);
         assert(lenV == 0);
 
-        devNextPathInPlace(CG, v, lenV, 3);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3);
         assert(lenV == 3);
         assert(v[0] == 0);
         assert(v[1] == 1);
         assert(v[2] == 3);
 
-        devNextPathInPlace(CG, v, lenV, 3);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3);
         assert(lenV == 3);
         assert(v[0] == 1);
         assert(v[1] == 3);
         assert(v[2] == 4);
 
-        devNextPathInPlace(CG, v, lenV, 3);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3);
         assert(lenV == 3);
         assert(v[0] == 2);
         assert(v[1] == 1);
         assert(v[2] == 3);
 
         lenV = 0;
-        devNextPathInPlace(CG, v, lenV, 3, true);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3, true);
         assert(lenV == 3);
         assert(v[0] == 0);
         assert(v[1] == 1);
         assert(v[2] == 2);
 
-        devNextPathInPlace(CG, v, lenV, 3, true);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3, true);
         assert(lenV == 3);
         assert(v[0] == 0);
         assert(v[1] == 1);
         assert(v[2] == 3);
 
-        devNextPathInPlace(CG, v, lenV, 3, true);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3, true);
         assert(lenV == 3);
         assert(v[0] == 0);
         assert(v[1] == 2);
         assert(v[2] == 1);
 
         lenV = 0;
-        devNextPathInPlace(CG, v, lenV, 5);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 5);
         assert(lenV == 5);
         assert(v[0] == 0);
         assert(v[1] == 1);
@@ -306,7 +306,7 @@ void testDevNextPathInPlace(context_t &context) {
         lenV = 0;
         int counter = 0;
         do {
-          devNextPathInPlace(CG, v, lenV, 4);
+          devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 4);
           assert(lenV == 4 || lenV == 0);
           counter++;
         } while (lenV != 0);
@@ -315,7 +315,7 @@ void testDevNextPathInPlace(context_t &context) {
         lenV = 0;
         counter = 0;
         do {
-          devNextPathInPlace(CG, v, lenV, 3);
+          devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3);
           assert(lenV == 3 || lenV == 0);
           counter++;
         } while (lenV != 0);
@@ -324,28 +324,31 @@ void testDevNextPathInPlace(context_t &context) {
         lenV = 0;
         counter = 0;
         do {
-          devNextPathInPlace(CG, v, lenV, 3, true);
+          devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3, true);
           assert(lenV == 3 || lenV == 0);
           counter++;
         } while (lenV != 0);
         assert(counter == 15);
 
         lenV = 0;
-        devNextPathInPlace(CG2, v, lenV, 4, true, true);
+        devNextPathInPlace(CG2.devMatrix, CG2.devNextNeighbor, CG2.devFirstNeighbor, CG2.n, v, lenV, 4, true,
+                           true);
         assert(lenV == 4);
         assert(v[0] == 0);
         assert(v[1] == 1);
         assert(v[2] == 2);
         assert(v[3] == 3);
 
-        devNextPathInPlace(CG2, v, lenV, 4, true, true);
+        devNextPathInPlace(CG2.devMatrix, CG2.devNextNeighbor, CG2.devFirstNeighbor, CG2.n, v, lenV, 4, true,
+                           true);
         assert(lenV == 4);
         assert(v[0] == 0);
         assert(v[1] == 1);
         assert(v[2] == 3);
         assert(v[3] == 2);
 
-        devNextPathInPlace(CG2, v, lenV, 4, true, true);
+        devNextPathInPlace(CG2.devMatrix, CG2.devNextNeighbor, CG2.devFirstNeighbor, CG2.n, v, lenV, 4, true,
+                           true);
         assert(lenV == 4);
         assert(v[0] == 0);
         assert(v[1] == 1);
@@ -356,7 +359,7 @@ void testDevNextPathInPlace(context_t &context) {
         v[0] = 1;
         v[1] = 3;
         lenV = 2;
-        devNextPathInPlace(CG, v, lenV, 3);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3);
         assert(lenV == 3);
         assert(v[0] == 1);
         assert(v[1] == 3);
@@ -364,7 +367,7 @@ void testDevNextPathInPlace(context_t &context) {
 
         v[0] = 3;
         lenV = 1;
-        devNextPathInPlace(CG, v, lenV, 3);
+        devNextPathInPlace(CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n, v, lenV, 3);
         assert(lenV == 3);
         assert(v[0] == 3);
         assert(v[1] == 1);
@@ -400,35 +403,35 @@ void testDevIsAHole(context_t &context) {
   transform(
       [=] MGPU_DEVICE(int id) {
         int a1[] = {0, 1, 2, 3, 4};
-        assert(devIsAHole(CG, a1, 5));
+        assert(devIsAHole(CG.devMatrix, CG.n, a1, 5));
 
         int a2[] = {3, 2, 1, 0, 4};
-        assert(devIsAHole(CG, a2, 5));
+        assert(devIsAHole(CG.devMatrix, CG.n, a2, 5));
 
         int a3[] = {0, 2, 3, 4};
-        assert(!devIsAHole(CG, a3, 4));
+        assert(!devIsAHole(CG.devMatrix, CG.n, a3, 4));
 
         int a4[] = {1, 2, 3, 4};
-        assert(!devIsAHole(CG, a4, 4));
+        assert(!devIsAHole(CG.devMatrix, CG.n, a4, 4));
 
         int a5[] = {0, 2, 1, 3, 4};
-        assert(!devIsAHole(CG, a5, 5));
+        assert(!devIsAHole(CG.devMatrix, CG.n, a5, 5));
 
         int b1[] = {0, 1, 2, 3, 4};
-        assert(!devIsAHole(CG2, b1, 5));
+        assert(!devIsAHole(CG2.devMatrix, CG.n, b1, 5));
 
         int b2[] = {3, 2, 1, 0, 4};
-        assert(!devIsAHole(CG2, b2, 5));
+        assert(!devIsAHole(CG2.devMatrix, CG.n, b2, 5));
 
         int b3[] = {0, 1, 2, 3};
-        assert(devIsAHole(CG2, b3, 4));
-        assert(!devIsAHole(CG2, b3, 5));
+        assert(devIsAHole(CG2.devMatrix, CG2.n, b3, 4));
+        assert(!devIsAHole(CG2.devMatrix, CG2.n, b3, 5));
 
         int b4[] = {1, 2, 3, 4};
-        assert(!devIsAHole(CG2, b4, 4));
+        assert(!devIsAHole(CG2.devMatrix, CG2.n, b4, 4));
 
         int b5[] = {0, 2, 1, 3, 4};
-        assert(!devIsAHole(CG2, b5, 5));
+        assert(!devIsAHole(CG2.devMatrix, CG2.n, b5, 5));
       },
       1, context);
   context.synchronize();
@@ -611,8 +614,6 @@ void cuTestGraphSimpleWithStats(const Graph &G, context_t &context, bool runNaiv
     cuSumTimeNaive[p] += elapsed;
     cuCasesTestedNaive[p]++;
   }
-
-  printCuTestStats();
 }
 void testCuIsPerfectNaiveHand(context_t &context) {
   Graph G(11,
@@ -685,21 +686,34 @@ void testCuIsPerfectNaive(context_t &context) {
   //   cuTestGraphSimple(G, context);
   // }
 
+  RaiiProgressBar bar(20 + 20 + 10 + 100);
+
   for (int i = 0; i < 20; i++) {
     cuTestGraphSimpleWithStats(getRandomGraph(10, 0.5), context);
+    bar.update(i);
   }
 
   for (int i = 0; i < 20; i++) {
-    cuTestGraphSimpleWithStats(getRandomGraph(11, 0.5), context, false);
+    cuTestGraphSimpleWithStats(getRandomGraph(11, 0.5), context);
+    bar.update(i + 20);
   }
 
   for (int i = 0; i < 10; i++) {
     cuTestGraphSimpleWithStats(getBipariteGraph(8, 0.5).getLineGraph(), context);
+    bar.update(i + 40);
   }
 
-  // for (int i = 0; i < 30; i++) {
-  //   cuTestGraphSimpleWithStats(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
+  for (int i = 0; i < 100; i++) {
+    cuTestGraphSimpleWithStats(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
+    bar.update(i + 50);
+  }
+
+  // for (int i = 0; i < 10; i++) {
+  //   cuTestGraphSimpleWithStats(getBipariteGraph(10, 0.5).getLineGraph(), context, false);
+  //   bar.update(i + 80);
   // }
+
+  printCuTestStats();
 }
 
 int main() {
