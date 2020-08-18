@@ -292,9 +292,9 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
       if (prefixes.empty()) {
         break;
       }
-    } while (pathLen < size && pathLen < 9 && prefixes.size() < minPrefixes);
+    } while (pathLen < size && pathLen < 7 && prefixes.size() < minPrefixes);
 
-    while (pathLen + 1 < size && prefixes.size() < minPrefixes) {
+    while (pathLen < size && prefixes.size() < minPrefixes) {
       vec<vec<int>> savedPrefixes = prefixes;
       prefixes = vec<vec<int>>();
       pathLen++;
@@ -342,7 +342,8 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
 
   if (cudatime + pretime > 1) {
     cout << "Pre time: " << pretime << "\t CUDA time: " << cudatime << "\t"
-         << "n=" << G.n << ", prefsize=" << prefixes.size() << " prefLen" << pathLen << endl;
+         << "n=" << G.n << ", prefsize=" << prefixes.size() << " prefLen=" << pathLen << " holeSize=" << size
+         << endl;
   }
   // transform(
   //     [=] MGPU_DEVICE(int id, int prefixesSize, const int *devMatrix, const int *devNextNeighbor,
@@ -391,8 +392,7 @@ bool cuIsPerfectNaive(const Graph &G) {
   // CuGraph CCG = CuGraph(G.getComplement(), c2);
 
   // bool res = !cuContainsOddHoleNaive(CG, c2, maxThreads) && !cuContainsOddHoleNaive(CCG, c2, maxThreads);
-  bool res = !cuContainsOddHoleNaive2(G, c2) &&
-             !cuContainsOddHoleNaive2(G.getComplement(), c2);
+  bool res = !cuContainsOddHoleNaive2(G, c2) && !cuContainsOddHoleNaive2(G.getComplement(), c2);
 
   // CG.deleteCuGraph();
   // CCG.deleteCuGraph();
