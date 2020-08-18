@@ -61,6 +61,26 @@ typedef bool (*cuIsPerfectFunction)(const Graph &G);
 bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction = nullptr);
 void printStats();
 
+struct StatsFactory {
+  static void startTestCase(const Graph &G, algos algo);
+  static void startTestCasePart(const string &name);
+  static void endTestCase(bool result);
+  static void printStats2();
+
+ private:
+  static bool curStarted;
+  static int testCaseNr;
+  static int curTestPartNr;
+  static algos algo;
+  static int curN;
+  static vec<string> partNames;
+  static vec<double> curTime;
+  static RaiiTimer curTimer;
+
+  static map<std::tuple<algos, bool, int, int>, int> mapCount;
+  static map<std::tuple<algos, bool, int, int>, double> mapSumTime;
+};
+
 double getDistr();
 void testGraph(const Graph &G, bool verbose);
 void testGraph(const Graph &G, bool result, bool verbose);

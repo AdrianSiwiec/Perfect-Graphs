@@ -604,7 +604,7 @@ void cuTestGraphSimpleWithStats(const Graph &G, context_t &context, bool runNaiv
   {
     RaiiTimer t("");
     int cuRes;
-    if ((cuRes = cuIsPerfectNaive(G, context, 100000000)) != res) {
+    if ((cuRes = cuIsPerfectNaive(G)) != res) {
       cout << "Error CUDA NAIVE" << endl << G << endl;
       cout << "res: " << res << ", cuRes: " << cuRes << endl;
       exit(1);
@@ -699,25 +699,36 @@ void testCuIsPerfectNaive(context_t &context) {
   }
 
   for (int i = 0; i < 10; i++) {
-    cuTestGraphSimpleWithStats(getBipariteGraph(8, 0.5).getLineGraph(), context);
+    Graph G = getBipariteGraph(8, 0.5).getLineGraph();
+
+    StatsFactory::startTestCase(G, algoPerfect);
+    StatsFactory::StartTestCasePart("First");
+
+    cuTestGraphSimpleWithStats(G, context);
+
+
+    cuTestGraphSimpleWithStats(G, context);
+    cuTestGraphSimpleWithStats(G, context);
+
+    StatsFactory::endTestCasePart("Second");
+
     bar.update(i + 40);
   }
 
-  for (int i = 0; i < 100; i++) {
-    cuTestGraphSimpleWithStats(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
-    bar.update(i + 50);
-  }
+  // for (int i = 0; i < 100; i++) {
+  //   cuTestGraphSimpleWithStats(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
+  //   bar.update(i + 50);
+  // }
 
-  for (int i = 0; i < 100; i++) {
-    cuTestGraphSimpleWithStats(getBipariteGraph(10, 0.5).getLineGraph(), context, false);
-    bar.update(i + 150);
-  }
+  // for (int i = 0; i < 100; i++) {
+  //   cuTestGraphSimpleWithStats(getBipariteGraph(10, 0.5).getLineGraph(), context, false);
+  //   bar.update(i + 150);
+  // }
 
   // for (int i = 0; i < 10; i++) {
   //   cuTestGraphSimpleWithStats(getBipariteGraph(11, 0.5).getLineGraph(), context, false);
   //   bar.update(i*10 + 250);
   // }
-
 
   printCuTestStats();
 }
@@ -725,6 +736,8 @@ void testCuIsPerfectNaive(context_t &context) {
 int main() {
   init();
   standard_context_t context(0);
+
+  StatsFactory::startTestCase(getRandomGraph(10, 0.5), algoPerfect);
 
   testPreparePathStart(context);
   testDevAreNeighbors(context);

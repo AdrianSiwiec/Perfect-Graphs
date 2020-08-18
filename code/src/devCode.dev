@@ -292,7 +292,7 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
       if (prefixes.empty()) {
         break;
       }
-    } while (pathLen < size && pathLen < 7 && prefixes.size() < minPrefixes);
+    } while (pathLen < size && pathLen < 9 && prefixes.size() < minPrefixes);
 
     while (pathLen < size && prefixes.size() < minPrefixes) {
       vec<vec<int>> savedPrefixes = prefixes;

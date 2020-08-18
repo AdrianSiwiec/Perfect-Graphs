@@ -235,35 +235,80 @@ void printStats() {
       }
     }
   }
+}
 
-  // if (!sumTimeNaive.empty()) cout << "Naive recognition stats: " << endl;
-  // for (auto it = sumTimeNaive.begin(); it != sumTimeNaive.end(); it++) {
-  //   int cases = casesTestedNaive[it->first];
-  //   cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-  //        << ", avgTime="
-  //        << it->second / cases
-  //        //  << ", parallel factor=" << sumClockTimeNaive[it->first] / it->second
-  //        << endl;
-  // }
-  // if (!sumTime.empty()) cout << "Perfect recognition stats: " << endl;
-  // for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-  //   if (!it->first.second) continue;
-  //   int cases = casesTested[it->first];
-  //   cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-  //        << ", avgTime="
-  //        << it->second / cases
-  //        //  << ", parallel factor=" << sumClockTime[it->first] / it->second
-  //        << endl;
-  // }
-  // for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-  //   if (it->first.second) continue;
-  //   int cases = casesTested[it->first];
-  //   cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-  //        << ", avgTime="
-  //        << it->second / cases
-  //        // << ", parallel factor=" << sumClockTime[it->first] / it->second
-  //        << endl;
-  // }
+bool StatsFactory::curStarted = false;
+int StatsFactory::testCaseNr = 0;
+int StatsFactory::curTestPartNr = 0;
+algos StatsFactory::algo = algo_last;
+int StatsFactory::curN = 0;
+vec<string> StatsFactory::partNames = vec<string>();
+vec<double> StatsFactory::curTime = vec<double>();
+RaiiTimer StatsFactory::curTimer = RaiiTimer("");
+
+map<tuple<algos, bool, int, int>, int> StatsFactory::mapCount = map<tuple<algos, bool, int, int>, int>();
+map<tuple<algos, bool, int, int>, double> StatsFactory::mapSumTime =
+    map<tuple<algos, bool, int, int>, double>();
+
+void StatsFactory::startTestCase(const Graph &G, algos algo_in) {
+  testCaseNr++;
+  curStarted = true;
+  if (testCaseNr == 1) {
+    algo = algo_in;
+  }
+  curTestPartNr = 0;
+  curN = G.n;
+  curTimer = RaiiTimer("");
+}
+
+void StatsFactory::startTestCasePart(const string &name) {
+  if (curTestPartNr > 0) {
+    curTime.push_back(curTimer.getElapsedSeconds());
+  }
+
+  if (testCaseNr == 1) {
+    partNames.push_back(name);
+  } else {
+    assert(partNames[curTestPartNr] == name);
+  }
+  curTestPartNr++;
+
+  curTimer = RaiiTimer("");
+}
+
+void StatsFactory::endTestCase(bool result) {
+  if (curTestPartNr > 0) {
+    curTime.push_back(curTimer.getElapsedSeconds());
+  }
+
+  for (int i = 0; i < partNames.size(); i++) {
+    auto t = make_tuple(algo, result, curN, i);
+    mapCount[t]++;
+    mapSumTime[t] += curTime[i];
+  }
+}
+
+void StatsFactory::printStats2() {
+  cout << "algorithm, result, n, num_runs, ";
+  for (int i = 0; i < partNames.size(); i++) {
+    cout << partNames[i];
+    if (i + 1 < partNames.size()) cout << ", ";
+  }
+  cout << endl;
+
+  for (auto it = mapCount.begin(); it != mapCount.end(); it++) {
+    auto t = it->first;
+    int count = it->second;
+    cout << get<0>(t) << ", " << get<1>(t) << ", " << get<2>(t) << ", " << count << ", ";
+
+    for (auto it2 = it; it != mapCount.end() && get<0>(it2->first) == get<0>(t) &&
+                        get<1>(it2->first) == get<1>(t) && get<2>(it2->first) == get<2>(t);
+         it2++) {
+      assert(count == mapCount[it2->first]);
+      cout << mapSumTime[it2->first] / count << ", ";
+    }
+    cout << endl;
+  }
 }
 
 double getDistr() {
