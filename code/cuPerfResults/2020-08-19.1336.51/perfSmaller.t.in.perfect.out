@@ -1,8 +1,0 @@
-N=17
-
-algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	Check Near Cleaners
-Perfect     ,	15,	0,	1,	0.134759,	0.0701252,	0.0645524,	7.9099e-05
-Perfect     ,	17,	0,	1,	0.537579,	0.234562,	0.262976,	0.0400396
-Perfect     ,	15,	1,	5,	0.710801,	0.0826834,	0.101234,	0.52688
-Perfect     ,	16,	1,	5,	1.36749,	0.189308,	0.189374,	0.988806
-Perfect     ,	17,	1,	5,	1.88154,	0.229835,	0.231019,	1.42068
