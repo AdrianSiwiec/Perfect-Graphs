@@ -2,8 +2,10 @@
 #include <algorithm>
 #include <set>
 #include "commons.h"
+#include "testCommons.h"
 
 using std::get;
+using std::to_string;
 
 bool isHole(const Graph &G, const vec<int> &v) {
   return v.size() >= 3 && isAPath(G, v, true, false) && G.areNeighbours(v[0], v.back());
@@ -25,8 +27,9 @@ vec<int> findHoleOfSize(const Graph &G, int size) {
 
 bool constainsHoleOfSize(const Graph &G, int size) { return !findHoleOfSize(G, size).empty(); }
 
-vec<int> findOddHoleNaive(const Graph &G) {
+vec<int> findOddHoleNaive(const Graph &G, bool gatherStats) {
   for (int size = 5; size <= G.n; size += 2) {
+    if (gatherStats) StatsFactory::startTestCasePart(to_string(size));
     auto v = findHoleOfSize(G, size);
     if (!v.empty()) return v;
   }
@@ -34,7 +37,9 @@ vec<int> findOddHoleNaive(const Graph &G) {
   return vec<int>();
 }
 
-bool containsOddHoleNaive(const Graph &G) { return !findOddHoleNaive(G).empty(); }
+bool containsOddHoleNaive(const Graph &G, bool gatherStats) {
+  return !findOddHoleNaive(G, gatherStats).empty();
+}
 
 bool isT1(const Graph &G, const vec<int> &v) {
   if (v.size() != 5) return false;

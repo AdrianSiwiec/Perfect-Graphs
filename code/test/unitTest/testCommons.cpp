@@ -1,9 +1,13 @@
 #include "testCommons.h"
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
+#include <thread>
 #include "commons.h"
 #include "perfect.h"
 // Unit test of testCommons
+
+using namespace std;
 
 void testRandomGraphs() {
   auto graphs = getRandomGraphs(12, 1, 15);
@@ -47,9 +51,67 @@ void testTuples() {
   assert(generateTuples(4, 3).size() == 3 * 3 * 3 * 3);
 }
 
+void testStatsFactory() {
+  {
+    RaiiProgressBar bar(4 * 5 * 2 * 2);
+
+    for (int algo = algoPerfect; algo < algoCudaNaive; algo++) {
+      for (int n = 5; n < 9; n++) {
+        for (int i = 0; i < 5; i++) {
+          for (int res = 0; res < 2; res++) {
+            StatsFactory::startTestCase(getRandomGraph(n, 0), (algos)algo);
+
+            StatsFactory::startTestCasePart("100ms (twice) + res/2");
+            this_thread::sleep_for(chrono::milliseconds(100 + res * 50));
+
+            StatsFactory::startTestCasePart("i + algo");
+            this_thread::sleep_for(chrono::milliseconds((i + algo) * 100));
+
+            if (((algo == algoPerfect) ^ ((n % 2) == 0)) && i != 0) {
+              StatsFactory::startTestCasePart("50");
+              this_thread::sleep_for(chrono::milliseconds(50));
+            }
+
+            if (i != 0) {
+              StatsFactory::startTestCasePart("200");
+              if (i % 2) {
+                this_thread::sleep_for(chrono::milliseconds(200));
+              } else {
+                this_thread::sleep_for(chrono::milliseconds(50));
+              }
+            }
+
+            StatsFactory::startTestCasePart("n-4");
+            this_thread::sleep_for(chrono::milliseconds((n - 4) * 100));
+
+            StatsFactory::startTestCasePart("100ms (twice) + res/2");
+            this_thread::sleep_for(chrono::milliseconds(100));
+
+            if (i != 0) {
+              StatsFactory::startTestCasePart("200");
+              if (i % 2) {
+                this_thread::sleep_for(chrono::milliseconds(0));
+              } else {
+                this_thread::sleep_for(chrono::milliseconds(150));
+              }
+            }
+
+            StatsFactory::endTestCase(res);
+
+            bar.update(algo * 40 + (n - 5) * 10 + i * 2 + res);
+          }
+        }
+      }
+    }
+  }
+
+  StatsFactory::printStats2();
+}
+
 int main() {
   init();
   testRandomGraphs();
   testGetRandomPerfect();
   testTuples();
+  testStatsFactory();
 }

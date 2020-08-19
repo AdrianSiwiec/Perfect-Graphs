@@ -27,7 +27,12 @@ for file in "${perfectTests[@]}"; do
   $cuPerfectNaiveExec <$testsDir/$file >$resultsDir/$file.cuPerfectNaive.out
 done
 
-# for file in "${naiveTests[@]}"; do
-#   echo "Running Naive on $file"
-#   $naiveExec <$testsDir/$file >$resultsDir/$file.naive.out
-# done
+for file in "${naiveTests[@]}"; do
+  echo "Running CuPerfect on $file"
+  $cuPerfectNaiveExec <$testsDir/$file >$resultsDir/$file.cuPerfectNaive.out
+done
+
+for file in "${naiveTests[@]}"; do
+  echo "Running Naive on $file"
+  $naiveExec <$testsDir/$file >$resultsDir/$file.naive.out
+done

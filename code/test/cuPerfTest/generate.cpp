@@ -11,7 +11,7 @@ int main() {
 
   // for(int i=15; i<=19; i++) {
     for(int k=0; k<5; k++) {
-      Graph G = getRandomPerfectGraph(19, getDistr());
+      Graph G = getRandomPerfectGraph(20, getDistr());
       cout<<G<<endl;
     }
   // }

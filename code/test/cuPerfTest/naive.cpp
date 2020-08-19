@@ -37,5 +37,5 @@ int main() {
   }
   cout << endl;
 
-  printStats();
+  StatsFactory::printStats2();
 }

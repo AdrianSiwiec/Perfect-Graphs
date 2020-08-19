@@ -56,7 +56,7 @@ struct RaiiTimer {
 enum algos { algoPerfect, algoNaive, algoCudaNaive, algoCudaPerfect, algo_last };
 extern string algo_names[];
 
-typedef bool (*cuIsPerfectFunction)(const Graph &G);
+typedef bool (*cuIsPerfectFunction)(const Graph &G, bool gatherStats);
 
 bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction = nullptr);
 void printStats();
@@ -71,12 +71,15 @@ struct StatsFactory {
   static bool curStarted;
   static int testCaseNr;
   static int curTestPartNr;
-  static algos algo;
+  static algos curAlgo;
   static int curN;
   static vec<string> partNames;
   static vec<double> curTime;
   static RaiiTimer curTimer;
+  static RaiiTimer curTimerOverall;
 
+  static map<string, int> mapNameNr;
+  static map<int, string> mapNrName;
   static map<std::tuple<algos, bool, int, int>, int> mapCount;
   static map<std::tuple<algos, bool, int, int>, double> mapSumTime;
 };

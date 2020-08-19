@@ -573,7 +573,7 @@ void printCuTestStats() {
   cout << endl;
 }
 
-void cuTestGraphSimpleWithStats(const Graph &G, context_t &context, bool runNaive = true) {
+bool cuTestGraphSimpleWithStats(const Graph &G, context_t &context, bool runNaive = true) {
   string N = to_string(G.n);
   bool res;
 
@@ -614,6 +614,8 @@ void cuTestGraphSimpleWithStats(const Graph &G, context_t &context, bool runNaiv
     cuSumTimeNaive[p] += elapsed;
     cuCasesTestedNaive[p]++;
   }
+
+  return res;
 }
 void testCuIsPerfectNaiveHand(context_t &context) {
   Graph G(11,
@@ -686,33 +688,24 @@ void testCuIsPerfectNaive(context_t &context) {
   //   cuTestGraphSimple(G, context);
   // }
 
-  RaiiProgressBar bar(20 + 20 + 10 + 100 + 100 + 100);
+  // RaiiProgressBar bar(20 + 20 + 10 + 100 + 100 + 100);
 
   for (int i = 0; i < 20; i++) {
-    cuTestGraphSimpleWithStats(getRandomGraph(10, 0.5), context);
-    bar.update(i);
+    cuTestGraphSimpleWithStats(getRandomGraph(10, 0.5), context, false);
+    // bar.update(i);
   }
 
   for (int i = 0; i < 20; i++) {
-    cuTestGraphSimpleWithStats(getRandomGraph(11, 0.5), context);
-    bar.update(i + 20);
+    cuTestGraphSimpleWithStats(getRandomGraph(11, 0.5), context, false);
+    // bar.update(i + 20);
   }
 
   for (int i = 0; i < 10; i++) {
     Graph G = getBipariteGraph(8, 0.5).getLineGraph();
 
-    StatsFactory::startTestCase(G, algoPerfect);
-    StatsFactory::StartTestCasePart("First");
+    cuTestGraphSimpleWithStats(G, context, false);
 
-    cuTestGraphSimpleWithStats(G, context);
-
-
-    cuTestGraphSimpleWithStats(G, context);
-    cuTestGraphSimpleWithStats(G, context);
-
-    StatsFactory::endTestCasePart("Second");
-
-    bar.update(i + 40);
+    // bar.update(i + 40);
   }
 
   // for (int i = 0; i < 100; i++) {
@@ -730,14 +723,12 @@ void testCuIsPerfectNaive(context_t &context) {
   //   bar.update(i*10 + 250);
   // }
 
-  printCuTestStats();
+  // printCuTestStats();
 }
 
 int main() {
   init();
   standard_context_t context(0);
-
-  StatsFactory::startTestCase(getRandomGraph(10, 0.5), algoPerfect);
 
   testPreparePathStart(context);
   testDevAreNeighbors(context);

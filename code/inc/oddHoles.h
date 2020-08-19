@@ -9,8 +9,8 @@ vec<int> findHoleOfSize(const Graph &G, int size);
 bool constainsHoleOfSize(const Graph &G, int size);
 
 // Slow - for tests. Returns empty vector if none found.
-vec<int> findOddHoleNaive(const Graph &G);
-bool containsOddHoleNaive(const Graph &G);
+vec<int> findOddHoleNaive(const Graph &G, bool gatherStats = false);
+bool containsOddHoleNaive(const Graph &G, bool gatherStats = false);
 
 bool isT1(const Graph &G, const vec<int> &v);
 vec<int> findT1(const Graph &G);

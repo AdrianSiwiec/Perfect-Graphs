@@ -171,7 +171,7 @@ double RaiiTimer::getElapsedSeconds() {
 map<tuple<algos, bool, int>, double> sumTime;
 // map<pair<int, bool>, double> sumClockTime;
 map<tuple<algos, bool, int>, int> casesTested;
-string algo_names[] = {"Perfect", "Naive", "CUDA Naive", "Cuda Perfect"};
+string algo_names[] = {"Perfect     ", "Naive       ", "CUDA Naive  ", "Cuda Perfect"};
 
 // map<pair<int, bool>, double> sumTimeNaive;
 // map<pair<int, bool>, double> sumClockTimeNaive;
@@ -181,23 +181,22 @@ default_random_engine generator;
 normal_distribution<double> distribution(0.5, 0.15);
 
 bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction) {
-  nanoseconds start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
-  clock_t start_clock = clock();
-
   bool result;
+
+  StatsFactory::startTestCase(G, algo);
 
   switch (algo) {
     case algoPerfect:
-      result = isPerfectGraph(G);
+      result = isPerfectGraph(G, true);
       break;
 
     case algoNaive:
-      result = isPerfectGraphNaive(G);
+      result = isPerfectGraphNaive(G, true);
       break;
 
     case algoCudaNaive:
       assert(cuFunction != nullptr);
-      result = cuFunction(G);
+      result = cuFunction(G, true);
       break;
 
     case algoCudaPerfect:
@@ -207,14 +206,7 @@ bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction) {
       throw invalid_argument("TestWithStats invalid argument");
   }
 
-  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
-  clock_t end_clock = clock();
-
-  double duration = (end_ns.count() - start_ns.count()) / 1e9;
-
-  auto t = make_tuple(algo, result, G.n);
-  sumTime[t] += duration;
-  casesTested[t]++;
+  StatsFactory::endTestCase(result);
 
   return result;
 }
@@ -240,12 +232,15 @@ void printStats() {
 bool StatsFactory::curStarted = false;
 int StatsFactory::testCaseNr = 0;
 int StatsFactory::curTestPartNr = 0;
-algos StatsFactory::algo = algo_last;
+algos StatsFactory::curAlgo = algo_last;
 int StatsFactory::curN = 0;
 vec<string> StatsFactory::partNames = vec<string>();
 vec<double> StatsFactory::curTime = vec<double>();
 RaiiTimer StatsFactory::curTimer = RaiiTimer("");
+RaiiTimer StatsFactory::curTimerOverall = RaiiTimer("");
 
+map<string, int> StatsFactory::mapNameNr = map<string, int>();
+map<int, string> StatsFactory::mapNrName = map<int, string>();
 map<tuple<algos, bool, int, int>, int> StatsFactory::mapCount = map<tuple<algos, bool, int, int>, int>();
 map<tuple<algos, bool, int, int>, double> StatsFactory::mapSumTime =
     map<tuple<algos, bool, int, int>, double>();
@@ -253,12 +248,14 @@ map<tuple<algos, bool, int, int>, double> StatsFactory::mapSumTime =
 void StatsFactory::startTestCase(const Graph &G, algos algo_in) {
   testCaseNr++;
   curStarted = true;
-  if (testCaseNr == 1) {
-    algo = algo_in;
-  }
+  curAlgo = algo_in;
   curTestPartNr = 0;
   curN = G.n;
   curTimer = RaiiTimer("");
+  curTimerOverall = RaiiTimer("");
+
+  partNames.push_back("Overall");
+  curTestPartNr++;
 }
 
 void StatsFactory::startTestCasePart(const string &name) {
@@ -266,47 +263,77 @@ void StatsFactory::startTestCasePart(const string &name) {
     curTime.push_back(curTimer.getElapsedSeconds());
   }
 
-  if (testCaseNr == 1) {
-    partNames.push_back(name);
-  } else {
-    assert(partNames[curTestPartNr] == name);
-  }
+  partNames.push_back(name);
   curTestPartNr++;
 
   curTimer = RaiiTimer("");
 }
 
 void StatsFactory::endTestCase(bool result) {
+  double overallElapsed = curTimerOverall.getElapsedSeconds();
+
   if (curTestPartNr > 0) {
     curTime.push_back(curTimer.getElapsedSeconds());
   }
 
   for (int i = 0; i < partNames.size(); i++) {
-    auto t = make_tuple(algo, result, curN, i);
-    mapCount[t]++;
+    if (mapNameNr.count(partNames[i]) == 0) {
+      mapNrName[mapNameNr.size()] = partNames[i];
+      mapNameNr[partNames[i]] = mapNameNr.size();
+    }
+    auto t = make_tuple(curAlgo, result, curN, mapNameNr[partNames[i]]);
+    // mapCount[t]++;
     mapSumTime[t] += curTime[i];
   }
+
+  // This is so we sum multiple same parts in a algorithm
+  set<string> setNames(partNames.begin(), partNames.end());
+  for (string name : setNames) {
+    auto t = make_tuple(curAlgo, result, curN, mapNameNr[name]);
+    mapCount[t]++;
+  }
+
+  auto t = make_tuple(curAlgo, result, curN, mapNameNr["Overall"]);
+  mapSumTime[t] += overallElapsed;
+
+  curTime.clear();
+  partNames.clear();
 }
 
 void StatsFactory::printStats2() {
-  cout << "algorithm, result, n, num_runs, ";
-  for (int i = 0; i < partNames.size(); i++) {
-    cout << partNames[i];
-    if (i + 1 < partNames.size()) cout << ", ";
+  cout << "algorithm,\tn,\tresult,\tnum_runs,\t" << flush;
+  for (int i = 0; i < mapNameNr.size(); i++) {
+    cout << mapNrName[i] << flush;
+    if (i + 1 < mapNrName.size()) cout << ",\t" << flush;
   }
   cout << endl;
 
   for (auto it = mapCount.begin(); it != mapCount.end(); it++) {
     auto t = it->first;
     int count = it->second;
-    cout << get<0>(t) << ", " << get<1>(t) << ", " << get<2>(t) << ", " << count << ", ";
+    cout << algo_names[get<0>(t)] << ",\t" << get<2>(t) << ",\t" << get<1>(t) << ",\t" << count;
 
-    for (auto it2 = it; it != mapCount.end() && get<0>(it2->first) == get<0>(t) &&
-                        get<1>(it2->first) == get<1>(t) && get<2>(it2->first) == get<2>(t);
-         it2++) {
-      assert(count == mapCount[it2->first]);
-      cout << mapSumTime[it2->first] / count << ", ";
+    for (int i = 0; i < mapNameNr.size(); i++) {
+      auto t2 = t;
+      get<3>(t2) = i;
+      cout << ",\t";
+      if (mapCount.count(t2) > 0) {
+        cout << mapSumTime[t2] / mapCount[t2];
+        if (mapCount[t2] != count) cout << "(" << mapCount[t2] << ")";
+      } else {
+        cout << " - ";
+      }
     }
+
+    for (; it != mapCount.end() && get<0>(it->first) == get<0>(t) && get<1>(it->first) == get<1>(t) &&
+           get<2>(it->first) == get<2>(t);
+         it++) {
+      // cout << ",\t";
+      // assert(count == mapCount[it->first]);
+      // cout << mapSumTime[it->first] / count;
+    }
+    it--;
+
     cout << endl;
   }
 }

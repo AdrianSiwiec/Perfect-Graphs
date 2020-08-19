@@ -229,7 +229,9 @@ bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context,
   return oddHoleFound[0];
 }
 
-bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
+bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context, bool gatherStats = false) {
+  if (gatherStats) StatsFactory::startTestCasePart("CPU Preparation");
+
   int minPrefixes = 10000;
   int threadsToRun = 100000;
 
@@ -309,6 +311,8 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
     pretime = pretimer.getElapsedSeconds();
   }
 
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Calculation");
+
   {
     RaiiTimer cudatimer("");
     CUCHECK(cudaMalloc(&devPaths, sizeof(int) * size * prefixes.size()));
@@ -369,33 +373,27 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context) {
   return oddHoleFound[0];
 }
 
-bool cuContainsOddHoleNaive(const CuGraph &G, context_t &context, int maxThreads = _max_threads_to_run) {
+bool cuContainsOddHoleNaive(const CuGraph &G, context_t &context, bool gatherStats = false) {
   for (int size = 5; size <= G.n; size += 2) {
-    if (cuContainsHoleOfSize(G, size, context, maxThreads)) return true;
+    if (cuContainsHoleOfSize(G, size, context)) return true;
   }
 
   return false;
 }
 
-bool cuContainsOddHoleNaive2(const Graph &G, context_t &context, int maxThreads = _max_threads_to_run) {
+bool cuContainsOddHoleNaive2(const Graph &G, context_t &context, bool gatherStats = false) {
   for (int size = 5; size <= G.n; size += 2) {
-    if (cuContainsHoleOfSize2(G, size, context)) return true;
+    if (cuContainsHoleOfSize2(G, size, context, gatherStats)) return true;
   }
 
   return false;
 }
 
-bool cuIsPerfectNaive(const Graph &G) {
+bool cuIsPerfectNaive(const Graph &G, bool gatherStats = false) {
   standard_context_t c2(0);
 
-  // CuGraph CG = CuGraph(G, c2);
-  // CuGraph CCG = CuGraph(G.getComplement(), c2);
-
-  // bool res = !cuContainsOddHoleNaive(CG, c2, maxThreads) && !cuContainsOddHoleNaive(CCG, c2, maxThreads);
-  bool res = !cuContainsOddHoleNaive2(G, c2) && !cuContainsOddHoleNaive2(G.getComplement(), c2);
-
-  // CG.deleteCuGraph();
-  // CCG.deleteCuGraph();
+  bool res = !cuContainsOddHoleNaive2(G, c2, gatherStats) &&
+             !cuContainsOddHoleNaive2(G.getComplement(), c2, gatherStats);
 
   c2.synchronize();
 
