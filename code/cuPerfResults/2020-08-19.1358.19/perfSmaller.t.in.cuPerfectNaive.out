@@ -1,0 +1,44 @@
+N=17
+Pre time: 0.0255741	 CUDA time: 1.12406	n=17, prefsize=137564 prefLen=12 holeSize=13
+Pre time: 0.0234169	 CUDA time: 1.14061	n=17, prefsize=137564 prefLen=12 holeSize=15
+Pre time: 0.0269141	 CUDA time: 1.13803	n=17, prefsize=137564 prefLen=12 holeSize=17
+Pre time: 1.10626	 CUDA time: 0.000114198	n=17, prefsize=0 prefLen=7 holeSize=7
+Pre time: 1.09801	 CUDA time: 0.000117598	n=17, prefsize=0 prefLen=9 holeSize=9
+Pre time: 1.08317	 CUDA time: 0.000112198	n=17, prefsize=0 prefLen=11 holeSize=11
+Pre time: 1.08567	 CUDA time: 0.000118398	n=17, prefsize=0 prefLen=13 holeSize=13
+Pre time: 1.08153	 CUDA time: 0.000115698	n=17, prefsize=0 prefLen=15 holeSize=15
+Pre time: 1.09154	 CUDA time: 0.000233197	n=17, prefsize=0 prefLen=17 holeSize=17
+Pre time: 3.65965	 CUDA time: 0.000118498	n=17, prefsize=0 prefLen=9 holeSize=9
+Pre time: 3.62043	 CUDA time: 0.000111399	n=17, prefsize=0 prefLen=11 holeSize=11
+Pre time: 3.90746	 CUDA time: 0.000120998	n=17, prefsize=0 prefLen=13 holeSize=13
+Pre time: 3.63331	 CUDA time: 0.000116998	n=17, prefsize=0 prefLen=15 holeSize=15
+Pre time: 3.66025	 CUDA time: 0.000121598	n=17, prefsize=0 prefLen=17 holeSize=17
+Pre time: 3.02061	 CUDA time: 0.000117198	n=17, prefsize=0 prefLen=9 holeSize=9
+Pre time: 3.01694	 CUDA time: 0.000114898	n=17, prefsize=0 prefLen=11 holeSize=11
+Pre time: 3.07	 CUDA time: 0.000119199	n=17, prefsize=0 prefLen=13 holeSize=13
+Pre time: 3.01571	 CUDA time: 0.000113499	n=17, prefsize=0 prefLen=15 holeSize=15
+Pre time: 3.02538	 CUDA time: 0.000114898	n=17, prefsize=0 prefLen=17 holeSize=17
+Pre time: 1.95977	 CUDA time: 0.000121898	n=17, prefsize=0 prefLen=9 holeSize=9
+Pre time: 1.95021	 CUDA time: 0.000123298	n=17, prefsize=0 prefLen=11 holeSize=11
+Pre time: 1.96748	 CUDA time: 0.000119698	n=17, prefsize=0 prefLen=13 holeSize=13
+Pre time: 1.95671	 CUDA time: 0.000127698	n=17, prefsize=0 prefLen=15 holeSize=15
+Pre time: 1.9552	 CUDA time: 0.000120698	n=17, prefsize=0 prefLen=17 holeSize=17
+Pre time: 3.36117	 CUDA time: 0.000258796	n=17, prefsize=2 prefLen=9 holeSize=9
+Pre time: 3.34204	 CUDA time: 0.00493293	n=17, prefsize=578 prefLen=11 holeSize=11
+Pre time: 3.37533	 CUDA time: 1.42925	n=17, prefsize=167042 prefLen=13 holeSize=13
+Pre time: 3.47332	 CUDA time: 1.43511	n=17, prefsize=167042 prefLen=13 holeSize=15
+Pre time: 4.24298	 CUDA time: 1.74531	n=17, prefsize=167042 prefLen=13 holeSize=17
+Pre time: 1.00937	 CUDA time: 0.000112399	n=16, prefsize=0 prefLen=11 holeSize=11
+Pre time: 1.02441	 CUDA time: 0.000114899	n=16, prefsize=0 prefLen=13 holeSize=13
+Pre time: 1.02741	 CUDA time: 0.000115898	n=16, prefsize=0 prefLen=15 holeSize=15
+Pre time: 2.74901	 CUDA time: 0.000125799	n=15, prefsize=0 prefLen=9 holeSize=9
+Pre time: 2.72747	 CUDA time: 0.000123398	n=15, prefsize=0 prefLen=11 holeSize=11
+Pre time: 2.74019	 CUDA time: 0.000123198	n=15, prefsize=0 prefLen=13 holeSize=13
+Pre time: 2.75786	 CUDA time: 0.000123699	n=15, prefsize=0 prefLen=15 holeSize=15
+
+algorithm,	n,	result,	num_runs,	Overall,	CPU Preparation,	GPU Calculation
+CUDA Naive  ,	15,	0,	1,	0.0064849,	0.00337135,	0.00270606
+CUDA Naive  ,	17,	0,	1,	0.0803227,	0.0760547,	0.00384754
+CUDA Naive  ,	15,	1,	5,	3.482,	3.25771,	0.141376
+CUDA Naive  ,	16,	1,	5,	4.02523,	4.01881,	0.00598663
+CUDA Naive  ,	17,	1,	5,	16.6981,	14.2709,	2.42683

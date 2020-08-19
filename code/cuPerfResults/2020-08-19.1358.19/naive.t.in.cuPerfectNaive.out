@@ -1,0 +1,6 @@
+N=12
+
+algorithm,	n,	result,	num_runs,	Overall,	CPU Preparation,	GPU Calculation
+CUDA Naive  ,	10,	1,	3,	0.00940439,	0.00808398,	0.000864021
+CUDA Naive  ,	11,	1,	2,	0.196267,	0.0159173,	0.00134708
+CUDA Naive  ,	12,	1,	3,	0.0750162,	0.0724283,	0.00218293
