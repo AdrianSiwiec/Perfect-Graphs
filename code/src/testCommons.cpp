@@ -200,7 +200,9 @@ bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction) {
       break;
 
     case algoCudaPerfect:
-      throw invalid_argument("Not implemented");
+      assert(cuFunction != nullptr);
+      result = cuFunction(G, true);
+      break;
 
     default:
       throw invalid_argument("TestWithStats invalid argument");

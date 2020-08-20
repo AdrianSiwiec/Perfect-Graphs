@@ -427,6 +427,7 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
   transform([=] MGPU_DEVICE(int id) { devOddHoleFound[0] = 0; }, 1, context);
   context.synchronize();
 
+  if (gatherStats) StatsFactory::startTestCasePart("Test NC GPU work");
   transform(
       [=] MGPU_DEVICE(int id, int CGn, const CuGraph CGGG, int *mark) {
         int x[4];
@@ -449,7 +450,7 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
   delete[] Rcopy;
   delete[] Rlens;
 
-   return oddHoleFound[0];
+  return oddHoleFound[0];
 }
 
 bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
@@ -470,7 +471,7 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
     if (cuContainsOddHoleWithNearCleanerX(G, CG, X, context, gatherStats)) return false;
   }
 
-  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners (CPU)");
   auto XsC = getPossibleNearCleaners(GC);
 
   for (auto X : XsC) {
