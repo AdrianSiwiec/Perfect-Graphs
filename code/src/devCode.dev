@@ -395,31 +395,56 @@ __device__ bool devContainsOddHoleWithR(const CuGraph &CG, int *devR, int *devRL
   return true;
 }
 
+bool memInitialized = false;
+int *GdevR;
+// int *GdevRLens;
+// int *GdevOddHoleFound;
+
+int *GhostR;
+// int *GhostRLens;
+// int *GhostOddHoleFound;
+
+void cuInitializeMem() {
+  CUCHECK(cudaMallocHost(&GhostR, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
+  //   CUCHECK(cudaMallocHost(&GhostRLens, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
+  //   CUCHECK(cudaMallocHost(&GhostOddHoleFound, sizeof(int)));
+
+  // GhostR = new int[CUDA_MAX_N * CUDA_MAX_N];
+  //   GhostRLens = new int[CUDA_MAX_N * CUDA_MAX_N];
+  //   GhostOddHoleFound = new int[1];
+
+  CUCHECK(cudaMalloc(&GdevR, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
+  //   CUCHECK(cudaMalloc(&GdevRLens, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
+  //   CUCHECK(cudaMalloc(&GdevOddHoleFound, sizeof(int)));
+
+  memInitialized = true;
+}
+
 bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const set<int> &sX,
                                        context_t &context, bool gatherStats = false) {
+  assert(memInitialized);
+
   if (gatherStats) StatsFactory::startTestCasePart("Test NC Shortest Paths");
   auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; });
 
   if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy R");
-  int *devR;
   int *devRLens;
 
   const int Npow2 = G.n * G.n;
 
-  int *Rcopy = new int[Npow2];
   int *Rlens = new int[Npow2];
 
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
+      GhostR[i * G.n + j] = R[i][j].size() >= 2 ? R[i][j][R[i][j].size() - 2] : -1;
       Rlens[i * G.n + j] = R[i][j].size();
-      Rcopy[i * G.n + j] = R[i][j].size() >= 2 ? R[i][j][R[i][j].size() - 2] : -1;
     }
   }
 
-  CUCHECK(cudaMalloc(&devR, sizeof(int) * Npow2));
   CUCHECK(cudaMalloc(&devRLens, sizeof(int) * Npow2));
 
-  CUCHECK(cudaMemcpy(devR, Rcopy, sizeof(int) * Npow2, cudaMemcpyHostToDevice));
+
+  CUCHECK(cudaMemcpy(GdevR, GhostR, sizeof(int) * Npow2, cudaMemcpyHostToDevice));
   CUCHECK(cudaMemcpy(devRLens, Rlens, sizeof(int) * Npow2, cudaMemcpyHostToDevice));
 
   int *devOddHoleFound;
@@ -429,7 +454,7 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
 
   if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC work");
   transform(
-      [=] MGPU_DEVICE(int id, int CGn, const CuGraph CGGG, int *mark) {
+      [=] MGPU_DEVICE(int id, int CGn, const CuGraph CGGG, int *mark, int *devR) {
         int x[4];
         devPreparePathStart(id, x, 4, CGn);
         if (devContainsOddHoleWithR(CGGG, devR, devRLens, x)) {
@@ -437,17 +462,16 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
         }
       },
       // 1, context, CG.n);
-      Npow2 * Npow2, context, CG.n, CG, devOddHoleFound);
+      Npow2 * Npow2, context, CG.n, CG, devOddHoleFound, GdevR);
   context.synchronize();
 
   int oddHoleFound[1];
   CUCHECK(cudaMemcpy(oddHoleFound, devOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
   context.synchronize();
 
-  CUCHECK(cudaFree(devR));
+  // CUCHECK(cudaFree(devR));
   CUCHECK(cudaFree(devRLens));
   CUCHECK(cudaFree(devOddHoleFound));
-  delete[] Rcopy;
   delete[] Rlens;
 
   return oddHoleFound[0];
@@ -455,6 +479,8 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
 
 bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
   standard_context_t context(0);
+
+  if (!memInitialized) cuInitializeMem();
 
   if (gatherStats) StatsFactory::startTestCasePart("Simple Structures");
 

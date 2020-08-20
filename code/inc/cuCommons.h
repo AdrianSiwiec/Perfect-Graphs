@@ -11,6 +11,8 @@ using namespace std;
 void CudaAssert(cudaError_t error, const char *code, const char *file, int line);
 #define CUCHECK(x) CudaAssert(x, #x, __FILE__, __LINE__)
 
+#define CUDA_MAX_N 100
+
 void printArray(int *dev, int n, context_t &context);
 
 struct CuGraph {

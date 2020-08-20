@@ -11,20 +11,17 @@
 int main() {
   srand(time(0));
 
-  for (int k = 0; k < 5; k++) {
-    double p = getDistr();
-    Graph G(0);
-    int counter = 0;
-    do {
-      G = getRandomGraph(20, p);
-      StatsFactory::startTestCase(G, algoCudaPerfect);
-      counter++;
-      if (counter % 100 == 0) {
-        StatsFactory::printStats2();
-      }
-      StatsFactory::endTestCase(false);
-    } while (!cuIsPerfect(G, true));
+  set<int> done;
 
-    cout << G << endl;
+  int minN = 15;
+  int maxN = 25;
+
+  while (done.size() < maxN - minN + 1) {
+    Graph G = getBipariteGraph(9 + getDistr() * 3, getDistr()).getLineGraph();
+
+    if (G.n >= minN && G.n <= maxN && done.count(G.n) == 0) {
+      cout << G << endl;
+      done.insert(G.n);
+    }
   }
 }
