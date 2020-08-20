@@ -518,106 +518,70 @@ void testCuContainsOddHoleNaive(context_t &context) {
   assert(cuContainsOddHoleNaive(CG3, context));
 }
 
-map<pair<int, bool>, double> sumTimeDev;
-map<pair<int, bool>, int> casesTestedDev;
-
-map<pair<int, bool>, double> sumTimeNaiveDev;
-map<pair<int, bool>, int> casesTestedNaiveDev;
-
-map<pair<int, bool>, double> cuSumTimeNaive;
-map<pair<int, bool>, int> cuCasesTestedNaive;
-
-void printCuTestStats() {
-  if (!sumTimeDev.empty()) cout << "Perfect recognition stats: " << endl;
-  for (auto it = sumTimeDev.begin(); it != sumTimeDev.end(); it++) {
-    if (!it->first.second) continue;
-    int cases = casesTestedDev[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
-  }
-  for (auto it = sumTimeDev.begin(); it != sumTimeDev.end(); it++) {
-    if (it->first.second) continue;
-    int cases = casesTestedDev[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
-  }
-
-  if (!sumTimeNaiveDev.empty()) cout << "Naive recognition stats: " << endl;
-  for (auto it = sumTimeNaiveDev.begin(); it != sumTimeNaiveDev.end(); it++) {
-    if (!it->first.second) continue;
-    int cases = casesTestedNaiveDev[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
-  }
-  for (auto it = sumTimeNaiveDev.begin(); it != sumTimeNaiveDev.end(); it++) {
-    if (it->first.second) continue;
-    int cases = casesTestedNaiveDev[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
-  }
-
-  if (!cuSumTimeNaive.empty()) cout << "CUDA recognition stats: " << endl;
-  for (auto it = cuSumTimeNaive.begin(); it != cuSumTimeNaive.end(); it++) {
-    if (!it->first.second) continue;
-    int cases = cuCasesTestedNaive[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
-  }
-  for (auto it = cuSumTimeNaive.begin(); it != cuSumTimeNaive.end(); it++) {
-    if (it->first.second) continue;
-    int cases = cuCasesTestedNaive[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << endl;
-  }
-
-  cout << endl;
-}
-
-bool cuTestGraphSimpleWithStats(const Graph &G, context_t &context, bool runNaive = true) {
+bool cuTestGraphSimple(const Graph &G, context_t &context, bool runNaive = true) {
   string N = to_string(G.n);
   bool res;
 
-  {
-    RaiiTimer t("");
-    res = isPerfectGraph(G);
-    pair<int, bool> p = make_pair(G.n, res);
+  res = isPerfectGraph(G);
 
-    sumTimeDev[p] += t.getElapsedSeconds();
-
-    casesTestedDev[p]++;
-  }
-
+  int cuRes;
   if (runNaive) {
-    RaiiTimer t("");
-    if (isPerfectGraphNaive(G) != res) {
-      cout << "Error NAIVE" << endl << G << endl;
-      exit(1);
-    }
-
-    double elapsed = t.getElapsedSeconds();
-
-    auto p = make_pair(G.n, res);
-    sumTimeNaiveDev[p] += elapsed;
-    casesTestedNaiveDev[p]++;
-  }
-
-  {
-    RaiiTimer t("");
-    int cuRes;
     if ((cuRes = cuIsPerfectNaive(G)) != res) {
       cout << "Error CUDA NAIVE" << endl << G << endl;
       cout << "res: " << res << ", cuRes: " << cuRes << endl;
       exit(1);
     }
-    double elapsed = t.getElapsedSeconds();
-    auto p = make_pair(G.n, res);
-    cuSumTimeNaive[p] += elapsed;
-    cuCasesTestedNaive[p]++;
+  }
+
+  cuRes = cuIsPerfect(G);
+  if (cuRes != res) {
+    cout << "Error CUDA PERFECT" << endl << G << endl;
+    cout << "res: " << res << ", cuRes: " << cuRes << endl;
+    exit(1);
   }
 
   return res;
 }
 void testCuIsPerfectNaiveHand(context_t &context) {
+  cuTestGraphSimple(Graph(8,
+                          "\
+.XXXX...\
+X..XX..X\
+X...X.XX\
+XX...XXX\
+XXX..XX.\
+...XX..X\
+..XXX..X\
+.XXX.XX.\
+"),
+                    context, true);
+
+  cuTestGraphSimple(Graph(8,
+                          "\
+..X..X.X\
+......XX\
+X...XXX.\
+....XX..\
+..XX..X.\
+X.XX....\
+.XX.X..X\
+XX....X.\
+"),
+                    context, true);
+
+  cuTestGraphSimple(Graph(8,
+                          "\
+.XXXXX..\
+X..XX.XX\
+X..X.X.X\
+XXX.X..X\
+XX.X.X..\
+X.X.X.XX\
+.X...X.X\
+.XXX.XX.\
+"),
+                    context, true);
+
   Graph G(11,
           "\
   .XXXXX.....\
@@ -633,7 +597,7 @@ void testCuIsPerfectNaiveHand(context_t &context) {
   ...XX...X..\
   ");
 
-  cuTestGraphSimpleWithStats(G, context, false);
+  cuTestGraphSimple(G, context, true);
 
   G = Graph(10,
             "\
@@ -648,7 +612,7 @@ void testCuIsPerfectNaiveHand(context_t &context) {
   .......X.X\
   ..X..X.XX.\
   ");
-  cuTestGraphSimpleWithStats(G, context, false);
+  cuTestGraphSimple(G, context, true);
 
   G = Graph(11,
             "\
@@ -664,22 +628,7 @@ void testCuIsPerfectNaiveHand(context_t &context) {
     ....X..XX.X\
     .X..X..X.X.\
     ");
-  cuTestGraphSimpleWithStats(G, context, false);
-
-  G = Graph(10,
-            "\
-    .X..X..XX.\
-    X..XXXXXX.\
-    .....X.X..\
-    .X....XX..\
-    XX....X..X\
-    .XX....XX.\
-    .X.XX...XX\
-    XXXX.X...X\
-    XX...XX...\
-    ....X.XX..\
-    ");
-  cout << findOddHoleNaive(G) << endl;
+  cuTestGraphSimple(G, context, true);
 }
 
 void testCuIsPerfectNaive(context_t &context) {
@@ -691,39 +640,127 @@ void testCuIsPerfectNaive(context_t &context) {
   // RaiiProgressBar bar(20 + 20 + 10 + 100 + 100 + 100);
 
   for (int i = 0; i < 20; i++) {
-    cuTestGraphSimpleWithStats(getRandomGraph(10, 0.5), context, false);
+    cuTestGraphSimple(getRandomGraph(10, 0.5), context, true);
     // bar.update(i);
   }
 
   for (int i = 0; i < 20; i++) {
-    cuTestGraphSimpleWithStats(getRandomGraph(11, 0.5), context, false);
+    cuTestGraphSimple(getRandomGraph(11, 0.5), context, true);
     // bar.update(i + 20);
   }
 
   for (int i = 0; i < 10; i++) {
     Graph G = getBipariteGraph(8, 0.5).getLineGraph();
 
-    cuTestGraphSimpleWithStats(G, context, false);
+    cuTestGraphSimple(G, context, true);
 
     // bar.update(i + 40);
   }
 
   // for (int i = 0; i < 100; i++) {
-  //   cuTestGraphSimpleWithStats(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
+  //   cuTestGraphSimple(getBipariteGraph(9, 0.5).getLineGraph(), context, false);
   //   bar.update(i + 50);
   // }
 
   // for (int i = 0; i < 100; i++) {
-  //   cuTestGraphSimpleWithStats(getBipariteGraph(10, 0.5).getLineGraph(), context, false);
+  //   cuTestGraphSimple(getBipariteGraph(10, 0.5).getLineGraph(), context, false);
   //   bar.update(i + 150);
   // }
 
   // for (int i = 0; i < 10; i++) {
-  //   cuTestGraphSimpleWithStats(getBipariteGraph(11, 0.5).getLineGraph(), context, false);
+  //   cuTestGraphSimple(getBipariteGraph(11, 0.5).getLineGraph(), context, false);
   //   bar.update(i*10 + 250);
   // }
 
   // printCuTestStats();
+}
+
+void cutestPerfectVsNaive(context_t &context) {
+  for (int i = 0; i < (bigTests ? 30 : 100); i++) {
+    Graph G = getRandomGraph(bigTests ? 8 : 6, 0.5);
+    cuTestGraphSimple(G, context, true);
+  }
+}
+
+void cutestNonPerfect(context_t &context) {
+  for (int i = 0; i < 100; i++) {
+    Graph G = getNonPerfectGraph(9, 10, 0.5);
+    cuTestGraphSimple(G, context, true);
+  }
+}
+
+void cutestBiparite(context_t &context) {
+  for (int i = 0; i < (bigTests ? 100 : 20); i++) {
+    Graph G = getBipariteGraph(bigTests ? 10 : 7, 0.5);
+    cuTestGraphSimple(G, context, true);
+  }
+}
+
+void cutestLineBiparite(context_t &context) {
+  for (int i = 0; i < (bigTests ? 30 : 20); i++) {
+    Graph G = getBipariteGraph(bigTests ? 9 : 7, 0.5).getLineGraph();
+
+    cuTestGraphSimple(G, context, true);
+  }
+}
+
+void cuTestPerfectHandInteresting(context_t &context) {
+  cuTestGraphSimple(Graph(15,
+                          "\
+...X..........X\
+...X.X...X...X.\
+.......XX.XX...\
+XX..X..........\
+...X.X...X...X.\
+.X..X...X......\
+..........X..X.\
+..X........XXX.\
+..X..X....XX.X.\
+.X..X........X.\
+..X...X.X..X.X.\
+..X....XX.X..X.\
+.......X......X\
+.X..X.XXXXXX...\
+X...........X..\
+"),
+                    context, true);
+
+  cuTestGraphSimple(Graph(17,
+                          "\
+.........X.......\
+..X..X....XX....X\
+.X.XXXX.X..X..XX.\
+..X.X...X...X.X.X\
+..XX..XX..XXXXX.X\
+.XX........X..X.X\
+..X.X..XX.XXX.X.X\
+....X.X.X.....XX.\
+..XX..XX.X.XXXX..\
+X.......X...X....\
+.X..X.X....X..XX.\
+.XX.XXX.X.X.X.XXX\
+...XX.X.XX.X..X..\
+....X...X........\
+..XXXXXXX.XXX..XX\
+..X....X..XX..X..\
+.X.XXXX....X..X..\
+"),
+                    context, true);
+
+  cuTestGraphSimple(Graph(10,
+                          "\
+.XX..XXXXX\
+X.XXX..XXX\
+XX...X.XXX\
+.X..XXX.XX\
+.X.X.XXX.X\
+X.XXX.X.X.\
+X..XXX.XXX\
+XXX.X.X.XX\
+XXXX.XXX..\
+XXXXX.XX..\
+"),
+                    context, true);
 }
 
 int main() {
@@ -740,7 +777,12 @@ int main() {
   testCuContainsHoleOfSize(context);
   testCuContainsOddHoleNaive(context);
   testCuIsPerfectNaiveHand(context);
+  cuTestPerfectHandInteresting(context);
   testCuIsPerfectNaive(context);
+  cutestPerfectVsNaive(context);
+  cutestNonPerfect(context);
+  cutestBiparite(context);
+  cutestLineBiparite(context);
 
   context.synchronize();
 }

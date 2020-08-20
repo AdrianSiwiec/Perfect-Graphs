@@ -33,7 +33,7 @@ int main() {
     RaiiProgressBar bar(Gs.size());
 
     for (int i = 0; i < Gs.size(); i++) {
-      testWithStats(Gs[i], algoCuda, cuIsPerfect);
+      testWithStats(Gs[i], algoCudaNaive, cuIsPerfectNaive);
       bar.update(i + 1);
     }
   }

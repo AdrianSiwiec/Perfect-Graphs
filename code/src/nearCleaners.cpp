@@ -3,10 +3,13 @@
 
 #include "commons.h"
 #include "nearCleaners.h"
+#include "testCommons.h"
 
-bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX) {
+bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, bool gatherStats) {
+  if (gatherStats) StatsFactory::startTestCasePart("Test NC Shortest Paths");
   auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; });
 
+  if (gatherStats) StatsFactory::startTestCasePart("Test NC Rest");
   for (int y1 = 0; y1 < G.n; y1++) {
     if (sX.count(y1) > 0) continue;
 

@@ -6,38 +6,36 @@
 #include "pyramids.h"
 #include "testCommons.h"
 
+bool containsSimpleProhibited(const Graph &G) {
+  return containsJewelNaive(G) || containsPyramid(G) || containsT1(G) || containsT2(G) || containsT3(G);
+}
+
 bool isPerfectGraph(const Graph &G, bool gatherStats) {
-  if (gatherStats) {
-    StatsFactory::startTestCasePart("Simple Structures");
-  }
+  const bool printInterestingGraphs = false;
+
+  if (gatherStats) StatsFactory::startTestCasePart("Simple Structures");
 
   Graph GC = G.getComplement();
-  if (containsJewelNaive(G) || containsJewelNaive(GC)) return false;
+  if (containsSimpleProhibited(G) || containsSimpleProhibited(GC)) return false;
 
-  if (containsPyramid(G) || containsPyramid(GC)) return false;
-
-  if ((containsT1(G) || containsT1(GC)) || (containsT2(G) || containsT2(GC)) ||
-      (containsT3(G) || containsT3(GC)))
-    return false;
-
-  if (gatherStats) {
-    StatsFactory::startTestCasePart("Get Near Cleaners");
-  }
-
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto Xs = getPossibleNearCleaners(G);
 
-  if (gatherStats) {
-    StatsFactory::startTestCasePart("Check Near Cleaners");
-  }
-
   for (auto X : Xs) {
-    if (containsOddHoleWithNearCleanerX(G, X)) return false;
+    if (containsOddHoleWithNearCleanerX(G, X, gatherStats)) {
+      if (printInterestingGraphs) cout << "Interesting graph: " << G << endl;
+      return false;
+    }
   }
 
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto XsC = getPossibleNearCleaners(GC);
 
   for (auto X : XsC) {
-    if (containsOddHoleWithNearCleanerX(GC, X)) return false;
+    if (containsOddHoleWithNearCleanerX(GC, X, gatherStats)) {
+      if (printInterestingGraphs) cout << "Interesting graph: " << G << endl;
+      return false;
+    }
   }
 
   return true;

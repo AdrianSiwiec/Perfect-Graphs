@@ -9,7 +9,7 @@
 void testPerfectVsNaive() {
   int r = rand() % 20;
 
-  if (r == 0) {
+  if (r == 30) {
     Graph G = getRandomGraph(11, getDistr());
     testGraph(G, true);
   } else {
@@ -19,7 +19,7 @@ void testPerfectVsNaive() {
 }
 
 void testLineBiparite() {
-  Graph G = getBipariteGraph(9 + (getDistr() * 5), getDistr()).getLineGraph();
+  Graph G = getBipariteGraph(7 + (getDistr() * 5), getDistr()).getLineGraph();
   testGraph(G, true, true);
 }
 
@@ -34,7 +34,5 @@ int main() {
     testPerfectVsNaive();
     testLineBiparite();
     testNonPerfect();
-
-    printStats();
   }
 }

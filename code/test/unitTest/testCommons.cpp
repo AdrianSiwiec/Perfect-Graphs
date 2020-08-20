@@ -113,5 +113,5 @@ int main() {
   testRandomGraphs();
   testGetRandomPerfect();
   testTuples();
-  testStatsFactory();
+  // testStatsFactory();
 }

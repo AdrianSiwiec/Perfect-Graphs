@@ -211,23 +211,23 @@ bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction) {
   return result;
 }
 
-void printStats() {
-  for (int algo = algoPerfect; algo < algo_last; algo++) {
-    int count = 0;
-    for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-      if (get<0>(it->first) == algo) count++;
-    }
+// void printStats() {
+//   for (int algo = algoPerfect; algo < algo_last; algo++) {
+//     int count = 0;
+//     for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+//       if (get<0>(it->first) == algo) count++;
+//     }
 
-    if (count > 0) cout << algo_names[algo] << " recognition stats: " << endl;
-    for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-      if (get<0>(it->first) == algo) {
-        int cases = casesTested[it->first];
-        cout << "\tn=" << get<2>(it->first) << ", result=" << get<1>(it->first) << ", cases=" << cases
-             << ", avgTime=" << it->second / cases << endl;
-      }
-    }
-  }
-}
+//     if (count > 0) cout << algo_names[algo] << " recognition stats: " << endl;
+//     for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+//       if (get<0>(it->first) == algo) {
+//         int cases = casesTested[it->first];
+//         cout << "\tn=" << get<2>(it->first) << ", result=" << get<1>(it->first) << ", cases=" << cases
+//              << ", avgTime=" << it->second / cases << endl;
+//       }
+//     }
+//   }
+// }
 
 bool StatsFactory::curStarted = false;
 int StatsFactory::testCaseNr = 0;
@@ -346,7 +346,10 @@ double getDistr() {
 }
 
 void testGraph(const Graph &G, bool verbose) {
-  if (verbose) cout << "Testing " << G.n << " vs naive" << endl;
+  if (G.n <= 0) return;
+
+  // if (verbose) cout << "Testing " << G.n << " vs naive" << endl;
+  cout << G.n << "vN " << flush;
 
   bool naivePerfect = testWithStats(G, algoNaive);
 
@@ -362,7 +365,10 @@ void testGraph(const Graph &G, bool verbose) {
 }
 
 void testGraph(const Graph &G, bool result, bool verbose) {
-  if (verbose) cout << "Testing " << G.n << " vs " << result << endl;
+  if (G.n <= 0) return;
+
+  // if (verbose) cout << "Testing " << G.n << " vs " << result << endl;
+  cout << G.n << "v" << result << " " << flush;
 
   bool perfect = testWithStats(G, algoPerfect);
 

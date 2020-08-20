@@ -57,9 +57,8 @@ enum algos { algoPerfect, algoNaive, algoCudaNaive, algoCudaPerfect, algo_last }
 extern string algo_names[];
 
 typedef bool (*cuIsPerfectFunction)(const Graph &G, bool gatherStats);
-
 bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction = nullptr);
-void printStats();
+
 
 struct StatsFactory {
   static void startTestCase(const Graph &G, algos algo);
