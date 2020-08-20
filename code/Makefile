@@ -47,7 +47,7 @@ COBJFILES=$(patsubst %.c, $(COBJDIR)/%.o, $(CSRCFILES))
 UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp)) \
 						  $(patsubst %.cu, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cu)) \
 						  
-PERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cpp))
+PERMATESTFILES=$(patsubst %.cu, $(OBJDIR)/%.e, $(wildcard $(PERMATESTDIR)/*.cu))
 COLORPERMATESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(COLORPERMATESTDIR)/*.cpp))
 NETTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(NETTESTDIR)/*.cpp))
 PERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERFTESTDIR)/*.cpp))

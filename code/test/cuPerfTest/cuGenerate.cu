@@ -6,6 +6,8 @@
 #include "perfect.h"
 #include "testCommons.h"
 
+#include "src/devCode.dev"
+
 int main() {
   srand(time(0));
 
@@ -15,11 +17,13 @@ int main() {
     int counter = 0;
     do {
       G = getRandomGraph(20, p);
+      StatsFactory::startTestCase(G, algoCudaPerfect);
       counter++;
-      if (counter % 100000 == 0) {
-        p = getDistr();
+      if (counter % 100 == 0) {
+        StatsFactory::printStats2();
       }
-    } while (!isPerfectGraph(G, false));
+      StatsFactory::endTestCase(false);
+    } while (!cuIsPerfect(G, true));
 
     cout << G << endl;
   }

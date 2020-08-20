@@ -31,7 +31,7 @@ int main() {
     RaiiProgressBar bar(Gs.size());
 
     for (int i = 0; i < Gs.size(); i++) {
-      testWithStats(Gs[i], algoNaive);
+      testGraph(Gs[i], {algoNaive});
       bar.update(i + 1);
     }
   }

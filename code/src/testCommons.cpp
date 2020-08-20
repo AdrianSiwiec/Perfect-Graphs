@@ -180,37 +180,46 @@ string algo_names[] = {"Perfect     ", "Naive       ", "CUDA Naive  ", "Cuda Per
 default_random_engine generator;
 normal_distribution<double> distribution(0.5, 0.15);
 
-bool testWithStats(const Graph &G, algos algo, cuIsPerfectFunction cuFunction) {
+void testGraph(const Graph &G, vec<algos> algosToTest, vec<cuIsPerfectFunction> cuFunctions) {
+  bool prevResult;
   bool result;
 
-  StatsFactory::startTestCase(G, algo);
+  for (int i = 0; i < algosToTest.size(); i++) {
+    algos algo = algosToTest[i];
+    StatsFactory::startTestCase(G, algo);
 
-  switch (algo) {
-    case algoPerfect:
-      result = isPerfectGraph(G, true);
-      break;
+    switch (algo) {
+      case algoPerfect:
+        result = isPerfectGraph(G, true);
+        break;
 
-    case algoNaive:
-      result = isPerfectGraphNaive(G, true);
-      break;
+      case algoNaive:
+        result = isPerfectGraphNaive(G, true);
+        break;
 
-    case algoCudaNaive:
-      assert(cuFunction != nullptr);
-      result = cuFunction(G, true);
-      break;
+      case algoCudaNaive:
+        assert(cuFunctions[i] != nullptr);
+        result = cuFunctions[i](G, true);
+        break;
 
-    case algoCudaPerfect:
-      assert(cuFunction != nullptr);
-      result = cuFunction(G, true);
-      break;
+      case algoCudaPerfect:
+        assert(cuFunctions[i] != nullptr);
+        result = cuFunctions[i](G, true);
+        break;
 
-    default:
-      throw invalid_argument("TestWithStats invalid argument");
+      default:
+        throw invalid_argument("TestWithStats invalid argument");
+    }
+
+    if (i == 0) {
+      prevResult = result;
+    } else if (prevResult != result) {
+      cerr << "Test Graph Error! " << algo_names[0] << " != " << algo_names[i] << endl;
+      exit(1);
+    }
+
+    StatsFactory::endTestCase(result);
   }
-
-  StatsFactory::endTestCase(result);
-
-  return result;
 }
 
 // void printStats() {
@@ -345,42 +354,6 @@ double getDistr() {
   if (distr <= 0 || distr > 1) distr = 0.5;
 
   return distr;
-}
-
-void testGraph(const Graph &G, bool verbose) {
-  if (G.n <= 0) return;
-
-  // if (verbose) cout << "Testing " << G.n << " vs naive" << endl;
-  cout << G.n << "vN " << flush;
-
-  bool naivePerfect = testWithStats(G, algoNaive);
-
-  bool perfect = testWithStats(G, algoPerfect);
-
-  if (naivePerfect != perfect) {
-    cout << "ERROR: " << endl << "naive=" << naivePerfect << endl << "perfect=" << perfect << endl;
-    cout << G << endl;
-    if (!naivePerfect) cout << findOddHoleNaive(G) << endl;
-  }
-
-  assert(naivePerfect == perfect);
-}
-
-void testGraph(const Graph &G, bool result, bool verbose) {
-  if (G.n <= 0) return;
-
-  // if (verbose) cout << "Testing " << G.n << " vs " << result << endl;
-  cout << G.n << "v" << result << " " << flush;
-
-  bool perfect = testWithStats(G, algoPerfect);
-
-  if (perfect != result) {
-    cout << "Error Test Graph" << endl;
-    cout << G << endl;
-    cout << "Expected " << result << ", got " << perfect << endl;
-  }
-
-  assert(perfect == result);
 }
 
 void printTimeHumanReadable(double time, bool use_cerr) {

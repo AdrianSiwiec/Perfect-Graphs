@@ -397,10 +397,10 @@ __device__ bool devContainsOddHoleWithR(const CuGraph &CG, int *devR, int *devRL
 
 bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const set<int> &sX,
                                        context_t &context, bool gatherStats = false) {
-  if (gatherStats) StatsFactory::startTestCasePart("Test NC Shortest Paths (CPU)");
+  if (gatherStats) StatsFactory::startTestCasePart("Test NC Shortest Paths");
   auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; });
 
-  if (gatherStats) StatsFactory::startTestCasePart("Test NC Copy R to dev");
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy R");
   int *devR;
   int *devRLens;
 
@@ -427,7 +427,7 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
   transform([=] MGPU_DEVICE(int id) { devOddHoleFound[0] = 0; }, 1, context);
   context.synchronize();
 
-  if (gatherStats) StatsFactory::startTestCasePart("Test NC GPU work");
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC work");
   transform(
       [=] MGPU_DEVICE(int id, int CGn, const CuGraph CGGG, int *mark) {
         int x[4];
@@ -456,12 +456,12 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
 bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
   standard_context_t context(0);
 
-  if (gatherStats) StatsFactory::startTestCasePart("Simple Structures (CPU)");
+  if (gatherStats) StatsFactory::startTestCasePart("Simple Structures");
 
   Graph GC = G.getComplement();
   if (containsSimpleProhibited(G) || containsSimpleProhibited(GC)) return false;
 
-  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners (CPU)");
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto Xs = getPossibleNearCleaners(G);
 
   CuGraph CG(G, context);
@@ -471,7 +471,7 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
     if (cuContainsOddHoleWithNearCleanerX(G, CG, X, context, gatherStats)) return false;
   }
 
-  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners (CPU)");
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto XsC = getPossibleNearCleaners(GC);
 
   for (auto X : XsC) {

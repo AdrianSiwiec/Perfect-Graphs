@@ -11,8 +11,8 @@ cuPerfectExec="$scriptDir/../../obj/test/cuPerfTest/cuPerfect.e"
 naiveExec="$scriptDir/../../obj/test/cuPerfTest/naive.e"
 
 perfectTests=(
-  # "perf.t.in"
-  "perfSmaller.t.in"
+  "perf.t.in"
+  # "perfSmaller.t.in"
 )
 
 naiveTests=(
