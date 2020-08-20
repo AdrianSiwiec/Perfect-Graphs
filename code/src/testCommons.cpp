@@ -178,7 +178,9 @@ string algo_names[] = {"Perfect     ", "Naive       ", "CUDA Naive  ", "Cuda Per
 // map<pair<int, bool>, int> casesTestedNaive;
 
 default_random_engine generator;
+default_random_engine generatorWide;
 normal_distribution<double> distribution(0.5, 0.05);
+normal_distribution<double> distributionWide(0.5, 0.20);
 
 void testGraph(const Graph &G, vec<algos> algosToTest, vec<cuIsPerfectFunction> cuFunctions) {
   bool prevResult;
@@ -354,6 +356,14 @@ double getDistr() {
   if (distr <= 0 || distr > 1) distr = 0.5;
 
   return distr;
+}
+
+double getDistrWide() {
+  double distr = distributionWide(generatorWide);
+  if (distr <= 0 || distr > 1) distr = 0.5;
+
+  return distr;
+
 }
 
 void printTimeHumanReadable(double time, bool use_cerr) {

@@ -423,7 +423,7 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
   CUCHECK(cudaMemcpy(devRLens, Rlens, sizeof(int) * Npow2, cudaMemcpyHostToDevice));
 
   int *devOddHoleFound;
-  CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 10));
+  CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 1));
   transform([=] MGPU_DEVICE(int id) { devOddHoleFound[0] = 0; }, 1, context);
   context.synchronize();
 

@@ -9,17 +9,18 @@
 #include "src/devCode.dev"
 
 void testPerfectVsCuNaiveVsCuda() {
-  Graph G = getRandomGraph(14 + getDistr() * 10, getDistr());
+  Graph G = getRandomGraph(14 + getDistr() * 10, getDistrWide());
   testGraph(G, {algoPerfect, algoCudaNaive, algoCudaPerfect}, {nullptr, cuIsPerfectNaive, cuIsPerfect});
 }
 
 void testPerfectVsCuda() {
-  Graph G = getRandomGraph(14 + getDistr() * 15, getDistr());
+  Graph G = getRandomGraph(14 + getDistrWide() * 15, getDistrWide());
   testGraph(G, {algoPerfect, algoCudaPerfect}, {nullptr, cuIsPerfect});
 }
 
 void testPerfectVsCudaLine() {
-  Graph G = getBipariteGraph(11 + getDistr() * 3, getDistr()).getLineGraph();
+  Graph G = getBipariteGraph(11 + getDistrWide() * 3, getDistrWide()).getLineGraph();
+  cerr << G.n << endl;
   testGraph(G, {algoPerfect, algoCudaPerfect}, {nullptr, cuIsPerfect});
 }
 

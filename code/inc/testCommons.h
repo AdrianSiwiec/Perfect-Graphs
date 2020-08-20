@@ -83,6 +83,7 @@ struct StatsFactory {
 };
 
 double getDistr();
+double getDistrWide();
 
 void printTimeHumanReadable(int64_t time, bool use_cerr = true);
 
