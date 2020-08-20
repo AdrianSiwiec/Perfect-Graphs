@@ -19,7 +19,7 @@ void testPerfectVsCuda() {
 }
 
 void testPerfectVsCudaLine() {
-  Graph G = getBipariteGraph(11 + getDistr() * 5, getDistr()).getLineGraph();
+  Graph G = getBipariteGraph(11 + getDistr() * 3, getDistr()).getLineGraph();
   testGraph(G, {algoPerfect, algoCudaPerfect}, {nullptr, cuIsPerfect});
 }
 
