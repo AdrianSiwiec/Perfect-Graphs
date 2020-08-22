@@ -30,13 +30,20 @@ An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ an
 Figure \ref{fig:examplePath} shows an example of a graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
 
 \begin{defn}[subgraph]
-  $G' = (V', E')$ is a \emph{subgraph} of $G = (V, E)$ if $V' \subset V$ and $E' \subset E$.
+  $G' = (V', E')$ is a \emph{subgraph} of $G = (V, E)$ if $V' \subseteq V$ and $E' \subseteq E$.
 \end{defn}
 
 \begin{defn}[induced subgraph]
   If $G' = (V', E')$ is a subgraph of $G$ and it contains \emph{all edges} of $G$ that join two vertices in $V'$, then $G'$ is said to be \emph{induced subgraph} of $G$ and is denoted $G[V']$.
 \end{defn}
-For example $(\{v_1, v_2, v_3\}, \{v_1v_2\})$ is \emph{not} an induced subgraph of the example graph $G_0$, while $(\{v_1, v_2, v_3\}, \{v_1v_2, v_2v_3\}) = G_0[\{v_1, v_2, v_3\}]$ is.
+
+Given a graph $G = (V, E)$ and a set set $X \subseteq V$ by $G\setminus X$ we will denote a induced subgraph $G[V\setminus X]$.
+
+For example $(\{v_1, v_2, v_3\}, \{v_1v_2\})$ is \emph{not} an induced subgraph of the example graph $G_0$, while $(\{v_1, v_2, v_3\}, \{v_1v_2, v_2v_3\}) = G_0[\{v_1, v_2, v_3\}] = G_0 \setminus \{v_0\}$ is.
+
+\begin{defn}[$X$-completeness]
+  Given set $X \subseteq V$, vertex $v \notin X$ is \emph{$X$-complete} if it is adjacent to every node $x \in X$. A set $Y \subseteq V$ is $X$-complete if $X \cap Y = \emptyset$ and every node $y \in Y$ is $X$-complete.
+\end{defn}
 
 \begin{defn}[path]
   A \emph{path} is a graph $P$ of the form
@@ -46,6 +53,16 @@ This path $P$ is usually denoted by $x_1x_2\ldots x_l$ or $x_1 - x_2 - \ldots - 
 
 Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we would add any edge to $G_0$ it would stop being a path (sometimes we call such an edge a \emph{chord}).
 
+
+\begin{defn}[connected graph]
+  A graph $G$ is \emph{connected} if for every pair $\{x, y\} \subseteq V(G)$ of distinct vertices, there is a path from $x$ to $y$. \todo{formal enough?}
+\end{defn}
+
+\begin{defn}[component]
+  A \emph{component} of a graph $G$ is its maximal connected induced subgraph.
+\end{defn}
+
+
 \begin{defn}[cycle]
   A \emph{cycle} is a graph $C$ of the form
   \[ V(C) = \{x_1, x_2, \ldots, x_l\},\quad E(C) = \{x_1x_2, x_2x_3, \ldots, x_{l-1}x_l, x_lx_1\} \]
@@ -53,22 +70,31 @@ Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we
 
 This cycle $C$ is usually denoted by $x_1x_2\ldots x_lx_1$ or $x_1 - x_2 - \ldots - x_l - x_1$. $l = |E(C)|$ is the \emph{length} of the cycle $C$. Sometimes we will denote the cycle of length $l$ as $C_l$.
 
-If a path or a cycle has an odd length, it will be called \emph{odd}. Otherwise, it will be called \emph{even}.
-
 Notice, that a cycle is not a path (nor is a path a cycle). If we add an edge $v_1v_4$ to the path $G_0$ it becomes an even cycle $C_4$.
+
+\begin{defn}[hole]
+  A \emph{hole} is a cycle of length at least four.
+\end{defn}
+
+If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Otherwise, it will be called \emph{even}.
 
 \begin{defn}[complement]
   A \emph{complement} of a graph $G = (V, E)$ is a graph $\overline{G} = (V, {V \choose 2} \setminus E)$, that is two vertices $x, y$ are adjacent in $\overline{G}$ iff they are not adjacent in $G$.
 \end{defn}
 
 Sometimes, we will call a complement of a member of a class $\Gamma$ an \emph{anti-
-$\Gamma$}, e.g. graph $G = (\{v_1, v_2, v_3, v_4\}, \{v_1v_3, v_2v_4\})$ is an anticycle.
+  $\Gamma$}, e.g. graph $G = (\{v_1, v_2, v_3, v_4\}, \{v_1v_3, v_2v_4\})$ is an anticycle.
+
+\begin{defn}[anticomponent]
+  An \emph{anticomponent} of a graph $G$ is an induced subgraph whose complement is a component in $G$.
+\end{defn}
+
 
 \begin{defn}[clique]
   A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected.
 \end{defn}
 
-Therefore an \emph{anticlique} is a graph in which there are no edges. We will also call anticliques \emph{independent sets}. In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subset V$ will be called \emph{independent} (in the context of $G$) iff $G[V']$ is an anticlique.
+Therefore an \emph{anticlique} is a graph in which there are no edges. We will also call anticliques \emph{independent sets}. In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subseteq V$ will be called \emph{independent} (in the context of $G$) iff $G[V']$ is an anticlique.
 
 \begin{defn}[clique number]
   A \emph{clique number} of a graph $G$, denoted as $\omega(G)$, is a cardinality of its largest induced clique.
@@ -82,6 +108,33 @@ Therefore an \emph{anticlique} is a graph in which there are no edges. We will a
   A \emph{chromatic number} of a graph $G$, denoted as $\chi(G)$, is a smallest natural number $k$, for which there exists a $k$-coloring of $G$.
 \end{defn}
 
-% \begin{defn}[independent set]
-  % An \emph{independent set} or 
-% \end{defn}
+\begin{defn}[Berge graph]
+  A graph $G$ is \emph{Berge} if both $G$ and $\overline{G}$ have no odd hole.
+\end{defn}
+
+\begin{defn}[perfect graph]
+  A graph $G$ is \emph{perfect} if for its every induced subgraph $G'$ we have $\chi(G') = \omega(G')$
+\end{defn}
+
+\begin{defn}[C-major vertices]
+  Given a shortest off hole $C$ in $G$, a node $v \in V(G) \setminus V(C)$ is $C-major$ if the set of its neighbors in $C$ is not contained in any 3-node path of $C$.
+  \TODO{a picture of this, clean odd hole, amenable hole}
+\end{defn}
+
+\begin{defn}[clean odd hole]
+  An odd hole $C$ of $G$ is \emph{clean} if no vertex in $G$ is $C$-major.
+\end{defn}
+
+\begin{defn}[cleaner]
+  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{cleaner for $C$} if $X \cap V(C) = \emptyset$ and every $C$-major vertex belongs to $X$.
+\end{defn}
+
+Let us notice, that if $X$ is a cleaner for $C$ then $C$ is a clean hole in $G \setminus X$.
+
+\begin{defn}[near-cleaner]
+  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if $X$ contains all $C$-major vectices and $X \cap V(C)$ is a subset of vertex set of some 3-node path of $C$.
+\end{defn}
+
+\begin{defn}[amenable odd hole]
+  An odd hole $C$ of $G$ is \emph{amenable} if it is a shortest off hole in $G$, it is of length at least 7 and for every anticonnected set $X$ of $C$-major vectices there is a $X$-complete edge in $C$.
+\end{defn}
