@@ -202,6 +202,12 @@ Now, we shall prove the following:
 
 \paragraph{Configurations of type $\T_3$}
 
+\begin{wrapfigure}{r}{0.35\textwidth}
+	\input{tikzpictures/t3.tex}
+	\caption{An example of a $\T_3$.}%
+	\vspace{-1.5cm}
+\end{wrapfigure}
+
 A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such that:
 \begin{itemize}
 	\item $v_1, \ldots v_6$ are distinct vertices.
@@ -210,8 +216,6 @@ A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such 
 	\item $P$ is a path of $G \setminus ( X \cup \{v_1, v_2, v_3, v_4\} )$ between $v_5$ and $v_6$ and no vertex in $P*$ is $X$-complete or adjacent to $v_1$ or adjacent to $v_2$.
 	\item If $v_5v_6$ is an edge, then $v_6$ is not $X$-complete.
 \end{itemize}
-
-\TODO{picture!}
 
 The following algorithm with running time of $O(|V(G)|^6)$ checks whether $G$ contains a configuration of type $T_3$:
 

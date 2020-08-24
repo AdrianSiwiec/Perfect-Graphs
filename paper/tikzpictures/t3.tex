@@ -1,0 +1,46 @@
+\centering\begin{tikzpicture}[scale=.7,simplegraph]
+  \def\ngon{6}
+  \node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] (p) {};
+  \foreach\x in {1,...,\ngon}{\node[] (p\x) at (p.corner \x){$v_\the\numexpr\intcalcMod{\x+3}{6}+1$};}
+
+  \draw (p3) to (p4);
+  \draw (p5) to (p6);
+  \draw (p3) to (p6);
+  \draw (p4) to (p5);
+  \draw (p5) to (p1);
+  \draw (p6) to (p2);
+
+  \draw[dashed] (p3) to (p5);
+  \draw[dashed] (p4) to (p6);
+  \draw[dashed] (p3) to (p1);
+  \draw[dashed] (p4) to (p1);
+  \draw[dashed] (p3) to (p2);
+  \draw[dashed] (p4) to (p2);
+  \draw[dashed] (p6) to (p1);
+
+  \node[minimum size=4mm](x1) at (-1, -4.5){};
+  \node[minimum size=4mm](x2) at (1, -4.5){};
+  \node[draw,dotted,inner sep=3pt, circle,yscale=.5, fit={(x1) (x2)},label=below:{$X$}] {};
+
+  \draw[dashed] (x1) to (x2);
+
+  \draw (p3) to[out=-90] (x1);
+  \draw (p3) to[out=-90, in=150] (x2);
+
+  \draw (p4) to (x1);
+  \draw (p4) to (x2);
+
+  \draw (p1) to[out=0, in=0] (x1);
+  \draw (p1) to[out=0, in=0] (x2);
+
+  \draw[dashed] (p5) to (x1);
+  \draw[dashed] (p6) to (x2);
+
+  \tikzset{decoration={snake,amplitude=.6mm,segment length=4mm,
+        post length=0mm,pre length=0mm}}
+  \draw[decorate] (p1) to [out=90, in=0] (0, 4) to [out=180, in=90] (p2);
+  \node[draw=none] at (0, 4.5) {$P$};
+
+  \draw[dashed] (p4) to (0, 4.1);
+  \draw[dashed] (x2) [out=100, in=-90] to (0, 4.1);
+\end{tikzpicture}%
