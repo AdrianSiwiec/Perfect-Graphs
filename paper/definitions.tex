@@ -25,7 +25,7 @@ We use standard definitions, sourced from the book by \citeauthor{BB98} \citetit
 
 We will only consider finite graphs, that is $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. The size of the vertex set of a graph $G$ will be called the \emph{cardinality} of $G$.
 
-An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{unordered}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
+An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{unordered}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is all vertices $y$ such that $xy$ is an edge. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
 
 Figure \ref{fig:examplePath} shows an example of a graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
 

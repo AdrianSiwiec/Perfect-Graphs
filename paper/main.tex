@@ -237,9 +237,50 @@ The proof of this theorem is quite technical and we will not discuss it here. Se
 
 With \cref{thm:amenableHoles} we can describe the rest of the algorithm.
 
-\begin{alg}[List possible near cleners, 5.1 of \cite{MC05}]
+\begin{alg}[List possible near cleaners, 9.2 of \cite{MC05}]
+	\label{alg:listNearCleaners}
+	Input: A graph $G$.
+
+	\noindent Output: $O(|V(G)|^5)$ subsets of $V(G)$, such that if $C$ is an amenable hole in $G$, then one of the subsets is a near-cleaner for $C$.
+\end{alg}
+\begin{algtext}
+	We will call a triple $(a, b, c)$ of vertices \emph{relevant} if $a, b$ are distinct (possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
+	
+	Given a relevant triple $(a, b, c)$ we can compute the following:
+	\begin{itemize}
+		\item $r(a,b,c) \leftarrow$~the cardinality of the largest anticomponent of $N(a, b)$, that contains a nonneibhbor of $c$, or 0, if $c$ is $N(a, b)$-complete.
+		\item $Y(a,b,c) \leftarrow$~the union of all anticomponents of $N(a, b)$ that have cardinality strictly greater than $r(a, b, c)$.
+		\item $W(a, b, c) \leftarrow$~the anticomponent of $N(a,b) \cup \{c\}$ that contains $c$.
+		\item $Z(a, b, c) \leftarrow$~the set of all $Y(a, b, c) \cup W(a,b,c)$-complete vertices.
+		\item $X(a, b, c) \leftarrow$~$Y(a,b,c) \cup Z(a,b,c)$.
+	\end{itemize}
+
+	For every two adjacent vertices $u, v$ compute the set $N(u, v)$ and list all such sets.
+	For each relevant triple $(a,b,c)$ compute the set $X(a,b,c)$ and list all such sets.
+
+	Output all subsets of $V(G)$ that are the union of a set from the first list and a set from the second list.
+\end{algtext}
+
+To proove the correctness of \cref{alg:listNearCleaners} we will need the following theorem.
+
+\begin{theorem}[9.1 of \cite{MC05}]
+	\label{thm:91}
+	Let $C$ be a shortest odd hole in $G$, with length at least 7. Then there is a relevant triple $(a, b, c)$ of vertices such that
+	\begin{itemize}
+		\item the set of all $C$-major vertices not in $X(a, b, c)$ is anticonnected
+		\item $X(a, b, c) \cap V(C)$ is a subset of the vertex set of some 3-vertex path of $C$.
+	\end{itemize}
+\end{theorem}
+\begin{proof}
+	\TODO{do we want it here? 1-2 pages long}
+\end{proof}
+
+Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c)$ is a near-cleaner for $C$. Therefore the output of the \cref{alg:listNearCleaners} is correct.
+
+\begin{alg}[Test possible near clener, 5.1 of \cite{MC05}]
 	Input: A graph $G$ containing no simple bad structure \todo{define this somewhere}, and a subset $X \subseteq V(G)$.
-	Output: Determines one of the following:
+
+	\noindent Output: Determines one of the following:
 	\begin{itemize}
 		\item $G$ has an odd hole
 		\item There is no shortest odd hole $C$ such that $X$ is a near-cleaner for $C$.
