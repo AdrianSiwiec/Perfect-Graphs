@@ -89,10 +89,6 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 
 \subparagraph{Finding Pyramids}
 
-If $K$ is a pyramid $(a, b_1, b_2, b_3, P_1, P_2, P_3)$ we say its \emph{frame} is the 10-tuple iff
-\TODO{finish it up}
-
-
 First, let us enumerate all 6-tuples $b_1, b_2, b_3, s_1, s_2, s_3$ such that:
 \begin{itemize}
 	\item $\{b_1, b_2, b_3\}$ is a triangle
@@ -231,11 +227,34 @@ We will skip the proof that each graph containing $\T_3$ is not Berge. See parag
 \label{AmenableHoles}
 
 \begin{theorem}
+	\label{thm:amenableHoles}
 	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then every shortest hole in $G$ is amenable.
-	\TODO{Any ideas on what else to say here? List all 9 steps?}
-	\TODO{Dobre pytanie. Te 9 kroków to da się zawrzeć w 1-2 zdaniach każde? Jeśli nie, to tylko napisałbym ogólnikowo, że "jest sekwencja kroków, która to robi, tu jest odnośnik"}
+	% \TODO{Any ideas on what else to say here? List all 9 steps?}
+	% \TODO{Dobre pytanie. Te 9 kroków to da się zawrzeć w 1-2 zdaniach każde? Jeśli nie, to tylko napisałbym ogólnikowo, że "jest sekwencja kroków, która to robi, tu jest odnośnik"}
 \end{theorem}
 
+The proof of this theorem is quite technical and we will not discuss it here. See section 8 of \cite{MC05} for the proof.
+
+With \cref{thm:amenableHoles} we can describe the rest of the algorithm.
+
+\begin{alg}[List possible near cleners, 5.1 of \cite{MC05}]
+	Input: A graph $G$ containing no simple bad structure \todo{define this somewhere}, and a subset $X \subseteq V(G)$.
+	Output: Determines one of the following:
+	\begin{itemize}
+		\item $G$ has an odd hole
+		\item There is no shortest odd hole $C$ such that $X$ is a near-cleaner for $C$.
+	\end{itemize}
+\end{alg}
+\begin{algtext}
+	For every pair $x, y \in V(G)$ of distinct vertices find shortest path $R(x, y)$ between $x, y$ with no internal vertex in $X$. If there is one, let $r(x, y)$ be its length, if not, let $r(x, y)$ be infinite.
+
+	For all $y_1 \in V(G)\setminus X$ and all 3-vertex paths $x_1-x_2-x_3$ of $G\setminus y_1$ we check the following:
+	\begin{itemize}
+		\item $R(x_1, y_1), R(x_2, y_2)$ both exist -- define $y_2$ as the neighbor of $y_1$ in $R(x_2, y_1)$.
+		\item $r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2)$ ($=n$ say)
+		\item $r(x_3, y_1), r(x_3, y_2) \geq n$
+	\end{itemize}
+\end{algtext}
 
 \TODO{Finding and Using near-cleaners.}
 

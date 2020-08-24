@@ -2,7 +2,7 @@
 \usepackage{todonotes}
 \usepackage{wrapfig}
 \usepackage{intcalc}
-\usepackage{amsthm, amsfonts, thmtools}
+\usepackage{amsthm, amsfonts, thmtools, amsmath,amssymb}
 \usepackage{cleveref}
 \usepackage{floatflt}
 
@@ -24,6 +24,15 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{defn}{Definition}[section]
 \renewcommand{\listtheoremname}{List of definitions}
+\newtheoremstyle{break}
+  {\topsep}{\topsep}%
+  {\itshape}{}%
+  {\bfseries}{}%
+  {\newline}{}%
+\theoremstyle{break}
+\newtheorem{alg}{Algorithm}[section]
+\newcommand*{\myproofname}{Begin}
+\newenvironment{algtext}[1][\myproofname]{\begin{proof}[#1] $ $\newline \renewcommand*{\qedsymbol}{\(End\)}}{\end{proof}}
 
 \newcommand{\TODO}{\todo[inline]}
 \newcommand\Lovasz{Lovász }
