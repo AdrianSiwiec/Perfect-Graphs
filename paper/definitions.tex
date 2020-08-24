@@ -91,7 +91,7 @@ Sometimes, we will call a complement of a member of a class $\Gamma$ an \emph{an
 
 
 \begin{defn}[clique]
-  A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected.
+  A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected. We will denote a clique of $n$ vertices as $K_n$.
 \end{defn}
 
 Therefore an \emph{anticlique} is a graph in which there are no edges. We will also call anticliques \emph{independent sets}. In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subseteq V$ will be called \emph{independent} (in the context of $G$) iff $G[V']$ is an anticlique.
@@ -113,6 +113,7 @@ Therefore an \emph{anticlique} is a graph in which there are no edges. We will a
 \end{defn}
 
 \begin{defn}[perfect graph]
+  \label{def:perfectGraph}
   A graph $G$ is \emph{perfect} if for its every induced subgraph $G'$ we have $\chi(G') = \omega(G')$
 \end{defn}
 

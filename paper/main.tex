@@ -90,23 +90,15 @@ TODO
 
 \section{Perfect Graphs}
 
+Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangle and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
 
+Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, $|V| = n$, let us construct a graph $G'$ equal to the union of $G$ and a clique $K_n$. We can see that indeed $\chi(G') = n = \omega(G')$, but it gives us no indication of the structure of $G$ or $G'$.
 
-All graphs in this paper are finite, undirected and have no loops or parallel edges. We denote the chromatic number of graph $G$ by $\chi(G)$ and the cardinality of the largest clique of $G$ by $\omega(G)$. \emph{Coloring} of a graph means assigning every node\todo{node \rightarrow vertex everywhere (seems to be more common name)} of a graph a color. A coloring is \emph{valid} iff every two nodes sharing an edge have different colors. An \emph{optimal} coloring (if exists) is a valid coloring using only $\omega(G)$ colors.
+A definition of perfect graphs (\cref{def:perfectGraph}) states that given a graph $G$, the chromatic number and cardinality of the largest clique of \emph{its every induced subgraph} should be equal. The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum clique problem, and maximum independent set problem can be solved in polynomial time \cite{grotschel1993}
 
-Given a graph $G = (V,E)$, sometimes by $V(G)$ and $E(G)$ we will denote a set of nodes and edges of $G$. Given a set $X \subseteq V$ by $G[X]$ we will denote a graph induced on $X$. A graph $G$ is \emph{perfect} iff for all $X \subseteq V(G)$ we have $\chi(G[X]) = \omega(G[X])$.
-
-\paragraph{Definitions and conventions}
-	\todo{Where should we put it? Should we put all definitions here, or leave them in text?}
-\begin{itemize}
-	\item By solid lines we will mark edges, by dashed lines we will mark nonedges, when significant. Sometimes nonedges will not be marked in order not to clutter the image.
-	\item A node is $X$-complete in $G$ iff it is adjacent to all nodes in $X$.
-	\item Given a path $P$, by $P^*$ we will denote its inside.
-\end{itemize}
-
-\TODO{Give some examples why perfect graphs are interesting, some subclasses, and problems that are solvable for perfect graphs, including recognition and coloring}
-
-Given a graph $G$, its \emph{complement} $\overline{G}$ is a graph with the same vertex set and in which two distinct nodes $u, v$ are connected in $\overline{G}$ iff they are not connected in $G$. For example a clique in a graph becomes an independent set in its complement. A perfect graph theorem, first conjured by Berge in 1961~\cite{CB61} and then proven by \Lovasz in 1972~\cite{LL72} states that a graph is perfect iff its complement graph is also perfect. \todo{Should we give some proof of that here? Maybe based on proof in \cite{GC03}}
+\begin{theorem}{Perfect graph theorem}
+A perfect graph theorem, first conjured by Berge in 1961~\cite{CB61} and then proven by \Lovasz in 1972~\cite{LL72} states that a graph is perfect iff its complement graph is also perfect. \todo{Should we give some proof of that here? Maybe based on proof in \cite{GC03}}
+\end{theorem}
 
 A \emph{hole} is an induced chordless cycle of length at least 4. An \emph{antihole} is an induced subgraph whose complement is a hole. A \emph{Berge} graph is a graph with no holes or antiholes of odd length.
 
