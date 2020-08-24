@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 \usepackage{import}
 
 \import{./}{preamble.tex}
@@ -23,10 +23,10 @@
 
 \pagebreak
 
-\section*{Definitions}
+\chapter*{Definitions}
 \input{definitions.tex}
 
-\section{Perfect Graphs}
+\chapter{Perfect Graphs}
 
 Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangle and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
 
@@ -40,7 +40,7 @@ One of properties of perfect graphs is the \emph{perfect graph theorem} first co
 	A graph is perfect if and only if its complement graph is also perfect. \todo{Should we give some proof of that here? Maybe based on proof in \cite{GC03}}
 \end{theorem}
 
-\subsection{Strong Perfect Graph Theorem}
+\section{Strong Perfect Graph Theorem}
 
 Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd hole and no odd antihole is called \emph{Berge} (\cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
 
@@ -54,18 +54,18 @@ In 1961 Berge conjured that a graph is perfect iff it contains no odd hole and n
 \TODO{How long and detailed overview of the proof should we provide?}
 \TODO{Znakomite pytanie. Generalnie ponieważ dowód jest drobiazgowy i trikowy, to wystarczy "z lotu ptaka" tj. to, co Chudnovsky i Seymour piszą w pracach popularnych i referują w wystąpieniach gościnnych typu te nagrania na YT. Głębiej nie ma sensu. Warto podkreślić, że technika dowodu i sam algorytm są zależne na dużo głębszym poziomie niż widać tj. ktoś mając dowód Stron Perfect Graph Theorem pewnie nie rozgryzłby algorytmu i vice versa.}
 
-\section{Recognizing Berge Graphs}
+\chapter{Recognizing Berge Graphs}
 
 The following is based on the paper by Maria Chudnovsky et al. \citetitle*[]{MC05}. We will not provide full proof of its correctness, but will aim to show the intuition behind the algorithm.
 
-\subsection{Recognition algorithm Overview}
+\section{Recognition algorithm Overview}
 
 Berge graph recognition algorithm could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple structures as a induced subgraph (\ref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole.(\ref{AmenableHoles}).
 
-\subsubsection{Simple structures}
+\subsection{Simple structures}
 \label{SimpleStructures}
 
-\paragraph{Pyramids}
+\subsubsection{Pyramids}
 
 % \begin{floatingfigure}{0.35\textwidth}
 
@@ -87,7 +87,7 @@ We will say that $a$ can be \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ 
 
 It is easy to see that every graph containing a pyramid contains an odd hole -- at least two of the paths $P_1$, $P_2$, $P_3$ will have the same parity.
 
-\subparagraph{Finding Pyramids}
+\paragraph{Finding Pyramids}
 
 First, let us enumerate all 6-tuples $b_1, b_2, b_3, s_1, s_2, s_3$ such that:
 \begin{itemize}
@@ -128,7 +128,7 @@ If after examining all choices of $b_1, b_2, b_3, s_1, s_2, s_3$ we find no pyra
 \TODO{some proofs}
 
 
-\paragraph{Jewels}
+\subsubsection{Jewels}
 
 % \begin{wrapfigure}[7]{r}{0.35\textwidth}
 \begin{wrapfigure}{r}{0.35\textwidth}
@@ -149,11 +149,11 @@ Five vertices $v_1, \ldots, v_5$ and a path $P$ form a \emph{jewel} iff:
 
 Most obvious way to find a jewel would be to enumerate all choices of $v_1, \ldots v_5$, check if a choice is correct and if it is try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole algorithms takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
 
-\paragraph{Configurations of type $\T_1$}
+\subsubsection{Configurations of type $\T_1$}
 
-A configuration of type $\T_1$ is a hole of length 5. To find it we simply iterate all choices of paths of length of 4, and check if there exists a fifth vertex to complete the hole. See paragraph \ref{Optimizations} for more implementation details.
+A configuration of type $\T_1$ is a hole of length 5. To find it we simply iterate all choices of paths of length of 4, and check if there exists a fifth vertex to complete the hole. See \cref{Optimizations} for more implementation details.
 
-\paragraph{Configurations of type $\T_2$}
+\subsubsection{Configurations of type $\T_2$}
 
 % \begin{wrapfigure}[15]{r}{0.35\textwidth}
 \begin{wrapfigure}{r}{0.35\textwidth}
@@ -196,7 +196,7 @@ Now, we shall prove the following:
 	\end{itemize}
 \end{proof}
 
-\paragraph{Configurations of type $\T_3$}
+\subsubsection{Configurations of type $\T_3$}
 
 \begin{wrapfigure}{r}{0.35\textwidth}
 	\input{tikzpictures/t3.tex}
@@ -221,9 +221,9 @@ Then, for each choice of $v_4$ that is adjacent to $v_1$ and not to $v_2$ and $v
 
 To see that the algorithm below has a running time of $O(|V(G)|^6)$, let us note that for each triple $v_1, v_2, v_5$ we examine, of which there are $O(|V(G)|^3)$, there are linear many choices of $X$, each taking $O(|V(G)|^2)$ time to process and generating a linear many choices of $v_4$ which take a linear time to process in turn. This gives us the total running time of $O(|V(G)|^6)$.
 
-We will skip the proof that each graph containing $\T_3$ is not Berge. See paragraph 6.7 of \cite{MC05} for the proof.
+We will skip the proof that each graph containing $\T_3$ is not Berge. See section 6.7 of \cite{MC05} for the proof.
 
-\subsubsection{Amenable holes.}
+\subsection{Amenable holes.}
 \label{AmenableHoles}
 
 \begin{theorem}
@@ -301,11 +301,11 @@ Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a
 
 \TODO{Overview of proof of why algorithm using Half-Cleaners is correct.}
 
-\subsection{Implementation}
+\section{Implementation}
 
 Anything interesting about algo/data structure?\\
 
-\subsubsection{Optimizations}\label{Optimizations}
+\subsection{Optimizations}\label{Optimizations}
 Bottlenecks in performance (next path, are vectors distinct etc).\\
 \TODO{In our graph preprocessing we have a pointer to next edge in order to speed up generating next path.}
 \TODO{We used callgrind to get idea of methods crucial for time.}
@@ -315,11 +315,11 @@ Bottlenecks in performance (next path, are vectors distinct etc).\\
 
 Validity tests - unit tests, tests of bigger parts, testing vs known answer and vs naive.
 
-\subsection{Parallelism with CUDA (?)}
+\section{Parallelism with CUDA (?)}
 
 TODO
 
-\subsection{Experiments}
+\section{Experiments}
 
 Naive algorithm - brief description, bottlenecks optimizations (makes huge difference).\\
 
@@ -329,9 +329,9 @@ Results and Corollary - almost usable algorithm.
 
 
 
-\section{Coloring Berge Graphs}
+\chapter{Coloring Berge Graphs}
 
-\subsection{Ellipsoid method}
+\section{Ellipsoid method}
 
 Description.\\
 
@@ -339,7 +339,7 @@ Implementation.\\
 
 Experiments and results.\\
 
-\subsection{Combinatorial Method}
+\section{Combinatorial Method}
 
 Cite the paper.\\
 
@@ -349,7 +349,7 @@ On its complexity - point to appendix for pseudo-code.
 \appendixpage
 \addappheadtotoc
 
-\section{Perfect Graph Coloring algorithm}
+\chapter{Perfect Graph Coloring algorithm}
 TODO
 
 

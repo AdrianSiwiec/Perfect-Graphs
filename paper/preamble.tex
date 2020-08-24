@@ -19,10 +19,10 @@
 ]{biblatex}
 \addbibresource{bbl.bib}
 
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{defn}{Definition}[section]
+\newtheorem{defn}{Definition}[chapter]
 \renewcommand{\listtheoremname}{List of definitions}
 \newtheoremstyle{break}
   {\topsep}{\topsep}%
@@ -30,7 +30,7 @@
   {\bfseries}{}%
   {\newline}{}%
 \theoremstyle{break}
-\newtheorem{alg}{Algorithm}[section]
+\newtheorem{alg}{Algorithm}[chapter]
 \newcommand*{\myproofname}{Begin}
 \newenvironment{algtext}[1][\myproofname]{\begin{proof}[#1] $ $\newline \renewcommand*{\qedsymbol}{\(End\)}}{\end{proof}}
 
