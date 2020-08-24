@@ -1,0 +1,31 @@
+\usepackage{appendix}
+\usepackage{todonotes}
+\usepackage{wrapfig}
+\usepackage{intcalc}
+\usepackage{amsthm, amsfonts, thmtools}
+\usepackage{cleveref}
+\usepackage{floatflt}
+
+\usepackage{tikz}
+\tikzset{
+    simplegraph/.style={every node/.style={draw,circle, inner sep=0pt, minimum size=6mm}},
+}
+\usetikzlibrary{snakes}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{positioning, fit, calc}
+
+\usepackage[
+	style=numeric
+]{biblatex}
+\addbibresource{bbl.bib}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{defn}{Definition}[section]
+\renewcommand{\listtheoremname}{List of definitions}
+
+\newcommand{\TODO}{\todo[inline]}
+\newcommand\Lovasz{Lovász }
+\newcommand\T{\mathcal{T}}
+\crefname{lemma}{Lemma}{Lemmas}

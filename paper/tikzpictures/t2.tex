@@ -1,0 +1,34 @@
+\centering\begin{tikzpicture}[scale=0.7,simplegraph]
+  \node(v1) at (0,0) {$v_1$};
+  \node(v2) at (1.5,0) {$v_2$};
+  \node(v3) at (3,0) {$v_3$};
+  \node(v4) at (4.5,0) {$v_4$};
+
+  \draw (v1) to (v2);
+  \draw (v2) to (v3);
+  \draw (v3) to (v4);
+
+  \tikzset{decoration={snake,amplitude=.6mm,segment length=6mm,
+        post length=0mm,pre length=0mm}}
+  \draw[decorate] (v1) to [out=90, in=180] (4.5/2, 3) to [out=0, in=90] (v4);
+  \node[draw=none] at (4.5/2, 3.5) {$P$};
+
+  \draw[dashed] (v2) to (.7,2.5);
+  \draw[dashed] (v3) to (.7,2.5);
+  \draw[dashed] (v2) to (3.8,2.5);
+  \draw[dashed] (v3) to (3.8,2.5);
+
+  \node[minimum size=4mm](x1) at (1.2, -2){};
+  \node[minimum size=4mm](x2) at (3.3, -2){};
+  \node[draw,dotted,inner sep=3pt, circle,yscale=.5, fit={(x1) (x2)},label=below:{$X$}] {};
+
+  \draw[dashed] (x1) to (x2);
+  \draw(v1) to (x1);
+  \draw(v2) to (x1);
+  \draw(v4) to (x1);
+  \draw(v1) to (x2);
+  \draw(v2) to (x2);
+  \draw(v4) to (x2);
+
+  % \draw (a) to (b2);
+\end{tikzpicture}%

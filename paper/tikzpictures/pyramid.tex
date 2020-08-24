@@ -1,0 +1,28 @@
+\centering\begin{tikzpicture}[scale=0.7,simplegraph]
+  \node(a) at (0,0) {a};
+  \node(b1) at (-2,-6) {$b_1$};
+  \node(b2) at (0,-4.268) {$b_2$};
+  \node(b3) at (2,-6) {$b_3$};
+
+  \node(P12) at (-2/4, -6/4) {\small$P_{12}$};
+  \node(P13) at (-4/4, -12/4) {\small$P_{13}$};
+  \node(P14) at (-6/4, -18/4) {\small$P_{14}$};
+
+  \node(P32) at (2/3, -6/3) {\small$P_{32}$};
+  \node(P33) at (4/3, -12/3) {\small$P_{33}$};
+
+  \draw (b1) to (b3);
+  \draw (b1) to (b2);
+  \draw (b2) to (b3);
+
+  \draw (a) to (P12);
+  \draw (P12) to (P13);
+  \draw (P13) to (P14);
+  \draw (P14) to (b1);
+
+  \draw (a) to (P32);
+  \draw (P32) to (P33);
+  \draw (P33) to (b3);
+
+  \draw (a) to (b2);
+\end{tikzpicture}%

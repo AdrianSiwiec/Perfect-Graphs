@@ -1,0 +1,20 @@
+\centering\begin{tikzpicture}[scale=0.7,simplegraph]
+  \def\ngon{5}
+  \node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] (p) {};
+  \foreach\x in {1,...,\ngon}{\node[] (p\x) at (p.corner \x){$v_\the\numexpr\intcalcMod{\x+3}{5}+1$};}
+  %p1 - v5, p2 - v1 ...
+  \draw (p1) to (p2);
+  \draw (p2) to (p3);
+  \draw (p3) to (p4);
+  \draw (p4) to (p5);
+  \draw (p1) to (p5);
+
+  \draw[dashed] (p2) to (p5);
+  \draw[dashed] (p2) to (p4);
+  \draw[dashed] (p3) to (p5);
+
+  \tikzset{decoration={snake,amplitude=.6mm,segment length=6mm,
+        post length=0mm,pre length=0mm}}
+  \draw[decorate] (p2) to [out=-100, in=180] (0, -5) to [out=0, in=-80] (p5);
+  \node[draw=none] at (0, -4.7) {$P$};
+\end{tikzpicture}
