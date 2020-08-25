@@ -1,0 +1,98 @@
+\section{Coloring Perfect Graphs}
+
+A natural problem for perfect graphs is a problem of coloring them. In 1988 Martin Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in section \cref{sec:ellipsoidMethod}. Hovewer due to its use of the ellipsoid method this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
+
+There has been much progress on the quest of finding a more classical algorithm coloring perfect graphs, without the use of ellipsoid method (see \cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this. \todo{better wording of this paragraph}
+
+\subsection{Ellipsoid method}
+\label{sec:ellipsoidMethod}
+
+\subsubsection{\Lovasz number}
+\TODO{background, definition}
+
+\begin{theorem}[\Lovasz "sandwich theorem"]
+  For any graph $G$:
+  $$ \omega(G) \leq \vartheta(\overline{G}) \leq \chi(G) $$
+\end{theorem}
+
+Because in perfect graphs $\omega(G) = \chi(G)$, we get $\omega(G) = \vartheta(G) = \chi(G)$.
+
+\subsubsection{Computing \boldmath$\vartheta$}
+\TODO{TODO}
+
+\subsubsection{Maximum cardinality stable set}
+
+\TODO{cite the paper on using theta to color.}
+
+Given graph $G$, recall that stability number of $G$ is equal clique number of the complement of $G$. This gives us a way to compute $\alpha(G)$ for any perfect graph $G$.
+
+In fact, to calculate $\chi(\overline{G})$ and $\alpha(G)$ we only need an approximated value of $\vartheta(G)$ with precision $< \frac{1}{2}$.
+
+We will now show how to find a stable set in $G$ of size $\alpha(G)$.
+
+\begin{alg}[maximum cardinality stable set in a perfect graph]
+  \label{alg:maxStableSet}
+  Input: A perfect graph $G = (V, E)$.
+
+  \noindent Output: A maximum cardinality stable set in $G$.
+\end{alg}
+\begin{algtext}
+  Let $v_1, \ldots v_n$ be an ordering of vertices of $G$. We will construct a sequence of induced subgraphs $G = G_0 \supseteq G_1 \supseteq \ldots \supseteq G_n$, so that $G_n$ is a required stable set.
+
+  Let $G_0 \leftarrow G$. Then, for each $i \geq 1$, compute $\alpha(G_{i-1} \setminus v_i)$. If $\alpha(G_{i-1} \setminus v_i) = \alpha(G)$, then set $G_i \leftarrow G_{i-1} \setminus \{v_i\}$, else set $G_i \leftarrow G_{i-1}$.
+
+  Return $G_n$.
+\end{algtext}
+
+Let us proove that $G_n$ is indeed a stable set. Suppose otherwise and let $v_iv_j$ be an edge in $G_n$ with $i < j$ and $i$ minimal. But then $\alpha(G_{i-1} \setminus v_i) = \alpha(G_{i-1}) = \alpha(G)$ so by our construction $v_i$ is not in $G_i$ and $v_iv_j$ is not an edge of $G_n$. Therefore there are no edges in $G_n$.
+
+Because at every step we have $\alpha(G_i) = \alpha(G_{i-1})$, therefore $\alpha(G_n) = \alpha(G)$, so $G_n$ is required maximum cardinality stable set.
+
+The running time of \cref{alg:maxStableSet} is polynomial, because we construct $n$ auxiliary graphs, each requiring calculating $\alpha$ once plus additional $O(|V|^2)$ time for constructing the graph.
+
+Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ in the following manner. Create graph $G'$ by replacing every node $v$ by a set $W_v$ of $w(v)$ nonadjacent nodes, making two nodes $x \in W_v$, $y \in W_u$ adjacent in $G'$ iff the nodes $v$, $u$ are adjacent in $G$. Then calculate a maximum cardinality stable set in $G'$ (we remark that $G'$ is still perfect because every new introduced hole is even) and return a result of those vertices in $G$ whose any (and therefore all) copies were chosen. We will use this technique later on.
+
+\subsubsection{Stable set intersecting all maximum cardinality cliques}
+Next, let us show how to find a stable set intersecting all the maximum cardinality cliques of $G$.
+
+\begin{alg}
+  \label{alg:ssIntersectingCliques}
+  Input: A perfect graph $G = (V, E)$.
+
+  \noindent Output: A stable set which intersects all the maximum cardinality cliques of $G$.
+\end{alg}
+\begin{algtext}
+  We will create a list $Q_1, \ldots Q_t$ of all maximum cardinality cliques of $G$.
+
+  Let $Q_1 \leftarrow$ a maximum cardinality clique of $G$. We calculate this by running \cref{alg:maxStableSet} on $\overline{G}$.
+
+  Now suppose $Q_1, \ldots, Q_t$ have been found. We show how to calculate $Q_{t+1}$ or see that we are done.
+
+  Let us define a weight function $w : V \rightarrow \mathbb{N}$, so that for $v \in V$, $w(v)$ is equal to the number of cliques $Q_1, \ldots Q_t$ that contain $v$.
+
+  Assign $S \leftarrow$ the maximum $w$-weighted stable set, as described in a remark to \cref{alg:maxStableSet}. It is easy to see that $S$ has weight $t$, which means that $S$ meets each of $Q_1, \ldots Q_t$.
+
+  If $\omega(G \setminus S) < \omega(G)$, then $S$ meets all the maximum cardinality cliques in G so we return $S$. Otherwise we find a maximum cardinality clique in $G \setminus S$ (it will be of size $\omega(G)$, because $\omega(G \setminus S) = \omega(G)$), add it to our list as $Q_{t+1}$ and continue with longer list.
+
+\end{algtext}
+
+There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single clique to the list of maximum cardinality cliques requires constructing auxiliary graph for weighted maximum stable set, which is of size $O(V^2)$ and running \cref{alg:maxStableSet} on it. Therefore total running time is polynomial.
+
+\subsubsection{Minimum coloring}
+
+\begin{alg}
+  \label{alg:minColoring}
+  Input: A perfect graph $G = (V, E)$.
+
+  \noindent Output: A coloring of $G$ using $\chi(G)$ colors.
+\end{alg}
+\begin{algtext}
+  If $G$ is equal to its maximum cardinality stable set, color all verces one color and return.
+
+  Else find $S$ intersecting all maximum cardinality cliques of $G$ (\cref{alg:ssIntersectingCliques}). Color recursively all vertices of $G \setminus S$ with $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$ colors and all vertices of $S$ with one additional color.
+\end{algtext}
+
+We will call recursion at most $O(|V|)$ times, each step of recursion is polynomial in time. Therefore the running time of \cref{alg:minColoring} is polynomial.
+
+\subsection{Classical algorithms}
+\label{sec:classicalColoring}
