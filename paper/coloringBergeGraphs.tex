@@ -7,6 +7,22 @@ There has been much progress on the quest of finding a more classical algorithm 
 \subsection{Ellipsoid method}
 \label{sec:ellipsoidMethod}
 
+\subsubsection{Background}
+
+\begin{wrapfigure}{r}{0.35\textwidth}
+  \label{fig:c5}
+	\input{tikzpictures/c5.tex}
+	\caption{Example noisy channel}%
+	% \vspace{-0.5cm}
+	% \end{floatingfigure}
+\end{wrapfigure}
+
+Let us first discuss the background in which perfect graphs first arose. Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) with in which vertices correspond to signal values and two vertices are connected iff values they represent can be confused.
+
+We are interested in transission without possibility of confusion. In other words, we are interested in the Shannon capacity of the channel modeled by a graph \cite{Lovasz1979}. For this example it is possible for two values to be transmited without ambiguity e.g. values 1 and 4, which allows us to communicate $2^n$ bits of information in $n$ steps. But we could do better, for example we could communicate five two-step codewords e.g. "00", "12", "24", "43", "31". Each pair of these codewords includes at least one position where its values differ by two or more modulo 5, which allows the recipent to distinguish them without confusion.  This allows us to send $5^{n / 2}$ bits of information in $n$ steps, or effectively send $(5^{n/2})^{1/n} = \sqrt{5}$ bits per step.
+
+Such methods provide a lower bound on the Shannon capacity of a graph
+
 \subsubsection{\Lovasz number}
 \TODO{background, definition}
 

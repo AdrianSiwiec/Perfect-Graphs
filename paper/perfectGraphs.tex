@@ -6,14 +6,16 @@ A definition of perfect graphs (\cref{def:perfectGraph}) states that given a gra
 
 The most fundamental problem -- the problem of recognizing perfect graphs -- was open since its posing in 1961 until recently. Its solution, a polynomial algorithm recognizing perfect graphs is a union of the strong perfect graph theorem (\cref{sec:SPGT}) stating that a graph is perfect if and only if it is Berge (\cref{def:bergeGraph}) and an algorithm for recognizing Berge graphs in polynomial time (\cref{sec:recognizingBerge}).
 
+Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003} algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \cref{sec:ellipsoidMethod}.
+
+\section{Strong Perfect Graph Theorem}
+\label{sec:SPGT}
+
 The first step to solve the problem of recognizing perfect graphs was the \emph{(weak) perfect graph theorem} first conjured by Berge in 1961~\cite{CB61} and then proven by \Lovasz in 1972~\cite{LL72}.
 
 \begin{theorem}[Perfect graph theorem]
 	A graph is perfect if and only if its complement graph is also perfect. \todo{Should we give some proof of that here? Maybe based on proof in \cite{GC03}}
 \end{theorem}
-
-\section{Strong Perfect Graph Theorem}
-\label{sec:SPGT}
 
 Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd hole and no odd antihole is called \emph{Berge} (\cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
 
@@ -217,7 +219,7 @@ With \cref{thm:amenableHoles} we can describe the rest of the algorithm.
 \end{alg}
 \begin{algtext}
 	We will call a triple $(a, b, c)$ of vertices \emph{relevant} if $a, b$ are distinct (possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
-	
+
 	Given a relevant triple $(a, b, c)$ we can compute the following:
 	\begin{itemize}
 		\item $r(a,b,c) \leftarrow$~the cardinality of the largest anticomponent of $N(a, b)$, that contains a nonneibhbor of $c$, or 0, if $c$ is $N(a, b)$-complete.
