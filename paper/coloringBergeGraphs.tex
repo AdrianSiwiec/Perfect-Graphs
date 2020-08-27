@@ -1,6 +1,6 @@
 \section{Coloring Perfect Graphs}
 
-A natural problem for perfect graphs is a problem of coloring them. In 1988 Martin Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in section \cref{sec:ellipsoidMethod}. Hovewer due to its use of the ellipsoid method this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
+A natural problem for perfect graphs is a problem of coloring them. In 1988 Martin Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in section \cref{sec:ellipsoidMethod}. However due to its use of the ellipsoid method this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
 
 There has been much progress on the quest of finding a more classical algorithm coloring perfect graphs, without the use of ellipsoid method (see \cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this. \todo{better wording of this paragraph}
 
@@ -8,8 +8,8 @@ There has been much progress on the quest of finding a more classical algorithm 
 \label{sec:ellipsoidMethod}
 
 \subsubsection{Shannon Capacity of a graph}
-
-The polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semi-definite matrice. The connection of coloring graphs and the cones of semi-definite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this is the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
+ 
+The polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semi-definite matrices. The connection of coloring graphs and the cones of semi-definite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this is the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
 
 \begin{wrapfigure}{r}{0.35\textwidth}
   \label{fig:c5}
@@ -18,13 +18,13 @@ The polynomial technique of coloring perfect graphs known so far arose in the fi
 	% \vspace{-0.5cm}
 \end{wrapfigure}
 
-Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) with in which vertices correspond to signal values and two vertices are connected iff values they represent can be confused.
+Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected iff values they represent can be confused.
 
-We are interested in transmission without possibility of confusion. For this example it is possible for two values to be transmited without ambiguity e.g. values 1 and 4, which allows us to send $2^n$ non-confoundable messages in $n$ steps. But we could do better, for example we could communicate five two-step codewords e.g. "00", "12", "24", "43", "31". Each pair of these codewords includes at least one position where its values differ by two or more modulo 5, which allows the recipent to distinguish them without confusion.  This allows us to send $5^{n / 2}$ non-confoundable messages in $n$ steps.
+We are interested in transmission without possibility of confusion. For this example it is possible for two values to be transmitted without ambiguity e.g. values 1 and 4, which allows us to send $2^n$ non-confoundable messages in $n$ steps. But we could do better, for example we could communicate five two-step codewords e.g. "00", "12", "24", "43", "31". Each pair of these codewords includes at least one position where its values differ by two or more modulo 5, which allows the recipient to distinguish them without confusion.  This allows us to send $5^{n / 2}$ non-confoundable messages in $n$ steps.
 
-Let us be more precise. Given a graph $G$ modeling a communication channel and a number $k \geq 1$ we say that two messages $v_1v_2\ldots v_k$, $w_1w_2\ldots w_k \in G(V)^k$ of lenght $k$ are non-confoundable iff there is $1 \leq i \leq k$ such that $v_i$, $w_i$ are non-confoundable. We are interested in the maximum rate at which we can reliably transmit information (the \emph{Shannon capacity} of the channel defined by $G$) For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$.
+Let us be more precise. Given a graph $G$ modeling a communication channel and a number $k \geq 1$ we say that two messages $v_1v_2\ldots v_k$, $w_1w_2\ldots w_k \in G(V)^k$ of length $k$ are non-confoundable iff there is $1 \leq i \leq k$ such that $v_i$, $w_i$ are non-confoundable. We are interested in the maximum rate at which we can reliably transmit information (the \emph{Shannon capacity} of the channel defined by $G$).
 
-To describe longer messages we indroduce \emph{Strong Product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ iff $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ -- which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$. 
+For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$. To describe longer messages we use \emph{Strong Product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ iff $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ -- which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$. 
 
 Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graphs (polynomial or not). If we could calculate $\alpha(G^k)$ for a first few values of $k$ (we will show how to do it in \cref{alg:maxStableSet}) we could have a lower bound on $\Theta(G)$. Let us now turn into search for some usable upper bound.
 
@@ -38,7 +38,7 @@ Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ 
 
 It turns out, that we can obtain a similar representation of the nodes of $C_5^k$ by unit vectors $v_i \in \mathbb{R}^3k$, so that any two non-adjacent nodes are labeled with orthogonal vectors (this representation is sometimes called the \emph{orthogonal representation} \cite{Lovsz1989Orthogonal}). Moreover, we still get $e_1^\intercal v_i = 5^{-k/4}$ for every $i \in V(C_5^k)$ (the proof is quite technical and we omit it here).
 
-If $S$ is any stable set in $C_5^k$, then $\{v_i, i \in S\}$ is a set of mutually orthogonal unit vectors so we get 
+If $S$ is any stable set in $C_5^k$, then $\{v_i, i \in S\}$ is a set of mutually orthogonal unit vectors so we get \todo{why?}
 $$\sum\limits_{i\in S}(e_1^\intercal v_i)^2 \leq |e_1|^2 = 1$$ 
 (if $v_i$ formed a basis then this inequality would be an equality).
 
@@ -47,15 +47,19 @@ On the other hand each term on the left hand side is $5^{-1/4}$, so the left han
 This method extends to any graph $G$ in place of $C_5$. All we have to do is find a orthogonal representation that will give us the best bound. So, we can define the \emph{\Lovasz number} of a graph $G$ as \todo{this equation does not really follow from the thought process above, it is a slightly different definition}: 
 $$\vartheta(G) = \min\limits_{c,U} \max\limits_{i\in V} \frac{1}{(c^\intercal u_i)^2},$$
 
-where $c$ is a unit vector in $\mathbb{R}^{|V(G)|}$ and $U$ is a orthogonal representation of $G$. But how can we construct an optimum (or even good) orthogonal representation? It turns out that it can be computed in polynomial time using semidefinite optimization.
+where $c$ is a unit vector in $\mathbb{R}^{|V(G)|}$ and $U$ is a orthogonal representation of $G$. 
+
+Contrary to \Lovasz's first hope \cite{Lovasz1979} $\vartheta(G)$ does not always equal $\Theta(G)$, it is only an upper bound on Shannon capacity of the graph. However, these two equal in some graphs, including all perfect graphs, as is demonstrated in the \Lovasz "sandwich theorem" \cref{thm:sandwich}.
+
+But how can we construct an optimum (or even good) orthogonal representation? It turns out that it can be computed in polynomial time using semidefinite optimization.
 
 \subsection{Computing \boldmath$\vartheta$}
 
 \TODO{TODO}
 
-\subsection{Coloring perfect graph using ellipsoid method}
 
 \begin{theorem}[\Lovasz "sandwich theorem"]
+  \label{thm:sandwich}
   For any graph $G$:
   $$ \omega(G) \leq \vartheta(\overline{G}) \leq \chi(G) $$
 \end{theorem}
@@ -64,6 +68,7 @@ Because in perfect graphs $\omega(G) = \chi(G)$, we get $\omega(G) = \vartheta(G
 
 \TODO{TODO}
 
+\subsection{Coloring perfect graph using ellipsoid method}
 \subsubsection{Maximum cardinality stable set}
 
 \TODO{cite the paper on using theta to color.}
@@ -88,7 +93,7 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$.
   Return $G_n$.
 \end{algtext}
 
-Let us proove that $G_n$ is indeed a stable set. Suppose otherwise and let $v_iv_j$ be an edge in $G_n$ with $i < j$ and $i$ minimal. But then $\alpha(G_{i-1} \setminus v_i) = \alpha(G_{i-1}) = \alpha(G)$ so by our construction $v_i$ is not in $G_i$ and $v_iv_j$ is not an edge of $G_n$. Therefore there are no edges in $G_n$.
+Let us prove that $G_n$ is indeed a stable set. Suppose otherwise and let $v_iv_j$ be an edge in $G_n$ with $i < j$ and $i$ minimal. But then $\alpha(G_{i-1} \setminus v_i) = \alpha(G_{i-1}) = \alpha(G)$ so by our construction $v_i$ is not in $G_i$ and $v_iv_j$ is not an edge of $G_n$. Therefore there are no edges in $G_n$.
 
 Because at every step we have $\alpha(G_i) = \alpha(G_{i-1})$, therefore $\alpha(G_n) = \alpha(G)$, so $G_n$ is required maximum cardinality stable set.
 
@@ -130,7 +135,7 @@ There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single cliq
   \noindent Output: A coloring of $G$ using $\chi(G)$ colors.
 \end{alg}
 \begin{algtext}
-  If $G$ is equal to its maximum cardinality stable set, color all verces one color and return.
+  If $G$ is equal to its maximum cardinality stable set, color all vertices one color and return.
 
   Else find $S$ intersecting all maximum cardinality cliques of $G$ (\cref{alg:ssIntersectingCliques}). Color recursively all vertices of $G \setminus S$ with $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$ colors and all vertices of $S$ with one additional color.
 \end{algtext}

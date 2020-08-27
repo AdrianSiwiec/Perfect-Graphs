@@ -1,5 +1,5 @@
 Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangle and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
-
+ 
 Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, $|V| = n$, let us construct a graph $G'$ equal to the union of $G$ and a clique $K_n$. We can see that indeed $\chi(G') = n = \omega(G')$, but it gives us no indication of the structure of $G$ or $G'$.
 
 A definition of perfect graphs (\cref{def:perfectGraph}) states that given a graph $G$, the chromatic number and cardinality of the largest clique of \emph{its every induced subgraph} should be equal. The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures some of the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum (weighted) clique problem, and maximum (weighted) independent set problem can be solved in polynomial time \cite{grotschel1993}. Other classical NP-complete problems are still NP-complete in perfect graphs e.g. Hamiltonian path \cite{Mller1996}, maximum cut problem \cite{Bodlaender1994} or dominating set problem \cite{Dewdney81}. \todo{all theese citations are about subclasses e.g. biparite graphs. Should we mention some subclasses?}
@@ -235,7 +235,7 @@ With \cref{thm:amenableHoles} we can describe the rest of the algorithm.
 	Output all subsets of $V(G)$ that are the union of a set from the first list and a set from the second list.
 \end{algtext}
 
-To proove the correctness of \cref{alg:listNearCleaners} we will need the following theorem.
+To prove the correctness of \cref{alg:listNearCleaners} we will need the following theorem.
 
 \begin{theorem}[9.1 of \cite{MC05}]
 	\label{thm:91}
@@ -280,7 +280,7 @@ Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a
 	\vspace{-0.5cm}
 \end{wrapfigure}
 
-Below we will proove that if the \cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The proof of the correctness of the other possible result is more complicated, see section 4 and theorem 5.1 of \cite{MC05}.
+Below we will prove that if the \cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The proof of the correctness of the other possible result is more complicated, see section 4 and theorem 5.1 of \cite{MC05}.
 
 \begin{proof}
 	Let us suppose that there is a choice of $x_1$, $x_2$, $x_3$, $y_1$ satisfying the three conditions in the \cref{alg:testNearCleaner} and let $y_2$ and $n$ be defined as in there. We claim that $G$ contains an odd hole.
@@ -295,5 +295,9 @@ Below we will proove that if the \cref{alg:testNearCleaner} reports an odd hole 
 
 	Suppose that $p_iq_j$ is an edge for some $1\leq i \leq n-1$ and $1 \leq j \leq n$. We claim $i \geq j$. If $j = 1$ this is clear so let us assume $j > 1$. Then there is a path between $x_1$, $y_2$ within $\{p_1, \ldots , p_i, q_j, \ldots q_n\}$ which has length $\leq n-j+1$ and has no internal vertex in $X$ (since $j > 1$); and since $r(x_1, y_2) = n$, it follows that $n-j+i \geq n$, that is, $i \geq j$ as claimed.
 
-	Now, since $x_1$, $x_2$ are nonadjacent $i \geq 2$. But also $r(x_2, y_1) \geq n$ and so $j+n-i \geq n$, that is $j \geq i$. So we get $i=j$. Let us choose $i$ minumum, then $x_3-x_1-\ldots-p_i-q_i-\ldots-x_2-x_3$ is an odd hole, which was what we wanted.
+	Now, since $x_1$, $x_2$ are nonadjacent $i \geq 2$. But also $r(x_2, y_1) \geq n$ and so $j+n-i \geq n$, that is $j \geq i$. So we get $i=j$. Let us choose $i$ minimum, then $x_3-x_1-\ldots-p_i-q_i-\ldots-x_2-x_3$ is an odd hole, which was what we wanted.
 \end{proof}
+
+\subsection{Summary}
+
+\TODO{todo?}
