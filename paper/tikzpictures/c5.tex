@@ -1,0 +1,12 @@
+\centering\begin{tikzpicture}[scale=.7,simplegraph]
+  \def\ngon{5}
+  \node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] (p) {};
+  \foreach\x in {1,...,\ngon}{\node[] (p\x) at (p.corner \x){$\the\numexpr\intcalcMod{\x}{5}$};}
+
+  \draw (p1) to (p2);
+  \draw (p2) to (p3);
+  \draw (p3) to (p4);
+  \draw (p4) to (p5);
+  \draw (p5) to (p1);
+
+\end{tikzpicture}%

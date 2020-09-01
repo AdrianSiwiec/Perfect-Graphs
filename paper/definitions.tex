@@ -1,3 +1,5 @@
+\TODO{Run proofreader on all text (temporarily disabled because it slowed down IDE)}
+
 We use standard definitions, sourced from the book by \citeauthor{BB98} \citetitle*{BB98}, modified and extended as needed.
 
 \begin{defn}[graph]
@@ -25,7 +27,7 @@ We use standard definitions, sourced from the book by \citeauthor{BB98} \citetit
 
 We will only consider finite graphs, that is $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. The size of the vertex set of a graph $G$ will be called the \emph{cardinality} of $G$.
 
-An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{unordered}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
+An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{unordered}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is all vertices $y$ such that $xy$ is an edge. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
 
 Figure \ref{fig:examplePath} shows an example of a graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
 
@@ -99,13 +101,17 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
   A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected. We will denote a clique of $n$ vertices as $K_n$.
 \end{defn}
 
+\begin{defn}[clique number]
+  A \emph{clique number} of a graph $G$, denoted as $\omega(G)$, is a cardinality of its largest induced clique.
+\end{defn}
+
 \begin{defn}[anticlique]
   An \emph{anticlique} is a graph in which there are no edges. We will also call anticliques \emph{independent sets}. 
 \end{defn}
 In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subseteq V$ will be called \emph{independent} (in the context of $G$) iff $G[V']$ is an anticlique.
 
-\begin{defn}[clique number]
-  A \emph{clique number} of a graph $G$, denoted as $\omega(G)$, is a cardinality of its largest induced clique.
+\begin{defn}[stability number]
+  A \emph{stability number} of a graph $G$, denoted as $\alpha(G)$, is a cardinality of its largest induced stable set.
 \end{defn}
 
 \begin{defn}[coloring]
@@ -142,9 +148,9 @@ In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \
 Let us notice, that if $X$ is a cleaner for $C$ then $C$ is a clean hole in $G \setminus X$.
 
 \begin{defn}[near-cleaner]
-  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if $X$ contains all $C$-major vectices and $X \cap V(C)$ is a subset of vertex set of some 3-node path of $C$.
+  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if $X$ contains all $C$-major vertices and $X \cap V(C)$ is a subset of vertex set of some 3-node path of $C$.
 \end{defn}
 
 \begin{defn}[amenable odd hole]
-  An odd hole $C$ of $G$ is \emph{amenable} if it is a shortest off hole in $G$, it is of length at least 7 and for every anticonnected set $X$ of $C$-major vectices there is a $X$-complete edge in $C$.
+  An odd hole $C$ of $G$ is \emph{amenable} if it is a shortest off hole in $G$, it is of length at least 7 and for every anticonnected set $X$ of $C$-major vertices there is a $X$-complete edge in $C$.
 \end{defn}
