@@ -31,49 +31,7 @@
 \input{coloringBergeGraphs.tex}
 
 \chapter{Implementation}
-
-\section{Berge graphs recognition}
-
-Anything interesting about algo/data structure?\\
-
-\subsection{Optimizations}\label{Optimizations}
-Bottlenecks in performance (next path, are vectors distinct etc).\\
-\TODO{In our graph preprocessing we have a pointer to next edge in order to speed up generating next path.}
-\TODO{We used callgrind to get idea of methods crucial for time.}
-\TODO{In general enumerating all paths is crucial. As is checking if vector has distinct values.}
-\TODO{Jewels -- we iterate all possibly chordal paths and check if they are ok - much faster}
-\TODO{$\T_1$ -- we iterate all paths of length 4 and check if there exists a fifth vertex to complete the hole - much faster than iterating vertices.}
-
-Validity tests - unit tests, tests of bigger parts, testing vs known answer and vs naive.
-
-\subsection{Parallelism with CUDA (?)}
-
-TODO
-
-\subsection{Experiments}
-
-Naive algorithm - brief description, bottlenecks optimizations (makes huge difference).\\
-
-Description of tests used.\\
-
-Results and Corollary - almost usable algorithm.
-
-
-\section{Coloring Berge Graphs}
-
-\subsection{Ellipsoid method}
-
-Description.\\
-
-Implementation.\\
-
-Experiments and results.\\
-
-\subsection{Combinatorial Method}
-
-Cite the paper.\\
-
-On its complexity - point to appendix for pseudo-code.
+\input{implementation.tex}
 
 \appendix
 \appendixpage
