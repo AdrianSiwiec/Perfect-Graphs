@@ -12,6 +12,7 @@ DOWNLOADSDIR=$(NETTESTDIR)/downloaded
 PERFTESTDIR=$(TESTDIR)/perfTest
 CUPERFTESTDIR=$(TESTDIR)/cuPerfTest
 COLORPERFTESTDIR=$(TESTDIR)/colorPerfTest
+GENERATEDIR=$(TESTDIR)/generate
 3RDDIR=3rdparty
 
 #G++ compiler settings
@@ -54,6 +55,7 @@ PERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(PERFTESTDIR)/*.cpp))
 CUPERFTESTFILES=$(patsubst %.cu, $(OBJDIR)/%.e, $(wildcard $(CUPERFTESTDIR)/*.cu)) \
 							  $(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(CUPERFTESTDIR)/*.cpp))
 COLORPERFTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(COLORPERFTESTDIR)/*.cpp))
+GENERATEFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(GENERATEDIR)/*.cpp))
 
 # $(info $(OBJFILES))
 # $(info $(TESTFILES))
@@ -68,6 +70,7 @@ netTest: $(NETTESTFILES)
 perfTest: $(PERFTESTFILES)
 cuPerfTest: $(CUPERFTESTFILES)
 colorPerfTest: $(COLORPERFTESTFILES)
+generate: $(GENERATEFILES)
 
 $(COBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)

@@ -141,17 +141,18 @@ XX..X.....\
 
 void testPerfectVsNaive() {
   RaiiTimer timer("Perfect vs naive ");
-  for (int i = 0; i < (bigTests ? 30 : 100); i++) {
-    Graph G = getRandomGraph(bigTests ? 8 : 6, 0.5);
+  for (int i = 0; i < (bigTests ? 300 : 100); i++) {
+    Graph G = getRandomGraph(bigTests ? 10 : 6, 0.5);
     testGraphSimple(G);
   }
 }
 
 void testNonPerfect() {
   RaiiTimer timer("Non Perfect");
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 1000; i++) {
     Graph G = getNonPerfectGraph(9, 10, 0.5);
     assert(isPerfectGraph(G) == false);
+    assert(isPerfectGraphNaive(G) == false);
   }
 }
 

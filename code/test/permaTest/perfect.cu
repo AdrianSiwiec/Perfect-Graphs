@@ -10,18 +10,18 @@
 
 void testPerfectVsCuNaiveVsCuda() {
   Graph G = getRandomGraph(14 + getDistr() * 10, getDistrWide());
-  testGraph(G, {algoPerfect, algoCudaNaive, algoCudaPerfect}, {nullptr, cuIsPerfectNaive, cuIsPerfect});
+  testGraph(G, {algoPerfect, algoCudaNaive, algoCudaPerfect, algoNaive}, {nullptr, cuIsPerfectNaive, cuIsPerfect});
 }
 
 void testPerfectVsCuda() {
   Graph G = getRandomGraph(14 + getDistrWide() * 15, getDistrWide());
-  testGraph(G, {algoPerfect, algoCudaPerfect}, {nullptr, cuIsPerfect});
+  testGraph(G, {algoPerfect, algoCudaPerfect, algoNaive}, {nullptr, cuIsPerfect});
 }
 
 void testPerfectVsCudaLine() {
   Graph G = getBipariteGraph(11 + getDistrWide() * 3, getDistrWide()).getLineGraph();
   cerr << G.n << endl;
-  testGraph(G, {algoPerfect, algoCudaPerfect}, {nullptr, cuIsPerfect});
+  testGraph(G, {algoPerfect, algoCudaPerfect, algoNaive}, {nullptr, cuIsPerfect});
 }
 
 // void testLineBiparite() {

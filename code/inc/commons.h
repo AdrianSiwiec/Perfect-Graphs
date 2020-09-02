@@ -73,6 +73,8 @@ struct Graph {
   Graph getShuffled() const;
   Graph getLineGraph() const;
 
+  void printOut() const;
+
   friend class CuGraph;
 
  private:
@@ -148,8 +150,12 @@ void nextTupleInPlace(vec<int> &v, int max);
 
 // Returns whether v is a path in G. A path must have all vertices distinct, and edges only between neighbors.
 // If isCycleOk a cycle is also considered a path e.g. [1,2,3,4] if 1-4 is an edge
-bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk = false, bool areChordsOk = false);
+bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk = false, bool areChordsOk = false,
+             bool holeRequired = false);
+
+bool isHole(const Graph &G, const vec<int> &v);
 
 // Returns (in &v) next path of length len in G (in some order). If v is empty returns first path. If v is
 // the last path returns empty vec. Iterating from empty vector to empty vector gives all paths of length len.
-void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false, bool areChordsOk = false);
+void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false, bool areChordsOk = false,
+                     bool holeRequired = false);

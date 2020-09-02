@@ -7,16 +7,12 @@
 using std::get;
 using std::to_string;
 
-bool isHole(const Graph &G, const vec<int> &v) {
-  return v.size() >= 3 && isAPath(G, v, true, false) && G.areNeighbours(v[0], v.back());
-}
-
 vec<int> findHoleOfSize(const Graph &G, int size) {
   if (size <= 3) return vec<int>();
 
   vec<int> v;
   while (true) {
-    nextPathInPlace(G, v, size, true);
+    nextPathInPlace(G, v, size, true, false, true);
     if (v.size() == size && isHole(G, v)) return v;
 
     if (v.empty()) break;

@@ -35,6 +35,8 @@ csv_testNCShortestPaths = 'Test NC Shortest Paths'
 csv_gpuCopyR = 'GPU Test NC Copy R'
 csv_gpuWork = 'GPU Test NC work'
 csv_testNCRest = 'Test NC Rest'
+csv_cpuPreparation = 'CPU Preparation'
+csv_gpuCalculation = 'GPU Calculation'
 
 
 csv_ints = []
@@ -48,19 +50,19 @@ csv_detailed_fields = [csv_simpleStructures, csv_getNearCleaners, csv_testNCShor
 #                        csv_list_rank, csv_distance_parent, csv_find_bridges, csv_naive_bridges]
 
 hatches = ['++', '**', 'oo', '----', '||', '..']
-algo_colors = {"Cuda Perfect": "#377eb8", "Perfect": "#ff7f00"}
-algo_markers = {"Cuda Perfect": ".", "Perfect": "x"}
+algo_colors = {"Cuda Perfect": "#377eb8", "Perfect": "#ff7f00", "CUDA Naive": "#ff0000"}
+algo_markers = {"Cuda Perfect": ".", "Perfect": "x", "CUDA Naive": "o"}
 
-algo_labels = {"Cuda Perfect": "GPU Perfect", "Perfect": "Perfect",
-#  "naive": u"GPU Naïve", "CPU Inlabel": "CPU Inlabel",
-#                "tarjan": "GPU TV", "naive": "GPU CK", "cpu": "CPU DFS", "hybrid": "GPU Hybrid"
-               }
+algo_labels = {"Cuda Perfect": "GPU Perfect", "Perfect": "Perfect", "CUDA Naive": "GPU Naive"}
 
 algo_field_labels = {csv_simpleStructures : "Simple Structures", csv_testNCRest: "Test NC Rest",
                      csv_getNearCleaners: "Get Near Cleaners", csv_testNCShortestPaths: "Test NC Shortest Paths", csv_gpuCopyR: "GPU Test NC Copy R", csv_gpuWork: "GPU test NC work"}
-field_colors = {"Perfect": {csv_simpleStructures: "#0f2231", csv_getNearCleaners: "#2c6593", csv_testNCShortestPaths: "#6ca5d3", csv_testNCRest: "#aaaaaa"},
-                "Cuda Perfect": {csv_simpleStructures: "#1a1a1a", csv_getNearCleaners: "#4d4d4d", csv_testNCShortestPaths: "#808080", csv_gpuCopyR: "#b3b3b3", csv_gpuWork: "#d2d2d2"},
-                "hybrid": { "Spanning Tree": "#1a1a1a", "List rank": "#4d4d4d", "Distance and parent": "#808080", "Naive bridges": "#b3b3b3"}}
+field_colors = {"Perfect": {csv_simpleStructures: "#0f2231", csv_getNearCleaners: "#2c6593", 
+                    csv_testNCShortestPaths: "#6ca5d3", csv_testNCRest: "#aaaaaa"},
+                "Cuda Perfect": {csv_simpleStructures: "#1a1a1a", csv_getNearCleaners: "#4d4d4d",   
+                    csv_testNCShortestPaths: "#808080", csv_gpuCopyR: "#b3b3b3", csv_gpuWork: "#d2d2d2"},
+                "CUDA Naive": { csv_cpuPreparation: "#ff0000", csv_gpuCalculation: "#aa0000"}
+                }
 
 sizes_in_inches = {"regular": (5, 3.5), "wide": (
     6.8, 2.4), "huge": (6.8, 8), "allGraphs": (10, 25), "wideDetailed":(6.8, 3)}

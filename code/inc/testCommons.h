@@ -23,8 +23,8 @@ using std::map;
 using namespace std::chrono;
 
 // Whether to run big tests. These take more time.
-const bool bigTests = false;  // TODO(Adrian) make bigTests big again (perf)
-// const bool bigTests = true;
+// const bool bigTests = false;  // TODO(Adrian) make bigTests big again (perf)
+const bool bigTests = true;
 const int _max_threads_to_run = 10000;
 
 bool probTrue(double p);

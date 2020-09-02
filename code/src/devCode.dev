@@ -42,10 +42,17 @@ __device__ bool devIsDistinctValues(int *path, int length) {
 }
 
 __device__ bool devIsAPath(const int *devMatrix, int Gn, int *path, int length, bool isCycleOk = false,
-                           bool areChordsOk = false) {
+                           bool areChordsOk = false, bool holeRequired = false) {
+  if (holeRequired && !isCycleOk) {
+    assert("(DEV) Hole required but cycle not allowed" == 0);
+  }
+
   if (length <= 0) return false;
 
   if (!devIsDistinctValues(path, length)) return false;
+
+  if (holeRequired && (length <= 3 || !devAreNeighbors(devMatrix, Gn, path[0], path[length - 1])))
+    return false;
 
   for (int i = length - 1; i > 0; i--) {
     for (int j = 0; j < i; j++) {
@@ -62,8 +69,7 @@ __device__ bool devIsAPath(const int *devMatrix, int Gn, int *path, int length, 
 }
 
 __device__ bool devIsAHole(const int *devMatrix, int Gn, int *v, int lenV) {
-  return lenV > 3 && devIsAPath(devMatrix, Gn, v, lenV, true, false) &&
-         devAreNeighbors(devMatrix, Gn, v[0], v[lenV - 1]);
+  return devIsAPath(devMatrix, Gn, v, lenV, true, false, true);
 }
 
 __device__ void devPreparePathStart(int code, int *v, int lenV, int n) {
@@ -78,8 +84,8 @@ __device__ void devPreparePathStart(int code, int *v, int lenV, int n) {
 
 __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeighbor,
                                    const int *devFirstNeighbor, int Gn, int *v, int &lenV, int lenPath,
-                                   bool isCycleOk = false, bool areChordsOk = false,
-                                   bool savePrefix = false) {
+                                   bool isCycleOk = false, bool areChordsOk = false, bool savePrefix = false,
+                                   bool holeRequired = false) {
   if (lenPath <= 1) {
     assert("(DEV ERROR) Length of next path must be at least 2" == 0);
   }
@@ -120,8 +126,16 @@ __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeigh
     }
 
     if (lenV < lenPath) {
+      while (lenV > 1 && v[lenV - 1] != -1 &&
+             (!devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk, false) ||
+              (holeRequired && v[lenV - 1] <= v[0]))) {
+        v[lenV - 1] = devGetNextNeighbor(devNextNeighbor, Gn, v[lenV - 2], v[lenV - 1]);
+      }
+      if (v[lenV - 1] == -1) continue;
+
       v[lenV] = devGetFirstNeighbor(devFirstNeighbor, v[lenV - 1]);
       lenV++;
+
       if (lenV == lenPath && devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk)) {
         return;
       } else {
@@ -150,14 +164,14 @@ __device__ bool devContainsHoleWithPrefix(const int *devMatrix, const int *devNe
   int mem = v[inLenV - 1];
 
   if (lenV < size) {
-    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false);
+    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false, true);
   }
 
   while (lenV == size && v[inLenV - 1] == mem) {
     if (devIsAHole(devMatrix, Gn, v, size)) {
       return true;
     }
-    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false);
+    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false, true);
   }
 
   return false;
@@ -319,11 +333,12 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context, bool ga
     cudatime = cudatimer.getElapsedSeconds();
   }
 
-  if (cudatime + pretime > 1) {
-    cout << "Pre time: " << pretime << "\t CUDA time: " << cudatime << "\t"
-         << "n=" << G.n << ", prefsize=" << prefixes.size() << " prefLen=" << pathLen << " holeSize=" << size
-         << endl;
-  }
+  // if (cudatime + pretime > 1) {
+  //   cerr << "Pre time: " << pretime << "\t CUDA time: " << cudatime << "\t"
+  //        << "n=" << G.n << ", prefsize=" << prefixes.size() << " prefLen=" << pathLen << " holeSize=" <<
+  //        size
+  //        << endl;
+  // }
   // transform(
   //     [=] MGPU_DEVICE(int id, int prefixesSize, const int *devMatrix, const int *devNextNeighbor,
   //                     const int *devFirstNeighbor, int Gn) {

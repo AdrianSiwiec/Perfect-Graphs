@@ -3,7 +3,6 @@
 #include <tuple>
 #include "commons.h"
 
-bool isHole(const Graph &G, const vec<int> &v);
 // Checks whether graph contains hole of the given size. If not, empty vector is returned.
 vec<int> findHoleOfSize(const Graph &G, int size);
 bool constainsHoleOfSize(const Graph &G, int size);
