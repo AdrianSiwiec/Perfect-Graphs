@@ -182,7 +182,7 @@ default_random_engine generatorWide;
 normal_distribution<double> distribution(0.5, 0.05);
 normal_distribution<double> distributionWide(0.5, 0.20);
 
-void testGraph(const Graph &G, vec<algos> algosToTest, vec<cuIsPerfectFunction> cuFunctions) {
+bool testGraph(const Graph &G, vec<algos> algosToTest, vec<cuIsPerfectFunction> cuFunctions) {
   bool prevResult;
   bool result;
 
@@ -222,6 +222,8 @@ void testGraph(const Graph &G, vec<algos> algosToTest, vec<cuIsPerfectFunction> 
 
     StatsFactory::endTestCase(result);
   }
+
+  return result;
 }
 
 // void printStats() {

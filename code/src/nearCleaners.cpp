@@ -5,7 +5,8 @@
 #include "nearCleaners.h"
 #include "testCommons.h"
 
-bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, bool gatherStats) {
+bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, const vec<vec<int>> &triplePaths,
+                                     bool gatherStats) {
   if (gatherStats) StatsFactory::startTestCasePart("Test NC Shortest Paths");
   auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; });
 
@@ -13,11 +14,7 @@ bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, bool ga
   for (int y1 = 0; y1 < G.n; y1++) {
     if (sX.count(y1) > 0) continue;
 
-    vec<int> x;
-    while (1) {
-      nextPathInPlace(G, x, 3);
-      if (x.empty()) break;
-
+    for (auto x : triplePaths) {
       bool containsY1 = false;
       for (int i = 0; i < 3; i++) {
         if (x[i] == y1) {

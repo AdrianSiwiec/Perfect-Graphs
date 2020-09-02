@@ -10,7 +10,8 @@
 
 void testPerfectVsCuNaiveVsCuda() {
   Graph G = getRandomGraph(14 + getDistr() * 10, getDistrWide());
-  testGraph(G, {algoPerfect, algoCudaNaive, algoCudaPerfect, algoNaive}, {nullptr, cuIsPerfectNaive, cuIsPerfect});
+  testGraph(G, {algoPerfect, algoCudaNaive, algoCudaPerfect, algoNaive},
+            {nullptr, cuIsPerfectNaive, cuIsPerfect});
 }
 
 void testPerfectVsCuda() {
@@ -21,7 +22,7 @@ void testPerfectVsCuda() {
 void testPerfectVsCudaLine() {
   Graph G = getBipariteGraph(11 + getDistrWide() * 3, getDistrWide()).getLineGraph();
   cerr << G.n << endl;
-  testGraph(G, {algoPerfect, algoCudaPerfect, algoNaive}, {nullptr, cuIsPerfect});
+  testGraph(G, {algoPerfect, algoCudaPerfect}, {nullptr, cuIsPerfect});
 }
 
 // void testLineBiparite() {
@@ -29,10 +30,13 @@ void testPerfectVsCudaLine() {
 //   testGraph(G, true, true);
 // }
 
-// void testNonPerfect() {
-//   Graph G = getNonPerfectGraph(5 + (rand() % 35) * 2, 10 + (getDistr() * 200), getDistr());
-//   testGraph(G, false, true);
-// }
+void testNonPerfect() {
+  Graph G = getNonPerfectGraph(31 + (rand() % 35) * 2, 10 + (getDistr() * 200), getDistr());
+  assert(!testGraph(G, {algoNaive, algoCudaNaive}, {nullptr, cuIsPerfectNaive}));
+
+  G = getBipariteGraph(11 + getDistrWide() * 3, getDistrWide()).getLineGraph();
+  assert(testGraph(G, {algoNaive, algoCudaNaive}, {nullptr, cuIsPerfectNaive}));
+}
 
 int main() {
   init(true);
@@ -41,7 +45,7 @@ int main() {
     // testPerfectVsCuda();
     testPerfectVsCudaLine();
     // testLineBiparite();
-    // testNonPerfect();
+    testNonPerfect();
     StatsFactory::printStats2();
     cout << endl;
   }

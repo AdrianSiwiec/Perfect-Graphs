@@ -31,7 +31,7 @@ __device__ int devGetNextNeighbor(const int *devNextNeighbor, int Gn, int a, int
   return ret;
 }
 
-__device__ bool devIsDistinctValues(int *path, int length) {
+__device__ bool devIsDistinctValues(const int *path, int length) {
   for (int i = 1; i < length; i++) {
     for (int j = 0; j < i; j++) {
       if (path[i] == path[j]) return false;
@@ -41,7 +41,7 @@ __device__ bool devIsDistinctValues(int *path, int length) {
   return true;
 }
 
-__device__ bool devIsAPath(const int *devMatrix, int Gn, int *path, int length, bool isCycleOk = false,
+__device__ bool devIsAPath(const int *devMatrix, int Gn, const int *path, int length, bool isCycleOk = false,
                            bool areChordsOk = false, bool holeRequired = false) {
   if (holeRequired && !isCycleOk) {
     assert("(DEV) Hole required but cycle not allowed" == 0);
@@ -390,14 +390,13 @@ bool cuIsPerfectNaive(const Graph &G, bool gatherStats = false) {
   return res;
 }
 
-__device__ bool devContainsOddHoleWithR(const CuGraph &CG, int *devR, int *devRLen, int *x) {
+__device__ bool devContainsOddHoleWithR(const CuGraph &CG, int *devR, int *devRLen, const int *x, int y1) {
   int Gn = CG.n;
 
-  int y1 = x[0];
-  if (y1 == x[1] || y1 == x[2] || y1 == x[3]) return false;
-  if (!devIsAPath(CG.devMatrix, Gn, x + 1, 3)) return false;  // TODO unroll to allow x to be reg?
+  if (y1 == x[0] || y1 == x[1] || y1 == x[2]) return false;
+  if (!devIsAPath(CG.devMatrix, Gn, x, 3)) return false;  // TODO unroll to allow x to be reg?
 
-  int x1 = x[1], x3 = x[2], x2 = x[3];
+  int x1 = x[0], x3 = x[1], x2 = x[2];
   if (devRLen[x1 * Gn + y1] == 0 || devRLen[x2 * Gn + y1] == 0) return false;
 
   int y2 = devR[x2 * Gn + y1];
@@ -414,15 +413,18 @@ bool memInitialized = false;
 int *GdevR;
 int *GdevRLens;
 int *GdevOddHoleFound;
+int *GdevTriplePaths;
 
 int *GhostR;
 int *GhostRLens;
 int *GhostOddHoleFound;
+int *GhostTriplePaths;
 
 void cuInitializeMem() {
   CUCHECK(cudaMallocHost(&GhostR, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
   CUCHECK(cudaMallocHost(&GhostRLens, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
   CUCHECK(cudaMallocHost(&GhostOddHoleFound, sizeof(int)));
+  CUCHECK(cudaMallocHost(&GhostTriplePaths, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N * CUDA_MAX_N));
 
   // GhostR = new int[CUDA_MAX_N * CUDA_MAX_N];
   //   GhostRLens = new int[CUDA_MAX_N * CUDA_MAX_N];
@@ -431,11 +433,13 @@ void cuInitializeMem() {
   CUCHECK(cudaMalloc(&GdevR, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
   CUCHECK(cudaMalloc(&GdevRLens, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
   CUCHECK(cudaMalloc(&GdevOddHoleFound, sizeof(int)));
+  CUCHECK(cudaMalloc(&GdevTriplePaths, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N * CUDA_MAX_N));
 
   memInitialized = true;
 }
 
 bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const set<int> &sX,
+                                       const int *devTriplePaths, const int triplePathsSize,
                                        context_t &context, bool gatherStats = false) {
   assert(memInitialized);
 
@@ -463,14 +467,12 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
   if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC work");
   transform(
       [=] MGPU_DEVICE(int id, int CGn, const CuGraph CGGG, int *mark, int *devR, int *devRLens) {
-        int x[4];
-        devPreparePathStart(id, x, 4, CGn);
-        if (devContainsOddHoleWithR(CGGG, devR, devRLens, x)) {
+        if (devContainsOddHoleWithR(CGGG, devR, devRLens, devTriplePaths + (id / CGn) * 3, id % CGn)) {
           mark[0] = 1;
         }
       },
       // 1, context, CG.n);
-      Npow2 * Npow2, context, CG.n, CG, GdevOddHoleFound, GdevR, GdevRLens);
+      triplePathsSize * CG.n, context, CG.n, CG, GdevOddHoleFound, GdevR, GdevRLens);
   context.synchronize();
 
   CUCHECK(cudaMemcpy(GhostOddHoleFound, GdevOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
@@ -495,15 +497,35 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
   CuGraph CG(G, context);
   CuGraph CGC(GC, context);
 
+  if (gatherStats) StatsFactory::startTestCasePart("Prepare 3paths");
+  vec<vec<int>> triplePaths = getAllPaths(G, 3);
+  for (int i = 0; i < triplePaths.size(); i++) {
+    memcpy(GhostTriplePaths + (sizeof(int) * 3 * i), triplePaths[i].data(), sizeof(int) * 3);
+  }
+  CUCHECK(cudaMemcpy(GdevTriplePaths, GhostTriplePaths, sizeof(int) * 3 * triplePaths.size(),
+                     cudaMemcpyHostToDevice));
+
   for (auto X : Xs) {
-    if (cuContainsOddHoleWithNearCleanerX(G, CG, X, context, gatherStats)) return false;
+    if (cuContainsOddHoleWithNearCleanerX(G, CG, X, GdevTriplePaths, triplePaths.size(), context,
+                                          gatherStats))
+      return false;
   }
 
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto XsC = getPossibleNearCleaners(GC);
 
+  if (gatherStats) StatsFactory::startTestCasePart("Prepare 3paths");
+  triplePaths = getAllPaths(GC, 3);
+  for (int i = 0; i < triplePaths.size(); i++) {
+    memcpy(GhostTriplePaths + (sizeof(int) * 3 * i), triplePaths[i].data(), sizeof(int) * 3);
+  }
+  CUCHECK(cudaMemcpy(GdevTriplePaths, GhostTriplePaths, sizeof(int) * 3 * triplePaths.size(),
+                     cudaMemcpyHostToDevice));
+
   for (auto X : XsC) {
-    if (cuContainsOddHoleWithNearCleanerX(GC, CGC, X, context, gatherStats)) return false;
+    if (cuContainsOddHoleWithNearCleanerX(GC, CGC, X, GdevTriplePaths, triplePaths.size(), context,
+                                          gatherStats))
+      return false;
   }
 
   CG.deleteCuGraph();

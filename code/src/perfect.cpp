@@ -20,9 +20,10 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
 
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto Xs = getPossibleNearCleaners(G);
+  vec<vec<int>> triplePaths = getAllPaths(G, 3);
 
   for (auto X : Xs) {
-    if (containsOddHoleWithNearCleanerX(G, X, gatherStats)) {
+    if (containsOddHoleWithNearCleanerX(G, X, triplePaths, gatherStats)) {
       if (printInterestingGraphs) cout << "Interesting graph: " << G << endl;
       return false;
     }
@@ -30,9 +31,10 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
 
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto XsC = getPossibleNearCleaners(GC);
+  vec<vec<int>> CTriplePaths = getAllPaths(GC, 3);
 
   for (auto X : XsC) {
-    if (containsOddHoleWithNearCleanerX(GC, X, gatherStats)) {
+    if (containsOddHoleWithNearCleanerX(GC, X, CTriplePaths, gatherStats)) {
       if (printInterestingGraphs) cout << "Interesting graph: " << G << endl;
       return false;
     }

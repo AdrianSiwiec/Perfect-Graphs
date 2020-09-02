@@ -625,3 +625,16 @@ void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool 
 
   return nextPathInPlaceInternal(G, v, len, isCycleOk, areChordsOk, holeRequired);
 }
+
+vec<vec<int>> getAllPaths(const Graph &G, int len, bool isCycleOk, bool areChordsOk, bool holeRequired) {
+  vec<vec<int>> ret;
+  vec<int> x;
+  while (1) {
+    nextPathInPlace(G, x, len, isCycleOk, areChordsOk, holeRequired);
+    if (x.empty()) break;
+
+    ret.push_back(x);
+  }
+
+  return ret;
+}

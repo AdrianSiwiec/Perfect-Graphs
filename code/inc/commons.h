@@ -159,3 +159,6 @@ bool isHole(const Graph &G, const vec<int> &v);
 // the last path returns empty vec. Iterating from empty vector to empty vector gives all paths of length len.
 void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false, bool areChordsOk = false,
                      bool holeRequired = false);
+
+vec<vec<int>> getAllPaths(const Graph &G, int len, bool isCycleOk = false, bool areChordsOk = false,
+                          bool holeRequired = false);

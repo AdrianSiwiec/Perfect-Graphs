@@ -50,10 +50,10 @@ csv_detailed_fields = [csv_simpleStructures, csv_getNearCleaners, csv_testNCShor
 #                        csv_list_rank, csv_distance_parent, csv_find_bridges, csv_naive_bridges]
 
 hatches = ['++', '**', 'oo', '----', '||', '..']
-algo_colors = {"Cuda Perfect": "#377eb8", "Perfect": "#ff7f00", "CUDA Naive": "#ff0000"}
-algo_markers = {"Cuda Perfect": ".", "Perfect": "x", "CUDA Naive": "o"}
+algo_colors = {"Cuda Perfect": "#377eb8", "Perfect": "#ff7f00", "CUDA Naive": "#ff0000", "Naive": "#00ff00"}
+algo_markers = {"Cuda Perfect": ".", "Perfect": "x", "CUDA Naive": "o", "Naive": "+"}
 
-algo_labels = {"Cuda Perfect": "GPU Perfect", "Perfect": "Perfect", "CUDA Naive": "GPU Naive"}
+algo_labels = {"Cuda Perfect": "GPU Perfect", "Perfect": "Perfect", "CUDA Naive": "GPU Naive", "Naive" : "Naive"}
 
 algo_field_labels = {csv_simpleStructures : "Simple Structures", csv_testNCRest: "Test NC Rest",
                      csv_getNearCleaners: "Get Near Cleaners", csv_testNCShortestPaths: "Test NC Shortest Paths", csv_gpuCopyR: "GPU Test NC Copy R", csv_gpuWork: "GPU test NC work"}
