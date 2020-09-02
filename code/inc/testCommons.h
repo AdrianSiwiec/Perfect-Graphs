@@ -39,6 +39,13 @@ Graph getNonPerfectGraph(int holeSize, int reminderSize, double p);
 // Returns biparite graph, two equal layers (+-1), each edge between layers has probability of p.
 Graph getBipariteGraph(int size, double p);
 
+Graph getFullBinaryTree(int size);
+Graph getGridWithMoves(int W, int H, const vec<int> &dx, const vec<int> &dy);
+Graph getCityGrid(int W, int H);
+Graph getKnightGraph(int W, int H);
+Graph getHypercube(int k);
+Graph getRookGraph(int W, int H);
+
 void handler(int sig);
 void init(bool srandTime = false);
 

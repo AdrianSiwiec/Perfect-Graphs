@@ -21,6 +21,7 @@ from matplotlib.ticker import ScalarFormatter
 import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 import numpy as np
+import ntpath
 
 plt.rcParams.update({'pgf.texsystem': 'pdflatex', 'font.family': 'serif', 'pgf.rcfonts': False, })
 
@@ -90,9 +91,9 @@ experiments = [
      "x_param": csv_N, "x_show": csv_N, "type": "lines", "size": sizes_in_inches["regular"],
      "y_param": csv_overall, "ylog": False, "x_label": "N", "y_label": label_time_overall_s},
 
-    {"restrictions": [(csv_result, 1)],
-     "x_param": csv_N, "x_show": csv_N, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
-     "x_label": label_time_overall_s},
+    # {"restrictions": [(csv_result, 1)],
+    #  "x_param": csv_N, "x_show": csv_N, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
+    #  "x_label": label_time_overall_s},
      
 
     #LCA
@@ -455,7 +456,7 @@ for i_exp, experiment in enumerate(experiments):
         os.makedirs(dir_to_save_to)
 
     # Saving filename
-    filename_to_save = ""
+    filename_to_save = ntpath.basename(sys.argv[1])
     for res_name, res_val in experiment["restrictions"]:
         filename_to_save += "_" + res_name + "-" + str(res_val)
 

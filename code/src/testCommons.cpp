@@ -120,6 +120,83 @@ Graph getBipariteGraph(int size, double p) {
   return Graph(neighbours).getShuffled();
 }
 
+Graph getFullBinaryTree(int size) {
+  vec<vec<int>> neighbors(size);
+  for (int i = 1; i < size; i++) {
+    neighbors[i].push_back(i / 2);
+    neighbors[i / 2].push_back(i);
+  }
+
+  return Graph(neighbors).getShuffled();
+}
+
+Graph getGridWithMoves(int W, int H, const vec<int> &dx, const vec<int> &dy) {
+  int n = W * H;
+
+  assert(dx.size() == dy.size());
+
+  vec<vec<int>> neighbors(n);
+  for (int x = 0; x < W; x++) {
+    for (int y = 0; y < H; y++) {
+      for (int k = 0; k < dx.size(); k++) {
+        int nx = x + dx[k];
+        int ny = y + dy[k];
+        if (nx >= 0 && nx < W && ny >= 0 && ny < H) {
+          neighbors[x * H + y].push_back(nx * H + ny);
+        }
+      }
+    }
+  }
+
+  return Graph(neighbors).getShuffled();
+}
+
+Graph getCityGrid(int W, int H) { return getGridWithMoves(W, H, {0, 0, 1, -1}, {1, -1, 0, 0}); }
+
+Graph getKnightGraph(int W, int H) {
+  vec<int> dx{1, 1, -1, -1, 2, 2, -2, -2};
+  vec<int> dy{2, -2, 2, -2, 1, -1, 1, -1};
+
+  return getGridWithMoves(W, H, dx, dy);
+}
+
+Graph getHypercube(int k) {
+  int n = (1 << k);
+  vec<vec<int>> neighbors(n);
+  for (int i = 0; i < n; i++) {
+    for (int j = i + 1; j < n; j++) {
+      if (__builtin_popcount(i ^ j) == 1) {
+        neighbors[i].push_back(j);
+        neighbors[j].push_back(i);
+      }
+    }
+  }
+
+  return Graph(neighbors).getShuffled();
+}
+
+Graph getRookGraph(int W, int H) {
+  vec<int> dx;
+  vec<int> dy;
+  for (int i = 1; i <= W; i++) {
+    dx.push_back(i);
+    dy.push_back(0);
+
+    dx.push_back(-i);
+    dy.push_back(0);
+  }
+
+  for (int i = 1; i <= H; i++) {
+    dy.push_back(i);
+    dx.push_back(0);
+
+    dy.push_back(-i);
+    dx.push_back(0);
+  }
+
+  return getGridWithMoves(W, H, dx, dy);
+}
+
 void handler(int sig) {
   void *array[100];
   size_t size;
@@ -365,7 +442,6 @@ double getDistrWide() {
   if (distr <= 0 || distr > 1) distr = 0.5;
 
   return distr;
-
 }
 
 void printTimeHumanReadable(double time, bool use_cerr) {

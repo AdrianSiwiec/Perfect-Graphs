@@ -40,6 +40,20 @@ void testGetRandomPerfect() {
   }
 }
 
+void testGetFullBinary() {
+  Graph G = getFullBinaryTree(15);
+  int leaves = 0;
+  int edges = 0;
+  for (int i = 0; i < 15; i++) {
+    if (G[i].size() == 1) leaves++;
+    edges += G[i].size();
+  }
+
+  edges /= 2;
+  assert(edges == 14);
+  assert(leaves == 8);
+}
+
 void testTuples() {
   assert(isAllZeros({0, 0, 0, 0}));
   assert(!isAllZeros({1, 0, 0, 0, 0, 0}));
@@ -113,5 +127,6 @@ int main() {
   testRandomGraphs();
   testGetRandomPerfect();
   testTuples();
+  testGetFullBinary();
   // testStatsFactory();
 }
