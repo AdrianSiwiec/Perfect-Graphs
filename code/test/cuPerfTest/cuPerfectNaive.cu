@@ -28,8 +28,6 @@ int main() {
   random_shuffle(Gs.begin(), Gs.end());
 
   {
-    cout << "N=" << n << endl;
-
     RaiiProgressBar bar(Gs.size());
 
     for (int i = 0; i < Gs.size(); i++) {

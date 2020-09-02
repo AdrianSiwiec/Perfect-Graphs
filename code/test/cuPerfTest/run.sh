@@ -23,25 +23,25 @@ benchTests=(
   "bench.t.in"
 )
 
-for file in "${benchTests[@]}"; do
-  echo "Running CuPerfect on $file"
-  $cuPerfectExec <$testsDir/$file >$resultsDir/$file.cuPerfect.out.csv
-done
-
-# for file in "${perfectTests[@]}"; do
-#   echo "Running Perfect on $file"
-#   $perfectExec <$testsDir/$file >$resultsDir/$file.perfect.out.csv
-# done
-
-# for file in "${perfectTests[@]}"; do
+# for file in "${benchTests[@]}"; do
 #   echo "Running CuPerfect on $file"
 #   $cuPerfectExec <$testsDir/$file >$resultsDir/$file.cuPerfect.out.csv
 # done
 
-# for file in "${perfectTests[@]}"; do
-#   echo "Running CuPerfectNaive on $file"
-#   $cuPerfectNaiveExec <$testsDir/$file >$resultsDir/$file.cuPerfectNaive.out.csv
-# done
+for file in "${perfectTests[@]}"; do
+  echo "Running Perfect on $file"
+  $perfectExec <$testsDir/$file >$resultsDir/$file.perfect.out.csv
+done
+
+for file in "${perfectTests[@]}"; do
+  echo "Running CuPerfect on $file"
+  $cuPerfectExec <$testsDir/$file >$resultsDir/$file.cuPerfect.out.csv
+done
+
+for file in "${perfectTests[@]}"; do
+  echo "Running CuPerfectNaive on $file"
+  $cuPerfectNaiveExec <$testsDir/$file >$resultsDir/$file.cuPerfectNaive.out.csv
+done
 
 
 # for file in "${naiveTests[@]}"; do

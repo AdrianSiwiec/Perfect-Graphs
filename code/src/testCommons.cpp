@@ -171,7 +171,7 @@ double RaiiTimer::getElapsedSeconds() {
 map<tuple<algos, bool, int>, double> sumTime;
 // map<pair<int, bool>, double> sumClockTime;
 map<tuple<algos, bool, int>, int> casesTested;
-string algo_names[] = {"Perfect     ", "Naive       ", "CUDA Naive  ", "Cuda Perfect"};
+string algo_names[] = {"Perfect", "Naive", "CUDA Naive", "Cuda Perfect"};
 
 // map<pair<int, bool>, double> sumTimeNaive;
 // map<pair<int, bool>, double> sumClockTimeNaive;
