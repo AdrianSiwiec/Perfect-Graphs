@@ -470,7 +470,8 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
   }
 }
 
-vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test) {
+vec<vec<int>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test,
+                                            vec<vec<int>> &penultimate) {
   int inf = G.n + 10;
 
   vec<vec<int>> dist(G.n, vec<int>(G.n, inf));
@@ -484,11 +485,12 @@ vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(i
   }
 
   for (int k = 0; k < G.n; k++) {
+    if (!test(k)) continue;
     for (int i = 0; i < G.n; i++) {
       if (i == k) continue;
       for (int j = 0; j < G.n; j++) {
         if (i == j || k == j) continue;
-        if (dist[i][j] > dist[i][k] + dist[k][j] && test(k)) {
+        if (dist[i][j] > dist[i][k] + dist[k][j]) {
           dist[i][j] = dist[i][k] + dist[k][j];
           lastOnPath[i][j] = lastOnPath[k][j];
         }
@@ -496,24 +498,25 @@ vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(i
     }
   }
 
-  vec<vec<vec<int>>> R(G.n, vec<vec<int>>(G.n, vec<int>()));
+  vec<vec<int>> R(G.n, vec<int>(G.n));
+  penultimate = vec<vec<int>>(G.n, vec<int>(G.n, -1));
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
       if (dist[i][j] == inf) continue;
 
-      R[i][j].reserve(dist[i][j] + 1);
-      R[i][j].push_back(j);
+      R[i][j] = dist[i][j] + 1;
       if (i == j) continue;
 
       // TODO(Adrian) smarter: if(tmp < i) ~insert(R[i][tmp])
-      int tmp = lastOnPath[i][j];
-      R[i][j].push_back(tmp);
-      while (tmp != i) {
-        tmp = lastOnPath[i][tmp];
-        R[i][j].push_back(tmp);
-      }
+      penultimate[i][j] = lastOnPath[i][j];
+      // int tmp = lastOnPath[i][j];
+      // R[i][j].push_back(tmp);
+      // while (tmp != i) {
+      //   tmp = lastOnPath[i][tmp];
+      //   R[i][j].push_back(tmp);
+      // }
 
-      std::reverse(R[i][j].begin(), R[i][j].end());
+      // std::reverse(R[i][j].begin(), R[i][j].end());
     }
   }
 

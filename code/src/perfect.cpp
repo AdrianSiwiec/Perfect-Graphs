@@ -6,8 +6,23 @@
 #include "pyramids.h"
 #include "testCommons.h"
 
-bool containsSimpleProhibited(const Graph &G) {
-  return containsJewelNaive(G) || containsPyramid(G) || containsT1(G) || containsT2(G) || containsT3(G);
+bool containsSimpleProhibited(const Graph &G, bool gatherStats) {
+  // if (gatherStats) StatsFactory::startTestCasePart("Jewel");
+  if (containsJewelNaive(G)) return true;
+
+  // if (gatherStats) StatsFactory::startTestCasePart("Pyramid");
+  if (containsPyramid(G)) return true;
+
+  // if (gatherStats) StatsFactory::startTestCasePart("T1");
+  if (containsT1(G)) return true;
+
+  // if (gatherStats) StatsFactory::startTestCasePart("T2");
+  if (containsT1(G)) return true;
+
+  // if (gatherStats) StatsFactory::startTestCasePart("T3");
+  if (containsT1(G)) return true;
+
+  return false;
 }
 
 bool isPerfectGraph(const Graph &G, bool gatherStats) {
@@ -16,7 +31,7 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
   if (gatherStats) StatsFactory::startTestCasePart("Simple Structures");
 
   Graph GC = G.getComplement();
-  if (containsSimpleProhibited(G) || containsSimpleProhibited(GC)) return false;
+  if (containsSimpleProhibited(G, gatherStats) || containsSimpleProhibited(GC, gatherStats)) return false;
 
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto Xs = getPossibleNearCleaners(G);

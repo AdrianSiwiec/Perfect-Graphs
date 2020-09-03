@@ -18,4 +18,4 @@ bool isRelevantTriple(const Graph &G, vec<int> v);
 set<int> getXforRelevantTriple(const Graph &G, vec<int> v);
 
 // 9.2
-set<set<int>> getPossibleNearCleaners(const Graph &G);
+set<set<int>> getPossibleNearCleaners(const Graph &G, bool gatherStats = false);

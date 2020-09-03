@@ -17,11 +17,11 @@ perfectTests=(
   # "bench.t.in"
   # "fullBinary.t.in"
   # "fullBinaryBig.t.in"
-  # "grid6by5to8.t.in"
+  "grid6by5to8.t.in"
   # "knightGraph6by5to8.t.in"
   # "hypercubes2to5.t.in"
   # "kingGraph3by3to12.t.in"
-  "rookGraph5by4to6.t.in"
+  # "rookGraph5by4to6.t.in"
 )
 
 naiveTests=(

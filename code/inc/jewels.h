@@ -9,3 +9,5 @@ bool isJewel(const Graph &G, const vec<int> &v);
 // Runv in N^7, instead of N^6 in paper, but much simpler
 vec<int> findJewelNaive(const Graph &G);
 bool containsJewelNaive(const Graph &G);
+
+// bool containsJewel(const Graph &G);

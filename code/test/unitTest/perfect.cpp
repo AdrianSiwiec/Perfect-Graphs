@@ -150,7 +150,7 @@ void testPerfectVsNaive() {
 void testNonPerfect() {
   RaiiTimer timer("Non Perfect");
   for (int i = 0; i < 1000; i++) {
-    Graph G = getNonPerfectGraph(9, 10, 0.5);
+    Graph G = getNonPerfectGraph(7 + (rand() % 5) * 2, 15, 0.5);
     assert(isPerfectGraph(G) == false);
     assert(isPerfectGraphNaive(G) == false);
   }

@@ -398,7 +398,19 @@ void testAllShortestPaths() {
       R[i][j] = findShortestPathWithPredicate(G, i, j, noFour);
     }
   }
-  assert(allShortestPathsWithPredicate(G, noFour) == R);
+
+  vec<vec<int>> Rlen;
+  vec<vec<int>> penultimate;
+  Rlen = allShortestPathsWithPredicate(G, noFour, penultimate);
+
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      assert(Rlen[i][j] == R[i][j].size());
+      if (R[i][j].size() > 1) {
+        assert(penultimate[i][j] == R[i][j][R[i][j].size() - 2]);
+      }
+    }
+  }
 
   G = Graph(6,
             "\
@@ -416,7 +428,17 @@ void testAllShortestPaths() {
       R[i][j] = findShortestPathWithPredicate(G, i, j, noOne);
     }
   }
-  assert(allShortestPathsWithPredicate(G, noOne) == R);
+
+  Rlen = allShortestPathsWithPredicate(G, noOne, penultimate);
+
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      assert(Rlen[i][j] == R[i][j].size());
+      if (R[i][j].size() > 1) {
+        assert(penultimate[i][j] == R[i][j][R[i][j].size() - 2]);
+      }
+    }
+  }
 }
 
 void testDfsWith() {

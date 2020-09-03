@@ -8,7 +8,8 @@
 bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, const vec<vec<int>> &triplePaths,
                                      bool gatherStats) {
   if (gatherStats) StatsFactory::startTestCasePart("Test NC Shortest Paths");
-  auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; });
+  vec<vec<int>> penultimate;
+  auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; }, penultimate);
 
   if (gatherStats) StatsFactory::startTestCasePart("Test NC Rest");
   for (int y1 = 0; y1 < G.n; y1++) {
@@ -25,14 +26,14 @@ bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, const v
       if (containsY1) continue;
 
       int x1 = x[0], x3 = x[1], x2 = x[2];
-      if (R[x1][y1].empty() || R[x2][y1].empty()) continue;
+      if (R[x1][y1] == 0 || R[x2][y1] == 0) continue;
 
-      int y2 = R[x2][y1][R[x2][y1].size() - 2];
+      int y2 = penultimate[x2][y1];
 
-      int n = R[x2][y1].size();
-      if (R[x1][y1].size() + 1 != n || R[x1][y2].size() != n) continue;
+      int n = R[x2][y1];
+      if (R[x1][y1] + 1 != n || R[x1][y2] != n) continue;
 
-      if ((R[x3][y1].size() < n) || (R[x3][y2].size() < n)) continue;
+      if ((R[x3][y1] < n) || (R[x3][y2] < n)) continue;
 
       // TODO(Adrian) remove, use some code coverage tool instead
       // cout << "Interesting odd hole: " << endl;
@@ -111,13 +112,17 @@ set<int> getXforRelevantTriple(const Graph &G, vec<int> v) {
   return sX;
 }
 
-set<set<int>> getPossibleNearCleaners(const Graph &G) {
+set<set<int>> getPossibleNearCleaners(const Graph &G, bool gatherStats) {
+  if (gatherStats) StatsFactory::startTestCasePart("NC 1");
+
   vec<vec<int>> Ns;
   for (int u = 0; u < G.n; u++) {
     for (int v : G[u]) {
       Ns.push_back(getCompleteVertices(G, {u, v}));
     }
   }
+
+  if (gatherStats) StatsFactory::startTestCasePart("NC 2");
 
   vec<set<int>> Xs;
   for (int a = 0; a < G.n; a++) {
@@ -130,6 +135,8 @@ set<set<int>> getPossibleNearCleaners(const Graph &G) {
       }
     }
   }
+
+  if (gatherStats) StatsFactory::startTestCasePart("NC 3");
 
   set<set<int>> res;
   for (auto N : Ns) {

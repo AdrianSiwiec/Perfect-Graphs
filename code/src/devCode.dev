@@ -444,7 +444,8 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
   assert(memInitialized);
 
   if (gatherStats) StatsFactory::startTestCasePart("Test NC Shortest Paths");
-  auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; });
+  vec<vec<int>> penultimate;
+  auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; }, penultimate);
 
   if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy R");
 
@@ -452,8 +453,8 @@ bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const 
 
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
-      GhostR[i * G.n + j] = R[i][j].size() >= 2 ? R[i][j][R[i][j].size() - 2] : -1;
-      GhostRLens[i * G.n + j] = R[i][j].size();
+      GhostR[i * G.n + j] = penultimate[i][j];
+      GhostRLens[i * G.n + j] = R[i][j];
     }
   }
 

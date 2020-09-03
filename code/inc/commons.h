@@ -104,8 +104,11 @@ ostream &operator<<(ostream &os, const set<T> &G) {
 // Returns empty vector if none exist
 vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test);
 // Finds all shortest paths, where every vertex x inside path a -- b satisfies predicate f(a,b,x)
-// returnVal[a][b] is empty if none exist.
-vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test);
+// returnVal[a][b] is 0 if none exist.
+// returnVal[a][b] is length of the path
+// penultimate[a][b] is the last node on path a->b, before b
+vec<vec<int>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test,
+                                            vec<vec<int>> &penultimate);
 
 // Returns triangles: [b1, b2, b3], such that b1<b2<b3
 vec<vec<int>> getTriangles(const Graph &G);
