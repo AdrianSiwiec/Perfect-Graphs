@@ -33,23 +33,27 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
   Graph GC = G.getComplement();
   if (containsSimpleProhibited(G, gatherStats) || containsSimpleProhibited(GC, gatherStats)) return false;
 
-  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
-  auto Xs = getPossibleNearCleaners(G);
+  // if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
+  auto Xs = getPossibleNearCleaners(G, gatherStats);
+
+  if (gatherStats) StatsFactory::startTestCasePart("Get TriplePaths");
   vec<vec<int>> triplePaths = getAllPaths(G, 3);
 
   for (auto X : Xs) {
-    if (containsOddHoleWithNearCleanerX(G, X, triplePaths, gatherStats)) {
+    if (containsOddHoleWithNearCleanerX(G, bitsetToSet(X), triplePaths, gatherStats)) {
       if (printInterestingGraphs) cout << "Interesting graph: " << G << endl;
       return false;
     }
   }
 
-  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
-  auto XsC = getPossibleNearCleaners(GC);
+  // if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
+  auto XsC = getPossibleNearCleaners(GC, gatherStats);
+
+  if (gatherStats) StatsFactory::startTestCasePart("Get TriplePaths");
   vec<vec<int>> CTriplePaths = getAllPaths(GC, 3);
 
   for (auto X : XsC) {
-    if (containsOddHoleWithNearCleanerX(GC, X, CTriplePaths, gatherStats)) {
+    if (containsOddHoleWithNearCleanerX(GC, bitsetToSet(X), CTriplePaths, gatherStats)) {
       if (printInterestingGraphs) cout << "Interesting graph: " << G << endl;
       return false;
     }

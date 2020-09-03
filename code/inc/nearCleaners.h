@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/dynamic_bitset.hpp>
 #include <set>
 #include "commons.h"
 
@@ -9,8 +10,6 @@
 bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, const vec<vec<int>> &triplePaths,
                                      bool gatherStats = false);
 
-bool cudaContainsOddHoleWithNearCleaners(const Graph &G, const set<set<int>> &Xs);
-
 bool isRelevantTriple(const Graph &G, vec<int> v);
 
 // Returns X(a, b, c) for v=[a, b, c].
@@ -18,4 +17,4 @@ bool isRelevantTriple(const Graph &G, vec<int> v);
 set<int> getXforRelevantTriple(const Graph &G, vec<int> v);
 
 // 9.2
-set<set<int>> getPossibleNearCleaners(const Graph &G, bool gatherStats = false);
+set<boost::dynamic_bitset<ul>> getPossibleNearCleaners(const Graph &G, bool gatherStats = false);

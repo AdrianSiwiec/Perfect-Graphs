@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <boost/dynamic_bitset.hpp>
 #include <functional>
 #include <iostream>
 #include <set>
@@ -23,6 +24,7 @@ using std::vector;
 #define mp make_pair
 #define st first
 #define nd second
+#define ul unsigned long long
 
 template <typename T>
 struct vec : public vector<T> {
@@ -165,3 +167,9 @@ void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = fals
 
 vec<vec<int>> getAllPaths(const Graph &G, int len, bool isCycleOk = false, bool areChordsOk = false,
                           bool holeRequired = false);
+
+boost::dynamic_bitset<ul> getBitset(int n, set<int> v);
+boost::dynamic_bitset<ul> getBitset(int n, vec<int> v);
+
+vec<int> bitsetToVector(const boost::dynamic_bitset<ul> &b);
+set<int> bitsetToSet(const boost::dynamic_bitset<ul> &b);

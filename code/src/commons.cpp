@@ -641,3 +641,41 @@ vec<vec<int>> getAllPaths(const Graph &G, int len, bool isCycleOk, bool areChord
 
   return ret;
 }
+
+boost::dynamic_bitset<ul> getBitset(int n, set<int> v) {
+  boost::dynamic_bitset<ul> ret(n);
+  for (int i : v) {
+    ret.set(i);
+  }
+  return ret;
+}
+
+boost::dynamic_bitset<ul> getBitset(int n, vec<int> v) {
+  boost::dynamic_bitset<ul> ret(n);
+  for (int i : v) {
+    ret.set(i);
+  }
+  return ret;
+}
+
+vec<int> bitsetToVector(const boost::dynamic_bitset<ul> &b) {
+  vec<int> ret;
+  size_t index = b.find_first();
+  while (index != boost::dynamic_bitset<ul>::npos) {
+    ret.push_back(index);
+    index = b.find_next(index);
+  }
+
+  return ret;
+}
+
+set<int> bitsetToSet(const boost::dynamic_bitset<ul> &b) {
+  set<int> ret;
+  size_t index = b.find_first();
+  while (index != boost::dynamic_bitset<ul>::npos) {
+    ret.insert(index);
+    index = b.find_next(index);
+  }
+
+  return ret;
+}

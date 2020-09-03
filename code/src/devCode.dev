@@ -507,7 +507,7 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
                      cudaMemcpyHostToDevice));
 
   for (auto X : Xs) {
-    if (cuContainsOddHoleWithNearCleanerX(G, CG, X, GdevTriplePaths, triplePaths.size(), context,
+    if (cuContainsOddHoleWithNearCleanerX(G, CG, bitsetToSet(X), GdevTriplePaths, triplePaths.size(), context,
                                           gatherStats))
       return false;
   }
@@ -524,8 +524,8 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
                      cudaMemcpyHostToDevice));
 
   for (auto X : XsC) {
-    if (cuContainsOddHoleWithNearCleanerX(GC, CGC, X, GdevTriplePaths, triplePaths.size(), context,
-                                          gatherStats))
+    if (cuContainsOddHoleWithNearCleanerX(GC, CGC, bitsetToSet(X), GdevTriplePaths, triplePaths.size(),
+                                          context, gatherStats))
       return false;
   }
 

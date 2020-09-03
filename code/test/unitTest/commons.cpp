@@ -656,6 +656,18 @@ void testNextPathInPlace() {
   assert(v == (vec<int>{3, 1, 0}));
 }
 
+void testDynamicBitset() {
+  vec<int> a{1, 3, 5, 7};
+  auto b = getBitset(10, a);
+
+  for (int i = 0; i < 10; i++) {
+    assert(b.test(i) == (i == 1 || i == 3 || i == 5 || i == 7));
+  }
+
+  assert(bitsetToVector(b) == a);
+  assert(bitsetToSet(b) == set<int>(a.begin(), a.end()));
+}
+
 int main() {
   init();
   testGraph();
@@ -677,4 +689,5 @@ int main() {
   testGetComponentsOfInducedGraph();
   testIsAPath();
   testNextPathInPlace();
+  testDynamicBitset();
 }

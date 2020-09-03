@@ -1,4 +1,5 @@
 
+#include <boost/dynamic_bitset.hpp>
 #include <set>
 
 #include "commons.h"
@@ -112,25 +113,25 @@ set<int> getXforRelevantTriple(const Graph &G, vec<int> v) {
   return sX;
 }
 
-set<set<int>> getPossibleNearCleaners(const Graph &G, bool gatherStats) {
+set<boost::dynamic_bitset<ul>> getPossibleNearCleaners(const Graph &G, bool gatherStats) {
   if (gatherStats) StatsFactory::startTestCasePart("NC 1");
 
-  vec<vec<int>> Ns;
+  vec<boost::dynamic_bitset<ul>> Ns;
   for (int u = 0; u < G.n; u++) {
     for (int v : G[u]) {
-      Ns.push_back(getCompleteVertices(G, {u, v}));
+      Ns.push_back(getBitset(G.n, getCompleteVertices(G, {u, v})));
     }
   }
 
   if (gatherStats) StatsFactory::startTestCasePart("NC 2");
 
-  vec<set<int>> Xs;
+  vec<boost::dynamic_bitset<ul>> Xs;
   for (int a = 0; a < G.n; a++) {
     for (int b = 0; b < G.n; b++) {
       if (a == b || G.areNeighbours(a, b)) continue;
       for (int c = 0; c < G.n; c++) {
         if (isRelevantTriple(G, {a, b, c})) {
-          Xs.push_back(getXforRelevantTriple(G, {a, b, c}));
+          Xs.push_back(getBitset(G.n, getXforRelevantTriple(G, {a, b, c})));
         }
       }
     }
@@ -138,12 +139,12 @@ set<set<int>> getPossibleNearCleaners(const Graph &G, bool gatherStats) {
 
   if (gatherStats) StatsFactory::startTestCasePart("NC 3");
 
-  set<set<int>> res;
+  set<boost::dynamic_bitset<ul>> res;
   for (auto N : Ns) {
     for (auto X : Xs) {
-      set<int> tmpS(X);
-      tmpS.insert(N.begin(), N.end());
-      res.insert(tmpS);
+      boost::dynamic_bitset<ul> tmp = X;
+      tmp |= N;
+      res.insert(tmp);
     }
   }
 
