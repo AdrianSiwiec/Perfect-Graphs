@@ -57,14 +57,12 @@ bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, const v
   return false;
 }
 
-bool isRelevantTriple(const Graph &G, vec<int> v) {
-  if (v.size() != 3) return false;
+bool isRelevantTriple(const Graph &G, int a, int b, int c) {
+  // for (int i = 0; i < 3; i++) {
+  //   if (v[i] < 0 || v[i] >= G.n) return false;
+  // }
 
-  for (int i = 0; i < 3; i++) {
-    if (v[i] < 0 || v[i] >= G.n) return false;
-  }
-
-  int a = v[0], b = v[1], c = v[2];
+  // int a = v[0], b = v[1], c = v[2];
 
   if (a == b || G.areNeighbours(a, b)) return false;
 
@@ -73,10 +71,8 @@ bool isRelevantTriple(const Graph &G, vec<int> v) {
   return true;
 }
 
-set<int> getXforRelevantTriple(const Graph &G, vec<int> v) {
-  int a = v[0], b = v[1], c = v[2];
-
-  auto antiCompsNab = getComponentsOfInducedGraph(G.getComplement(), getCompleteVertices(G, {a, b}));
+boost::dynamic_bitset<ul> getXforRelevantTriple(const Graph &G, const Graph &GC, int a, int b, int c) {
+  auto antiCompsNab = getComponentsOfInducedGraph(GC, getCompleteVertices(G, {a, b}));
   int r = 0;
   for (auto comp : antiCompsNab) {
     if (comp.size() <= r) continue;
@@ -99,7 +95,10 @@ set<int> getXforRelevantTriple(const Graph &G, vec<int> v) {
   vec<int> W;
   for (auto comp : antiCompsNab) {
     for (int v : comp) {
-      if (!G.areNeighbours(v, c)) W = comp;
+      if (!G.areNeighbours(v, c)) {
+        W = comp;
+        break;
+      }
     }
   }
   W.push_back(c);
@@ -107,13 +106,12 @@ set<int> getXforRelevantTriple(const Graph &G, vec<int> v) {
   W.insert(W.end(), Y.begin(), Y.end());
   auto Z = getCompleteVertices(G, W);
 
-  set<int> sX(Y.begin(), Y.end());
-  sX.insert(Z.begin(), Z.end());
-
-  return sX;
+  boost::dynamic_bitset<ul> ret = getBitset(G.n, Y);
+  ret |= getBitset(G.n, Z);
+  return ret;
 }
 
-set<boost::dynamic_bitset<ul>> getPossibleNearCleaners(const Graph &G, bool gatherStats) {
+set<boost::dynamic_bitset<ul>> getPossibleNearCleaners(const Graph &G, const Graph &GC, bool gatherStats) {
   if (gatherStats) StatsFactory::startTestCasePart("NC 1");
 
   vec<boost::dynamic_bitset<ul>> Ns;
@@ -130,8 +128,8 @@ set<boost::dynamic_bitset<ul>> getPossibleNearCleaners(const Graph &G, bool gath
     for (int b = 0; b < G.n; b++) {
       if (a == b || G.areNeighbours(a, b)) continue;
       for (int c = 0; c < G.n; c++) {
-        if (isRelevantTriple(G, {a, b, c})) {
-          Xs.push_back(getBitset(G.n, getXforRelevantTriple(G, {a, b, c})));
+        if (isRelevantTriple(G, a, b, c)) {
+          Xs.push_back(getXforRelevantTriple(G, GC, a, b, c));
         }
       }
     }

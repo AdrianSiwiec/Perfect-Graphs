@@ -10,11 +10,12 @@
 bool containsOddHoleWithNearCleanerX(const Graph &G, const set<int> &sX, const vec<vec<int>> &triplePaths,
                                      bool gatherStats = false);
 
-bool isRelevantTriple(const Graph &G, vec<int> v);
+bool isRelevantTriple(const Graph &G, int a, int b, int c);
 
-// Returns X(a, b, c) for v=[a, b, c].
+// Returns X(a, b, c).
 // (a, b, c) should be relevant triple.
-set<int> getXforRelevantTriple(const Graph &G, vec<int> v);
+boost::dynamic_bitset<ul> getXforRelevantTriple(const Graph &G, const Graph &GC, int a, int b, int c);
 
 // 9.2
-set<boost::dynamic_bitset<ul>> getPossibleNearCleaners(const Graph &G, bool gatherStats = false);
+set<boost::dynamic_bitset<ul>> getPossibleNearCleaners(const Graph &G, const Graph &GC,
+                                                       bool gatherStats = false);

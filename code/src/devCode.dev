@@ -493,7 +493,7 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
   if (containsSimpleProhibited(G) || containsSimpleProhibited(GC)) return false;
 
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
-  auto Xs = getPossibleNearCleaners(G);
+  auto Xs = getPossibleNearCleaners(G, GC);
 
   CuGraph CG(G, context);
   CuGraph CGC(GC, context);
@@ -513,7 +513,7 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
   }
 
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
-  auto XsC = getPossibleNearCleaners(GC);
+  auto XsC = getPossibleNearCleaners(GC, G);
 
   if (gatherStats) StatsFactory::startTestCasePart("Prepare 3paths");
   triplePaths = getAllPaths(GC, 3);
