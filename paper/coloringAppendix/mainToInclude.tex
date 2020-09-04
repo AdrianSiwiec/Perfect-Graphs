@@ -1,0 +1,50 @@
+\section{Notes}
+
+In appendix we use a slightly different notation than before, with many concepts represented by inline symbols. This is intended to reduce the length of algorithm's text and simplify its analysis.
+
+\begin{itemize}
+	\item $V(X)$ -- vertices of structure $X$. Will be written as $X$ when obvious.
+	\item $a - b$, when $a$ and $b$ are nodes -- $a$ and $b$ are neighbors.
+	\item $a \cdots b$, when $a$ and $b$ are nodes -- $a$ and $b$ are not neighbors.
+	\item $a - X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a neighbor in $X$.
+	\item $a \cdots X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a nonneighbor in $X$.
+	\item $a \blacktriangleleft  X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is complete to $X$.
+	\item $a \ntriangleleft X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is anticomplete to $X$.
+	\item $X \setComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is complete to $Y$.
+	\item $X \setAntiComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is anticomplete to $Y$.
+	\item $[n]$  -- $\{1, \ldots, n\}$.
+	\item \LGBSK -- a line-graph of a biparite subdivision of $K_4$.
+	\item $a \gets b$ -- let a be equal b.
+	\item $a :\in X$ -- let a be equal to any element of $X$
+	\item $a \xor b$ -- $a$ xor $b$
+\end{itemize}
+	
+\section{Algorithms}
+\begin{algorithm}
+	\SetKwFunction{colorGraph}{\textsc{Color-Graph}}
+\end{algorithm}
+  
+\input{coloringAppendix/algII.tex}
+\clearpage
+
+\input{coloringAppendix/algIII.tex}
+\clearpage
+	
+\input{coloringAppendix/algIV.tex}
+\clearpage
+
+\input{coloringAppendix/algV.tex}
+\clearpage
+
+\subsection{ALG VI}
+\input{coloringAppendix/algVIa.tex}
+\clearpage
+
+\input{coloringAppendix/algVIb.tex}
+\clearpage
+
+\input{coloringAppendix/algVII.tex}
+\clearpage
+
+\input{coloringAppendix/algVIII.tex}
+\clearpage

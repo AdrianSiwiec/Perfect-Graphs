@@ -1,5 +1,5 @@
 Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangle and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
- 
+
 Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, $|V| = n$, let us construct a graph $G'$ equal to the union of $G$ and a clique $K_n$. We can see that indeed $\chi(G') = n = \omega(G')$, but it gives us no indication of the structure of $G$ or $G'$.
 
 A definition of perfect graphs (\cref{def:perfectGraph}) states that given a graph $G$, the chromatic number and cardinality of the largest clique of \emph{its every induced subgraph} should be equal. The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures some of the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum (weighted) clique problem, and maximum (weighted) independent set problem can be solved in polynomial time \cite{grotschel1993}. Other classical NP-complete problems are still NP-complete in perfect graphs e.g. Hamiltonian path \cite{Mller1996}, maximum cut problem \cite{Bodlaender1994} or dominating set problem \cite{Dewdney81}. \todo{all theese citations are about subclasses e.g. biparite graphs. Should we mention some subclasses?}
@@ -14,41 +14,65 @@ Perfect graphs are interesting not only because of their theoretical properties,
 The first step to solve the problem of recognizing perfect graphs was the \emph{(weak) perfect graph theorem} first conjured by Berge in 1961~\cite{CB61} and then proven by \Lovasz in 1972~\cite{LL72}.
 
 \begin{theorem}[Perfect graph theorem]
-	A graph is perfect if and only if its complement graph is also perfect. \todo{Should we give some proof of that here? Maybe based on proof in \cite{GC03}}
+	\label{thm:pgt}
+	A graph is perfect if and only if its complement graph is also perfect.
 \end{theorem}
+
+This theorem is a consequence of a stronger result proven by \Lovasz:
+\begin{theorem}
+	\label{thm:omegaalpha}
+	A graph $G$ is perfect iff for every induced subgraph $H$, the number of vertices of $H$ is at most $\alpha(H)\omega(H)$. \todo{proof?}
+\end{theorem}
+
+Then, since $\alpha(H) = \omega(\overline{H})$ and $\omega(H) = \alpha(\overline{H})$ \cref{thm:omegaalpha} implies \cref{thm:pgt}.
 
 Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd hole and no odd antihole is called \emph{Berge} (\cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
 
-In 1961 Berge conjured that a graph is perfect iff it contains no odd hole and no odd antihole in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}. The following overview of the proof will be based on this paper and on an article with the same name by Cornuéjols \cite{GC03}.
+In 1961 Berge conjured that a graph is perfect iff it contains no odd hole and no odd antihole in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}.
 
 \begin{theorem}[Strong perfect graph theorem]
+	\label{thm:spgt}
 	A graph is perfect if and only if it is Berge.
 \end{theorem}
 
+The proof is long and complicated. Moreover, it has little noticeable connection to the algorithm of recognizing Berge graphs we discuss later. Therefore we will discuss it very briefly following the overview by Cornuéjols \cite{GC03}.
 
-\TODO{How long and detailed overview of the proof should we provide?}
-\TODO{Znakomite pytanie. Generalnie ponieważ dowód jest drobiazgowy i trikowy, to wystarczy "z lotu ptaka" tj. to, co Chudnovsky i Seymour piszą w pracach popularnych i referują w wystąpieniach gościnnych typu te nagrania na YT. Głębiej nie ma sensu. Warto podkreślić, że technika dowodu i sam algorytm są zależne na dużo głębszym poziomie niż widać tj. ktoś mając dowód Stron Perfect Graph Theorem pewnie nie rozgryzłby algorytmu i vice versa.}
+\subsubsection{Basic classes of perfect graphs}
+Bipartite graphs are perfect, since we can color them with two colors. From the theorem of König we get that line graphs of bipartite graphs are also perfect \cite{Knig1916, GC03}. From the perfect graph theorem (\cref{thm:pgt}) it follows that complements of bipartite graphs and complement of line graphs of bipartite graphs are also perfect. We will call these four classes \emph{basic}.
+
+\subsubsection{2-join, Homogeneous Pair and Skew Partition}
+A graph $G$ has a \emph{2-join} if its vertices can be partitioned into sets $V_1$, $V_2$, each of size at least three, and there are nonempty disjoint subsets $A_1, B_1 \subseteq V_1$ and $A_2, B_2 \subseteq V_2$, such that all vertices of $A_1$ are adjacent to all vertices of $A_2$, all vertices of $B_1$ are adjacent to all vertices of $B_2$, and these are the only edges between $V_1$ and $V_2$. When a graph $G$ has a 2-join, it can be decomposed onto two smaller graphs $G_1$, $G_2$, so that $G$ is perfect iff $G_1$ and $G_2$ are perfect \cite{Cornujols1985}.
+
+A graph $G$ has a \emph{homogeneous pair} if $V(G)$ can be partitioned into subsets $A_1$, $A_2$, $B$, such that $|A_1|+|A_2| \geq 3$, $|B| \geq 2$ and if a vertex $v \in B$ is adjacent to a vertex from $A_i$, then it is adjacent to all vertices from $A_i$. Chvátal and Sbihi proved that no minimally imperfect graph has a homogeneous pair \cite{Chvtal1987}.
+
+A graph $G$ has a \emph{skew partition} if $V(G)$ can be partitioned into nonempty subsets $A, B, C, D$ such that there are all possible edges between $A$ and $B$ and no edges between $C$ and $D$. Chudnovsky et at. proved that no minimally imperfect graph has a skew partition.
+
+The proof of \cref{thm:spgt} is a consequence of the \emph{Decomposition theorem}:
+\begin{theorem}[Decomposition theorem]
+	\label{thm:decomposition}
+	Every Berge graph $G$ is basic or has a skew partition or a homogeneous pair, or $G$ or $\overline{G}$ has a 2-join.
+\end{theorem}
+
+See \cite{MC06} for the proof of \cref{thm:decomposition} and \cref{thm:spgt}.
 
 \section{Recognizing Berge Graphs}
 \label{sec:recognizingBerge}
 
-The following is based on the paper by Maria Chudnovsky et al. \citetitle*[]{MC05}. We will not provide full proof of its correctness, but will aim to show the intuition behind the algorithm.
+The following is based on the paper by Maria \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but will aim to show the intuition behind the algorithm.
 
-Berge graph recognition algorithm could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple structures as a induced subgraph (\ref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole (\ref{AmenableHoles}).
+Berge graph recognition algorithm could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole (\cref{AmenableHoles}).
 
-\subsection{Simple structures}
+\subsection{Simple forbidden structures}
 \label{SimpleStructures}
 
 \subsubsection{Pyramids}
-
-% \begin{floatingfigure}{0.35\textwidth}
 
 \begin{wrapfigure}{r}{0.35\textwidth}
 	\input{tikzpictures/pyramid.tex}
 	\caption{An example  of a pyramid.}%
 	\vspace{-1.2cm}
-	% \end{floatingfigure}
 \end{wrapfigure}
+
 
 A \emph{pyramid} in G is an induced subgraph formed by the union of a triangle \footnote{A triangle is a clique $K_3$.} $\{b_1,b_2,b_3\}$, three paths $\{P_1, P_2, P_3\}$ and another vertex $a$, so that:
 \begin{itemize}
@@ -63,18 +87,28 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 
 \paragraph{Finding Pyramids}
 
-First, let us enumerate all 6-tuples $b_1, b_2, b_3, s_1, s_2, s_3$ such that:
+\begin{alg}[Test if $G$ contains a Pyramid]
+	\label{alg:testPyramid}
+	Input: A graph $G$.
+
+	\noindent Output: Returns whether $G$ contains a pyramid as an induced subgraph.
+\end{alg}
+\begin{algtext}
+	
+Enumerate all 6-tuples $(b_1, b_2, b_3, s_1, s_2, s_3)$ such that:
 \begin{itemize}
 	\item $\{b_1, b_2, b_3\}$ is a triangle
-	\item for $1 \leq i < j \leq 3$, ${b_i, s_i}$ is disjoint from ${b_j, s_j}$ and $b_ib_j$ is the only edge between them
-	\item there is a vertex $a$ adjacent to all of $s_1, s_2, s_3$ and to at most one of $b_1, b_2, b_3$, such that if $a$ is adjacent to $b_i$, then $s_i \ b_i$.
+	\item for $1 \leq i < j \leq 3$, $\{b_i, s_i\}$ is disjoint from $\{b_j, s_j\}$ and $b_ib_j$ is the only edge between them
+	\item there is a vertex $a$ adjacent to all of $s_1, s_2, s_3$ and to at most one of $b_1, b_2, b_3$, such that if $a$ is adjacent to $b_i$, then $s_i = b_i$.
 \end{itemize}
 
-There are $O(|V(G)|^6)$ 6-tuples, and it takes $O(|V(G)|)$ time to check each one. For each such 6-tuple we follow with the rest of the algorithm.
+There are $O(|V(G)|^6)$ 6-tuples, and for each we check above conditions in $O(|V(G)|)$ time. For each such 6-tuple we follow with the rest of the algorithm.
 
-We define $M = V(G) \setminus \{b_1, b_2, b_3, s_1, s_2, s_3\}$. Now, for each $m \in M$, we set $S_1(m)$ equal to the shortest path between $s_1$ and $m$ such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists. We set $S_2$ and $S_3$ similarly. Then similarly we set $T_1(m)$ to be the shortest path between $m$ and $b_1$, such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists. We do similar for $T_2$ and $T_3$. It takes $O(|V(G)|^2)$ time to calculate paths $T_i(m)$ for all $i$ and $m$.
+Let $M \leftarrow V(G) \setminus \{b_1, b_2, b_3, s_1, s_2, s_3\}$.
 
-Now, we will calculate all possible paths $P_i$. For each $m \in M \cup \{b_1\}$ we will define a path $P_1(m)$ and paths $P_2(m)$, $P_3(m)$ will be defined in a similar manner.
+For each $m \in M$, set $S_1(m)$ equal to the shortest path between $s_1$ and $m$ such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists. Set $S_2$ and $S_3$ similarly. Set $T_1(m)$ to be the shortest path between $m$ and $b_1$, such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists, and set $T_2$, $T_3$ similarly. It takes $O(|V(G)|^2)$ time to calculate paths $S_i(m)$ and $T_i(m)$ for all $i$ and $m$.
+
+Now, we will calculate all possible paths $P_i$. For each $m \in M \cup \{b_1\}$ we will define a path $P_1(m)$ with paths $P_2(m)$, $P_3(m)$ defined in a similar manner.
 
 If $s_1 = b_1$ let $P_1(b_1)$ be the one-vertex path with vertex $b_1$, and let $P_1(m)$ be undefined for each $m \in M$.
 
@@ -85,11 +119,11 @@ If $s_1 \neq b_1$, then $P_1(b_1)$ is undefined and for all $m \in M$ we will ch
 	\item $V(S_1(m) \cap T_1(m)) = \{m\}$
 	\item there are no edges between $V(S_1(m) \setminus m)$ and $V(T_1(m) \setminus m)$
 \end{itemize}
-If so, then we assign a path $s_1-S_1(m)-m-T_1(m)-b_1$ to $P_1(m)$, otherwise we let $P_1(m)$ be undefined. It takes $O(|V(G)|^2)$ to check this, given $m$. We assign $P_2$ and $P_3$ in a similar manner. Total time of finding all $P_i(m)$ paths for a given 6-tuple is $O(|V(G)|^3)$.
+If it is true for some $m \in M$, then we assign $P_1(m) \leftarrow s_1-S_1(m)-m-T_1(m)-b_1$, otherwise we let $P_1(m)$ be undefined. It takes $O(|V(G)|^2)$ to check this, for a given $m$. We assign $P_2$ and $P_3$ in a similar manner. Total time of finding all $P_i(m)$ paths for a given 6-tuple is $O(|V(G)|^3)$.
 
 Now we want to check if there is a triple $m_1, m_2, m_3$, so that $P_1(m_1)$, $P_2(m_2)$, $P_3(m_3)$ form a pyramid. A most obvious approach of enumerating them all would be too slow, so we do it carefully.
 
-For $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ is a \emph{good $(i, j)$-pair}, iff $m_i \in M \cup \{b_i\}$, $m_j \in M \cup \{b_j\}$, $P_i(m_i)$, $P_j(m_j)$ both exist and the sets $V(P_i(m_i))$,$V(P_j(m_j))$ are both disjoint and $b_ib_j$ is the only edge between them.
+For $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ is a \emph{good $(i, j)$-pair}, iff $m_i \in M \cup \{b_i\}$, $m_j \in M \cup \{b_j\}$, $P_i(m_i)$ and $P_j(m_j)$ both exist, and the sets $V(P_i(m_i))$,$V(P_j(m_j))$ are both disjoint and $b_ib_j$ is the only edge between them.
 
 We show how to find the list of all good $(1, 2)$-pairs, with similar algorithm for all other good $(i, j)$-pairs. For each $m_1 \in M \cup \{b_1\}$, we find the set of all $m_2$ such that $(m_1, m_2)$ is a good $(1,2)$-pair as follows.
 
@@ -98,9 +132,9 @@ If $P_1(m_1)$ does not exist, there are no such good pairs. If it exists, color 
 Now, we examine all triples $m_1, m_2, m_3$ such that $m_i \in M \cup \{b_i\}$ and test whether $(m_i, m_j)$ is a good $(i, j)$-pair. If we find a triple such that all three pairs are good, we output that G contains a pyramid and stop.
 
 If after examining all choices of $b_1, b_2, b_3, s_1, s_2, s_3$ we find no pyramid, output that $G$ contains no pyramid. Since there are $O(|V(G)|^6)$ such choices and it takes a time of $O(|V(G)|^3)$ to analyze each one, the total time is $O(|V(G)|^9)$.
+\end{algtext}
 
-\TODO{some proofs}
-
+It is easy to see, that if algorithm outputs that $G$ contains a pyramid, it indeed does. The proof of the converse is rather technical and we refer to \cite{MC05} for it.
 
 \subsubsection{Jewels}
 
@@ -121,11 +155,11 @@ Five vertices $v_1, \ldots, v_5$ and a path $P$ form a \emph{jewel} iff:
 	\item $P$ is a path between $v_1$ and $v_4$, such that $v_2, v_3, v_5$ have no neighbors in its inside.
 \end{itemize}
 
-Most obvious way to find a jewel would be to enumerate all choices of $v_1, \ldots v_5$, check if a choice is correct and if it is try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole algorithms takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
+Most obvious way to find a jewel would be to enumerate all (possibly chordal) cycles of length 5 as $v_1, \ldots v_5$, check if it has all required nonedges and if it does, try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole Berge recognition algorithm takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
 
 \subsubsection{Configurations of type $\T_1$}
 
-A configuration of type $\T_1$ is a hole of length 5. To find it we simply iterate all choices of paths of length of 4, and check if there exists a fifth vertex to complete the hole. See \cref{sec:usesGeneration} for more implementation details.
+A configuration of type $\T_1$ is a hole of length 5. To find it, we simply iterate over all paths of length 4 and check if there exists a fifth vertex to complete the hole. See \cref{sec:usesGeneration} for more implementation details.
 
 \subsubsection{Configurations of type $\T_2$}
 
@@ -145,7 +179,7 @@ A configuration of type $\T_2$ is a tuple $(v_1, v_2, v_3, v_4, P, X)$, such tha
 
 Checking if configuration of type $\T_2$ exists in our graph is straightforward: we enumerate all paths $v_1\ldots v_4$, calculate set of all $\{v_1, v_2, v_4\}$-complete vertices and its anticomponents. Then, for each anticomponent $X$ we check if required path $P$ exists.
 
-To prove that existence of $\T_2$ configuration implies that the graph is not berge, we will need the following Roussel-Rubio lemma:
+To prove that existence of $\T_2$ configuration implies that the graph is not Berge, we will need the following Roussel-Rubio lemma:
 
 \begin{lemma}[Roussel-Rubio Lemma \cite{RR01,MC05}]\label{lem:Roussel-Rubio}
 	Let $G$ be Berge, $X$ be an anticonnected subset of $V(G)$, $P$ be an odd path $p_1\ldots p_n$ in $G\setminus X$ with length at least 3, such that $p_1$ and $p_n$ are $X$-complete and $p_2, \ldots, p_{n-1}$ are not. Then:
@@ -189,13 +223,22 @@ A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such 
 
 The following algorithm with running time of $O(|V(G)|^6)$ checks whether $G$ contains a configuration of type $T_3$:
 
+\begin{alg}
+	\label{alg:t3}
+	Input: A graph $G$.
+
+	\noindent Output: Returns whether $G$ contains a configuration of type $T_3$ as an induced subgraph.
+\end{alg}
+\begin{algtext}
+	
 For each triple $v_1, v_2, v_5$ of vertices such that $v_1v_2$ is an edge and $v_1v_5, v_2v_5$ are nonedges find the set $Y$ of all $\{v_1, v_2, v_5\}$-complete vertices. For each anticomponent $X$ of $Y$ find the maximal connected subset $F'$ containing $v_5$ such that $v_1, v_2$ have no neighbors in $F'$ and no vertex of $F'\setminus\{v_5\}$ is $X$-complete. Let $F$ be the union of $F'$ and the set of all $X$-complete vertices that have a neighbor in $F'$ and are nonadjacent to all of $v_1, v_2$ and $v_5$.
 
 Then, for each choice of $v_4$ that is adjacent to $v_1$ and not to $v_2$ and $v_5$ and has a neighbor in $F$ (call it $v_6$) and a nonneibhbor in $X$, we test whether there is a vertex $v_3$, adjacent to $v_2, v_4, v_5$ and not to $v_1$, with a nonneibhbor in $X$. If there is such a vertex $v_3$, find $P$ -- a path from $v_6$ to $v_5$ with interior in $F'$ and return that $v_1, \ldots v_6, P, X$ is a configuration of type $\T_3$. If we exhaust our search and find none, report that graph does not contain it.
+\end{algtext}
 
-To see that the algorithm below has a running time of $O(|V(G)|^6)$, let us note that for each triple $v_1, v_2, v_5$ we examine, of which there are $O(|V(G)|^3)$, there are linear many choices of $X$, each taking $O(|V(G)|^2)$ time to process and generating a linear many choices of $v_4$ which take a linear time to process in turn. This gives us the total running time of $O(|V(G)|^6)$.
+To see that the \cref{alg:t3} has a running time of $O(|V(G)|^6)$, let us note that for each triple $v_1, v_2, v_5$ we examine, of which there are $O(|V(G)|^3)$, there are linear many choices of $X$, each taking $O(|V(G)|^2)$ time to process and generating a linear many choices of $v_4$ which take a linear time to process in turn. This gives us the total running time of $O(|V(G)|^6)$.
 
-We will skip the proof that each graph containing $\T_3$ is not Berge. See section6 6.7 of \cite{MC05} for the proof.
+We will skip the proof that each graph containing $\T_3$ is not Berge. See section 6 6.7 of \cite{MC05} for the proof.
 
 \subsection{Amenable holes.}
 \label{AmenableHoles}
@@ -253,7 +296,7 @@ Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a
 
 \begin{alg}[Test possible near clener, 5.1 of \cite{MC05}]
 	\label{alg:testNearCleaner}
-	Input: A graph $G$ containing no simple bad structure \todo{define this somewhere}, and a subset $X \subseteq V(G)$.
+	Input: A graph $G$ containing no simple forbidden structure, and a subset $X \subseteq V(G)$.
 
 	\noindent Output: Determines one of the following:
 	\begin{itemize}
