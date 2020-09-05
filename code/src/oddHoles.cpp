@@ -24,16 +24,22 @@ vec<int> findHoleOfSize(const Graph &G, int size) {
 bool constainsHoleOfSize(const Graph &G, int size) { return !findHoleOfSize(G, size).empty(); }
 
 vec<int> findOddHoleNaive(const Graph &G, bool gatherStats) {
-  for (int size = 5; size <= G.n; size += 2) {
-    if (gatherStats) StatsFactory::startTestCasePart(to_string(size));
-    auto v = findHoleOfSize(G, size);
-    if (!v.empty()) return v;
-  }
+  // for (int size = 5; size <= G.n; size += 2) {
+  //   if (gatherStats) StatsFactory::startTestCasePart(to_string(size));
+  //   auto v = findHoleOfSize(G, size);
+  //   if (!v.empty()) return v;
+  // }
 
-  return vec<int>();
+  // return vec<int>();
+  vec<int> v;
+  nextPathInPlace(G, v, 0, true, false, true);
+  return v;
 }
 
 bool containsOddHoleNaive(const Graph &G, bool gatherStats) {
+  // auto v = findOddHoleNaive(G, gatherStats);
+  // cout<<v<<endl;
+  // return !v.empty();
   return !findOddHoleNaive(G, gatherStats).empty();
 }
 

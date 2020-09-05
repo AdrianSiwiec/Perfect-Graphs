@@ -615,16 +615,60 @@ void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleO
   }
 }
 
+void nextHoleInPlaceInternal(const Graph &G, vec<int> &v) {
+  while (true) {
+    if (v.back() == -1) {
+      v.pop_back();
+      if (v.size() == 1) {
+        v[0]++;
+        if (v[0] >= G.n) {
+          v = {};
+          return;
+        }
+        continue;
+      } else {
+        v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+        continue;
+      }
+    }
+
+    if (v.size() < G.n) {
+      while (v.size() > 1 && v.back() != -1 && (!isAPath(G, v, true, false, false) || v.back() <= v[0])) {
+        v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+      }
+      if (v.back() == -1) continue;
+
+      if ((v.size() % 2) && isAPath(G, v, true, false, true)) return;
+
+      v.push_back(G.getFirstNeighbour(v.back()));
+      if ((v.size() % 2) && isAPath(G, v, true, false, true))
+        return;
+      else
+        continue;
+    }
+
+    do {
+      v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+    } while (v.back() != -1 && !isAPath(G, v, true, false, true));
+
+    if ((v.size() % 2) == 0 || v.back() == -1) continue;
+
+    return;
+  }
+}
+
 void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk,
                      bool holeRequired) {
-  if (len <= 1) {
-    throw invalid_argument("Length of next path must be at least 2");
+  if (len == 0 && (!holeRequired || !isCycleOk || areChordsOk)) {
+    throw invalid_argument("len=0 only supported for holes");
   }
   if (v.empty()) {
     v = {0};
   }
 
   v.reserve(len);
+
+  if (len == 0) return nextHoleInPlaceInternal(G, v);
 
   return nextPathInPlaceInternal(G, v, len, isCycleOk, areChordsOk, holeRequired);
 }

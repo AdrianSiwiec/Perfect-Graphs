@@ -26,8 +26,8 @@ int main() {
   //   }
   // }
 
-  // int minN = 20;
-  // int maxN = 55;
+  // int minN = 30;
+  // int maxN = 40;
   // for (int k = minN; k <= maxN; k++) {
   //   Graph G = getFullBinaryTree(k);
   //   G.printOut();
@@ -41,7 +41,7 @@ int main() {
   //   G.printOut();
   // }
 
-  for (int k = 16; k <= 50; k++) {
+  for (int k = 30; k <= 40; k++) {
     Graph G = getHypercube(k);
     G.printOut();
   }

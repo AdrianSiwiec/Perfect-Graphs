@@ -7,19 +7,19 @@
 #include "testCommons.h"
 
 bool containsSimpleProhibited(const Graph &G, bool gatherStats) {
-  if (gatherStats) StatsFactory::startTestCasePart("Jewel");
+  // if (gatherStats) StatsFactory::startTestCasePart("Jewel");
   if (containsJewelNaive(G)) return true;
 
-  if (gatherStats) StatsFactory::startTestCasePart("Pyramid");
+  // if (gatherStats) StatsFactory::startTestCasePart("Pyramid");
   if (containsPyramid(G)) return true;
 
-  if (gatherStats) StatsFactory::startTestCasePart("T1");
+  // if (gatherStats) StatsFactory::startTestCasePart("T1");
   if (containsT1(G)) return true;
 
-  if (gatherStats) StatsFactory::startTestCasePart("T2");
+  // if (gatherStats) StatsFactory::startTestCasePart("T2");
   if (containsT1(G)) return true;
 
-  if (gatherStats) StatsFactory::startTestCasePart("T3");
+  // if (gatherStats) StatsFactory::startTestCasePart("T3");
   if (containsT1(G)) return true;
 
   return false;
@@ -33,10 +33,10 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
   Graph GC = G.getComplement();
   if (containsSimpleProhibited(G, gatherStats) || containsSimpleProhibited(GC, gatherStats)) return false;
 
-  // if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto Xs = getPossibleNearCleaners(G, GC, gatherStats);
 
-  if (gatherStats) StatsFactory::startTestCasePart("Get TriplePaths");
+  if (gatherStats) StatsFactory::startTestCasePart("Test NC Rest");
   vec<vec<int>> triplePaths = getAllPaths(G, 3);
 
   for (auto X : Xs) {
@@ -46,10 +46,10 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
     }
   }
 
-  // if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto XsC = getPossibleNearCleaners(GC, G, gatherStats);
 
-  if (gatherStats) StatsFactory::startTestCasePart("Get TriplePaths");
+  if (gatherStats) StatsFactory::startTestCasePart("Test NC Rest");
   vec<vec<int>> CTriplePaths = getAllPaths(GC, 3);
 
   for (auto X : XsC) {
@@ -63,5 +63,5 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
 }
 
 bool isPerfectGraphNaive(const Graph &G, bool gatherStats) {
-  return !containsOddHoleNaive(G, gatherStats) && !containsOddHoleNaive(G.getComplement(), gatherStats);
+  return !containsOddHoleNaive(G, gatherStats) && !containsOddHoleNaive(G.getComplement(), false);
 }

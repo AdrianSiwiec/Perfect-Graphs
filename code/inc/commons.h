@@ -162,6 +162,7 @@ bool isHole(const Graph &G, const vec<int> &v);
 
 // Returns (in &v) next path of length len in G (in some order). If v is empty returns first path. If v is
 // the last path returns empty vec. Iterating from empty vector to empty vector gives all paths of length len.
+// len=0 triggers search for any odd hole (isCycleOk should =1, areChordsOk should =0, holeRequired should =1)
 void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false, bool areChordsOk = false,
                      bool holeRequired = false);
 
