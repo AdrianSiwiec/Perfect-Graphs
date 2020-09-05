@@ -7,19 +7,19 @@
 #include "testCommons.h"
 
 bool containsSimpleProhibited(const Graph &G, bool gatherStats) {
-  // if (gatherStats) StatsFactory::startTestCasePart("Jewel");
+  if (gatherStats) StatsFactory::startTestCasePart("Jewel");
   if (containsJewelNaive(G)) return true;
 
-  // if (gatherStats) StatsFactory::startTestCasePart("Pyramid");
+  if (gatherStats) StatsFactory::startTestCasePart("Pyramid");
   if (containsPyramid(G)) return true;
 
-  // if (gatherStats) StatsFactory::startTestCasePart("T1");
+  if (gatherStats) StatsFactory::startTestCasePart("T1");
   if (containsT1(G)) return true;
 
-  // if (gatherStats) StatsFactory::startTestCasePart("T2");
+  if (gatherStats) StatsFactory::startTestCasePart("T2");
   if (containsT1(G)) return true;
 
-  // if (gatherStats) StatsFactory::startTestCasePart("T3");
+  if (gatherStats) StatsFactory::startTestCasePart("T3");
   if (containsT1(G)) return true;
 
   return false;

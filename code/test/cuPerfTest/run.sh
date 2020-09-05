@@ -13,15 +13,15 @@ naiveExec="$scriptDir/../../obj/test/cuPerfTest/naive.e"
 perfectTests=(
   # "perf2.t.in"
   # "perf.t.in"
-  # "perfSmaller.t.in"
   # "bench.t.in"
-  # "fullBinary.t.in"
   # "fullBinaryBig.t.in"
-  "grid6by5to8.t.in"
+  # "fullBinary20to55.t.in"
+  # "grid6by5to9.t.in"
   # "knightGraph6by5to8.t.in"
-  # "hypercubes2to5.t.in"
+  # "knightGraph8by4to8.t.in"
+  "hypercubes16to50.t.in"
   # "kingGraph3by3to12.t.in"
-  # "rookGraph5by4to6.t.in"
+  # "rookGraph5by4to7.t.in"
 )
 
 naiveTests=(

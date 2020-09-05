@@ -1,7 +1,7 @@
 # coding: utf-8
 
-# usePgf = True
-usePgf = False
+usePgf = True
+# usePgf = False
 
 import matplotlib as mpl
 if usePgf:
@@ -25,6 +25,7 @@ import ntpath
 
 plt.rcParams.update({'pgf.texsystem': 'pdflatex', 'font.family': 'serif', 'pgf.rcfonts': False, })
 
+csv_filename = "Filename"
 csv_N = 'n'
 csv_result = 'result'
 csv_algo = 'algorithm'
@@ -65,14 +66,15 @@ field_colors = {"Perfect": {csv_simpleStructures: "#0f2231", csv_getNearCleaners
                 "CUDA Naive": { csv_cpuPreparation: "#ff0000", csv_gpuCalculation: "#aa0000"}
                 }
 
-sizes_in_inches = {"regular": (5, 3.5), "wide": (
-    6.8, 2.4), "huge": (6.8, 8), "allGraphs": (10, 25), "wideDetailed":(6.8, 3)}
+sizes_in_inches = {"regular": (4.77, 3.5), "wide": (
+    6.8, 2.4), "huge": (6.8, 8), "allGraphs": (10, 25), "wideDetailed":(4.77, 4)}
 # sizes_in_inches = {"regular": (5, 3), "wide": (8, 3)}
 
 func_formatter = ticker.FuncFormatter(lambda y, _: '{:g}'.format(y))
 
 #labels for plot axes
 label_lca_N = "Number of nodes"
+label_time_percentage = "Time ratio"
 label_lca_preprocessing_over_s = "Nodes preprocessed per second"
 label_lca_queries_over_s = "Queries answered per second"
 label_lca_queries_over_N = "Queries-to-nodes ratio"
@@ -91,10 +93,27 @@ experiments = [
      "x_param": csv_N, "x_show": csv_N, "type": "lines", "size": sizes_in_inches["regular"],
      "y_param": csv_overall, "ylog": False, "x_label": "N", "y_label": label_time_overall_s},
 
-    # {"restrictions": [(csv_result, 1)],
-    #  "x_param": csv_N, "x_show": csv_N, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
-    #  "x_label": label_time_overall_s},
-     
+    {"restrictions": [(csv_result, 1), (csv_filename, "fullBinary"), (csv_N, "20|25|30|35|40|45|50|55"), (csv_algo, "GPU Perfect|Perfect")],
+     "x_param": csv_N, "x_show": csv_N, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
+     "x_label": "N", "y_label": label_time_percentage, "ylim": (0,1)},
+
+    {"restrictions": [(csv_result, 1), (csv_filename, "grid"), (csv_algo, "GPU Perfect|Perfect")],
+     "x_param": csv_N, "x_show": csv_N, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
+     "x_label": "N", "y_label": label_time_percentage, "ylim": (0,1)},
+
+    {"restrictions": [(csv_result, 1), (csv_filename, "hypercube"), (csv_N, "16|20|24|28|32|36|40|44|48|50"), (csv_algo, "GPU Perfect|Perfect")],
+     "x_param": csv_N, "x_show": csv_N, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
+     "x_label": "N", "y_label": label_time_percentage, "ylim": (0,1)},
+
+    {"restrictions": [(csv_result, 1), (csv_filename, "knight"), (csv_algo, "GPU Perfect|Perfect")],
+     "x_param": csv_N, "x_show": csv_N, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
+     "x_label": "N", "y_label": label_time_percentage, "ylim": (0,1)},
+
+    {"restrictions": [(csv_result, 1), (csv_filename, "rook"), (csv_algo, "GPU Perfect|Perfect")],
+     "x_param": csv_N, "x_show": csv_N, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
+     "x_label": "N", "y_label": label_time_percentage, "ylim": (0,1)},
+
+    
 
     #LCA
     # {"restrictions": [(csv_filename, "E1"), (csv_grasp, 1000)],
@@ -170,7 +189,7 @@ experiments = [
 
 if len(sys.argv) < 2:
     print("Usage:\n\
-    \t./python2 plot.py csv_to_parse.csv [dir_to_save_plots]\n")
+        \t./python2 plot.py csv_to_parse.csv [dir_to_save_plots]\n")
     exit()
 
 # Read input and do preprocessing
@@ -187,7 +206,6 @@ csv_file = []
 for input in csv_input:
     csv_reader = csv.DictReader(input.splitlines())
     for line in csv_reader:
-        print(line)
         if line[csv_algo] == 'file':  # headers outside first line
             continue
         for param in csv_ints:
@@ -212,9 +230,15 @@ for i_exp, experiment in enumerate(experiments):
         isOk = True
         for res_name, res_val in experiment["restrictions"]: #process restrictions to plot only what we want
             if isinstance(res_val, str): # for a string, restriction should be a substring of a field in a row
-                if not res_val == row[res_name]:
-                    isOk = False
-                    break
+                if res_name == csv_filename:
+                    if not re.findall(res_val, ntpath.basename(sys.argv[1])):
+                        isOk = False
+                        break
+                else:
+                    if not re.findall(res_val, str(row[res_name])):
+                # if not res_val == row[res_name]:
+                        isOk = False
+                        break
             else: # for a non-string restriction should equal a field in a row
                 if not res_val == row[res_name]:
                     isOk = False
@@ -271,16 +295,12 @@ for i_exp, experiment in enumerate(experiments):
         # Plot data
         if experiment["type"] == "detailed":
             # ax.set_ylabel(experiment["x_show"])
-            ax.set_xlabel("Time overall (ms)")
             
-            height = 0.28
-            apparent_x = np.arange(len(x))
+            height = 0.35/len(x)
+            apparent_x = np.arange(0, 1, 1.0/len(x))
             y_sum = [sum(i) for i in y]
-            if "skipHybrid" in experiment and experiment["skipHybrid"]:
-                bar_shift = (i_algo -0.5 - ((len(algos) -2) / 2.0)) * height
-            else:
-                bar_shift = (i_algo -0.5 - ((len(algos) -1) / 2.0)) * height
-
+            old_y_sum = y_sum.copy()
+            bar_shift = (i_algo + 0.5 - (len(algos)  / 2.0)) * height
             ax.invert_yaxis()
             for i_field, field in reversed(list(enumerate(csv_detailed_fields))):
                 if y[0][i_field] == 0:
@@ -289,14 +309,14 @@ for i_exp, experiment in enumerate(experiments):
                     alg_label = algo_labels[algo] + " " + algo_field_labels[field]
                     # ax.barh(apparent_x + bar_shift, y_sum, height, label=alg_label,
                         # color='white', edgecolor=algo_colors[algo], hatch=hatches[i_field], zorder=3)
-                    ax.barh(apparent_x + bar_shift, y_sum, height, label=alg_label,
-                        color=field_colors[algo][field], zorder=3)
+                    ax.bar(apparent_x + bar_shift, [y_sum[i] / old_y_sum[i] for i in range(len(y_sum))], height, label=alg_label,
+                        color=field_colors[algo][field], zorder=2)
 
                 for i_xval, xval in enumerate(x):
                     y_sum[i_xval] -= y[i_xval][i_field]
 
-            ax.set_yticks(apparent_x)
-            ax.set_yticklabels(x)
+            ax.set_xticks(apparent_x)
+            ax.set_xticklabels(x)
         elif experiment["type"] == "bars":
             # ax.set_xlabel(experiment["x_show"])
             ax.set_ylabel("Time " + experiment["y_param"] + " (s)")
@@ -345,84 +365,88 @@ for i_exp, experiment in enumerate(experiments):
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles[::-1], labels[::-1], ncol=3)
     elif experiment["type"] == "detailed":
-        if experiment["size"] == sizes_in_inches["huge"]:
-            fig.tight_layout(rect=[0, 0.08, 1, 1])
+            fig.tight_layout(rect=[0, 0.1, 1, 1])
 
-            rect = patches.Rectangle((-240,13.96),1342,1.2,linewidth=1,edgecolor='black',facecolor='white', clip_on=False)
-            shadow = patches.Rectangle((-235,14.00),1342,1.2,linewidth=1,edgecolor='grey',facecolor='grey', clip_on=False)
-            ax.add_patch(shadow)
-            ax.add_patch(rect)
-
-            handles_and_labels = zip(ax.get_legend_handles_labels()[0], ax.get_legend_handles_labels()[1])
-            hl_ck = [hl for hl in handles_and_labels if "CK" in hl[1]]
-            handles_ck, labels_ck = zip(*hl_ck)
-
-            hl_tv = [hl for hl in handles_and_labels if "TV" in hl[1]]
-            handles_tv, labels_tv = zip(*hl_tv)
-
-            hl_hy = [hl for hl in handles_and_labels if "Hybrid" in hl[1]]
-            handles_hy, labels_hy = zip(*hl_hy)
-
-            r = mpl.patches.Rectangle((0,0), 1, 1.5, fill=False, edgecolor='none', visible=False)
-
-            labels_ck = [l[7::] for l in labels_ck] + ["GPU CK\hspace{13.15pt}"]
-            handles_ck = handles_ck + (r,)
-
-            labels_tv = [l[7::] for l in labels_tv] + ["GPU TV\hspace{13.3pt}"]
-            handles_tv = handles_tv + (r,)
-
-            labels_hy = [l[11::] for l in labels_hy] + ["GPU Hybrid"]
-            handles_hy = handles_hy + (r,)
-
-            legend = ax.legend(handles_ck[::-1], labels_ck[::-1], loc='lower left', bbox_to_anchor=(-.27,-0.104),
-                               fancybox=True, shadow=False, ncol=3, frameon=False)
-            legend1 = ax.legend(handles_tv[::-1], labels_tv[::-1], loc='lower left', bbox_to_anchor=(-.27,-0.129),
-                               fancybox=True, shadow=False, ncol=4, frameon=False)
-            legend2 = ax.legend(handles_hy[::-1], labels_hy[::-1], loc='lower left', bbox_to_anchor=(-.27, -.154),
-                               fancybox=True, shadow=False, ncol=5, frameon=False)
-            plt.gca().add_artist(legend)
-            plt.gca().add_artist(legend1)
-
-
-        elif experiment["size"] == sizes_in_inches["allGraphs"]:
-            fig.tight_layout(rect=[0, 0.05, 1, 1])
             handles, labels = ax.get_legend_handles_labels()
-            legend = ax.legend(handles[::-1], labels[::-1], loc='center', bbox_to_anchor=(0.4, -0.05),
-                               fancybox=True, shadow=True, ncol=3)
-        elif experiment["size"] == sizes_in_inches["wideDetailed"]:
-            fig.tight_layout(rect=[0, 0.13, 1, 1])
+            legend = ax.legend(handles, labels)
 
-            rect = patches.Rectangle((0,5.75),750,1,linewidth=1,edgecolor='black',facecolor='white', clip_on=False)
-            shadow = patches.Rectangle((5,5.8),750,1,linewidth=1,edgecolor='grey',facecolor='grey', clip_on=False)
-            ax.add_patch(shadow)
-            ax.add_patch(rect)
+            # rect = patches.Rectangle((-.2,-.3),1.15,.15,linewidth=1,edgecolor='black',facecolor='white', clip_on=False)
+            # shadow = patches.Rectangle((-.19,-.31),1.15,.15,linewidth=1,edgecolor='grey',facecolor='grey', clip_on=False)
+            # ax.add_patch(shadow)
+            # ax.add_patch(rect)
 
-            handles_and_labels = zip(ax.get_legend_handles_labels()[0], ax.get_legend_handles_labels()[1])
+            # handles_and_labels = zip(ax.get_legend_handles_labels()[0], ax.get_legend_handles_labels()[1])
+            # hl_gpu = [hl for hl in handles_and_labels if "GPU" in hl[1]]
+            # handles_gpu, labels_gpu = zip(*hl_gpu)
 
-            # hl_ck = [hl for hl in handles_and_labels if "CK" in hl[1]]
-            # handles_ck, labels_ck = zip(*hl_ck)
-
-            # hl_tv = [hl for hl in handles_and_labels if "TV" in hl[1]]
-            # handles_tv, labels_tv = zip(*hl_tv)
+            # hl_cpu = [hl for hl in handles_and_labels if "GPU" not in hl[1]]
+            # handles_cpu, labels_cpu = zip(*hl_cpu)
 
             # r = mpl.patches.Rectangle((0,0), 1, 1.5, fill=False, edgecolor='none', visible=False)
 
-            # labels_ck = [l[7::] for l in labels_ck] + ["GPU CK"]
-            # handles_ck = handles_ck + (r,)
+            # labels_gpu = [l[7::] for l in labels_gpu] + ["GPU Perfect\hspace{13.15pt}"]
+            # handles_gpu = handles_ck + (r,)
 
-            # labels_tv = [l[7::] for l in labels_tv] + ["GPU TV"]
+            # labels_tv = [l[7::] for l in labels_tv] + ["GPU TV\hspace{13.3pt}"]
+
+
+
+
+
             # handles_tv = handles_tv + (r,)
 
-            # legend = ax.legend(handles_ck[::-1], labels_ck[::-1], loc='lower left', bbox_to_anchor=(-.05,-0.35),
+            # labels_hy = [l[11::] for l in labels_hy] + ["GPU Hybrid"]
+            # handles_hy = handles_hy + (r,)
+
+            # legend = ax.legend(handles_ck[::-1], labels_ck[::-1], loc='lower left', bbox_to_anchor=(-.27,-0.104),
             #                    fancybox=True, shadow=False, ncol=3, frameon=False)
-            # legend1 = ax.legend(handles_tv[::-1], labels_tv[::-1], loc='lower left', bbox_to_anchor=(-.05,-0.43),
+            # legend1 = ax.legend(handles_tv[::-1], labels_tv[::-1], loc='lower left', bbox_to_anchor=(-.27,-0.129),
             #                    fancybox=True, shadow=False, ncol=4, frameon=False)
+            # legend2 = ax.legend(handles_hy[::-1], labels_hy[::-1], loc='lower left', bbox_to_anchor=(-.27, -.154),
+            #                    fancybox=True, shadow=False, ncol=5, frameon=False)
             # plt.gca().add_artist(legend)
-        else:
-            fig.tight_layout(rect=[0, 0.2, 1, 1])
-            handles, labels = ax.get_legend_handles_labels()
-            legend = ax.legend(handles[::-1], labels[::-1], loc='center', bbox_to_anchor=(0.4, -0.45),
-                               fancybox=True, shadow=True, ncol=2)
+            # plt.gca().add_artist(legend1)
+
+
+        # elif experiment["size"] == sizes_in_inches["allGraphs"]:
+        #     fig.tight_layout(rect=[0, 0.05, 1, 1])
+        #     handles, labels = ax.get_legend_handles_labels()
+        #     legend = ax.legend(handles[::-1], labels[::-1], loc='center', bbox_to_anchor=(0.4, -0.05),
+        #                        fancybox=True, shadow=True, ncol=3)
+        # elif experiment["size"] == sizes_in_inches["wideDetailed"]:
+        #     fig.tight_layout(rect=[0, 0.13, 1, 1])
+
+        #     rect = patches.Rectangle((0,5.75),750,1,linewidth=1,edgecolor='black',facecolor='white', clip_on=False)
+        #     shadow = patches.Rectangle((5,5.8),750,1,linewidth=1,edgecolor='grey',facecolor='grey', clip_on=False)
+        #     ax.add_patch(shadow)
+        #     ax.add_patch(rect)
+
+        #     handles_and_labels = zip(ax.get_legend_handles_labels()[0], ax.get_legend_handles_labels()[1])
+
+        #     # hl_ck = [hl for hl in handles_and_labels if "CK" in hl[1]]
+        #     # handles_ck, labels_ck = zip(*hl_ck)
+
+        #     # hl_tv = [hl for hl in handles_and_labels if "TV" in hl[1]]
+        #     # handles_tv, labels_tv = zip(*hl_tv)
+
+        #     # r = mpl.patches.Rectangle((0,0), 1, 1.5, fill=False, edgecolor='none', visible=False)
+
+        #     # labels_ck = [l[7::] for l in labels_ck] + ["GPU CK"]
+        #     # handles_ck = handles_ck + (r,)
+
+        #     # labels_tv = [l[7::] for l in labels_tv] + ["GPU TV"]
+        #     # handles_tv = handles_tv + (r,)
+
+        #     # legend = ax.legend(handles_ck[::-1], labels_ck[::-1], loc='lower left', bbox_to_anchor=(-.05,-0.35),
+        #     #                    fancybox=True, shadow=False, ncol=3, frameon=False)
+        #     # legend1 = ax.legend(handles_tv[::-1], labels_tv[::-1], loc='lower left', bbox_to_anchor=(-.05,-0.43),
+        #     #                    fancybox=True, shadow=False, ncol=4, frameon=False)
+        #     # plt.gca().add_artist(legend)
+        # else:
+        #     fig.tight_layout(rect=[0, 0.2, 1, 1])
+        #     handles, labels = ax.get_legend_handles_labels()
+        #     legend = ax.legend(handles[::-1], labels[::-1], loc='center', bbox_to_anchor=(0.4, -0.45),
+        #                        fancybox=True, shadow=True, ncol=2)
     else:  # lines
         plt.xticks(fontsize=font_size)
         plt.yticks(fontsize=font_size)
@@ -457,14 +481,14 @@ for i_exp, experiment in enumerate(experiments):
 
     # Saving filename
     filename_to_save = ntpath.basename(sys.argv[1])
-    for res_name, res_val in experiment["restrictions"]:
-        filename_to_save += "_" + res_name + "-" + str(res_val)
+    # for res_name, res_val in experiment["restrictions"]:
+    #     filename_to_save += "_" + res_name + "-" + str(res_val)
 
-    filename_to_save += "x=" + experiment["x_param"]
-    if "y_param" in experiment:
-        filename_to_save += "y=" + experiment["y_param"]
-    if "y_divide" in experiment:
-        filename_to_save += "div" + experiment["y_divide"]
+    # filename_to_save += "x=" + experiment["x_param"]
+    # if "y_param" in experiment:
+    #     filename_to_save += "y=" + experiment["y_param"]
+    # if "y_divide" in experiment:
+    #     filename_to_save += "div" + experiment["y_divide"]
 
     filename_to_save += experiment["type"]
     filename_to_save = filename_to_save.replace("# ", "num")
@@ -483,7 +507,7 @@ for i_exp, experiment in enumerate(experiments):
         # fig.set_size_inches(10,5, forward=True)
         if experiment["type"] == "detailed":
             fig.savefig(os.path.join(dir_to_save_to, filename_to_save + ".png"),
-                        # bbox_extra_artists=(legend)
+                        bbox_extra_artists=(legend)
                         )
         else:
             fig.savefig(os.path.join(dir_to_save_to, filename_to_save + ".png"))

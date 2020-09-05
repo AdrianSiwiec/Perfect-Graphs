@@ -26,25 +26,25 @@ int main() {
   //   }
   // }
 
-  // int minN = 10;
-  // int maxN = 40;
+  // int minN = 20;
+  // int maxN = 55;
   // for (int k = minN; k <= maxN; k++) {
   //   Graph G = getFullBinaryTree(k);
   //   G.printOut();
   // }
 
-  vec<vec<int>> sizes = {{5, 4}, {5, 5}, {5, 6}};
-  for (auto size : sizes) {
-    // Graph G = getCityGrid(size[0], size[1]);
-    // Graph G = getKnightGraph(size[0], size[1]);
-    Graph G = getRookGraph(size[0], size[1]);
-    G.printOut();
-  }
-
-  // for (int k = 2; k < 7; k++) {
-  //   Graph G = getHypercube(k);
+  // vec<vec<int>> sizes = {{5, 4}, {5, 5}, {5, 6}, {5, 7}};
+  // for (auto size : sizes) {
+  //   // Graph G = getCityGrid(size[0], size[1]);
+  //   // Graph G = getKnightGraph(size[0], size[1]);
+  //   Graph G = getRookGraph(size[0], size[1]);
   //   G.printOut();
   // }
+
+  for (int k = 16; k <= 50; k++) {
+    Graph G = getHypercube(k);
+    G.printOut();
+  }
 
   // for (int k = 3; k <= 12; k++) {
   //   Graph G = getGridWithMoves(3, k, {1, -1, 0, 0, 1, 1, -1, -1}, {0, 0, 1, -1, 1, -1, 1, -1});

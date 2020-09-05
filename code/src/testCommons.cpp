@@ -160,8 +160,7 @@ Graph getKnightGraph(int W, int H) {
   return getGridWithMoves(W, H, dx, dy);
 }
 
-Graph getHypercube(int k) {
-  int n = (1 << k);
+Graph getHypercube(int n) {
   vec<vec<int>> neighbors(n);
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {
