@@ -34,7 +34,7 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
   if (containsSimpleProhibited(G, gatherStats) || containsSimpleProhibited(GC, gatherStats)) return false;
 
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
-  auto Xs = getPossibleNearCleaners(G, GC, gatherStats);
+  auto Xs = getPossibleNearCleaners(G, GC, false);
 
   if (gatherStats) StatsFactory::startTestCasePart("Test NC Rest");
   vec<vec<int>> triplePaths = getAllPaths(G, 3);
@@ -47,7 +47,7 @@ bool isPerfectGraph(const Graph &G, bool gatherStats) {
   }
 
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
-  auto XsC = getPossibleNearCleaners(GC, G, gatherStats);
+  auto XsC = getPossibleNearCleaners(GC, G, false);
 
   if (gatherStats) StatsFactory::startTestCasePart("Test NC Rest");
   vec<vec<int>> CTriplePaths = getAllPaths(GC, 3);

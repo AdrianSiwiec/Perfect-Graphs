@@ -499,7 +499,6 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
   CuGraph CG(G, context);
   CuGraph CGC(GC, context);
 
-  if (gatherStats) StatsFactory::startTestCasePart("Test NC Rest");
   vec<vec<int>> triplePaths = getAllPaths(G, 3);
 
   if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy");
@@ -518,7 +517,6 @@ bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
   if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
   auto XsC = getPossibleNearCleaners(GC, G);
 
-  if (gatherStats) StatsFactory::startTestCasePart("Test NC Rest");
   triplePaths = getAllPaths(GC, 3);
 
   if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy");

@@ -1,21 +1,21 @@
 
-algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	NC 1,	NC 2,	NC 3,	Test NC Rest,	Test NC Shortest Paths
-Perfect,	32,	1,	1,	5.6408,	0.0409515,	8e-07,	0.000498588,	0.424433,	0.383856,	4.42977,	0.356982
-Perfect,	40,	1,	1,	20.5568,	0.114427,	1e-06,	0.000967275,	1.15928,	1.08481,	17.0703,	1.11425
-Perfect,	48,	1,	1,	54.8222,	0.264407,	1.5e-06,	0.00152176,	2.61475,	2.50236,	46.7321,	2.67981
-Perfect,	56,	1,	1,	119.591,	0.524901,	1.2e-06,	0.00230074,	5.37268,	4.85257,	103.506,	5.28244
-Perfect,	64,	1,	1,	229.518,	0.948642,	3.2e-06,	0.00323929,	9.85625,	8.94676,	200.358,	9.31322
+algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	Test NC Rest,	Test NC Shortest Paths
+Perfect,	32,	1,	1,	5.64007,	0.0412241,	0.794943,	4.44309,	0.356863
+Perfect,	40,	1,	1,	20.495,	0.114889,	2.24997,	16.9974,	1.11958
+Perfect,	48,	1,	1,	54.6529,	0.264896,	5.0482,	46.6397,	2.67409
+Perfect,	56,	1,	1,	119.473,	0.526691,	10.3324,	103.283,	5.28392
+Perfect,	64,	1,	1,	227.242,	0.955888,	18.6131,	198.279,	9.30555
 
-algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	Test NC Rest,	GPU Test NC Copy,	Test NC Shortest Paths,	GPU Test NC work
-Cuda Perfect,	32,	1,	1,	2.09385,	0.0445606,	0.802668,	0.000684588,	0.529317,	0.363961,	0.345496
-Cuda Perfect,	40,	1,	1,	5.93647,	0.117767,	2.29181,	0.00132118,	1.17093,	1.13671,	1.20303
-Cuda Perfect,	48,	1,	1,	13.3616,	0.271625,	5.16482,	0.00218006,	2.17049,	2.70215,	3.02068
-Cuda Perfect,	56,	1,	1,	27.0638,	0.527257,	10.4407,	0.00331584,	3.46133,	5.29924,	7.28652
-Cuda Perfect,	64,	1,	1,	48.0852,	0.962712,	18.8647,	0.00681828,	5.09855,	9.33204,	13.244
+algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	GPU Test NC Copy,	Test NC Shortest Paths,	GPU Test NC work
+Cuda Perfect,	32,	1,	1,	2.08975,	0.0412337,	0.807689,	0.528926,	0.36109,	0.344458
+Cuda Perfect,	40,	1,	1,	5.89421,	0.115233,	2.27774,	1.16439,	1.11999,	1.20326
+Cuda Perfect,	48,	1,	1,	13.3127,	0.264195,	5.19242,	2.15534,	2.67288,	3.00145
+Cuda Perfect,	56,	1,	1,	27.0856,	0.525078,	10.4936,	3.46253,	5.27483,	7.28543
+Cuda Perfect,	64,	1,	1,	48.1294,	0.954755,	18.8504,	5.12574,	9.33739,	13.289
 
 algorithm,	n,	result,	num_runs,	Overall
-Naive,	32,	1,	1,	0.0327127
-Naive,	40,	1,	1,	0.148641
-Naive,	48,	1,	1,	0.87419
-Naive,	56,	1,	1,	5.38952
-Naive,	64,	1,	1,	77.3036
+Naive,	32,	1,	1,	0.0335119
+Naive,	40,	1,	1,	0.151448
+Naive,	48,	1,	1,	0.868053
+Naive,	56,	1,	1,	5.3744
+Naive,	64,	1,	1,	77.1456
