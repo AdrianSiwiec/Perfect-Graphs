@@ -1,6 +1,5 @@
 #include "commons.h"
 
-void testColorWithStats(const Graph &G);
-void printStatsColor();
+void testGraphColor(const Graph &G);
 
 bool isColoringValid(const Graph &G, const vec<int> &coloring);

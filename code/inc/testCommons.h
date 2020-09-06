@@ -60,7 +60,7 @@ struct RaiiTimer {
   string msg;
 };
 
-enum algos { algoPerfect, algoNaive, algoCudaNaive, algoCudaPerfect, algo_last };
+enum algos { algoPerfect, algoNaive, algoCudaNaive, algoCudaPerfect, algo_last, algo_color};
 extern string algo_names[];
 
 typedef bool (*cuIsPerfectFunction)(const Graph &G, bool gatherStats);

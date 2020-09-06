@@ -17,31 +17,13 @@ map<int, double> sumTimeColor;
 map<int, double> sumClockTimeColor;
 map<int, int> casesTestedColor;
 
-void testColorWithStats(const Graph &G) {
-  nanoseconds start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
-  clock_t start_clock = clock();
+void testGraphColor(const Graph &G) {
+  StatsFactory::startTestCase(G, algo_color);
 
-  auto c = color(G);
+  auto coloring = color(G);
+  assert(isColoringValid(G, coloring));
 
-  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
-  clock_t end_clock = clock();
-
-  double duration = (end_ns.count() - start_ns.count()) / 1e9;
-  double clock_duration = (end_clock - start_clock) / static_cast<double>(CLOCKS_PER_SEC);
-
-  assert(isColoringValid(G, c));
-
-  sumTimeColor[G.n] += duration;
-  sumClockTimeColor[G.n] += clock_duration;
-  casesTestedColor[G.n]++;
-}
-void printStatsColor() {
-  cout << "Color stats: " << endl;
-  for (auto it = sumTimeColor.begin(); it != sumTimeColor.end(); it++) {
-    int cases = casesTestedColor[it->first];
-    cout << "\tn=" << it->first << ", cases=" << cases << ", avgTime=" << it->second / cases
-         << ", parallel factor=" << sumClockTimeColor[it->first] / it->second << endl;
-  }
+  StatsFactory::endTestCase(true);
 }
 
 bool isColoringValid(const Graph &G, const vec<int> &coloring) {
