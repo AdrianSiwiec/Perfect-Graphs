@@ -17,10 +17,10 @@ void testIsRelevantTriple() {
   .X.XX..\
   ");
 
-  assert(isRelevantTriple(G, {0, 6, 0}));
-  assert(!isRelevantTriple(G, {0, 1, 6}));
-  assert(isRelevantTriple(G, {1, 3, 1}));
-  assert(isRelevantTriple(G, {1, 3, 4}));
+  assert(isRelevantTriple(G, 0, 6, 0));
+  assert(!isRelevantTriple(G, 0, 1, 6));
+  assert(isRelevantTriple(G, 1, 3, 1));
+  assert(isRelevantTriple(G, 1, 3, 4));
 }
 
 int main() {

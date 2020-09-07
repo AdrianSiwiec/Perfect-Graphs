@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <boost/dynamic_bitset.hpp>
 #include <functional>
 #include <iostream>
 #include <set>
@@ -23,6 +24,7 @@ using std::vector;
 #define mp make_pair
 #define st first
 #define nd second
+#define ul unsigned long long
 
 template <typename T>
 struct vec : public vector<T> {
@@ -30,7 +32,9 @@ struct vec : public vector<T> {
 
   // Range checking
   T &operator[](int i) { return vector<T>::at(i); }
+  // T &operator[](int i) { return vector<T>::operator[](i); }
   const T &operator[](int i) const { return vector<T>::at(i); }
+  // const T &operator[](int i) const { return vector<T>::operator[](i); }
 };
 template <typename T>
 ostream &operator<<(ostream &os, vec<T> const &v) {
@@ -71,6 +75,10 @@ struct Graph {
   Graph getShuffled() const;
   Graph getLineGraph() const;
 
+  void printOut() const;
+
+  friend class CuGraph;
+
  private:
   vec<vec<int>> _neighbours;
   vec<vec<int>> _matrix;
@@ -98,8 +106,11 @@ ostream &operator<<(ostream &os, const set<T> &G) {
 // Returns empty vector if none exist
 vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, function<bool(int)> test);
 // Finds all shortest paths, where every vertex x inside path a -- b satisfies predicate f(a,b,x)
-// returnVal[a][b] is empty if none exist.
-vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test);
+// returnVal[a][b] is 0 if none exist.
+// returnVal[a][b] is length of the path
+// penultimate[a][b] is the last node on path a->b, before b
+vec<vec<int>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test,
+                                            vec<vec<int>> &penultimate);
 
 // Returns triangles: [b1, b2, b3], such that b1<b2<b3
 vec<vec<int>> getTriangles(const Graph &G);
@@ -144,8 +155,22 @@ void nextTupleInPlace(vec<int> &v, int max);
 
 // Returns whether v is a path in G. A path must have all vertices distinct, and edges only between neighbors.
 // If isCycleOk a cycle is also considered a path e.g. [1,2,3,4] if 1-4 is an edge
-bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk = false, bool areChordsOk = false);
+bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk = false, bool areChordsOk = false,
+             bool holeRequired = false);
+
+bool isHole(const Graph &G, const vec<int> &v);
 
 // Returns (in &v) next path of length len in G (in some order). If v is empty returns first path. If v is
 // the last path returns empty vec. Iterating from empty vector to empty vector gives all paths of length len.
-void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false, bool areChordsOk = false);
+// len=0 triggers search for any odd hole (isCycleOk should =1, areChordsOk should =0, holeRequired should =1)
+void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk = false, bool areChordsOk = false,
+                     bool holeRequired = false);
+
+vec<vec<int>> getAllPaths(const Graph &G, int len, bool isCycleOk = false, bool areChordsOk = false,
+                          bool holeRequired = false);
+
+boost::dynamic_bitset<ul> getBitset(int n, set<int> v);
+boost::dynamic_bitset<ul> getBitset(int n, vec<int> v);
+
+vec<int> bitsetToVector(const boost::dynamic_bitset<ul> &b);
+set<int> bitsetToSet(const boost::dynamic_bitset<ul> &b);

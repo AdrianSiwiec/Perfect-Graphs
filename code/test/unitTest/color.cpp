@@ -1,4 +1,6 @@
 #include "color.h"
+
+#include "colorTestCommons.h"
 #include "commons.h"
 #include "perfect.h"
 #include "testCommons.h"
@@ -201,6 +203,9 @@ void testColor() {
 
 int main() {
   init();
+  // cout<<"Skipping Color tests..." <<endl;
+  // return 0;
+
   testGetGraphEdges();
   testGetTheta();
   testMaxStableSetHand();

@@ -2,6 +2,7 @@
 #include <tuple>
 #include "commons.h"
 #include "perfect.h"
+#include "testCommons.h"
 using namespace std;
 
 extern "C" {
@@ -45,7 +46,7 @@ tuple<int, int, vec<int>, vec<int>> getGraphEdges(const Graph &G, const vec<int>
   return {nodeNr.back(), m, from, to};
 }
 
-int getTheta(const Graph &G, const vec<int> &isNodeRemoved) {
+int getTheta(const Graph &G, const vec<int> &isNodeRemoved, bool gatherStats) {
   auto e = getGraphEdges(G, isNodeRemoved);
 
   if (get<0>(e) == 0) {
@@ -63,7 +64,14 @@ int getTheta(const Graph &G, const vec<int> &isNodeRemoved) {
       return 1;
   }
 
+  static map<tuple<int, int, vec<int>, vec<int>>, int> MEM;
+  if (MEM.count(e) > 0) {
+    return MEM[e];
+  }
+
+  if (gatherStats) StatsFactory::startTestCasePart("Color CSDP");
   double th = theta(get<0>(e), get<1>(e), get<2>(e).data(), get<3>(e).data());
+  if (gatherStats) StatsFactory::startTestCasePart("Color rest");
 
   if (th == -1) {
     throw logic_error("Theta returned -1");
@@ -79,10 +87,14 @@ int getTheta(const Graph &G, const vec<int> &isNodeRemoved) {
       throw logic_error("Theta returned non-integer for a Perfect Graph: " + to_string(th));
   }
 
+  MEM[e] = thInt;
+
   return thInt;
 }
 
-int getOmega(const Graph &G) { return getTheta(G.getComplement()); }
+int getOmega(const Graph &G, bool gatherStats) {
+  return getTheta(G.getComplement(), vec<int>(), gatherStats);
+}
 
 bool isStableSet(const Graph &G, vec<int> nodes) {
   if (!isDistinctValues(nodes)) return false;
@@ -96,15 +108,15 @@ bool isStableSet(const Graph &G, vec<int> nodes) {
   return true;
 }
 
-vec<int> getMaxCardStableSet(const Graph &G) {
-  int thetaG = getTheta(G);
+vec<int> getMaxCardStableSet(const Graph &G, bool gatherStats) {
+  int thetaG = getTheta(G, vec<int>(), gatherStats);
 
   vec<int> isNodeRemoved(G.n, 0);
   vec<int> res;
 
   for (int i = 0; i < G.n; i++) {
     isNodeRemoved[i] = 1;
-    int newTheta = getTheta(G, isNodeRemoved);
+    int newTheta = getTheta(G, isNodeRemoved, gatherStats);
 
     if (newTheta != thetaG) {
       isNodeRemoved[i] = 0;
@@ -115,9 +127,11 @@ vec<int> getMaxCardStableSet(const Graph &G) {
   return res;
 }
 
-vec<int> getMaxCardClique(const Graph &G) { return getMaxCardStableSet(G.getComplement()); }
+vec<int> getMaxCardClique(const Graph &G, bool gatherStats) {
+  return getMaxCardStableSet(G.getComplement(), gatherStats);
+}
 
-vec<int> getSSIntersectingCliques(const Graph &G, vec<vec<int>> K) {
+vec<int> getSSIntersectingCliques(const Graph &G, vec<vec<int>> K, bool gatherStats) {
   vec<int> c(G.n);
 
   for (auto k : K) {
@@ -145,7 +159,7 @@ vec<int> getSSIntersectingCliques(const Graph &G, vec<vec<int>> K) {
 
   Graph nG(nneighbors);
 
-  vec<int> nSS = getMaxCardStableSet(Graph(nneighbors));
+  vec<int> nSS = getMaxCardStableSet(Graph(nneighbors), gatherStats);
 
   vec<int> ret;
   int wsk = 0;
@@ -160,23 +174,23 @@ vec<int> getSSIntersectingCliques(const Graph &G, vec<vec<int>> K) {
   return ret;
 }
 
-vec<int> getSSIntersectingAllMaxCardCliques(const Graph &G) {
+vec<int> getSSIntersectingAllMaxCardCliques(const Graph &G, bool gatherStats) {
   vec<vec<int>> K;
-  K.push_back(getMaxCardClique(G));
+  K.push_back(getMaxCardClique(G, gatherStats));
 
-  int omegaG = getOmega(G);
+  int omegaG = getOmega(G, gatherStats);
 
   while (true) {
-    vec<int> S = getSSIntersectingCliques(G, K);
+    vec<int> S = getSSIntersectingCliques(G, K, gatherStats);
 
     vec<int> compS = getComplementNodesVec(G.n, S);
 
     Graph Gprim = G.getInducedStrong(compS);
 
-    if (getOmega(Gprim) < omegaG) {
+    if (getOmega(Gprim, gatherStats) < omegaG) {
       return S;
     } else {
-      K.push_back(getMaxCardClique(Gprim));
+      K.push_back(getMaxCardClique(Gprim, gatherStats));
 
       for (int i = 0; i < K.back().size(); i++) {
         K.back()[i] = compS[K.back()[i]];
@@ -185,13 +199,15 @@ vec<int> getSSIntersectingAllMaxCardCliques(const Graph &G) {
   }
 }
 
-vec<int> color(const Graph &G) {
+vec<int> color(const Graph &G, bool gatherStats) {
+  if (gatherStats) StatsFactory::startTestCasePart("Color rest");
+
   if (G.n == 0) return vec<int>();
   if (G.n == 1) return vec<int>{0};
 
   vec<int> ret(G.n);
 
-  vec<int> SS = getSSIntersectingAllMaxCardCliques(G);
+  vec<int> SS = getSSIntersectingAllMaxCardCliques(G, gatherStats);
   vec<int> compSS = getComplementNodesVec(G.n, SS);
 
   vec<int> colorCompSS = color(G.getInducedStrong(compSS));

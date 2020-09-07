@@ -2,36 +2,17 @@
 #include <algorithm>
 #include <set>
 #include "commons.h"
+#include "testCommons.h"
 
 using std::get;
-
-bool isHole(const Graph &G, const vec<int> &v) {
-  if (v.size() <= 3) return false;
-
-  if (!isDistinctValues(v)) return false;
-
-  for (int i : v)
-    if (i < 0 || i >= G.n) return false;
-
-  for (int i = 0; i < v.size(); i++) {
-    for (int j = i + 1; j < v.size(); j++) {
-      if (abs(i - j) == 1 || abs(i - j) == (v.size() - 1)) {
-        if (!G.areNeighbours(v[i], v[j])) return false;
-      } else {
-        if (G.areNeighbours(v[i], v[j])) return false;
-      }
-    }
-  }
-
-  return true;
-}
+using std::to_string;
 
 vec<int> findHoleOfSize(const Graph &G, int size) {
   if (size <= 3) return vec<int>();
 
   vec<int> v;
   while (true) {
-    nextPathInPlace(G, v, size, true);
+    nextPathInPlace(G, v, size, true, false, true);
     if (v.size() == size && isHole(G, v)) return v;
 
     if (v.empty()) break;
@@ -42,16 +23,25 @@ vec<int> findHoleOfSize(const Graph &G, int size) {
 
 bool constainsHoleOfSize(const Graph &G, int size) { return !findHoleOfSize(G, size).empty(); }
 
-vec<int> findOddHoleNaive(const Graph &G) {
-  for (int size = 5; size <= G.n; size += 2) {
-    auto v = findHoleOfSize(G, size);
-    if (!v.empty()) return v;
-  }
+vec<int> findOddHoleNaive(const Graph &G, bool gatherStats) {
+  // for (int size = 5; size <= G.n; size += 2) {
+  //   if (gatherStats) StatsFactory::startTestCasePart(to_string(size));
+  //   auto v = findHoleOfSize(G, size);
+  //   if (!v.empty()) return v;
+  // }
 
-  return vec<int>();
+  // return vec<int>();
+  vec<int> v;
+  nextPathInPlace(G, v, 0, true, false, true);
+  return v;
 }
 
-bool containsOddHoleNaive(const Graph &G) { return !findOddHoleNaive(G).empty(); }
+bool containsOddHoleNaive(const Graph &G, bool gatherStats) {
+  // auto v = findOddHoleNaive(G, gatherStats);
+  // cout<<v<<endl;
+  // return !v.empty();
+  return !findOddHoleNaive(G, gatherStats).empty();
+}
 
 bool isT1(const Graph &G, const vec<int> &v) {
   if (v.size() != 5) return false;

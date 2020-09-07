@@ -2,6 +2,7 @@
 #include <istream>
 #include "commons.h"
 #include "testCommons.h"
+#include "colorTestCommons.h"
 
 bool isEmpty(std::istream &pFile) { return pFile.peek() == std::istream::traits_type::eof(); }
 
@@ -28,16 +29,14 @@ int main() {
   random_shuffle(Gs.begin(), Gs.end());
 
   {
-    cout << "N=" << n << endl;
-
     RaiiProgressBar bar(Gs.size());
 
     for (int i = 0; i < Gs.size(); i++) {
-      testColorWithStats(Gs[i]);
+      testGraphColor(Gs[i]);
       bar.update(i + 1);
     }
   }
   cout << endl;
 
-  printStatsColor();
+  StatsFactory::printStats2();
 }
