@@ -1,5 +1,5 @@
-# ENABLE_CUDA=TRUE
-ENABLE_CUDA=FALSE
+ENABLE_CUDA=TRUE
+# ENABLE_CUDA=FALSE
 
 #Project structure
 INCDIR=inc
@@ -44,12 +44,12 @@ NVCCINC=-I $(CUDA)/include \
 		-I ./$(INCDIR)/ 
 NVCCFLAGS=-arch $(NVCCSM) -O3 -std=c++11 --expt-extended-lambda -w $(NVCCINC)
 
-ifeq ($(ENABLE_CUDA), "TRUE")
+ifeq ($(ENABLE_CUDA), TRUE)
 LDFLAGS=-L/usr/local/cuda/lib64 -lcudart
 endif
 
 
-ifeq ($(ENABLE_CUDA), "TRUE")
+ifeq ($(ENABLE_CUDA), TRUE)
 OBJFILES=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCFILES)) \
 				 $(patsubst %.cu, $(OBJDIR)/%.o, $(CUSRCFILES))
 else
@@ -58,7 +58,7 @@ endif
 
 COBJFILES=$(patsubst %.c, $(COBJDIR)/%.o, $(CSRCFILES))
 
-ifeq ($(ENABLE_CUDA), "TRUE")
+ifeq ($(ENABLE_CUDA), TRUE)
 UNITTESTFILES=$(patsubst %.cpp, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cpp)) \
 						  $(patsubst %.cu, $(OBJDIR)/%.e, $(wildcard $(UNITTESTDIR)/*.cu))
 else
@@ -97,7 +97,7 @@ $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-ifeq ($(ENABLE_CUDA), "TRUE")
+ifeq ($(ENABLE_CUDA), TRUE)
 $(OBJDIR)/%.o: %.cu
 	@mkdir -p $(dir $@)
 	$(NVCC) $(NVCCFLAGS) -c $< -o $@
@@ -107,7 +107,7 @@ $(OBJDIR)/%.e: %.cpp $(OBJFILES) $(COBJFILES)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(OBJFILES) $(COBJFILES) $< $(GCCLIBS) -o $@ $(LDFLAGS)
 
-ifeq ($(ENABLE_CUDA), "TRUE")
+ifeq ($(ENABLE_CUDA), TRUE)
 $(OBJDIR)/%.e: %.cu obj/src/perfect.o  obj/src/jewels.o  obj/src/pyramids.o  obj/src/oddHoles.o  obj/src/commons.o  obj/src/testCommons.o  obj/src/cuCommons.o  obj/src/nearCleaners.o 
 	@mkdir -p $(dir $@)
 	$(NVCC) $(NVCCFLAGS) obj/src/perfect.o  obj/src/jewels.o  obj/src/pyramids.o  obj/src/oddHoles.o  obj/src/commons.o  obj/src/testCommons.o  obj/src/cuCommons.o  obj/src/nearCleaners.o $<  -o $@ $(LDFLAGS)
