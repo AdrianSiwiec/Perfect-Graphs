@@ -1,5 +1,7 @@
 #include "perfect.h"
+
 #include <random>
+
 #include "commons.h"
 #include "ctime"
 #include "oddHoles.h"
@@ -53,19 +55,104 @@ void testHand() {
   "));
 }
 
+void testHandInteresting() {
+  testGraphSimple(Graph(15,
+                        "\
+...X..........X\
+...X.X...X...X.\
+.......XX.XX...\
+XX..X..........\
+...X.X...X...X.\
+.X..X...X......\
+..........X..X.\
+..X........XXX.\
+..X..X....XX.X.\
+.X..X........X.\
+..X...X.X..X.X.\
+..X....XX.X..X.\
+.......X......X\
+.X..X.XXXXXX...\
+X...........X..\
+"));
+
+  testGraphSimple(Graph(17,
+                        "\
+.........X.......\
+..X..X....XX....X\
+.X.XXXX.X..X..XX.\
+..X.X...X...X.X.X\
+..XX..XX..XXXXX.X\
+.XX........X..X.X\
+..X.X..XX.XXX.X.X\
+....X.X.X.....XX.\
+..XX..XX.X.XXXX..\
+X.......X...X....\
+.X..X.X....X..XX.\
+.XX.XXX.X.X.X.XXX\
+...XX.X.XX.X..X..\
+....X...X........\
+..XXXXXXX.XXX..XX\
+..X....X..XX..X..\
+.X.XXXX....X..X..\
+"));
+
+  testGraphSimple(Graph(10,
+                        "\
+.XX..XXXXX\
+X.XXX..XXX\
+XX...X.XXX\
+.X..XXX.XX\
+.X.X.XXX.X\
+X.XXX.X.X.\
+X..XXX.XXX\
+XXX.X.X.XX\
+XXXX.XXX..\
+XXXXX.XX..\
+"));
+
+  testGraphSimple(Graph(10,
+                        "\
+..XX.XXXXX\
+...XXX.XXX\
+X.....XXXX\
+XX..XX.X.X\
+.X.X..XXXX\
+XX.X..XX..\
+X.X.XX..XX\
+XXXXXX..XX\
+XXX.X.XX..\
+XXXXX.XX..\
+"));
+
+  testGraphSimple(Graph(10,
+                        "\
+...X.XXXX.\
+...X....X.\
+...X......\
+XXX...X...\
+.......XX.\
+X.....XX.X\
+X..X.X...X\
+X...XX...X\
+XX..X.....\
+.....XXX..\
+"));
+}
+
 void testPerfectVsNaive() {
   RaiiTimer timer("Perfect vs naive ");
-  for (int i = 0; i < (bigTests ? 30 : 100); i++) {
-    Graph G = getRandomGraph(bigTests ? 8 : 6, 0.5);
+  for (int i = 0; i < (bigTests ? 300 : 100); i++) {
+    Graph G = getRandomGraph(bigTests ? 10 : 6, 0.5);
     testGraphSimple(G);
   }
 }
 
 void testNonPerfect() {
   RaiiTimer timer("Non Perfect");
-  for (int i = 0; i < 100; i++) {
-    Graph G = getNonPerfectGraph(9, 10, 0.5);
+  for (int i = 0; i < 1000; i++) {
+    Graph G = getNonPerfectGraph(7 + (rand() % 5) * 2, 15, 0.5);
     assert(isPerfectGraph(G) == false);
+    assert(isPerfectGraphNaive(G) == false);
   }
 }
 
@@ -90,6 +177,7 @@ void testLineBiparite() {
 int main() {
   init();
   testHand();
+  testHandInteresting();
   testPerfectVsNaive();
   testNonPerfect();
   testBiparite();

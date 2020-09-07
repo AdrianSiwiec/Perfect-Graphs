@@ -1,3 +1,6 @@
 [submodule "code/3rdparty/Csdp"]
 	path = code/3rdparty/Csdp
 	url = git@github.com:AdrianSiwiec/Csdp.git
+[submodule "code/3rdparty/moderngpu"]
+	path = code/3rdparty/moderngpu
+	url = git@github.com:moderngpu/moderngpu.git

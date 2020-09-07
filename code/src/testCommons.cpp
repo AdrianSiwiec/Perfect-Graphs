@@ -1,16 +1,21 @@
 #include "testCommons.h"
+
 #include <chrono>
 #include <cstdlib>
 #include <iostream>
+
 #include "color.h"
 #include "commons.h"
 #include "oddHoles.h"
 #include "perfect.h"
 
 using namespace std::chrono;
+using std::cerr;
+using std::cout;
 using std::default_random_engine;
 using std::flush;
 using std::make_pair;
+using std::make_tuple;
 using std::normal_distribution;
 
 bool probTrue(double p) { return rand() / (RAND_MAX + 1.0) < p; }
@@ -35,8 +40,6 @@ void printGraph(const Graph &G) {
 }
 
 Graph getRandomGraph(int size, double p) {
-  cout << "Distribution: " << p << endl;
-
   vec<vec<int>> neighbours(size);
   for (int i = 0; i < size; i++) {
     for (int j = i + 1; j < size; j++) {
@@ -117,6 +120,82 @@ Graph getBipariteGraph(int size, double p) {
   return Graph(neighbours).getShuffled();
 }
 
+Graph getFullBinaryTree(int size) {
+  vec<vec<int>> neighbors(size);
+  for (int i = 1; i < size; i++) {
+    neighbors[i].push_back(i / 2);
+    neighbors[i / 2].push_back(i);
+  }
+
+  return Graph(neighbors).getShuffled();
+}
+
+Graph getGridWithMoves(int W, int H, const vec<int> &dx, const vec<int> &dy) {
+  int n = W * H;
+
+  assert(dx.size() == dy.size());
+
+  vec<vec<int>> neighbors(n);
+  for (int x = 0; x < W; x++) {
+    for (int y = 0; y < H; y++) {
+      for (int k = 0; k < dx.size(); k++) {
+        int nx = x + dx[k];
+        int ny = y + dy[k];
+        if (nx >= 0 && nx < W && ny >= 0 && ny < H) {
+          neighbors[x * H + y].push_back(nx * H + ny);
+        }
+      }
+    }
+  }
+
+  return Graph(neighbors).getShuffled();
+}
+
+Graph getCityGrid(int W, int H) { return getGridWithMoves(W, H, {0, 0, 1, -1}, {1, -1, 0, 0}); }
+
+Graph getKnightGraph(int W, int H) {
+  vec<int> dx{1, 1, -1, -1, 2, 2, -2, -2};
+  vec<int> dy{2, -2, 2, -2, 1, -1, 1, -1};
+
+  return getGridWithMoves(W, H, dx, dy);
+}
+
+Graph getHypercube(int n) {
+  vec<vec<int>> neighbors(n);
+  for (int i = 0; i < n; i++) {
+    for (int j = i + 1; j < n; j++) {
+      if (__builtin_popcount(i ^ j) == 1) {
+        neighbors[i].push_back(j);
+        neighbors[j].push_back(i);
+      }
+    }
+  }
+
+  return Graph(neighbors).getShuffled();
+}
+
+Graph getRookGraph(int W, int H) {
+  vec<int> dx;
+  vec<int> dy;
+  for (int i = 1; i <= W; i++) {
+    dx.push_back(i);
+    dy.push_back(0);
+
+    dx.push_back(-i);
+    dy.push_back(0);
+  }
+
+  for (int i = 1; i <= H; i++) {
+    dy.push_back(i);
+    dx.push_back(0);
+
+    dy.push_back(-i);
+    dx.push_back(0);
+  }
+
+  return getGridWithMoves(W, H, dx, dy);
+}
+
 void handler(int sig) {
   void *array[100];
   size_t size;
@@ -151,70 +230,204 @@ void init(bool srandTime) {
   signal(SIGABRT, handler);
 }
 
-RaiiTimer::RaiiTimer(string msg) : msg(msg) { startTimer = clock(); }
+RaiiTimer::RaiiTimer(string msg) : msg(msg) {
+  start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+}
 RaiiTimer::~RaiiTimer() {
-  double duration = (clock() - startTimer) / static_cast<double>(CLOCKS_PER_SEC);
-  cout << msg << ": " << duration << "s" << endl;
+  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+  double duration = (end_ns.count() - start_ns.count()) / 1e9;
+  if (msg.size() > 0) cout << msg << ": " << duration << "s" << endl;
+}
+double RaiiTimer::getElapsedSeconds() {
+  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+  double duration = (end_ns.count() - start_ns.count()) / 1e9;
+  return duration;
 }
 
-map<pair<int, bool>, double> sumTime;
-map<pair<int, bool>, double> sumClockTime;
-map<pair<int, bool>, int> casesTested;
+map<tuple<algos, bool, int>, double> sumTime;
+// map<pair<int, bool>, double> sumClockTime;
+map<tuple<algos, bool, int>, int> casesTested;
+string algo_names[] = {"Perfect", "Naive", "CUDA Naive", "Cuda Perfect", "ALGO LAST", "CSDP Color"};
 
-map<pair<int, bool>, double> sumTimeNaive;
-map<pair<int, bool>, double> sumClockTimeNaive;
-map<pair<int, bool>, int> casesTestedNaive;
+// map<pair<int, bool>, double> sumTimeNaive;
+// map<pair<int, bool>, double> sumClockTimeNaive;
+// map<pair<int, bool>, int> casesTestedNaive;
 
 default_random_engine generator;
-normal_distribution<double> distribution(0.5, 0.15);
+default_random_engine generatorWide;
+normal_distribution<double> distribution(0.5, 0.05);
+normal_distribution<double> distributionWide(0.5, 0.20);
 
-bool testWithStats(const Graph &G, bool naive) {
-  nanoseconds start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
-  clock_t start_clock = clock();
+bool testGraph(const Graph &G, vec<algos> algosToTest, vec<cuIsPerfectFunction> cuFunctions) {
+  bool prevResult;
+  bool result;
 
-  bool result = naive ? isPerfectGraphNaive(G) : isPerfectGraph(G);
+  for (int i = 0; i < algosToTest.size(); i++) {
+    algos algo = algosToTest[i];
+    StatsFactory::startTestCase(G, algo);
 
-  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
-  clock_t end_clock = clock();
+    switch (algo) {
+      case algoPerfect:
+        result = isPerfectGraph(G, true);
+        break;
 
-  double duration = (end_ns.count() - start_ns.count()) / 1e9;
-  double clock_duration = (end_clock - start_clock) / static_cast<double>(CLOCKS_PER_SEC);
+      case algoNaive:
+        result = isPerfectGraphNaive(G, true);
+        break;
 
-  if (naive) {
-    sumTimeNaive[make_pair(G.n, result)] += duration;
-    sumClockTimeNaive[make_pair(G.n, result)] += clock_duration;
-    casesTestedNaive[make_pair(G.n, result)]++;
-  } else {
-    sumTime[make_pair(G.n, result)] += duration;
-    sumClockTime[make_pair(G.n, result)] += clock_duration;
-    casesTested[make_pair(G.n, result)]++;
+      case algoCudaNaive:
+        assert(cuFunctions[i] != nullptr);
+        result = cuFunctions[i](G, true);
+        break;
+
+      case algoCudaPerfect:
+        assert(cuFunctions[i] != nullptr);
+        result = cuFunctions[i](G, true);
+        break;
+
+      default:
+        throw invalid_argument("TestWithStats invalid argument");
+    }
+
+    if (i == 0) {
+      prevResult = result;
+    } else if (prevResult != result) {
+      cerr << "Test Graph Error! " << algo_names[0] << " != " << algo_names[i] << endl;
+      exit(1);
+    }
+
+    StatsFactory::endTestCase(result);
   }
 
   return result;
 }
 
-void printStats() {
-  if (!sumTimeNaive.empty()) cout << "Naive recognition stats: " << endl;
-  for (auto it = sumTimeNaive.begin(); it != sumTimeNaive.end(); it++) {
-    int cases = casesTestedNaive[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases
-         << ", parallel factor=" << sumClockTimeNaive[it->first] / it->second << endl;
+
+
+// void printStats() {
+//   for (int algo = algoPerfect; algo < algo_last; algo++) {
+//     int count = 0;
+//     for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+//       if (get<0>(it->first) == algo) count++;
+//     }
+
+//     if (count > 0) cout << algo_names[algo] << " recognition stats: " << endl;
+//     for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
+//       if (get<0>(it->first) == algo) {
+//         int cases = casesTested[it->first];
+//         cout << "\tn=" << get<2>(it->first) << ", result=" << get<1>(it->first) << ", cases=" << cases
+//              << ", avgTime=" << it->second / cases << endl;
+//       }
+//     }
+//   }
+// }
+
+bool StatsFactory::curStarted = false;
+int StatsFactory::testCaseNr = 0;
+int StatsFactory::curTestPartNr = 0;
+algos StatsFactory::curAlgo = algo_last;
+int StatsFactory::curN = 0;
+vec<string> StatsFactory::partNames = vec<string>();
+vec<double> StatsFactory::curTime = vec<double>();
+RaiiTimer StatsFactory::curTimer = RaiiTimer("");
+RaiiTimer StatsFactory::curTimerOverall = RaiiTimer("");
+
+map<string, int> StatsFactory::mapNameNr = map<string, int>();
+map<int, string> StatsFactory::mapNrName = map<int, string>();
+map<tuple<algos, bool, int, int>, int> StatsFactory::mapCount = map<tuple<algos, bool, int, int>, int>();
+map<tuple<algos, bool, int, int>, double> StatsFactory::mapSumTime =
+    map<tuple<algos, bool, int, int>, double>();
+
+void StatsFactory::startTestCase(const Graph &G, algos algo_in) {
+  testCaseNr++;
+  curStarted = true;
+  curAlgo = algo_in;
+  curTestPartNr = 0;
+  curN = G.n;
+  curTimer = RaiiTimer("");
+  curTimerOverall = RaiiTimer("");
+
+  partNames.push_back("Overall");
+  curTestPartNr++;
+}
+
+void StatsFactory::startTestCasePart(const string &name) {
+  if (curTestPartNr > 0) {
+    curTime.push_back(curTimer.getElapsedSeconds());
   }
-  if (!sumTime.empty()) cout << "Perfect recognition stats: " << endl;
-  for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-    if (!it->first.second) continue;
-    int cases = casesTested[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << ", parallel factor=" << sumClockTime[it->first] / it->second
-         << endl;
+
+  partNames.push_back(name);
+  curTestPartNr++;
+
+  curTimer = RaiiTimer("");
+}
+
+void StatsFactory::endTestCase(bool result) {
+  double overallElapsed = curTimerOverall.getElapsedSeconds();
+
+  if (curTestPartNr > 0) {
+    curTime.push_back(curTimer.getElapsedSeconds());
   }
-  for (auto it = sumTime.begin(); it != sumTime.end(); it++) {
-    if (it->first.second) continue;
-    int cases = casesTested[it->first];
-    cout << "\tn=" << it->first.first << ", result=" << it->first.second << ", cases=" << cases
-         << ", avgTime=" << it->second / cases << ", parallel factor=" << sumClockTime[it->first] / it->second
-         << endl;
+
+  for (int i = 0; i < partNames.size(); i++) {
+    if (mapNameNr.count(partNames[i]) == 0) {
+      mapNrName[mapNameNr.size()] = partNames[i];
+      mapNameNr[partNames[i]] = mapNameNr.size();
+    }
+    auto t = make_tuple(curAlgo, result, curN, mapNameNr[partNames[i]]);
+    // mapCount[t]++;
+    mapSumTime[t] += curTime[i];
+  }
+
+  // This is so we sum multiple same parts in a algorithm
+  set<string> setNames(partNames.begin(), partNames.end());
+  for (string name : setNames) {
+    auto t = make_tuple(curAlgo, result, curN, mapNameNr[name]);
+    mapCount[t]++;
+  }
+
+  auto t = make_tuple(curAlgo, result, curN, mapNameNr["Overall"]);
+  mapSumTime[t] += overallElapsed;
+
+  curTime.clear();
+  partNames.clear();
+}
+
+void StatsFactory::printStats2() {
+  cout << "algorithm,\tn,\tresult,\tnum_runs,\t" << flush;
+  for (int i = 0; i < mapNameNr.size(); i++) {
+    cout << mapNrName[i] << flush;
+    if (i + 1 < mapNrName.size()) cout << ",\t" << flush;
+  }
+  cout << endl;
+
+  for (auto it = mapCount.begin(); it != mapCount.end(); it++) {
+    auto t = it->first;
+    int count = it->second;
+    cout << algo_names[get<0>(t)] << ",\t" << get<2>(t) << ",\t" << get<1>(t) << ",\t" << count;
+
+    for (int i = 0; i < mapNameNr.size(); i++) {
+      auto t2 = t;
+      get<3>(t2) = i;
+      cout << ",\t";
+      if (mapCount.count(t2) > 0) {
+        cout << mapSumTime[t2] / mapCount[t2];
+        if (mapCount[t2] != count) cout << "(" << mapCount[t2] << ")";
+      } else {
+        cout << " - ";
+      }
+    }
+
+    for (; it != mapCount.end() && get<0>(it->first) == get<0>(t) && get<1>(it->first) == get<1>(t) &&
+           get<2>(it->first) == get<2>(t);
+         it++) {
+      // cout << ",\t";
+      // assert(count == mapCount[it->first]);
+      // cout << mapSumTime[it->first] / count;
+    }
+    it--;
+
+    cout << endl;
   }
 }
 
@@ -225,91 +438,43 @@ double getDistr() {
   return distr;
 }
 
-void testGraph(const Graph &G, bool verbose) {
-  if (verbose) cout << "Testing " << G.n << " vs naive" << endl;
+double getDistrWide() {
+  double distr = distributionWide(generatorWide);
+  if (distr <= 0 || distr > 1) distr = 0.5;
 
-  bool naivePerfect = testWithStats(G, true);
-
-  bool perfect = testWithStats(G, false);
-
-  if (naivePerfect != perfect) {
-    cout << "ERROR: " << endl << "naive=" << naivePerfect << endl << "perfect=" << perfect << endl;
-    cout << G << endl;
-    if (!naivePerfect) cout << findOddHoleNaive(G) << endl;
-  }
-
-  assert(naivePerfect == perfect);
+  return distr;
 }
 
-void testGraph(const Graph &G, bool result, bool verbose) {
-  if (verbose) cout << "Testing " << G.n << " vs " << result << endl;
+void printTimeHumanReadable(double time, bool use_cerr) {
+  auto &out = use_cerr ? cerr : cout;
 
-  bool perfect = testWithStats(G, false);
-
-  if (perfect != result) {
-    cout << "Error Test Graph" << endl;
-    cout << G << endl;
-    cout << "Expected " << result << ", got " << perfect << endl;
-  }
-
-  assert(perfect == result);
-}
-
-map<int, double> sumTimeColor;
-map<int, double> sumClockTimeColor;
-map<int, int> casesTestedColor;
-
-void testColorWithStats(const Graph &G) {
-  nanoseconds start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
-  clock_t start_clock = clock();
-
-  auto c = color(G);
-
-  nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
-  clock_t end_clock = clock();
-
-  double duration = (end_ns.count() - start_ns.count()) / 1e9;
-  double clock_duration = (end_clock - start_clock) / static_cast<double>(CLOCKS_PER_SEC);
-
-  assert(isColoringValid(G, c));
-
-  sumTimeColor[G.n] += duration;
-  sumClockTimeColor[G.n] += clock_duration;
-  casesTestedColor[G.n]++;
-}
-
-void printStatsColor() {
-  cout << "Color stats: " << endl;
-  for (auto it = sumTimeColor.begin(); it != sumTimeColor.end(); it++) {
-    int cases = casesTestedColor[it->first];
-    cout << "\tn=" << it->first << ", cases=" << cases << ", avgTime=" << it->second / cases
-         << ", parallel factor=" << sumClockTimeColor[it->first] / it->second << endl;
-  }
-}
-
-void printTimeHumanReadable(int64_t time) {
-  double s = time / static_cast<double>(CLOCKS_PER_SEC);
+  double s = time;
   int h = s / (60 * 60);
   s -= h * (60 * 60);
   if (h != 0) {
-    cout << h << "h";
+    out << h << "h";
   }
 
   int m = s / 60;
   s -= m * 60;
   if (m != 0) {
-    cout << m << "m";
+    out << m << "m";
   }
 
-  cout << static_cast<int>(s) + 1 << "s";
+  out << static_cast<int>(s) + 1 << "s";
 }
 
-RaiiProgressBar::RaiiProgressBar(int allTests) : allTests(allTests) {
-  startTimer = clock();
+RaiiProgressBar::RaiiProgressBar(int allTests, bool use_cerr) : allTests(allTests), use_cerr(use_cerr) {
+  start_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
   update(0);
 }
 
-RaiiProgressBar::~RaiiProgressBar() { cout << endl; }
+RaiiProgressBar::~RaiiProgressBar() {
+  if (use_cerr)
+    cerr << endl;
+  else
+    cout << endl;
+}
 
 int RaiiProgressBar::getFilled(int testsDone) {
   double progress = testsDone / (static_cast<double>(allTests));
@@ -317,37 +482,23 @@ int RaiiProgressBar::getFilled(int testsDone) {
 }
 
 void RaiiProgressBar::update(int testsDone) {
+  auto &out = use_cerr ? cerr : cout;
+
   int toFill = getFilled(testsDone);
   if (testsDone < 10 || testsDone == allTests || toFill != getFilled(testsDone - 1)) {
-    cout << "[";
+    out << "[";
     for (int i = 0; i < width; i++) {
-      cout << (i < toFill ? "X" : " ");
+      out << (i < toFill ? "X" : " ");
     }
-    cout << "]";
+    out << "]";
     if (testsDone > 0) {
-      cout << " (about ";
-      int64_t timeElapsed = clock() - startTimer;
-      int64_t timeRemaining = timeElapsed * (allTests - testsDone) / testsDone;
-      printTimeHumanReadable(timeRemaining);
-      cout << " left)";
+      out << " (about ";
+      nanoseconds end_ns = duration_cast<nanoseconds>(system_clock::now().time_since_epoch());
+      double timeElapsed = (end_ns.count() - start_ns.count()) / 1e9;
+      double timeRemaining = timeElapsed * (allTests - testsDone) / testsDone;
+      printTimeHumanReadable(timeRemaining, use_cerr);
+      out << " left)";
     }
-    cout << "\r" << flush;
+    out << "\r" << flush;
   }
-}
-
-bool isColoringValid(const Graph &G, const vec<int> &coloring) {
-  if (coloring.size() != G.n) return false;
-
-  int omegaG = getOmega(G);
-  for (int c : coloring) {
-    if (c < 0 || c >= omegaG) return false;
-  }
-
-  for (int i = 0; i < G.n; i++) {
-    for (int j : G[i]) {
-      if (coloring[i] == coloring[j]) return false;
-    }
-  }
-
-  return true;
 }

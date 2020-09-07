@@ -35,11 +35,19 @@ bool isJewel(const Graph &G, const vec<int> &v) {
 vec<int> findJewelNaive(const Graph &G) {
   vec<int> v;
 
-  do {
-    if (isJewel(G, v)) return v;
+  while (1) {
+    nextPathInPlace(G, v, 4, false, false);
 
-    nextPathInPlace(G, v, 5, true, true);
-  } while (!v.empty());
+    if (v.empty()) break;
+
+    for (int v5 : G[v[0]]) {
+      if (G.areNeighbours(v.back(), v5)) {
+        v.push_back(v5);
+        if (isJewel(G, v)) return v;
+        v.pop_back();
+      }
+    }
+  }
 
   return vec<int>();
 
@@ -57,3 +65,14 @@ bool containsJewelNaive(const Graph &G) {
   auto v = findJewelNaive(G);
   return !v.empty();
 }
+
+// bool containsJewel(const Graph &G) {
+//   for (int v2 = 0; v2 < G.n; v2++) {
+//     for (int v3 : G[v2]) {
+//       for (int v5 = 0; v5 < G.n; v5++) {
+//         if (v5 == v2 || v5 == v3) continue;
+
+//       }
+//     }
+//   }
+// }

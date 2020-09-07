@@ -398,7 +398,19 @@ void testAllShortestPaths() {
       R[i][j] = findShortestPathWithPredicate(G, i, j, noFour);
     }
   }
-  assert(allShortestPathsWithPredicate(G, noFour) == R);
+
+  vec<vec<int>> Rlen;
+  vec<vec<int>> penultimate;
+  Rlen = allShortestPathsWithPredicate(G, noFour, penultimate);
+
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      assert(Rlen[i][j] == R[i][j].size());
+      if (R[i][j].size() > 1) {
+        assert(penultimate[i][j] == R[i][j][R[i][j].size() - 2]);
+      }
+    }
+  }
 
   G = Graph(6,
             "\
@@ -416,7 +428,17 @@ void testAllShortestPaths() {
       R[i][j] = findShortestPathWithPredicate(G, i, j, noOne);
     }
   }
-  assert(allShortestPathsWithPredicate(G, noOne) == R);
+
+  Rlen = allShortestPathsWithPredicate(G, noOne, penultimate);
+
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      assert(Rlen[i][j] == R[i][j].size());
+      if (R[i][j].size() > 1) {
+        assert(penultimate[i][j] == R[i][j][R[i][j].size() - 2]);
+      }
+    }
+  }
 }
 
 void testDfsWith() {
@@ -614,6 +636,36 @@ void testNextPathInPlace() {
 
   nextPathInPlace(G, v, 4, true, true);
   assert(v == (vec<int>{0, 1, 3, 4}));
+
+  // Partial paths as an input
+  G = Graph(6,
+            "\
+  .XX...\
+  X.XX..\
+  XX....\
+  .X..X.\
+  ...X.X\
+  ....X.\
+  ");
+  v = vec<int>{1, 3};
+  nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{1, 3, 4}));
+
+  v = vec<int>{3};
+  nextPathInPlace(G, v, 3);
+  assert(v == (vec<int>{3, 1, 0}));
+}
+
+void testDynamicBitset() {
+  vec<int> a{1, 3, 5, 7};
+  auto b = getBitset(10, a);
+
+  for (int i = 0; i < 10; i++) {
+    assert(b.test(i) == (i == 1 || i == 3 || i == 5 || i == 7));
+  }
+
+  assert(bitsetToVector(b) == a);
+  assert(bitsetToSet(b) == set<int>(a.begin(), a.end()));
 }
 
 int main() {
@@ -637,4 +689,5 @@ int main() {
   testGetComponentsOfInducedGraph();
   testIsAPath();
   testNextPathInPlace();
+  testDynamicBitset();
 }

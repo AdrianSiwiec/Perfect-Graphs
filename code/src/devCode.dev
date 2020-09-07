@@ -1,0 +1,539 @@
+#include "commons.h"
+#include "cuCommons.h"
+#include "nearCleaners.h"
+#include "oddHoles.h"
+#include "perfect.h"
+#include "testCommons.h"
+
+// README
+// Due to performance constraints and ease of building, all __device__ code is located in a single file
+
+__device__ void devPrintArray(int *dev, int n) {
+  printf("[");
+  for (int a = 0; a < n; a++) {
+    printf("%d", dev[a]);
+    if (a + 1 < n) printf(", ");
+  }
+  printf("]\n");
+}
+
+__device__ bool devAreNeighbors(const int *devMatrix, int Gn, int a, int b) { return devMatrix[a * Gn + b]; }
+
+__device__ int devGetFirstNeighbor(const int *devFirstNeighbor, int a) { return devFirstNeighbor[a]; }
+
+__device__ int devGetNextNeighbor(const int *devNextNeighbor, int Gn, int a, int b) {
+  int ret = devNextNeighbor[a * Gn + b];
+  if (ret == -2) {
+    printf("Dev Get Next Neighbor failed, a=%d, b=%d\n", a, b);
+    assert("CUDA devGetNextNeighbor failed" == 0);
+  }
+
+  return ret;
+}
+
+__device__ bool devIsDistinctValues(const int *path, int length) {
+  for (int i = 1; i < length; i++) {
+    for (int j = 0; j < i; j++) {
+      if (path[i] == path[j]) return false;
+    }
+  }
+
+  return true;
+}
+
+__device__ bool devIsAPath(const int *devMatrix, int Gn, const int *path, int length, bool isCycleOk = false,
+                           bool areChordsOk = false, bool holeRequired = false) {
+  if (holeRequired && !isCycleOk) {
+    assert("(DEV) Hole required but cycle not allowed" == 0);
+  }
+
+  if (length <= 0) return false;
+
+  if (!devIsDistinctValues(path, length)) return false;
+
+  if (holeRequired && (length <= 3 || !devAreNeighbors(devMatrix, Gn, path[0], path[length - 1])))
+    return false;
+
+  for (int i = length - 1; i > 0; i--) {
+    for (int j = 0; j < i; j++) {
+      if (j == i - 1) {
+        if (!devAreNeighbors(devMatrix, Gn, path[i], path[j])) return false;
+      } else if (!areChordsOk) {
+        if (isCycleOk && i == length - 1 && j == 0) continue;
+        if (devAreNeighbors(devMatrix, Gn, path[i], path[j])) return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+__device__ bool devIsAHole(const int *devMatrix, int Gn, int *v, int lenV) {
+  return devIsAPath(devMatrix, Gn, v, lenV, true, false, true);
+}
+
+__device__ void devPreparePathStart(int code, int *v, int lenV, int n) {
+  int tmp = 0;
+
+  while (tmp < lenV) {
+    v[tmp] = code % n;
+    code /= n;
+    tmp++;
+  }
+}
+
+__device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeighbor,
+                                   const int *devFirstNeighbor, int Gn, int *v, int &lenV, int lenPath,
+                                   bool isCycleOk = false, bool areChordsOk = false, bool savePrefix = false,
+                                   bool holeRequired = false) {
+  if (lenPath <= 1) {
+    assert("(DEV ERROR) Length of next path must be at least 2" == 0);
+  }
+
+  if (lenV > 0 && !devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk)) {
+    assert("(DEV ERROR) Input of devNextPath should be a path" == 0);
+  }
+
+  // int savedPrefixLen = -1;
+  // if (savePrefix) {
+  //   savedPrefixLen = lenV;
+  // }
+  // int savedPrefix = v[savedPrefixLen - 1];
+
+  if (lenV == 0) {
+    v[0] = 0;
+    lenV = 1;
+  }
+
+  while (true) {
+    if (v[lenV - 1] == -1) {
+      lenV--;
+      // if (lenV < savedPrefixLen) {
+      //   lenV = 0;
+      //   return;
+      // }
+      if (lenV == 1) {
+        v[0]++;
+        if (v[0] >= Gn) {
+          lenV = 0;
+          return;
+        }
+        continue;
+      } else {
+        v[lenV - 1] = devGetNextNeighbor(devNextNeighbor, Gn, v[lenV - 2], v[lenV - 1]);
+        continue;
+      }
+    }
+
+    if (lenV < lenPath) {
+      while (lenV > 1 && v[lenV - 1] != -1 &&
+             (!devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk, false) ||
+              (holeRequired && v[lenV - 1] <= v[0]))) {
+        v[lenV - 1] = devGetNextNeighbor(devNextNeighbor, Gn, v[lenV - 2], v[lenV - 1]);
+      }
+      if (v[lenV - 1] == -1) continue;
+
+      v[lenV] = devGetFirstNeighbor(devFirstNeighbor, v[lenV - 1]);
+      lenV++;
+
+      if (lenV == lenPath && devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk)) {
+        return;
+      } else {
+        continue;
+      }
+    }
+
+    do {
+      v[lenV - 1] = devGetNextNeighbor(devNextNeighbor, Gn, v[lenV - 2], v[lenV - 1]);
+    } while (v[lenV - 1] != -1 && !devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk));
+
+    if (v[lenV - 1] == -1) continue;
+
+    return;
+  }
+}
+
+__device__ bool devContainsHoleWithPrefix(const int *devMatrix, const int *devNextNeighbor,
+                                          const int *devFirstNeighbor, int Gn, int *v, int lenV, int size) {
+  if (!devIsAPath(devMatrix, Gn, v, lenV, lenV == size)) return false;
+
+  if (lenV == size) return devIsAHole(devMatrix, Gn, v, lenV);
+
+  int inLenV = lenV;
+
+  int mem = v[inLenV - 1];
+
+  if (lenV < size) {
+    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false, true);
+  }
+
+  while (lenV == size && v[inLenV - 1] == mem) {
+    if (devIsAHole(devMatrix, Gn, v, size)) {
+      return true;
+    }
+    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false, true);
+  }
+
+  return false;
+}
+
+__device__ bool devContainsHoleWithPrefixCode(const int *devMatrix, const int *devNextNeighbor,
+                                              const int *devFirstNeighbor, int Gn, int code, int codeLen,
+                                              int codeMax, int size) {
+  static const int max_size = 30;
+  assert(max_size > size);
+
+  if (code >= codeMax) return;
+
+  int v[max_size];
+  devPreparePathStart(code, v, codeLen, Gn);
+  int lenV = codeLen;
+
+  return devContainsHoleWithPrefix(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size);
+}
+
+// # cu* portion (ran by host, uses __device__ code)
+
+bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context,
+                          int maxThreads = _max_threads_to_run) {
+  int k = G.n;
+  int kCounter = 1;
+  while (k * G.n <= maxThreads && kCounter < size) {
+    k *= G.n;
+    kCounter++;
+  }
+
+  int *devOddHoleFound;
+  CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 1));
+
+  // typedef launch_params_t<256, 16> launch_t;
+  // cout << k << endl;
+  // auto f = [=] MGPU_DEVICE(int tid, int cta) {
+  //   typedef typename launch_t::sm_ptx params_t;
+  //   enum { nt = params_t::nt, vt = params_t::vt };
+
+  //   int codeStart = ((cta * nt) + tid) * vt;
+
+  //   for (int i = 0; i < vt; i++) {
+  //     int id = codeStart + i;
+
+  //     if (devContainsHoleWithPrefixCode(G, id, kCounter, k, size)) {
+  //       devOddHoleFound[0] = 1;
+  //       return;
+  //     }
+  //   }
+  // };
+
+  // cta_transform<launch_t>(f, k, context);
+  // context.synchronize();
+
+  transform(
+      [=] MGPU_DEVICE(int id, const int *devMatrix, const int *devNextNeighbor, const int *devFirstNeighbor,
+                      int Gn) {
+        if (devContainsHoleWithPrefixCode(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, id, kCounter, k,
+                                          size)) {
+          devOddHoleFound[0] = 1;
+        }
+      },
+      k, context, G.devMatrix, G.devNextNeighbor, G.devFirstNeighbor, G.n);
+  context.synchronize();
+
+  int oddHoleFound[1];
+  CUCHECK(cudaMemcpy(oddHoleFound, devOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
+  context.synchronize();
+
+  return oddHoleFound[0];
+}
+
+bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context, bool gatherStats = false) {
+  if (gatherStats) StatsFactory::startTestCasePart("CPU Preparation");
+
+  int minPrefixes = 10000;
+  int threadsToRun = 100000;
+
+  int pathLen = 2;
+  vec<vec<int>> prefixes;
+  vec<int> v;
+
+  int *devPaths;
+  int *devOddHoleFound;
+  CuGraph CG(G, context);
+
+  double pretime = 0, cudatime = 0;
+
+  int cpuPathLenLimit = G.n <= 16 ? 8 : 7;
+
+  {
+    RaiiTimer pretimer("");
+    pathLen = 3;
+    prefixes = vec<vec<int>>();
+    v = vec<int>();
+
+    do {
+      pathLen++;
+      prefixes = vec<vec<int>>();
+      v = vec<int>();
+
+      do {
+        nextPathInPlace(G, v, pathLen, pathLen == size);
+        prefixes.push_back(v);
+      } while (!v.empty());
+      prefixes.pop_back();
+
+      if (prefixes.empty()) {
+        break;
+      }
+    } while (pathLen < size && pathLen <= cpuPathLenLimit && prefixes.size() < minPrefixes);
+
+    while (pathLen < size && prefixes.size() < minPrefixes) {
+      vec<vec<int>> savedPrefixes = prefixes;
+      prefixes = vec<vec<int>>();
+      pathLen++;
+      for (auto v : savedPrefixes) {
+        for (int i = 0; i < G.n; i++) {
+          prefixes.push_back(v);
+          prefixes.back().push_back(i);
+        }
+      }
+    }
+
+    pretime = pretimer.getElapsedSeconds();
+  }
+
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Calculation");
+
+  {
+    RaiiTimer cudatimer("");
+    CUCHECK(cudaMalloc(&devPaths, sizeof(int) * size * prefixes.size()));
+    for (int i = 0; i < prefixes.size(); i++) {
+      CUCHECK(cudaMemcpy(devPaths + size * i, prefixes[i].data(), prefixes[i].size() * sizeof(int),
+                         cudaMemcpyHostToDevice));
+    }
+
+    CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 1));
+    transform([=] MGPU_DEVICE(int id) { devOddHoleFound[0] = 0; }, 1, context);
+    context.synchronize();
+
+    const int dimSize = 128;
+    auto f = [=] MGPU_DEVICE(int tid, int cta, int prefixesSize, const int *devMatrix,
+                             const int *devNextNeighbor, const int *devFirstNeighbor, int Gn) {
+      int id = cta * dimSize + tid;
+      for (int i = id; i < prefixesSize; i += threadsToRun) {
+        if (devContainsHoleWithPrefix(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, devPaths + size * i,
+                                      pathLen, size)) {
+          devOddHoleFound[0] = 1;
+          return;
+        }
+      }
+    };
+
+    cta_launch<dimSize>(f, (threadsToRun + dimSize - 1) / dimSize, context, prefixes.size(), CG.devMatrix,
+                        CG.devNextNeighbor, CG.devFirstNeighbor, CG.n);
+    context.synchronize();
+    cudatime = cudatimer.getElapsedSeconds();
+  }
+
+  // if (cudatime + pretime > 1) {
+  //   cerr << "Pre time: " << pretime << "\t CUDA time: " << cudatime << "\t"
+  //        << "n=" << G.n << ", prefsize=" << prefixes.size() << " prefLen=" << pathLen << " holeSize=" <<
+  //        size
+  //        << endl;
+  // }
+  // transform(
+  //     [=] MGPU_DEVICE(int id, int prefixesSize, const int *devMatrix, const int *devNextNeighbor,
+  //                     const int *devFirstNeighbor, int Gn) {
+  //       for (int i = id; i < prefixesSize; i += threadsToRun) {
+  //         if (devContainsHoleWithPrefix(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, devPaths + size *
+  //         i,
+  //                                       pathLen, size)) {
+  //           devOddHoleFound[0] = 1;
+  //           return;
+  //         }
+  //       }
+  //     },
+  //     threadsToRun, context, prefixes.size(), CG.devMatrix, CG.devNextNeighbor, CG.devFirstNeighbor, CG.n);
+  // context.synchronize();
+
+  int oddHoleFound[1];
+  CUCHECK(cudaMemcpy(oddHoleFound, devOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
+  context.synchronize();
+
+  CUCHECK(cudaFree(devPaths));
+  CUCHECK(cudaFree(devOddHoleFound));
+  return oddHoleFound[0];
+}
+
+bool cuContainsOddHoleNaive(const CuGraph &G, context_t &context, bool gatherStats = false) {
+  for (int size = 5; size <= G.n; size += 2) {
+    if (cuContainsHoleOfSize(G, size, context)) return true;
+  }
+
+  return false;
+}
+
+bool cuContainsOddHoleNaive2(const Graph &G, context_t &context, bool gatherStats = false) {
+  for (int size = 5; size <= G.n; size += 2) {
+    if (cuContainsHoleOfSize2(G, size, context, gatherStats)) return true;
+  }
+
+  return false;
+}
+
+bool cuIsPerfectNaive(const Graph &G, bool gatherStats = false) {
+  standard_context_t c2(0);
+
+  bool res = !cuContainsOddHoleNaive2(G, c2, gatherStats) &&
+             !cuContainsOddHoleNaive2(G.getComplement(), c2, gatherStats);
+
+  c2.synchronize();
+
+  return res;
+}
+
+__device__ bool devContainsOddHoleWithR(const CuGraph &CG, int *devR, int *devRLen, const int *x, int y1) {
+  int Gn = CG.n;
+
+  if (y1 == x[0] || y1 == x[1] || y1 == x[2]) return false;
+  if (!devIsAPath(CG.devMatrix, Gn, x, 3)) return false;  // TODO unroll to allow x to be reg?
+
+  int x1 = x[0], x3 = x[1], x2 = x[2];
+  if (devRLen[x1 * Gn + y1] == 0 || devRLen[x2 * Gn + y1] == 0) return false;
+
+  int y2 = devR[x2 * Gn + y1];
+
+  int n = devRLen[x2 * Gn + y1];
+  if (devRLen[x1 * Gn + y1] + 1 != n || devRLen[x1 * Gn + y2] != n) return false;
+
+  if (devRLen[x3 * Gn + y1] < n || devRLen[x3 * Gn + y2] < n) return false;
+
+  return true;
+}
+
+bool memInitialized = false;
+int *GdevR;
+int *GdevRLens;
+int *GdevOddHoleFound;
+int *GdevTriplePaths;
+
+int *GhostR;
+int *GhostRLens;
+int *GhostOddHoleFound;
+int *GhostTriplePaths;
+
+void cuInitializeMem() {
+  CUCHECK(cudaMallocHost(&GhostR, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
+  CUCHECK(cudaMallocHost(&GhostRLens, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
+  CUCHECK(cudaMallocHost(&GhostOddHoleFound, sizeof(int)));
+  CUCHECK(cudaMallocHost(&GhostTriplePaths, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N * CUDA_MAX_N));
+
+  // GhostR = new int[CUDA_MAX_N * CUDA_MAX_N];
+  //   GhostRLens = new int[CUDA_MAX_N * CUDA_MAX_N];
+  //   GhostOddHoleFound = new int[1];
+
+  CUCHECK(cudaMalloc(&GdevR, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
+  CUCHECK(cudaMalloc(&GdevRLens, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N));
+  CUCHECK(cudaMalloc(&GdevOddHoleFound, sizeof(int)));
+  CUCHECK(cudaMalloc(&GdevTriplePaths, sizeof(int) * CUDA_MAX_N * CUDA_MAX_N * CUDA_MAX_N));
+
+  memInitialized = true;
+}
+
+bool cuContainsOddHoleWithNearCleanerX(const Graph &G, const CuGraph &CG, const set<int> &sX,
+                                       const int *devTriplePaths, const int triplePathsSize,
+                                       context_t &context, bool gatherStats = false) {
+  assert(memInitialized);
+
+  if (gatherStats) StatsFactory::startTestCasePart("Test NC Shortest Paths");
+  vec<vec<int>> penultimate;
+  auto R = allShortestPathsWithPredicate(G, [&](int v) -> bool { return sX.count(v) == 0; }, penultimate);
+
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy");
+
+  const int Npow2 = G.n * G.n;
+
+  for (int i = 0; i < G.n; i++) {
+    for (int j = 0; j < G.n; j++) {
+      GhostR[i * G.n + j] = penultimate[i][j];
+      GhostRLens[i * G.n + j] = R[i][j];
+    }
+  }
+
+  CUCHECK(cudaMemcpy(GdevR, GhostR, sizeof(int) * Npow2, cudaMemcpyHostToDevice));
+  CUCHECK(cudaMemcpy(GdevRLens, GhostRLens, sizeof(int) * Npow2, cudaMemcpyHostToDevice));
+
+  transform([=] MGPU_DEVICE(int id, int *devOddHoleFound) { devOddHoleFound[0] = 0; }, 1, context,
+            GdevOddHoleFound);
+  context.synchronize();
+
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC work");
+  transform(
+      [=] MGPU_DEVICE(int id, int CGn, const CuGraph CGGG, int *mark, int *devR, int *devRLens) {
+        if (devContainsOddHoleWithR(CGGG, devR, devRLens, devTriplePaths + (id / CGn) * 3, id % CGn)) {
+          mark[0] = 1;
+        }
+      },
+      // 1, context, CG.n);
+      triplePathsSize * CG.n, context, CG.n, CG, GdevOddHoleFound, GdevR, GdevRLens);
+  context.synchronize();
+
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy");
+  CUCHECK(cudaMemcpy(GhostOddHoleFound, GdevOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
+  context.synchronize();
+
+  return GhostOddHoleFound[0];
+}
+
+bool cuIsPerfect(const Graph &G, bool gatherStats = false) {
+  standard_context_t context(0);
+
+  if (!memInitialized) cuInitializeMem();
+
+  if (gatherStats) StatsFactory::startTestCasePart("Simple Structures");
+
+  Graph GC = G.getComplement();
+  if (containsSimpleProhibited(G) || containsSimpleProhibited(GC)) return false;
+
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
+  auto Xs = getPossibleNearCleaners(G, GC);
+
+  CuGraph CG(G, context);
+  CuGraph CGC(GC, context);
+
+  vec<vec<int>> triplePaths = getAllPaths(G, 3);
+
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy");
+  for (int i = 0; i < triplePaths.size(); i++) {
+    memcpy(GhostTriplePaths + (sizeof(int) * 3 * i), triplePaths[i].data(), sizeof(int) * 3);
+  }
+  CUCHECK(cudaMemcpy(GdevTriplePaths, GhostTriplePaths, sizeof(int) * 3 * triplePaths.size(),
+                     cudaMemcpyHostToDevice));
+
+  for (auto X : Xs) {
+    if (cuContainsOddHoleWithNearCleanerX(G, CG, bitsetToSet(X), GdevTriplePaths, triplePaths.size(), context,
+                                          gatherStats))
+      return false;
+  }
+
+  if (gatherStats) StatsFactory::startTestCasePart("Get Near Cleaners");
+  auto XsC = getPossibleNearCleaners(GC, G);
+
+  triplePaths = getAllPaths(GC, 3);
+
+  if (gatherStats) StatsFactory::startTestCasePart("GPU Test NC Copy");
+  for (int i = 0; i < triplePaths.size(); i++) {
+    memcpy(GhostTriplePaths + (sizeof(int) * 3 * i), triplePaths[i].data(), sizeof(int) * 3);
+  }
+  CUCHECK(cudaMemcpy(GdevTriplePaths, GhostTriplePaths, sizeof(int) * 3 * triplePaths.size(),
+                     cudaMemcpyHostToDevice));
+
+  for (auto X : XsC) {
+    if (cuContainsOddHoleWithNearCleanerX(GC, CGC, bitsetToSet(X), GdevTriplePaths, triplePaths.size(),
+                                          context, gatherStats))
+      return false;
+  }
+
+  CG.deleteCuGraph();
+  CGC.deleteCuGraph();
+
+  return true;
+}

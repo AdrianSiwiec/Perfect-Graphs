@@ -1,0 +1,7 @@
+
+algorithm,	n,	result,	num_runs,	Overall,	Color rest,	Color CSDP
+CSDP Color,	24,	1,	1,	0.609852,	0.342945,	0.266889
+CSDP Color,	30,	1,	1,	1.76922,	0.900745,	0.86845
+CSDP Color,	36,	1,	1,	8.65732,	2.56972,	6.0875
+CSDP Color,	42,	1,	1,	14.6129,	5.47535,	9.13745
+CSDP Color,	48,	1,	1,	41.783,	16.6873,	25.0956

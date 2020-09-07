@@ -403,8 +403,21 @@ vec<vec<int>> generateTuples(int size, int max) {
   return ret;
 }
 
+void Graph::printOut() const {
+  cout << n << endl;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (areNeighbours(i, j))
+        cout << "X";
+      else
+        cout << ".";
+    }
+    cout << endl;
+  }
+}
+
 ostream &operator<<(ostream &os, Graph const &G) {
-  cout<<G.n<<endl;
+  cout << G.n << endl;
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
       if (G.areNeighbours(i, j))
@@ -457,7 +470,8 @@ vec<int> findShortestPathWithPredicate(const Graph &G, int start, int end, funct
   }
 }
 
-vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test) {
+vec<vec<int>> allShortestPathsWithPredicate(const Graph &G, function<bool(int)> test,
+                                            vec<vec<int>> &penultimate) {
   int inf = G.n + 10;
 
   vec<vec<int>> dist(G.n, vec<int>(G.n, inf));
@@ -471,11 +485,12 @@ vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(i
   }
 
   for (int k = 0; k < G.n; k++) {
+    if (!test(k)) continue;
     for (int i = 0; i < G.n; i++) {
       if (i == k) continue;
       for (int j = 0; j < G.n; j++) {
         if (i == j || k == j) continue;
-        if (dist[i][j] > dist[i][k] + dist[k][j] && test(k)) {
+        if (dist[i][j] > dist[i][k] + dist[k][j]) {
           dist[i][j] = dist[i][k] + dist[k][j];
           lastOnPath[i][j] = lastOnPath[k][j];
         }
@@ -483,34 +498,41 @@ vec<vec<vec<int>>> allShortestPathsWithPredicate(const Graph &G, function<bool(i
     }
   }
 
-  vec<vec<vec<int>>> R(G.n, vec<vec<int>>(G.n, vec<int>()));
+  vec<vec<int>> R(G.n, vec<int>(G.n));
+  penultimate = vec<vec<int>>(G.n, vec<int>(G.n, -1));
   for (int i = 0; i < G.n; i++) {
     for (int j = 0; j < G.n; j++) {
       if (dist[i][j] == inf) continue;
 
-      R[i][j].reserve(dist[i][j] + 1);
-      R[i][j].push_back(j);
+      R[i][j] = dist[i][j] + 1;
       if (i == j) continue;
 
       // TODO(Adrian) smarter: if(tmp < i) ~insert(R[i][tmp])
-      int tmp = lastOnPath[i][j];
-      R[i][j].push_back(tmp);
-      while (tmp != i) {
-        tmp = lastOnPath[i][tmp];
-        R[i][j].push_back(tmp);
-      }
+      penultimate[i][j] = lastOnPath[i][j];
+      // int tmp = lastOnPath[i][j];
+      // R[i][j].push_back(tmp);
+      // while (tmp != i) {
+      //   tmp = lastOnPath[i][tmp];
+      //   R[i][j].push_back(tmp);
+      // }
 
-      std::reverse(R[i][j].begin(), R[i][j].end());
+      // std::reverse(R[i][j].begin(), R[i][j].end());
     }
   }
 
   return R;
 }
 
-bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk, bool areChordsOk) {
+bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk, bool areChordsOk, bool holeRequired) {
+  if (holeRequired && !isCycleOk) {
+    throw invalid_argument("Hole required but cycle not allowed!");
+  }
+
   if (v.size() <= 1) return false;
 
   if (!isDistinctValues(v)) return false;
+
+  if (holeRequired && (v.size() <= 3 || !G.areNeighbours(v[0], v.back()))) return false;
 
   for (int i = v.size() - 1; i > 0; i--) {
     for (int j = 0; j < i; j++) {
@@ -525,6 +547,8 @@ bool isAPath(const Graph &G, const vec<int> &v, bool isCycleOk, bool areChordsOk
 
   return true;
 }
+
+bool isHole(const Graph &G, const vec<int> &v) { return isAPath(G, v, true, false, true); }
 
 vec<int> getFirstPath(const Graph &G, int len, bool isCycleOk) {
   vec<int> ret;
@@ -545,7 +569,8 @@ vec<int> getFirstPath(const Graph &G, int len, bool isCycleOk) {
   return ret;
 }
 
-void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk) {
+void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk,
+                             bool holeRequired) {
   while (true) {
     if (v.back() == -1) {
       v.pop_back();
@@ -565,8 +590,14 @@ void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleO
     }
 
     if (v.size() < len) {
+      while (v.size() > 1 && v.back() != -1 &&
+             (!isAPath(G, v, isCycleOk, areChordsOk, false) || (holeRequired && v.back() <= v[0]))) {
+        v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+      }
+      if (v.back() == -1) continue;
+
       v.push_back(G.getFirstNeighbour(v.back()));
-      if (v.size() == len && isAPath(G, v, isCycleOk, areChordsOk)) {
+      if (v.size() == len && isAPath(G, v, isCycleOk, areChordsOk, holeRequired)) {
         return;
       } else {
         continue;
@@ -576,7 +607,7 @@ void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleO
 
     do {
       v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
-    } while (v.back() != -1 && !isAPath(G, v, isCycleOk, areChordsOk));
+    } while (v.back() != -1 && !isAPath(G, v, isCycleOk, areChordsOk, holeRequired));
 
     if (v.back() == -1) continue;
 
@@ -584,20 +615,111 @@ void nextPathInPlaceInternal(const Graph &G, vec<int> &v, int len, bool isCycleO
   }
 }
 
-void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk) {
-  // TODO(Adrian) faster, do not iterate over all permutations. Have a "pointer" to next neighbour in G?
-  if (len <= 1) {
-    throw invalid_argument("Length of next path must be at least 2");
-  }
-  if (!v.empty() && v.size() != len) {
-    throw invalid_argument("Length of next path must be equal to length of given path.");
-  }
+void nextHoleInPlaceInternal(const Graph &G, vec<int> &v) {
+  while (true) {
+    if (v.back() == -1) {
+      v.pop_back();
+      if (v.size() == 1) {
+        v[0]++;
+        if (v[0] >= G.n) {
+          v = {};
+          return;
+        }
+        continue;
+      } else {
+        v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+        continue;
+      }
+    }
 
+    if (v.size() < G.n) {
+      while (v.size() > 1 && v.back() != -1 && (!isAPath(G, v, true, false, false) || v.back() <= v[0])) {
+        v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+      }
+      if (v.back() == -1) continue;
+
+      if ((v.size() % 2) && isAPath(G, v, true, false, true)) return;
+
+      v.push_back(G.getFirstNeighbour(v.back()));
+      if ((v.size() % 2) && isAPath(G, v, true, false, true))
+        return;
+      else
+        continue;
+    }
+
+    do {
+      v.back() = G.getNextNeighbour(v[v.size() - 2], v.back());
+    } while (v.back() != -1 && !isAPath(G, v, true, false, true));
+
+    if ((v.size() % 2) == 0 || v.back() == -1) continue;
+
+    return;
+  }
+}
+
+void nextPathInPlace(const Graph &G, vec<int> &v, int len, bool isCycleOk, bool areChordsOk,
+                     bool holeRequired) {
+  if (len == 0 && (!holeRequired || !isCycleOk || areChordsOk)) {
+    throw invalid_argument("len=0 only supported for holes");
+  }
   if (v.empty()) {
     v = {0};
   }
 
   v.reserve(len);
 
-  return nextPathInPlaceInternal(G, v, len, isCycleOk, areChordsOk);
+  if (len == 0) return nextHoleInPlaceInternal(G, v);
+
+  return nextPathInPlaceInternal(G, v, len, isCycleOk, areChordsOk, holeRequired);
+}
+
+vec<vec<int>> getAllPaths(const Graph &G, int len, bool isCycleOk, bool areChordsOk, bool holeRequired) {
+  vec<vec<int>> ret;
+  vec<int> x;
+  while (1) {
+    nextPathInPlace(G, x, len, isCycleOk, areChordsOk, holeRequired);
+    if (x.empty()) break;
+
+    ret.push_back(x);
+  }
+
+  return ret;
+}
+
+boost::dynamic_bitset<ul> getBitset(int n, set<int> v) {
+  boost::dynamic_bitset<ul> ret(n);
+  for (int i : v) {
+    ret.set(i);
+  }
+  return ret;
+}
+
+boost::dynamic_bitset<ul> getBitset(int n, vec<int> v) {
+  boost::dynamic_bitset<ul> ret(n);
+  for (int i : v) {
+    ret.set(i);
+  }
+  return ret;
+}
+
+vec<int> bitsetToVector(const boost::dynamic_bitset<ul> &b) {
+  vec<int> ret;
+  size_t index = b.find_first();
+  while (index != boost::dynamic_bitset<ul>::npos) {
+    ret.push_back(index);
+    index = b.find_next(index);
+  }
+
+  return ret;
+}
+
+set<int> bitsetToSet(const boost::dynamic_bitset<ul> &b) {
+  set<int> ret;
+  size_t index = b.find_first();
+  while (index != boost::dynamic_bitset<ul>::npos) {
+    ret.insert(index);
+    index = b.find_next(index);
+  }
+
+  return ret;
 }
