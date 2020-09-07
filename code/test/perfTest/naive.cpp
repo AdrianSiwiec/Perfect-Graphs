@@ -26,16 +26,14 @@ int main() {
   random_shuffle(Gs.begin(), Gs.end());
 
   {
-    cout << "N=" << n << endl;
-
     RaiiProgressBar bar(Gs.size());
 
     for (int i = 0; i < Gs.size(); i++) {
-      testWithStats(Gs[i], true);
+      testGraph(Gs[i], {algoNaive});
       bar.update(i + 1);
     }
   }
   cout << endl;
 
-  printStats();
+  StatsFactory::printStats2();
 }

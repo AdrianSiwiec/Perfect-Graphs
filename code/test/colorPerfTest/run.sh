@@ -8,8 +8,13 @@ mkdir -p $resultsDir
 colorExec="$scriptDir/../../obj/test/colorPerfTest/color.e"
 
 colorTests=(
-  # "small.t.in"
   "perf.t.in"
+  "perfLin.t.in"
+  "fullBinary20to45.t.in"
+  "grid5by4to9.t.in"
+  "hypercube20to40.t.in"
+  "knightGraph6by4to8.t.in"
+  "rookGraph6by4to8.t.in"
 )
 
 # for file in "${colorTests[@]}"; do
@@ -21,5 +26,5 @@ colorTests=(
 
 for file in "${colorTests[@]}"; do
   echo "Running Color on $file"
-  $colorExec <$testsDir/$file
+  $colorExec <$testsDir/$file >>$resultsDir/$file.out.csv
 done

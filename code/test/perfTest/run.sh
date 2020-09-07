@@ -10,10 +10,12 @@ naiveExec="$scriptDir/../../obj/test/perfTest/naive.e"
 
 perfectTests=(
   "perf.t.in"
+  "perfLin.t.in"
 )
 
 naiveTests=(
-  "naive.t.in"
+  "perf.t.in"
+  "perfLin.t.in"
 )
 
 perfectTestsValgrind=(
@@ -26,24 +28,24 @@ naiveTestsValgrind=(
 
 for file in "${perfectTests[@]}"; do
   echo "Running Perfect on $file"
-  $perfectExec <$testsDir/$file >$resultsDir/$file.perfect.out
+  $perfectExec <$testsDir/$file >>$resultsDir/$file.out
 done
 
 for file in "${naiveTests[@]}"; do
   echo "Running Naive on $file"
-  $naiveExec <$testsDir/$file >$resultsDir/$file.naive.out
+  $naiveExec <$testsDir/$file >>$resultsDir/$file.out
 done
 
-for file in "${perfectTestsValgrind[@]}"; do
-  echo "Profiling Perfect on $file"
-  valgrind --callgrind-out-file=$resultsDir/callgrind.tmp.out --tool=callgrind $perfectExec <$testsDir/$file >$resultsDir/$file.Valgrind.perfect.out
-  python3 $scriptDir/gprof2dot.py -f callgrind $resultsDir/callgrind.tmp.out >$resultsDir/$file.perfect.dot
-  rm $resultsDir/callgrind.tmp.out
-done
+# for file in "${perfectTestsValgrind[@]}"; do
+#   echo "Profiling Perfect on $file"
+#   valgrind --callgrind-out-file=$resultsDir/callgrind.tmp.out --tool=callgrind $perfectExec <$testsDir/$file >$resultsDir/$file.Valgrind.perfect.out
+#   python3 $scriptDir/gprof2dot.py -f callgrind $resultsDir/callgrind.tmp.out >$resultsDir/$file.perfect.dot
+#   rm $resultsDir/callgrind.tmp.out
+# done
 
-for file in "${naiveTestsValgrind[@]}"; do
-  echo "Profiling Naive on $file"
-  valgrind --callgrind-out-file=$resultsDir/callgrind.tmp.out --tool=callgrind $naiveExec <$testsDir/$file >$resultsDir/$file.Valgrind.naive.out
-  python3 $scriptDir/gprof2dot.py -f callgrind $resultsDir/callgrind.tmp.out >$resultsDir/$file.naive.dot
-  rm $resultsDir/callgrind.tmp.out
-done
+# for file in "${naiveTestsValgrind[@]}"; do
+#   echo "Profiling Naive on $file"
+#   valgrind --callgrind-out-file=$resultsDir/callgrind.tmp.out --tool=callgrind $naiveExec <$testsDir/$file >$resultsDir/$file.Valgrind.naive.out
+#   python3 $scriptDir/gprof2dot.py -f callgrind $resultsDir/callgrind.tmp.out >$resultsDir/$file.naive.dot
+#   rm $resultsDir/callgrind.tmp.out
+# done

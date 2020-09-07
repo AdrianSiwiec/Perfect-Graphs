@@ -20,7 +20,7 @@ map<int, int> casesTestedColor;
 void testGraphColor(const Graph &G) {
   StatsFactory::startTestCase(G, algo_color);
 
-  auto coloring = color(G);
+  auto coloring = color(G, true);
   assert(isColoringValid(G, coloring));
 
   StatsFactory::endTestCase(true);
