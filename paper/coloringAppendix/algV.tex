@@ -20,7 +20,7 @@
 	$F_B \gets \bigcup \{ V(C) $ : $C$ is a component of $G \setminus \{ H \cup M \cup Z \cup F_1 \cup F_2 \cup F_3 \}$
 	that attaches to $B_1 \cup B_2 \cup B_3$  $\}$ \;
 			  
-	\TODO{$F_i, F_A, F_B$ are from algIV, make sure it is correct}
+	% \TODO{$F_i, F_A, F_B$ are from algIV, make sure it is correct}
 			  
 	\Assert{At least two of $A_i$ and at least two of $B_i$ are cliques}
 	\Assert{$M$ is complete to at least two of $A_i$ and at least two of $B_i$}
@@ -32,7 +32,7 @@
 			
 	choose $h$, so that $M \cup A_h$ and $M \cup B_h$ are cliques\;
 			
-	\If(\tcp*[h]{\TODO{make sure $h=2$ is ok}}){$h = 1 \lor h = 2$}{
+	\If{$h = 1 \lor h = 2$}{
 		$K_1 \gets A_1$, $K_2 \gets M$, $K_3 \gets B_1$\;
 		$R \gets C_1 \cup F_1 \cup Z$\;
 		$L \gets G \setminus \{K_1 \cup K_2 \cup K_3 \cup R\}$ \;

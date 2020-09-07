@@ -26,7 +26,7 @@ Let us be more precise. Given a graph $G$ modeling a communication channel and a
 
 For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$. To describe longer messages we use \emph{Strong Product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ iff $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ -- which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$. 
 
-Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graphs (polynomial or not). If we could calculate $\alpha(G^k)$ for a first few values of $k$ (we will show how to do it in \cref{alg:maxStableSet}) we could have a lower bound on $\Theta(G)$. Let us now turn into search for some usable upper bound.
+Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graphs in finite time. If we could calculate $\alpha(G^k)$ for a first few values of $k$ (we will show how to do it in \cref{alg:maxStableSet}) we could have a lower bound on $\Theta(G)$. Let us now turn into search for some usable upper bound.
 
 \subsubsection{\Lovasz number}
 
@@ -49,7 +49,7 @@ $$\vartheta(G) = \min\limits_{c,U} \max\limits_{i\in V} \frac{1}{(c^\intercal u_
 
 where $c$ is a unit vector in $\mathbb{R}^{|V(G)|}$ and $U$ is a orthogonal representation of $G$. 
 
-Contrary to \Lovasz's first hope \cite{Lovasz1979} $\vartheta(G)$ does not always equal $\Theta(G)$, it is only an upper bound on it. However, these two equal in some graphs, including all perfect graphs, as is demonstrated in the \Lovasz "sandwich theorem" (\cref{thm:sandwich}).
+Contrary to \Lovasz's first hope \cite{Lovasz1979} $\vartheta(G)$ does not always equal $\Theta(G)$, it is only an upper bound on it. However, these two are equal for some graphs, including all perfect graphs, as is demonstrated in the \Lovasz "sandwich theorem" (\Cref{thm:sandwich}).
 
 But how can we construct an optimum (or even good) orthogonal representation? It turns out that it can be computed in polynomial time using semidefinite optimization.
 
@@ -69,13 +69,14 @@ Because in perfect graphs $\omega(G) = \chi(G)$, we get $\omega(G) = \vartheta(G
 \TODO{TODO}
 
 \subsection{Coloring perfect graph using ellipsoid method}
+\label{sec:coloringEllipsoid}
 The following is based on \citetitle{Laurent2005} by \citeauthor{Laurent2005} \cite{Laurent2005}.
 
 \subsubsection{Maximum cardinality stable set}
 
 Given graph $G$, recall that stability number of $G$ is equal clique number of the complement of $G$. This gives us a way to compute $\alpha(G)$ for any perfect graph $G$.
 
-In fact, to calculate $\chi(\overline{G})$ and $\alpha(G)$ we only need an approximated value of $\vartheta(G)$ with precision $< \frac{1}{2}$.
+In fact, to calculate $\chi(\overline{G})$ and $\alpha(G)$ we only need an approximated value of $\vartheta(G)$ with precision $< \frac{1}{2}$, as the former values are always integral.
 
 We will now show how to find a stable set in $G$ of size $\alpha(G)$.
 
@@ -124,7 +125,7 @@ Next, let us show how to find a stable set intersecting all the maximum cardinal
 
 \end{algtext}
 
-There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single clique to the list of maximum cardinality cliques requires constructing auxiliary graph for weighted maximum stable set, which is of size $O(V^2)$ and running \cref{alg:maxStableSet} on it. Therefore total running time is polynomial.
+There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single clique to the list of maximum cardinality cliques requires constructing auxiliary graph for weighted maximum stable set, which is of size $O(|V|^2)$ and running \cref{alg:maxStableSet} on it. Therefore total running time is polynomial.
 
 \subsubsection{Minimum coloring}
 

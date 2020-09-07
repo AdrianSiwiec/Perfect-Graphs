@@ -39,7 +39,7 @@ Figure \ref{fig:examplePath} shows an example of a graph $G_0 = (V, E)$ with $V 
   If $G' = (V', E')$ is a subgraph of $G$ and it contains \emph{all edges} of $G$ that join two vertices in $V'$, then $G'$ is said to be \emph{induced subgraph} of $G$ and is denoted $G[V']$.
 \end{defn}
 
-Given a graph $G = (V, E)$ and a set set $X \subseteq V$ by $G\setminus X$ we will denote a induced subgraph $G[V\setminus X]$.
+Given a graph $G = (V, E)$ and a set $X \subseteq V$ by $G\setminus X$ we will denote a induced subgraph $G[V\setminus X]$.
 
 For example $(\{v_1, v_2, v_3\}, \{v_1v_2\})$ is \emph{not} an induced subgraph of the example graph $G_0$, while $(\{v_1, v_2, v_3\}, \{v_1v_2, v_2v_3\}) = G_0[\{v_1, v_2, v_3\}] = G_0 \setminus \{v_0\}$ is.
 
@@ -51,7 +51,7 @@ For example $(\{v_1, v_2, v_3\}, \{v_1v_2\})$ is \emph{not} an induced subgraph 
   A \emph{path} is a graph $P$ of the form
   \[ V(P) = \{x_1, x_2, \ldots, x_l\},\quad E(P) = \{x_1x_2, x_2x_3, \ldots, x_{l-1}x_l\} \]
 \end{defn}
-This path $P$ is usually denoted by $x_1x_2\ldots x_l$ or $x_1 - x_2 - \ldots - x_l$. The vertices $x_1$ and $x_l$ are the \emph{endvertices} and ${l-1} = |E(P)|$ is the \emph{length} of the path P. $\{x_1, \ldots x_{l-1}\}$ is the \emph{inside} of the path $P$, denoted as $P^*$.
+This path $P$ is usually denoted by $x_1x_2\ldots x_l$ or $x_1 - x_2 - \ldots - x_l$. The vertices $x_1$ and $x_l$ are the \emph{endvertices} and ${l-1} = |E(P)|$ is the \emph{length} of the path P. $\{x_2, \ldots x_{l-1}\}$ is the \emph{inside} of the path $P$, denoted as $P^*$.
 
 Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we would add any edge to $G_0$ it would stop being a path (sometimes we call such an edge a \emph{chord}).
 
@@ -94,11 +94,11 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
 \end{defn}
 
 \begin{defn}[anticomponent]
-  An \emph{anticomponent} of a graph $G$ is an induced subgraph whose complement is a component in $G$.
+  An \emph{anticomponent} of a graph $G$ is an induced subgraph whose complement is a component in $\overline{G}$.
 \end{defn}
 
 \begin{defn}[clique]
-  A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected. We will denote a clique of $n$ vertices as $K_n$.
+  A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected. We will denote a clique on $n$ vertices as $K_n$.
 \end{defn}
 
 \begin{defn}[clique number]
@@ -122,9 +122,11 @@ In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \
   A \emph{chromatic number} of a graph $G$, denoted as $\chi(G)$, is a smallest natural number $k$, for which there exists a $k$-coloring of $G$.
 \end{defn}
 
+\TODO{Defs below to ch. 1}
+
 \begin{defn}[Berge graph]
   \label{def:bergeGraph}
-  A graph $G$ is \emph{Berge} if both $G$ and $\overline{G}$ have no odd hole.
+  A graph $G$ is \emph{Berge} if both $G$ and $\overline{G}$ have no odd hole as an induced subgraph
 \end{defn}
 
 \begin{defn}[perfect graph]

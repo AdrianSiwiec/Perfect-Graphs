@@ -1,6 +1,6 @@
 % \input{preamble.tex}
 
-\unfinishedAlg[-.45cm]{
+\unfinishedAlg[-.35cm]{
 	\SetNoFillComment
 	\SetKwFunction{colorGoodPartition}{\textsc{Color-Good-Partition}}
 	\Indm\nonl\colorGoodPartition{$G, (K_1, K_2, K_3, L, R), c_1, c_2$}\\
@@ -52,18 +52,16 @@
 		\Assert{ $|P|$ and $|Q|$ have different parities }
 		\Assert[Lemma 2.2.(4)]{ $p_1 \in K_3 \lor p_2 \in K_3$ }
 		\Assert[Lemma 2.2.(5)]{ $\nexists y \in K_3: c_1(y) = 2 \land c_2(y) = 1$ }
-																							    
-		\If{$p_1 \in K_3$}{
-			\Assert{$c_2(p_1) \notin [2]$}
-			relabel $c_2$, so that $c_2(p_1) = 3$ \;
-		}
 	}
 }
 
-\continueAlg[-10cm]{
-	\setcounter{AlgoLine}{23}
+\continueAlg[-12cm]{
+	\setcounter{AlgoLine}{22}
 	\GreyElse{ \transparent{.4}{ // $\nexists u \in B, h \in [2]: C_h^{c_1(u), c_2(u)}(u) \cap K_1 = \emptyset $}}{
-		\GreyIf{\transparent{.4}{$p_1 \in K_3$}}{
+		% \GreyIf{\transparent{.4}{$p_1 \in K_3$}}{
+		\If{$p_1 \in K_3$}{
+			\Assert{$c_2(p_1) \notin [2]$}
+			relabel $c_2$, so that $c_2(p_1) = 3$ \;
 			\Assert{color $3$ does not appear in $K_2$}
 			\Assert{color $3$ does not appear in $K_1$}
 			\Assert{$C_2^{j, 3}(p_1) \cap K_1 = \emptyset$}

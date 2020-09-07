@@ -40,12 +40,11 @@
       \Assert{$f_1 - a_3 \xor f_n - b_3$}
       \If{$f_1 - a_3$} {
         $H' \gets $ mirrored $H$ -- every $A_i$ and $B_i$ are swapped\;
-        \TODO{check if $M$ and $F$ are OK}
+        % \TODO{check if $M$ and $F$ are OK}
         \Return \growHyperprism{$G, H', M, F$}\;
       } \Else {
         \If {$f_n \blacktriangleleft B_2 \cup B_3$}{
           $B_1' \gets B_1 \cup \{f_n\}$ \;
-          $C_1' \gets C_1 \cup \{f_1, \ldots, f_{n-1}\}$\;
         }
       }
     }
@@ -53,11 +52,12 @@
 }
 
 \unfinishedAlg[-.55cm]{
-  \setcounter{AlgoLine}{20}
+  \setcounter{AlgoLine}{19}
   \GreyElse{\transparent{.4}{// $\forall_{i\in[3]} X \cap C_i = \emptyset$}}{
     \GreyIf{\transparent{.4}{$n$ \textup{is even and} $H$ \textup{is even, or} $n$ \textup{is odd and} $H$ \textup{is odd}}}{
       \GreyElse{\transparent{.4}{// $f_n - b_3$}}{
         \GreyIf{\transparent{.4}{$f_n \blacktriangleleft B_2 \cup B_3$}}{
+          $C_1' \gets C_1 \cup \{f_1, \ldots, f_{n-1}\}$\;
           \Return $H' \gets \begin{pmatrix}
             A_1 & C_1' & B_1'\\
             A_2 & C_2 & B_2\\
@@ -105,7 +105,7 @@
   }
 }
 
-\continueAlg[-11.5cm]{
+\continueAlg[-10.6cm]{
   \setcounter{AlgoLine}{42}
   \GreyElse{\transparent{.4}{// $\forall_{i\in[3]} X \cap C_i = \emptyset$}}{ 
     \GreyElse{\transparent{.4}{ // $n$ \textup{is odd and} $H$ \textup{is even, or} $n$ \textup{is even and} $H$ \textup{is odd}}}{
@@ -118,7 +118,7 @@
         \If {$f_1$ is complete to at least two of $A_i$}{
             relabel strips of $H$, so that $f_1$ is complete to $A_1$ and $A_2$\;
             \Assert{$f_n$ is complete to $B_1$ and $B_2$}
-            \Assert[SPGT 10.5 \textcolor{red}{OK for odd $H$?}]{$n > 1$}
+            \Assert[SPGT 10.5]{$n > 1$}
             \Return $\begin{pmatrix}
               A_1 & C_1 & B_1\\
               A_2 & C_2 & B_2\\
@@ -126,8 +126,8 @@
               \end{pmatrix}$ \;
         }
         \Else {
-          \Assert{$A_i' \setComplete A_i''$ \TODO{OK odd H?}}
-          \Assert{$B_i' \setComplete B_i''$ \TODO{OK odd H?}}
+          \Assert{$A_i' \setComplete A_i''$}
+          \Assert{$B_i' \setComplete B_i''$}
           \Return $\begin{pmatrix}
             A_1' & C_1' & B_1'\\
             A_2' \cup A_3' & C_2 \cup C_3' & B_2' \cup C_3'\\

@@ -288,9 +288,6 @@ To prove the correctness of \cref{alg:listNearCleaners} we will need the followi
 		\item $X(a, b, c) \cap V(C)$ is a subset of the vertex set of some 3-vertex path of $C$.
 	\end{itemize}
 \end{theorem}
-\begin{proof}
-	\TODO{do we want it here? 1-2 pages long}
-\end{proof}
 
 Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c)$ is a near-cleaner for $C$. Therefore the output of the \cref{alg:listNearCleaners} is correct.
 

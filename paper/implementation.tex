@@ -1,6 +1,10 @@
 \TODO{link to repo}
 
-\section{Berge graphs recognition}
+\section{Berge graphs recognition: na\"ive approach}
+\TODO{rewrite to describe naive}
+
+\section{Berge graphs recognition: polynomial algorithm}
+\todo{rewrite/rearrange text below}
 
 The Berge recognition algorithm's running time is $O(n^9)$, which brings into question its applicability to any real use case. Although time complexity is indeed a limiting factor, a number of lower level optimizations done on implementation's level (\cref{sec:Optimizations}) make a very big difference and make it usable -- or at least much more usable than na\"ive algorithm could be. Also, we explore a new frontier of implementing its most time consuming part on massively parallel GPU architecture, with good results (\cref{sec:CUDA}).
 
@@ -80,6 +84,7 @@ In total over 100 \todo{update the munber}cpu-hours of end to end tests were per
 \TODO{a section?}
 \TODO{CUDA background}
 \TODO{moderngpu - allows us to run simple transforms}
+\TODO{Implementing get NC is tough -- we rely on set<bitset> to do the work. Maybe we could use a dynamic set from Adam's link? As a "open question"}
 
 We posed a question if it would be profitable to use GPU for this problem. On one hand the graphs we are working on are small and our time complexity so large that a speedup from massively parallel architecture could be profitable. On the other the algorithm is complex and not easy to parallelise. Therefore we decided to implement whole na\"ive algorithm and most time consuming parts of the CCLSV\todo{a good name for it?} algorithm.
 
@@ -107,9 +112,9 @@ It turns out that this optimization alone speeds up \cref{alg:testNearCleaner} a
 
 \begin{figure}
   \centering
-  \input{plots/aa.pgf}
-  \caption{testPlot}
-  \label{fig:LCA_batch}
+  \input{plots/hypercubes16to50.t.in.out.csv.lines.pgf}
+  \caption{testPlot 1}
+  % \label{fig:LCA_batch}
 \end{figure}
 
 Naive algorithm - brief description, bottlenecks optimizations (makes huge difference).\\
@@ -123,11 +128,11 @@ Results and Corollary - almost usable algorithm.
 
 \subsection{Ellipsoid method}
 
-Description.\\
+We used an open source CSDP \cite{csdpRepo, csdp1999} library, that implements predictor corrector variant of the semidefinite programming algorithm to calculate $\vartheta(G)$, given $G$ on the input. The CSDP library has been used in many recent publications across different fields, such as \cite{Ampountolas_2017, Adasme_2011}.
 
-Implementation.\\
+Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \cref{sec:coloringEllipsoid}. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
 
-Experiments and results.\\
+\subsubsection{Experiments and results}
 
 \subsection{Combinatorial Method}
 
