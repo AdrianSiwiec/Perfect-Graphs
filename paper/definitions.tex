@@ -57,7 +57,7 @@ Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we
 
 
 \begin{defn}[connected graph, subset]
-  A graph $G$ is \emph{connected} if for every pair $\{x, y\} \subseteq V(G)$ of distinct vertices, there is a path from $x$ to $y$. \todo{formal enough?}
+  A graph $G$ is \emph{connected} if for every pair $\{x, y\} \subseteq V(G)$ of distinct vertices, there is a path from $x$ to $y$.
   A subset $X \subseteq V(G)$ is connected if the graph $G[X]$ is connected.
 \end{defn}
 
@@ -124,15 +124,6 @@ In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \
 
 \TODO{Defs below to ch. 1}
 
-\begin{defn}[Berge graph]
-  \label{def:bergeGraph}
-  A graph $G$ is \emph{Berge} if both $G$ and $\overline{G}$ have no odd hole as an induced subgraph
-\end{defn}
-
-\begin{defn}[perfect graph]
-  \label{def:perfectGraph}
-  A graph $G$ is \emph{perfect} if for its every induced subgraph $G'$ we have $\chi(G') = \omega(G')$
-\end{defn}
 
 \begin{defn}[C-major vertices]
   Given a shortest off hole $C$ in $G$, a node $v \in V(G) \setminus V(C)$ is $C-major$ if the set of its neighbors in $C$ is not contained in any 3-node path of $C$.

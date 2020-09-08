@@ -1,24 +1,34 @@
 Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangle and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
 
-Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, $|V| = n$, let us construct a graph $G'$ equal to the union of $G$ and a clique $K_n$. We can see that indeed $\chi(G') = n = \omega(G')$, but it gives us no indication of the structure of $G$ or $G'$.
+Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, $|V| = n$, let us construct a graph $G'$ equal to the union of $G$ and a clique $K_n$. We can see that indeed $\chi(G') = n = \omega(G')$, but it gives us no indication of the structure of $G$ or $G'$. This leads us to the definition of \emph{perfect graphs}
 
-A definition of perfect graphs (\cref{def:perfectGraph}) states that given a graph $G$, the chromatic number and cardinality of the largest clique of \emph{its every induced subgraph} should be equal. The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures some of the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum (weighted) clique problem, and maximum (weighted) independent set problem can be solved in polynomial time \cite{grotschel1993}. Other classical NP-complete problems are still NP-complete in perfect graphs e.g. Hamiltonian path \cite{Mller1996}, maximum cut problem \cite{Bodlaender1994} or dominating set problem \cite{Dewdney81}. \todo{all theese citations are about subclasses e.g. biparite graphs. Should we mention some subclasses?}
+\begin{defn}[perfect graph]
+  \label{def:perfectGraph}
+  A graph $G$ is \emph{perfect} iff for its every induced subgraph $H$ we have $\chi(H) = \omega(H)$
+\end{defn}
 
-The most fundamental problem -- the problem of recognizing perfect graphs -- was open since its posing in 1961 until recently. Its solution, a polynomial algorithm recognizing perfect graphs is a union of the strong perfect graph theorem (\cref{sec:SPGT}) stating that a graph is perfect if and only if it is Berge (\cref{def:bergeGraph}) and an algorithm for recognizing Berge graphs in polynomial time (\cref{sec:recognizingBerge}).
+The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures some of the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum (weighted) clique problem, and maximum (weighted) independent set problem can be solved in polynomial time \cite{grotschel1993}. Other classical NP-complete problems are still NP-complete in perfect graphs e.g. Hamiltonian path \cite{Mller1996}, maximum cut problem \cite{Bodlaender1994} or dominating set problem \cite{Dewdney81}. \todo{all theese citations are about subclasses e.g. biparite graphs. Should we mention some subclasses?}
+
+The most fundamental problem -- the problem of recognizing perfect graphs -- was open since its posing in 1961 until recently. Its solution, a polynomial algorithm recognizing perfect graphs is a union of the strong perfect graph theorem (\cref{sec:SPGT}) stating that a graph is perfect if and only if it is Berge and an algorithm for recognizing Berge graphs in polynomial time (\cref{sec:recognizingBerge}).
+
+\begin{defn}[Berge graph]
+  \label{def:bergeGraph}
+  A graph $G$ is \emph{Berge} iff both $G$ and $\overline{G}$ have no odd hole as an induced subgraph
+\end{defn} 
 
 Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003} algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \cref{sec:ellipsoidMethod}.
 
 \section{Strong Perfect Graph Theorem}
 \label{sec:SPGT}
 
-The first step to solve the problem of recognizing perfect graphs was the \emph{(weak) perfect graph theorem} first conjured by Berge in 1961~\cite{CB61} and then proven by \Lovasz in 1972~\cite{LL72}.
+The first step to solve the problem of recognizing perfect graphs was the \emph{(weak) perfect graph theorem} first conjured by Berge in 1961~\cite{CB61} and then proven by Lovász in 1972~\cite{LL72}.
 
 \begin{theorem}[Perfect graph theorem]
 	\label{thm:pgt}
 	A graph is perfect if and only if its complement graph is also perfect.
 \end{theorem}
 
-This theorem is a consequence of a stronger result proven by \Lovasz:
+This theorem is a consequence of a stronger result proven by Lovász:
 \begin{theorem}
 	\label{thm:omegaalpha}
 	A graph $G$ is perfect iff for every induced subgraph $H$, the number of vertices of $H$ is at most $\alpha(H)\omega(H)$. \todo{proof?}
