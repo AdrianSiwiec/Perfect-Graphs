@@ -196,6 +196,26 @@ Graph getRookGraph(int W, int H) {
   return getGridWithMoves(W, H, dx, dy);
 }
 
+Graph getSplitGraph(int n, double p) {
+  vec<vec<int>> neighbors(n * 2);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i != j) neighbors[i].push_back(j);
+    }
+  }
+
+  for (int i = 0; i < n; i++) {
+    for (int j = n; j < 2 * n; j++) {
+      if (probTrue(p)) {
+        neighbors[i].push_back(j);
+        neighbors[j].push_back(i);
+      }
+    }
+  }
+
+  return Graph(neighbors).getShuffled();
+}
+
 void handler(int sig) {
   void *array[100];
   size_t size;
@@ -301,8 +321,6 @@ bool testGraph(const Graph &G, vec<algos> algosToTest, vec<cuIsPerfectFunction> 
 
   return result;
 }
-
-
 
 // void printStats() {
 //   for (int algo = algoPerfect; algo < algo_last; algo++) {

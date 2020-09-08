@@ -1,0 +1,39 @@
+
+algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	Test NC Rest,	Test NC Shortest Paths
+Perfect,	30,	1,	1,	2.86442,	0.0236762,	0.50138,	2.13724,	0.194506
+Perfect,	36,	1,	1,	6.52206,	0.0458641,	1.22617,	4.80947,	0.426215
+Perfect,	42,	1,	1,	12.5648,	0.082521,	2.36862,	9.33312,	0.757791
+Perfect,	48,	1,	1,	22.2231,	0.141764,	4.31073,	16.5002,	1.23986
+Perfect,	54,	1,	1,	36.457,	0.223857,	7.47653,	26.7985,	1.91888
+Perfect,	60,	1,	1,	56.0092,	0.344242,	11.398,	41.416,	2.80483
+Perfect,	66,	1,	1,	84.4102,	0.486385,	18.4503,	61.3958,	4.01808
+
+algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	GPU Test NC Copy,	Test NC Shortest Paths,	GPU Test NC work
+Cuda Perfect,	30,	1,	1,	1.25739,	0.0245179,	0.488234,	0.344024,	0.196952,	0.199749
+Cuda Perfect,	36,	1,	1,	2.60379,	0.0499712,	1.21849,	0.524011,	0.419068,	0.385688
+Cuda Perfect,	42,	1,	1,	4.61496,	0.0870933,	2.33369,	0.724812,	0.739251,	0.721161
+Cuda Perfect,	48,	1,	1,	7.72643,	0.147719,	4.19802,	1.00303,	1.22903,	1.13513
+Cuda Perfect,	54,	1,	1,	13.238,	0.26099,	7.23128,	1.30696,	1.8865,	2.04792
+Cuda Perfect,	60,	1,	1,	19.1411,	0.342821,	11.1779,	1.65951,	2.77879,	3.1626
+Cuda Perfect,	66,	1,	1,	29.7257,	0.498029,	18.0871,	2.13186,	4.03081,	4.95046
+
+algorithm,	n,	result,	num_runs,	Overall
+Naive,	30,	1,	1,	0.0184912
+Naive,	36,	1,	1,	0.0622163
+Naive,	42,	1,	1,	0.280376
+Naive,	48,	1,	1,	1.47835
+Naive,	54,	1,	1,	7.96003
+Naive,	60,	1,	1,	41.0179
+Naive,	66,	1,	1,	210.677
+
+algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	Test NC Rest,	Test NC Shortest Paths
+Perfect,	72,	1,	1,	120.753,	0.684082,	26.7513,	87.6782,	5.56214
+Perfect,	78,	1,	1,	166.998,	0.944539,	36.4219,	121.983,	7.54907
+
+algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	GPU Test NC Copy,	Test NC Shortest Paths,	GPU Test NC work
+Cuda Perfect,	72,	1,	1,	41.559,	0.675677,	25.5778,	2.59692,	5.52489,	7.14835
+Cuda Perfect,	78,	1,	1,	56.8174,	0.940614,	34.7891,	3.1822,	7.46573,	10.3987
+Cuda Perfect,	84,	1,	1,	78.9128,	1.24962,	49.3565,	3.65802,	9.95141,	14.6471
+Cuda Perfect,	90,	1,	1,	105.794,	1.64082,	66.9787,	4.34482,	12.9093,	19.8645
+Cuda Perfect,	96,	1,	1,	133.758,	2.11428,	86.0101,	5.11107,	16.5125,	23.3592
+Cuda Perfect,	102,	1,	1,	174.515,	2.68845,	112.799,	5.94879,	20.8352,	32.1527

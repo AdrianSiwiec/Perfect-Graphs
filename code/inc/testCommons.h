@@ -45,6 +45,7 @@ Graph getCityGrid(int W, int H);
 Graph getKnightGraph(int W, int H);
 Graph getHypercube(int k);
 Graph getRookGraph(int W, int H);
+Graph getSplitGraph(int n, double p);
 
 void handler(int sig);
 void init(bool srandTime = false);

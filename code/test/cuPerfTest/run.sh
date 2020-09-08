@@ -11,18 +11,20 @@ cuPerfectExec="$scriptDir/../../obj/test/cuPerfTest/cuPerfect.e"
 naiveExec="$scriptDir/../../obj/test/cuPerfTest/naive.e"
 
 perfectTests=(
-  # # "perf2.t.in"
-  # # "perf.t.in"
   # # "bench.t.in"
   # # "fullBinaryBig.t.in"
   # # "knightGraph6by5to8.t.in"
-  # "knightGraph8by4to8.t.in"
   # "hypercubes16to50.t.in"
   # # "kingGraph3by3to12.t.in"
-  # "rookGraph5by4to7.t.in"
 
-  # "fullBinary20to100.t.in"
-  # "grid6by5to11.t.in"
+  "perf2.t.in"
+  "perf.t.in"
+  "fullBinary20to100.t.in"
+  "grid6by5to11.t.in"
+  "hypercubes20to55.t.in"
+  "knightGraph8by4to8.t.in"
+  "rookGraph5by4to7.t.in"
+  "split20to50.t.in"
 )
 
 pefectSupplement=(
@@ -31,41 +33,54 @@ pefectSupplement=(
 
 cudaPerfectSupplement=(
   "grid6by5to11.t.in"
+  "hypercubes20to55.t.in"
+  "rookGraph5by4to7.t.in"
+  "split20to50.t.in"
 )
 
-naiveTests=(
-  # "naive.t.in"
-  "perfSmaller.t.in"
+naivePerfectSupplement=(
+  "rookGraph5by4to7.t.in"
+  "split20to50.t.in"
 )
 
-benchTests=(
-  "hypercubes30to40.t.in"
-)
+# naiveTests=(
+#   # "naive.t.in"
+#   "perfSmaller.t.in"
+# )
+
+# benchTests=(
+#   "hypercubes30to40.t.in"
+# )
 
 
-# for file in "${perfectTests[@]}"; do
-#   echo "Running Perfect on $file"
-#   $perfectExec <$testsDir/$file >>$resultsDir/$file.out.csv
-# done
+for file in "${perfectTests[@]}"; do
+  echo "Running Perfect on $file"
+  $perfectExec <$testsDir/$file >>$resultsDir/$file.out.csv
+done
 
-# for file in "${perfectTests[@]}"; do
-#   echo "Running CuPerfect on $file"
-#   $cuPerfectExec <$testsDir/$file >>$resultsDir/$file.out.csv
-# done
+for file in "${perfectTests[@]}"; do
+  echo "Running CuPerfect on $file"
+  $cuPerfectExec <$testsDir/$file >>$resultsDir/$file.out.csv
+done
 
-# for file in "${perfectTests[@]}"; do
-#   echo "Running Naive on $file"
-#   $naiveExec <$testsDir/$file >>$resultsDir/$file.out.csv
-# done
+for file in "${perfectTests[@]}"; do
+  echo "Running Naive on $file"
+  $naiveExec <$testsDir/$file >>$resultsDir/$file.out.csv
+done
 
-# for file in "${pefectSupplement[@]}"; do
-#   echo "Running Perfect on $file"
-#   $perfectExec <$testsDir/perfectSup/$file >>$resultsDir/$file.out.csv
-# done
+for file in "${pefectSupplement[@]}"; do
+  echo "Running Perfect Sup on $file"
+  $perfectExec <$testsDir/perfectSup/$file >>$resultsDir/$file.out.csv
+done
 
 for file in "${cudaPerfectSupplement[@]}"; do
-  echo "Running CuPerfect on $file"
+  echo "Running CuPerfect Sup on $file"
   $cuPerfectExec <$testsDir/cuPerfectSup/$file >>$resultsDir/$file.out.csv
+done
+
+for file in "${naivePerfectSupplement[@]}"; do
+  echo "Running Naive Sup on $file"
+  $naiveExec <$testsDir/naiveSup/$file >>$resultsDir/$file.out.csv
 done
 
 

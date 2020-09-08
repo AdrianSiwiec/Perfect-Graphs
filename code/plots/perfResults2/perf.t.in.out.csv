@@ -1,0 +1,21 @@
+
+algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	Test NC Rest,	Test NC Shortest Paths
+Perfect,	15,	1,	5,	0.215756,	0.0460256,	0.0363873,	0.112533,	0.0187889
+Perfect,	16,	1,	5,	0.462195,	0.150006,	0.0550551,	0.221724,	0.0324586
+Perfect,	17,	1,	5,	0.60168,	0.162958,	0.0668337,	0.32292,	0.0453573
+Perfect,	18,	1,	5,	0.977808,	0.314551,	0.0997099,	0.494997,	0.0640882
+Perfect,	19,	1,	5,	1.51159,	0.556054,	0.120924,	0.735587,	0.093235
+
+algorithm,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	GPU Test NC Copy,	Test NC Shortest Paths,	GPU Test NC work
+Cuda Perfect,	15,	1,	5,	0.310995,	0.0438354,	0.0362621,	0.0824799,	0.0173414,	0.0322607
+Cuda Perfect,	16,	1,	5,	0.425856,	0.151871,	0.0556258,	0.1284,	0.0327612,	0.0519861
+Cuda Perfect,	17,	1,	5,	0.48236,	0.163299,	0.0650241,	0.150486,	0.0431249,	0.0583512
+Cuda Perfect,	18,	1,	5,	0.736055,	0.312865,	0.0956417,	0.189452,	0.0619185,	0.0738314
+Cuda Perfect,	19,	1,	5,	1.10757,	0.559717,	0.120367,	0.242403,	0.0884515,	0.0938115
+
+algorithm,	n,	result,	num_runs,	Overall
+Naive,	15,	1,	5,	0.000495596
+Naive,	16,	1,	5,	0.000628614
+Naive,	17,	1,	5,	0.000851154
+Naive,	18,	1,	5,	0.000998212
+Naive,	19,	1,	5,	0.00129389
