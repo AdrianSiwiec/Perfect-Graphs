@@ -1,9 +1,51 @@
-\TODO{link to repo}
+A repository containing the discussed source code and tests is available under the link: \href{https://github.com/AdrianSiwiec/Perfect-Graphs}{https://github.com/AdrianSiwiec/Perfect-Graphs}
+\todo{make repo public and add readme on howto run}
 
 \section{Berge graphs recognition: na\"ive approach}
-\TODO{rewrite to describe naive}
+When implementing an algorithm with the running time of $O(n^9)$ (especially one as complex as CCLSV), one of the first questions that pop up is whether this algorithm is applicable at all. We couldn't find any existing programs that test whether the graph is perfect, be it an implementation of CCLSV, or a na\"ive approach.\todo{well.. there's this java impl} So, to test the usability of CCLSV implementation, we measured it against our own na\"ive Perfect recognition algorithm. Let us describe it briefly.
+
+We will try find an odd hole directly, then, we run the same algorithm on $\overline{G}$, and if no odd hole is found we report that the graph is Perfect, else that it is not.
+
+To find an odd hole, we use a backtracking technique. We will enumerate all paths and holes and for each test if it is an odd hole. A partial solution to our problem is a path in $G$. To move forward from a partial solution, we append consecutively to its end all neighbors of current path's last vertex and continue recursively after each. When a current solution is an odd hole we return it. When we exhaust all possible paths from the current partial solution, we remove last vertex and continue. Also notice, that we can abandon ''paths'' that have chords.
+
+This backtracking algorithm is very simple, but has a great potential for optimizations in implementation. We also use path enumeration algorithm in CCLSV algorithm, so we give much attention to its optimization.
+
+\subsubsection{Path enumerating optimizations}
+Below, we will talk about enumerating all paths. This is a generalization of the problem of finding an odd hole, if we allow a path to have a single chord between the first and the last of its vertices iff the hole formed would be odd.
+
+First of all, there are many methods for generating all possible paths to choose from. We could simply enumerate all sequences of vertices without repetition and for each one of them check if it is a path (that is if all pairs of vertices next to each other are connected and that there are no chords), but this would be too slow and render our algorithm unusable.
+
+We notice that returning a new path for each call of the method is wasteful. Therefore, we need a method that receives a reference to a path on the input (or a special flag indicating it should generate first path) and returns next path in some order (or a first path, or a code signaling all paths have been generated) using memory from the input. As this method will be used many, many times we require of it to work in place with constant additional space.
+
+With those requirements defined a simplest algorithm would be to implement a sort of a "counter" with base of $|V(G)|$. In short: we take a path on a input, increment its last vertex until it is a neighbor of the vertex one before last. Then we check if generated sequence is a path (all vertices unique and no chords). If it is we return it and if we run out of vertices before a path is found, we increment one before last vertex until it is a neighbor of one vertex before it, set last vertex to first and continue the process. If still no path is found, we increment vertices closer to beginning of the path, until all a path is found or we check all candidates.
+
+But we can do much better with some care and a better data structure. For a given graph we create a data structure that suits best the goal of generating paths. In addition to having for each vertex a list of its neighbors we create data structure that will allow us to generate a candidate for next path in amortized $O(1)$ time.
+
+We have an array $first$ in which for each vertex is written its first neighbor on its neighbors list, and an array $next$ of size $|V(G)|^2$ where for each pair of vertices $a, b$ if $a$ and $b$ are connected, there is written a neighbor of $a$ that is next after $b$ in a neighbors list of $a$ (or a flag indicating $b$ is $a$'s last neighbor). Then, say our input is a path $v = v_1, \ldots v_k$. If $next[v_{k-1}][v_k]$ exists we change $v_k$ to $next[v_{k-1}][v_k]$ and return $v$. If it indicated that $v_k$ is $v_{k-1}$'s last neighbor, we set $v_{k-1}$ to $next[v_{k-2}][v_{k-1}]$ and then $v_k$ to $first[v_{k-1}]$ (or we go further back, if all neighbors of $v_{k-2}$ are done).
+
+This simple change in data structure design gave us a speedup of overall running time of our algorithm in the range of 20x\todo{check this}.
+
+Another crucial optimization is to eliminate partial solutions that have chords right away. This is especially useful in graphs that have many chords and reduces running time dramatically.
+
+\paragraph{Array unique}
+
+For each path candidate $v$ we call a subroutine $areUnique(v)$ to determine whether all vertices in it are unique. As this subroutine could be called many times for generating a single path, its optimization is very important.
+
+A theoretically optimal solution in general would be to have a hashing set of vertices. For each vertex in a path candidate, we check if it is already in a set. If it is, return that not all vertices are unique, else add it to the set.
+
+In our use case, a few optimizations can be made. First, we don't need a hashing set. We can have an array of bools, of size $|V(G)|$ and mark vertices of a path there. Paths are usually much shorter than $|V(G)|$, but we operate on small graphs, so we can afford this. Second, we notice that we don't need to create this array for each call of $areUnique$ procedure. Let's instead have a static array $stamp$ of ints and a static $counter$ of how many times we called $areUnique$ method. For each element of a path $v_i$, if the value of $stamp$ array is equal to $counter$ we report that vertices are not unique. Else we set $stamp[v_i] = counter$. When returning from the $areUnique$ method we increment $counter$.
+
+This optimization alone is crucial for performance. In our testing, all calls of $areUnique$ took abour 70\% of total running time of the CCLSV algorithm, and virtually all running time of the na\"ive algorithm \todo{check}. After using static $stamp$ array, it fell to 5.2\% in CCLSV and to X\% in na\"ive. The overall speedup of the CCLSV algorithm was about 6x. \todo{check if for sure it didn't use path speedup} The speedup of na\"ive algorithm was even greater -- about 20x.
+
+\paragraph{Other uses for path generation}
+\label{sec:usesGeneration}
+
+Because of a good performance of our optimized algorithm for generating paths, we use it whenever possible. It can be easily modified to generate all possibly chordal paths or holes and therefore has much use in the CCLSV algorithm. For example, when searching for Jewels we generate with it all possibly chordal paths of length 5 and for each check if it has required properties of a Jewel. This proved to be much faster than generating vertices that don't have forbidden chords one by one. We use the same algorithm for generating starting vertices for a possible $T_2$ and $T_3$.
+
+With all those optimizations made, our na\"ive algorithm proved to be quite fast in some cases, although its running time is very dependent on the properties of the input, as we should expect from an optimized non-polynomial algorithm. See \cref{sec:experiments} for running times.
 
 \section{Berge graphs recognition: polynomial algorithm}
+
 \todo{rewrite/rearrange text below}
 
 The Berge recognition algorithm's running time is $O(n^9)$, which brings into question its applicability to any real use case. Although time complexity is indeed a limiting factor, a number of lower level optimizations done on implementation's level (\cref{sec:Optimizations}) make a very big difference and make it usable -- or at least much more usable than na\"ive algorithm could be. Also, we explore a new frontier of implementing its most time consuming part on massively parallel GPU architecture, with good results (\cref{sec:CUDA}).
@@ -23,39 +65,9 @@ Callgrind is a profiling tool that records the call history of a program and pre
 \TODO{first result to best result gains (like: we are 20x faster than what first comes to mind)}
 \TODO{regenerate speedup results to make sure what the gains were}
 
-\subsubsection{Generating paths}
+Before any optimizatios, a major part of Berge recognition algorithm was being spent on enumerating all possible paths of given length -- this is done either to find a hole by itself, find a simple structure or check a possible near cleaner for amenable odd hole. Therefore optimizations of the path enumerating algorithm were also helpful in speeding up CCLSV implementation.
 
-\TODO{we also optimize na\"ive, in fact it makes a bigger difference there.}
-A major part of Berge recognition algorithm is spent on enumerating all possible paths of given length -- this is done either to find a hole by itself, find a simple structure or check a possible near cleaner for amenable odd hole. Therefore a quick method for generating paths, a problem that could seem trivial at first, is a crucial part to optimize and we give it much attention.
-
-First of all, there are many methods for generating all possible paths to choose from. We could simply enumerate all sequences of vertices without repetition and for each one of them check if it is a path (that is if all pairs of vertices next to each other are connected and that there are no chords), but this would be too slow and render our algorithm unusable.
-
-We notice that nowhere in the algorithm we need all the paths at once. It would suffice for us to have a path, check if it has the properties we further require of it and then proceed to generate next path (in some ordering of paths). Therefore, we need a method that receives a path on the input (or a special flag indicating it should generate first path) and returns next path in some order (or a first path, or a code signaling all paths have been generated). As this method will be used many, many times we require of it to work in place with constant additional space.
-
-With those requirements defined a simplest algorithm would be to implement a sort of a "counter" with base of $|V(G)|$. In short: we take a path on a input, increment its last vertex until it is a neighbor of one before last vertex. Then we check if generated sequence is a path (all vertices unique and no chords). If it is we return it and if we run out of vertices before a path is found, we increment one before last vertex until it is a neighbor of one vertex before it, set last vertex to first and continue the process. If still no path is found, we increment vertices closer to beginning of the path, until all a path is found or we check all candidates.
-
-This method is significantly faster than simply enumerating all combinations, but still leaves a problem of generating paths a main bottleneck of our algorithm (in our preliminary test it took about 70\% of running time for graphs with $|V(G)| = 10$ and growing with bigger graphs. 
-
-But we can do much better with some care and better data structure. For a given graph we create a data structure that suits best the goal of generating paths. Instead of having for each vertex a list of its neighbors we create data structure that will allow us to generate a candidate for next path in amortized $O(1)$ time.
-
-We have an array $first$ in which for each vertex is written its first neighbor on its neighbors list, and an array $next$ of size $|V(G)|^2$ where for each pair of vertices $a, b$ if $a$ and $b$ are connected, there is written a neighbor of $a$ that is next after $b$ in a neighbors list of $a$ (or a flag indicating $b$ is $a$'s last neighbor). Then, say our input is a path $v = v_1, \ldots v_k$. If $next[v_{k-1}][v_k]$ exists we change $v_k$ to $next[v_{k-1}][v_k]$ and return $v$. If it indicated that $v_k$ is $v_{k-1}$'s last neighbor, we set $v_{k-1}$ to $next[v_{k-2}][v_{k-1}]$ and then $v_k$ to $first[v_{k-1}]$ (or we go further back, if all neighbors of $v_{k-2}$ are done).
-
-This simple change in data structure design gave us a speedup of overall running time of our algorithm in the range of 20x\todo{check this}, with much bigger speedup for na\"ive algorithm (around TODOx).
-
-\paragraph{Array unique}
-
-For each path candidate we call a subroutine to determine whether all vertices in it are unique. As this subroutine could be called many times for generating a single path, its optimization is very important.
-
-A theoretically optimal solution in general would be to have a hashing set of vertices. For each vertex in a path candidate, we check if it is already in a set. If it is, return that not all vertices are unique, else add it to the set.
-
-In our use case, a few optimizations can be made. First, we don't need a hashing set. We can have an array of bools, of size $|V(G)|$ and mark vertices of a path there. Paths are usually much shorter than $|V(G)|$, but we operate on small graphs, so we can afford this. Second, we notice that we don't need to create this array for each call of $unique$ procedure. Let's instead have a static array $stamp$ of ints and a static $counter$ of how many times we called $unique$ method. For each element of a path $v_i$, if the value of $stamp$ array is equal to $counter$ we report that vertices are not unique. Else we set $stamp[v_i] = counter$. When returning from the $unique$ method we increment $counter$.
-
-This optimization alone is crucial for performance. In our testing, all calls of $unique$ took abour 70\% of total running time of the algorithm. After using static $stamp$ array, it fell to 5.2\%. The overall speedup of the algorithm was about 6x. \todo{check if for sure it didn't use path speedup} The speedup of na\"ive algorithm was even greater -- about 20x.
-
-\paragraph{Other uses for path generation}
-\label{sec:usesGeneration}
-
-Because of a good performance of our optimized algorithm for generating paths use it whenever possible. It can be easily modified to generate all possibly chordal paths or holes and therefore has much use in the algorithm. For example, when searching for Jewels we generate with it all possibly chordal paths of length 5 and for each check if it has required properties of a Jewel. This proved to be much faster than generating vertices that don't have forbidden chords one by one. We use the same algorithm for generating starting vertices for a possible $T_2$ and $T_3$.
+\TODO{bitsets}
 
 
 \subsection{Correctness Testing}
@@ -109,6 +121,7 @@ It turns out that this optimization alone speeds up \cref{alg:testNearCleaner} a
 \TODO{implement other CUDA opts and describe them}
 
 \subsection{Experiments}
+\label{sec:experiments}
 
 \begin{figure}
   \centering
