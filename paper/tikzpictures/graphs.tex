@@ -5,14 +5,57 @@
       }
 
     \foreach \x/\y in {11/12, 21/22, 31/32, 41/42,
-    12/13, 22/23, 32/33, 42/43,
-    13/14, 23/24, 33/34, 43/44,
-    11/21, 12/22, 13/23, 14/24,
-    21/31, 22/32, 23/33, 24/34,
-    31/41, 32/42, 33/43, 34/44}
+        12/13, 22/23, 32/33, 42/43,
+        13/14, 23/24, 33/34, 43/44,
+        11/21, 12/22, 13/23, 14/24,
+        21/31, 22/32, 23/33, 24/34,
+        31/41, 32/42, 33/43, 34/44}
       {\draw(\x) to (\y);}
   \end{tikzpicture}
   \caption{Lattice graph}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering\begin{tikzpicture}[scale=.7,simplegraph]
+    \foreach\y in {1,...,4}{
+        \foreach\x in {1,...,4}{\node[] (\y\x) at (\y*2, \x*2){};}
+      }
+
+    \foreach \x/\y in {11/12, 21/22, 31/32, 41/42,
+        12/13, 22/23, 32/33, 42/43,
+        13/14, 23/24, 33/34, 43/44,
+        11/21, 12/22, 13/23, 14/24,
+        21/31, 22/32, 23/33, 24/34,
+        31/41, 32/42, 33/43, 34/44}
+      {\draw(\x) to (\y);}
+
+    \draw[in=-120, out=120](11) to (13);
+    \draw[in=-120, out=120](12) to (14);
+    \draw[in=-120, out=120](11) to (14);
+    \draw[in=-120, out=120](21) to (23);
+    \draw[in=-120, out=120](22) to (24);
+    \draw[in=-120, out=120](21) to (24);
+    \draw[in=-120, out=120](31) to (33);
+    \draw[in=-120, out=120](32) to (34);
+    \draw[in=-120, out=120](31) to (34);
+    \draw[in=-120, out=120](41) to (43);
+    \draw[in=-120, out=120](42) to (44);
+    \draw[in=-120, out=120](41) to (44);
+
+    \draw[in=150, out=30](11) to (31);
+    \draw[in=150, out=30](11) to (41);
+    \draw[in=150, out=30](21) to (41);
+    \draw[in=150, out=30](12) to (32);
+    \draw[in=150, out=30](12) to (42);
+    \draw[in=150, out=30](22) to (42);
+    \draw[in=150, out=30](13) to (33);
+    \draw[in=150, out=30](13) to (43);
+    \draw[in=150, out=30](23) to (43);
+    \draw[in=150, out=30](14) to (34);
+    \draw[in=150, out=30](14) to (44);
+    \draw[in=150, out=30](24) to (44);
+
+  \end{tikzpicture}
+  \caption{Rook's graph}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
   \centering\begin{tikzpicture}[scale=.7,simplegraph]
@@ -29,4 +72,40 @@
       {\draw(\x) to (\y);}
   \end{tikzpicture}
   \caption{Knight's graph}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering\begin{tikzpicture}[scale=1.1,simplegraph]
+    \HyperCube{4}
+  \end{tikzpicture}
+  \caption{Hypercube, $n=16$}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+  \centering\begin{tikzpicture}[scale=0.8,simplegraph]
+    \def\ngon{5}
+    \node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] (p) {};
+    \foreach\x in {1,...,\ngon}{\node[] (p\x) at (p.corner \x){};}
+
+    \node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] at (6.5, 0) (e) {};
+    \foreach\x in {1,...,\ngon}{\node[] (e\x) at (e.corner \x){};}
+
+    \draw (p1) to (p2);
+    \draw (p1) to (p3);
+    \draw (p1) to (p4);
+    \draw (p1) to (p5);
+    \draw (p2) to (p3);
+    \draw (p2) to (p4);
+    \draw (p2) to (p5);
+    \draw (p3) to (p4);
+    \draw (p3) to (p5);
+    \draw (p4) to (p5);
+
+    \draw (p1) to (e2);
+    \draw (p5) to (e2);
+    \draw (p3) to (e2);
+
+    \draw(p4) to (e3);
+    \draw(p4) to (e5);
+
+  \end{tikzpicture}
+  \caption{Example split graph, $n=10$}
 \end{subfigure}
