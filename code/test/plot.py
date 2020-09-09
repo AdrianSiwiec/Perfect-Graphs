@@ -1,7 +1,7 @@
 # coding: utf-8
 
-# usePgf = True
-usePgf = False
+usePgf = True
+# usePgf = False
 
 import matplotlib as mpl
 
@@ -139,6 +139,8 @@ sizes_in_inches = {
     "huge": (6.8, 8),
     "allGraphs": (10, 25),
     "wideDetailed": (4.77, 3.5),
+    "regular_small": (2.38, 1.5),
+    "wideDetailed_small": (2.38, 1.5),
 }
 # sizes_in_inches = {"regular": (5, 3), "wide": (8, 3)}
 
@@ -274,6 +276,20 @@ experiments = [
         "y_label": label_time_percentage,
         "ylim": (0, 1),
     },
+    {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_filename, "split"),
+            (csv_algo, "GPU Perfect|Perfect"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "detailed",
+        "size": sizes_in_inches["wideDetailed"],
+        "x_label": "N",
+        "y_label": label_time_percentage,
+        "ylim": (0, 1),
+    },
     #
     # COLOR
     #
@@ -282,7 +298,7 @@ experiments = [
         "x_param": csv_N,
         "x_show": csv_N,
         "type": "lines",
-        "size": sizes_in_inches["regular"],
+        "size": sizes_in_inches["regular_small"],
         "y_param": csv_overall,
         "ylog": False,
         "x_label": "N",
@@ -294,7 +310,7 @@ experiments = [
         "x_param": csv_N,
         "x_show": csv_N,
         "type": "detailed",
-        "size": sizes_in_inches["wideDetailed"],
+        "size": sizes_in_inches["wideDetailed_small"],
         "x_label": "N",
         "y_label": label_time_percentage,
         "ylim": (0, 1),
