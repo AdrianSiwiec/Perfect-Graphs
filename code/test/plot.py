@@ -1,7 +1,7 @@
 # coding: utf-8
 
-usePgf = True
-# usePgf = False
+# usePgf = True
+usePgf = False
 
 import matplotlib as mpl
 
@@ -41,7 +41,7 @@ csv_numRuns = "num_runs"
 csv_simpleStructures = "Simple Structures"
 csv_getNearCleaners = "Get Near Cleaners"
 csv_testNCShortestPaths = "Test NC Shortest Paths"
-csv_gpuCopyR = "GPU Test NC Copy R"
+csv_gpuCopyR = "GPU Test NC Copy"
 csv_gpuWork = "GPU Test NC work"
 csv_testNCRest = "Test NC Rest"
 csv_cpuPreparation = "CPU Preparation"
@@ -134,11 +134,11 @@ field_colors = {
 }
 
 sizes_in_inches = {
-    "regular": (4.77, 3.5),
+    "regular": (4.77, 3),
     "wide": (6.8, 2.4),
     "huge": (6.8, 8),
     "allGraphs": (10, 25),
-    "wideDetailed": (4.77, 4),
+    "wideDetailed": (4.77, 3.5),
 }
 # sizes_in_inches = {"regular": (5, 3), "wide": (8, 3)}
 
@@ -171,6 +171,36 @@ experiments = [
         "ylog": False,
         "x_label": "N",
         "y_label": label_time_overall_s,
+    },
+    {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_filename, "perf.t.in"),
+            # (csv_N, "20|25|30|35|40|45|50|55"),
+            (csv_algo, "GPU Perfect|Perfect"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "detailed",
+        "size": sizes_in_inches["wideDetailed"],
+        "x_label": "N",
+        "y_label": label_time_percentage,
+        "ylim": (0, 1),
+    },
+      {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_filename, "perf2.t.in"),
+            (csv_N, "15|16|17|18|19"),
+            (csv_algo, "GPU Perfect|Perfect"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "detailed",
+        "size": sizes_in_inches["wideDetailed"],
+        "x_label": "N",
+        "y_label": label_time_percentage,
+        "ylim": (0, 1),
     },
     {
         "restrictions": [

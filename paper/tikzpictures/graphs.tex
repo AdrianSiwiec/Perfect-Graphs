@@ -1,0 +1,32 @@
+\begin{subfigure}{.5\textwidth}
+  \centering\begin{tikzpicture}[scale=.7,simplegraph]
+    \foreach\y in {1,...,4}{
+        \foreach\x in {1,...,4}{\node[] (\y\x) at (\y*2, \x*2){};}
+      }
+
+    \foreach \x/\y in {11/12, 21/22, 31/32, 41/42,
+    12/13, 22/23, 32/33, 42/43,
+    13/14, 23/24, 33/34, 43/44,
+    11/21, 12/22, 13/23, 14/24,
+    21/31, 22/32, 23/33, 24/34,
+    31/41, 32/42, 33/43, 34/44}
+      {\draw(\x) to (\y);}
+  \end{tikzpicture}
+  \caption{Lattice graph}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering\begin{tikzpicture}[scale=.7,simplegraph]
+    \foreach\y in {1,...,4}{
+        \foreach\x in {1,...,4}{\node[] (\y\x) at (\y*2, \x*2){};}
+      }
+
+    \foreach \x/\y in {11/23,11/32,14/33,14/22,
+        41/33,41/22,44/32,44/23,
+        21/33,21/42,21/13,24/12,
+        24/32,24/43,31/12,31/23,
+        31/43,34/13,34/22,34/42,
+        12/33,22/43,32/13,42/23}
+      {\draw(\x) to (\y);}
+  \end{tikzpicture}
+  \caption{Knight's graph}
+\end{subfigure}

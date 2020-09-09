@@ -120,35 +120,3 @@ It turns out that this optimization alone speeds up \cref{alg:testNearCleaner} a
 
 \TODO{implement other CUDA opts and describe them}
 
-\subsection{Experiments}
-\label{sec:experiments}
-
-\begin{figure}
-  \centering
-  \input{plots/hypercubes16to50.t.in.out.csv.lines.pgf}
-  \caption{testPlot 1}
-  % \label{fig:LCA_batch}
-\end{figure}
-
-Naive algorithm - brief description, bottlenecks optimizations (makes huge difference).\\
-
-Description of tests used.\\
-
-Results and Corollary - almost usable algorithm.
-
-
-\section{Coloring Berge Graphs}
-
-\subsection{Ellipsoid method}
-
-We used an open source CSDP \cite{csdpRepo, csdp1999} library, that implements predictor corrector variant of the semidefinite programming algorithm to calculate $\vartheta(G)$, given $G$ on the input. The CSDP library has been used in many recent publications across different fields, such as \cite{Ampountolas_2017, Adasme_2011}.
-
-Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \cref{sec:coloringEllipsoid}. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
-
-\subsubsection{Experiments and results}
-
-\subsection{Combinatorial Method}
-
-Cite the paper.\\
-
-On its complexity - point to appendix for pseudo-code.

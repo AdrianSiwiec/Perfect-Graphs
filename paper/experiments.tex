@@ -1,0 +1,78 @@
+\subsection{Experiments}
+\label{sec:experiments}
+
+Let us describe experiments and their results. All of our algorithms search for an odd hole or an odd antihole and stop when find one, or a evidence of one. Therefore, their running times are greatest with perfect graphs on the input and we decided to use mainly\todo{run some smart nonperfect tests} perfect graphs for our performance benchmarks.
+
+\paragraph{Random perfect graphs}
+Our first method of generating graphs is to set $|V|$ and for each pair of vertices $u, v$ let $uv$ be the edge with probability of $1/2$. Then we check if generated graph is perfect and continue as long as we don't get sufficient number of perfect graphs. 
+
+First, we note that this method of generating perfect graphs is very inefficient and we couldn't generate any graphs with $|V| \geq 20$. Second, those graphs favour the na\"ive algortihm, because there is very low probability of long chordless paths to appear (each chord has a $1/2$ chance to appear).
+
+When looking at the results (\Cref{plot:perfLines}), while na\"ive algorithm's time is almost zero, we ser the CCLSV running time climbing with the growth of $|V|$, with only moderate improvement by GPU CCLSV. Slight GPU improvement is explained by anylysis of the components of the overall time (\Cref{plot:perfDet}). Testing all near cleaners takes up around half of total time, so we cannot speed up the overall time by much. These are also relatively small tests, so the latency from copying data to the GPU is significant.
+
+
+\begin{figure}
+  \centering
+  \input{plots/perf.t.in.out.csv.lines.pgf}
+  \caption{Random perfect graphs}
+  \label{plot:perfLines}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \input{plots/perf.t.in.out.csv.detailed.pgf}
+  \caption{Random perfect graphs}
+  \label{plot:perfDet}
+\end{figure}
+
+\paragraph{Random bipartite graphs}
+\TODO{TODO}
+
+\paragraph{Line graphs of random bipartite graphs}
+\TODO{data with bigger N}
+Next, we generated a random bipartite graphs (see paragraph above) and then calculated their line graphs. We repeated the process until we had sufficieng number of graphs for each $|V|$. On \cref{plot:perf2Lines} we can see GPU gives us much better improvement than in random graphs. This is due to the fact, that testing near cleaners takes over 80\% of the time for bigger graphs (\Cref{plot:perf2Det}).
+
+\begin{figure}
+  \centering
+  \input{plots/perf2.t.in.out.csv.lines.pgf}
+  \caption{Line graphs of random bipartite graphs}
+  \label{plot:perf2Lines}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \input{plots/perf2.t.in.out.csv.detailed.pgf}
+  \caption{Line graphs of random bipartite graphs}
+  \label{plot:perf2Det}
+\end{figure}
+
+\paragraph{Lattice graphs}
+
+\begin{figure}
+\input{tikzpictures/graphs.tex}
+\end{figure}
+
+Next, we turn our attention to graphs generated on a grid, or a checker board (see later paragraphs). First, we take lattice graphs. In lattice graph, each vertex is connected to vertices that are above, below, to the left and to the right of it, if such vertices exist.
+
+Naive algorithm - brief description, bottlenecks optimizations (makes huge difference).\\
+
+Description of tests used.\\
+
+Results and Corollary - almost usable algorithm.
+
+
+\section{Coloring Berge Graphs}
+
+\subsection{Ellipsoid method}
+
+We used an open source CSDP \cite{csdpRepo, csdp1999} library, that implements predictor corrector variant of the semidefinite programming algorithm to calculate $\vartheta(G)$, given $G$ on the input. The CSDP library has been used in many recent publications across different fields, such as \cite{Ampountolas_2017, Adasme_2011}.
+
+Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \cref{sec:coloringEllipsoid}. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
+
+\subsubsection{Experiments and results}
+
+\subsection{Combinatorial Method}
+
+Cite the paper.\\
+
+On its complexity - point to appendix for pseudo-code.
