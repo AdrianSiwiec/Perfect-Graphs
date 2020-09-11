@@ -97,7 +97,59 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 
 \paragraph{Finding Pyramids}
 
+% \begin{algorithmic}[1]
+% 	\LState $sum\gets 0$
+% 	% \While{$i\gets 1, n$}
+% 	% \LState $sum\gets sum+i$
+% 	% \EndWhile
+% \end{algorithmic}
+
 % \begin{algorithm}
+	% \caption{Euclid’s algorithm}\label{euclid}
+	\begin{algorithmic}[1]
+		% \Procedure{Euclid}{$a,b$}\Comment{The g.c.d. of a and b}
+		% \LState $r\gets a\bmod b$
+		\mForAll{aaa}
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $bbvb$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\LState $a\gets b$
+		\LState $b\gets r$
+		\LState $r\gets a\bmod b$
+		\mEndFor
+		\LState \textbf{return} $b$\Comment{The gcd is b}
+		% \EndProcedure
+	\end{algorithmic}
+% \end{algorithm}
+
 % 	\SetKwFunction{ContainsPyramid}{\textsc{Contains-Pyramid}}
 % 	% \Indm\nonl\ContainsPyramid{$G$}\\
 % 	\KwData{$G = (V, E)$ -- a graph}
@@ -149,6 +201,9 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 
 	\noindent Output: Returns whether $G$ contains a pyramid as an induced subgraph.
 \end{alg}
+
+
+
 \begin{algtext2}
 
 	Enumerate all 6-tuples $(b_1, b_2, b_3, s_1, s_2, s_3)$ such that:

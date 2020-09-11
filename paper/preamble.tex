@@ -14,7 +14,7 @@
 
 \usepackage{tikz}
 \tikzset{
-    simplegraph/.style={every node/.style={draw,circle, inner sep=0pt, minimum size=6mm}},
+  simplegraph/.style={every node/.style={draw,circle, inner sep=0pt, minimum size=6mm}},
 }
 \usetikzlibrary{snakes}
 \usetikzlibrary{shapes.geometric}
@@ -22,7 +22,7 @@
 \usepackage{tkz-graph}
 
 \usepackage[
-	style=numeric
+  style=numeric
 ]{biblatex}
 \addbibresource{bbl.bib}
 
@@ -32,10 +32,10 @@
 \newtheorem{defn}{Definition}[chapter]
 \renewcommand{\listtheoremname}{List of definitions}
 \newtheoremstyle{break}
-  {\topsep}{\topsep}%
-  {\itshape}{}%
-  {\bfseries}{}%
-  {\newline}{}%
+{\topsep}{\topsep}%
+{\itshape}{}%
+{\bfseries}{}%
+{\newline}{}%
 \theoremstyle{break}
 \newtheorem{alg}{Algorithm}[section]
 \newcommand*{\myproofname}{Begin}
@@ -68,10 +68,10 @@
 \newcommand{\mysemi}{\;}
 \let\mysemisemi\;
 \newenvironment{mynameforalgorithm}{%
-    \begin{algorithm}%
-}{%
-    \end{algorithm}%
-    \ignorespacesafterend%
+  \begin{algorithm}%
+    }{%
+  \end{algorithm}%
+  \ignorespacesafterend%
 }
 \let\mynameforalgorithm\algorithm
 \let\endmynameforalgorithm\endalgorithm
@@ -79,11 +79,45 @@
 
 \usepackage{algorithm,algpseudocode}
 
+\let\myWhile\While
+\let\EndmyWhile\EndWhile
+\makeatletter
+% This is the vertical rule that is inserted
+\def\therule{\makebox[\algorithmicindent][l]{\hspace*{.5em}\vrule height .75\baselineskip depth .25\baselineskip}}%
+
+\newtoks\therules% Contains rules
+\therules={}% Start with empty token list
+\def\appendto#1#2{\expandafter#1\expandafter{\the#1#2}}% Append to token list
+\def\gobblefirst#1{% Remove (first) from token list
+  #1\expandafter\expandafter\expandafter{\expandafter\@gobble\the#1}}%
+\def\LState{\State\unskip\the\therules}% New line-state
+\def\pushindent{\appendto\therules\therule}%
+\def\popindent{\gobblefirst\therules}%
+\def\printindent{\unskip\the\therules}%
+\def\printandpush{\printindent\pushindent}%
+\def\popandprint{\popindent\printindent}%
+\algdef{SE}[MYWHILE]{mWhile}{mEndWhile}[1]
+{\printandpush\algorithmicwhile\ #1\ \algorithmicdo}
+{\popandprint\algorithmicend\ \algorithmicwhile}%
+
+\algdef{SE}[FOR]{mFor}{mEndFor}[1]
+{\printandpush\algorithmicfor\ #1\ \algorithmicdo}
+{\popandprint\algorithmicend\ \algorithmicfor}%
+
+\algdef{SE}[FOR]{mForAll}{mEndFor}[1]
+{\printandpush\algorithmicforall\ #1\ \algorithmicdo}
+{\popandprint\algorithmicend\ \algorithmicfor}%
+
+% \algdef{SE}[FOR]{mForAll}{mEndFor}[1]
+% {\printindent\algorithmicforall\ #1\ \algorithmicdo}
+% {\popandprint\algorithmicend\ \algorithmicfor}%
+\makeatother
+
 \usepackage{amssymb}
 \usepackage{graphicx}
- \usepackage{color}
- \usepackage{transparent}
- \usepackage{amssymb,stackengine}
+\usepackage{color}
+\usepackage{transparent}
+\usepackage{amssymb,stackengine}
 
 % \definecolor{c1}{HTML}{8D75A0}
 % \definecolor{c2}{HTML}{8B9CD6}
@@ -117,14 +151,14 @@
 \newcommand{\mycboxx}[1]{\tikz{\path[draw=red,fill=white] (0,0) rectangle (.5cm,.8cm);}}
 
 \newcommand{\unfinishedAlg}[2][]{
-\begin{minipage}[t]{\textwidth}
-\vspace{0pt} 
-\begin{mynameforalgorithm}[H]
-#2
-\end{mynameforalgorithm}
-\vspace*{#1}
-\mycbox{}
-\end{minipage}
+  \begin{minipage}[t]{\textwidth}
+    \vspace{0pt}
+    \begin{mynameforalgorithm}[H]
+      #2
+    \end{mynameforalgorithm}
+    \vspace*{#1}
+    \mycbox{}
+  \end{minipage}
 }
 
 \SetKwFor{GreyWhile}{\transparent{0.4}{// while}}{\transparent{0.4}{do}}{}
@@ -134,17 +168,17 @@
 
 % \newlength\foo
 \newcommand{\continueAlg}[2][]{
-	\begin{minipage}[t]{\textwidth}
-    \vspace{0pt} 
-% \settoheight\foo{ % for some reason doesn't work. leave for now.
+  \begin{minipage}[t]{\textwidth}
+    \vspace{0pt}
+    % \settoheight\foo{ % for some reason doesn't work. leave for now.
     \begin{mynameforalgorithm}[H]
-    #2
-		\end{mynameforalgorithm}
-% }
+      #2
+    \end{mynameforalgorithm}
+    % }
     \vspace*{#1}
     \mycboxx{}
     \vspace*{-#1}
-		\end{minipage}
+  \end{minipage}
 }
 
 \newcommand{\LGBSK}{$L(BS(K_4))$}
