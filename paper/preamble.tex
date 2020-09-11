@@ -91,6 +91,8 @@
 \def\gobblefirst#1{% Remove (first) from token list
   #1\expandafter\expandafter\expandafter{\expandafter\@gobble\the#1}}%
 \def\LState{\State\unskip\the\therules}% New line-state
+\def\ls{\State\unskip\the\therules}% New line-state
+\def\lsx{\Statex\unskip\the\therules~~}% New line-state
 \def\pushindent{\appendto\therules\therule}%
 \def\popindent{\gobblefirst\therules}%
 \def\printindent{\unskip\the\therules}%
@@ -104,13 +106,31 @@
 {\printandpush\algorithmicfor\ #1\ \algorithmicdo}
 {\popandprint\algorithmicend\ \algorithmicfor}%
 
-\algdef{SE}[FOR]{mForAll}{mEndFor}[1]
-{\printandpush\algorithmicforall\ #1\ \algorithmicdo}
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{SE}[FOR]{mForEach}{mEndFor}[1]
+{\printandpush\algorithmicforeach\ #1\ \algorithmicdo}
 {\popandprint\algorithmicend\ \algorithmicfor}%
 
-% \algdef{SE}[FOR]{mForAll}{mEndFor}[1]
-% {\printindent\algorithmicforall\ #1\ \algorithmicdo}
-% {\popandprint\algorithmicend\ \algorithmicfor}%
+\algdef{SE}[PROCEDURE]{mProcedure}{mEndProcedure}[2]
+{\printandpush\algorithmicprocedure\ \textproc{#1}\ifthenelse{\equal{#2}{}}{}{(#2)}}%
+{\popandprint\algorithmicend\ \algorithmicprocedure}%
+\algdef{C}[IF]{IF}{mElsIf}[1]
+  {\popandprint\pushindent\algorithmicelse\ \algorithmicif\ #1\ \algorithmicthen}%
+\algdef{Ce}[ELSE]{IF}{mElse}{mEndIf}
+  {\popandprint\pushindent\algorithmicelse}%
+\algdef{SE}[IF]{mIf}{mEndIf}[1]
+{\printandpush\algorithmicif\ #1\ \algorithmicthen}
+{\popandprint\algorithmicend\ \algorithmicif}%
+
+\algnewcommand{\algorithmicand}{\textbf{ and }}
+\algnewcommand{\algorithmicor}{\textbf{ or }}
+\algnewcommand{\OR}{\algorithmicor}
+\algnewcommand{\AND}{\algorithmicand}
+\algnewcommand{\TRUE}{\textsc{true}}
+\algnewcommand{\FALSE}{\textsc{false}}
+\algnewcommand{\UND}{\textsc{undefined}}
+\algnewcommand{\RETURN}{\textbf{return}~}
+
 \makeatother
 
 \usepackage{amssymb}

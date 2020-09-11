@@ -96,113 +96,77 @@ We will say that $a$ can be \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ 
 It is easy to see that every graph containing a pyramid contains an odd hole -- at least two of the paths $P_1$, $P_2$, $P_3$ will have the same parity.
 
 \paragraph{Finding Pyramids}
-
-% \begin{algorithmic}[1]
-% 	\LState $sum\gets 0$
-% 	% \While{$i\gets 1, n$}
-% 	% \LState $sum\gets sum+i$
-% 	% \EndWhile
-% \end{algorithmic}
-
-% \begin{algorithm}
-	% \caption{Euclid’s algorithm}\label{euclid}
-	\begin{algorithmic}[1]
-		% \Procedure{Euclid}{$a,b$}\Comment{The g.c.d. of a and b}
-		% \LState $r\gets a\bmod b$
-		\mForAll{aaa}
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $bbvb$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\LState $a\gets b$
-		\LState $b\gets r$
-		\LState $r\gets a\bmod b$
-		\mEndFor
-		\LState \textbf{return} $b$\Comment{The gcd is b}
-		% \EndProcedure
-	\end{algorithmic}
-% \end{algorithm}
-
-% 	\SetKwFunction{ContainsPyramid}{\textsc{Contains-Pyramid}}
-% 	% \Indm\nonl\ContainsPyramid{$G$}\\
-% 	\KwData{$G = (V, E)$ -- a graph}
-% 	\KwResult{Whether $G$ contains a pytamid as an induced subgraph.}
-% 	\Indp
-
-% 	\ForEach{ triangle $b_1, b_2, b_3$ }{
-% 		\ForEach{ $s_1, s_2, s_3$, such that for $1 \leq i < j \leq 3$, $\{b_i, s_i\}$ is disjoint from $\{b_j, s_j\}$ and $b_ib_j$ is the only edge between them }{
-% 			\If{ there is a vertex $a$, adjacent to all of $s_1, s_2, s_3$, and to at most one of $b_1, b_2, b_3$, such that if $a$ is adjacent to $b_i$, then $b_i = s_i$ } {
-% 				$M \gets V(G) \setminus \{b_1, b_2, b_3, s_1, s_2, s_3\}$\;
-% 				\ForEach{$m \in M$} {
-% 					$S_1(m) \gets$ the shortest path between $s_1$ and $m$ such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists. \;
-% 					Calculate $S_2(m), S_3(m)$ similarly\;
-% 					$T_1(m) \gets$ the shortest path between $m$ and $b_1$, such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists\;
-% 					Calculate $T_2(m), T_3(m)$ similarly\;
-% 				}
-% 				\ForEach{$m \in M \cup \{b_1\}$}{
-% 					\If{$s_1 = b_1$}{
-% 						$P_1(b_1) \gets$ the one-vertex path with vertex $b_1$\;
-% 						$\forall_{m \in M}: P_1(m) \gets$ \textsc{undefined}\;
-% 					} \Else{
-% 						$P_1(b_1) \gets $ \textsc{undefined}\;
-% 						\ForEach{$m \in M$}{
-% 							\If{all the following are true:
-% 								\begin{itemize}
-% 									\item $m$ is nonadjacent to all of $b_2, b_3, s_2, s_3$
-% 									\item $S_1(m)$ and $T_1(m)$ both exist
-% 									\item $V(S_1(m) \cap T_1(m)) = \{m\}$
-% 									\item there are no edges between $V(S_1(m) \setminus m)$ and $V(T_1(m) \setminus m)$
-% 								\end{itemize}
-% 							}
-% 							{
-% 								TODO\;
-% 							}
-% 						}
-% 					}
-% 				}
-% 			}
-% 		}
-% 	}
-
-% 	\label{aab}
-% 	\caption{Contains-Pyramid}
-% \end{algorithm}
-
 \begin{alg}[Test if $G$ contains a Pyramid]
 	\label{alg:testPyramid}
 	Input: A graph $G$.
 
 	\noindent Output: Returns whether $G$ contains a pyramid as an induced subgraph.
 \end{alg}
-
-
+\begin{algorithmic}[1]
+	\mProcedure{Contains-Pyramid}{$G$}
+	\mForEach{triangle $b_1, b_2, b_3$}
+		\mForEach{$s_1, s_2, s_3$, such that for $1 \leq i < j \leq 3$, $\{b_i, s_i\}$ is disjoint
+			\lsx  from $\{b_j, s_j\}$ and $b_ib_j$ is the only edge between them}
+			\mIf{there is a vertex $a$, adjacent to all of $s_1, s_2, s_3$, and to at most
+				\lsx one of $b_1, b_2, b_3$, such that if $a$ is adjacent to $b_i$, then $b_i = s_i$ \lsx}
+				\ls $M \gets V(G) \setminus \{b_1, b_2, b_3, s_1, s_2, s_3\}$
+				\mForEach{$m \in M$}
+					\ls $S_1(m) \gets$ the shortest path between $s_1$ and $m$ such that
+					\lsx $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a 
+					\lsx path exists.
+					\ls calculate $S_2(m), S_3(m)$ similarly
+					\ls $T_1(m) \gets$ the shortest path between $m$ and $b_1$, such that
+					\lsx $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a
+					\lsx path exists
+					\ls calculate $T_2(m), T_3(m)$ similarly
+				\mEndFor
+				\mForEach{$m \in M \cup \{b_1\}$}
+					\mIf{$s_1 = b_1$}
+						\ls $P_1(b_1) \gets$ the one-vertex path with vertex $b_1$
+						\ls \algorithmicforeach ~$m \in M$ \algorithmicdo~ $P_1(m) \gets$ \textsc{undefined}
+					\mElse
+						\ls $P_1(b_1) \gets $ \textsc{undefined}
+						\mForEach{$m \in M$}
+							\mIf{ $m$ is nonadjacent to all of $b_2, b_3, s_2, s_3$ \AND
+								\lsx $S_1(m)$ and $T_1(m)$ both exist \AND
+								\lsx $V(S_1(m) \cap T_1(m)) = \{m\}$ \AND
+								\lsx there are no edges between $V(S_1(m) \setminus m)$ 
+								\lsx and $V(T_1(m) \setminus m)$ 
+								\lsx
+							}
+								\ls $P_1(m) \gets s_1-S_1(m)-m-T_1(m)-b_1$
+							\mElse
+								\ls $P_1(m) \gets$ \textsc{undefined}
+							\mEndIf
+						\mEndFor
+					\mEndIf
+				\mEndFor
+				\ls assign $P_2$ and $P_3$ in a similar manner
+				\ls $good\_pairs_{1,2} \gets \emptyset$
+				\mForEach{$m_1 \in M \cup \{b_1\}$} \Comment{calculate good $(1, 2)$-pairs}
+					\mIf{$P_1(m_1) \neq \UND$}
+						\ls color black the vertices of $M$ that either belong to
+						\lsx $P_1(m_1)$ or have a neighbor in $P_1(m_1)$
+						\lsx color all other vertices white.
+						\mForEach{$m_2 \in M \cup \{b_2\}$}
+							\mIf{$P_2(m_2)$ exists and contains no black vertices}
+								\ls add $(m_1, m_2)$ to $good\_pairs_{1,2}$
+							\mEndIf
+						\mEndFor
+					\mEndIf
+				\mEndFor
+				\ls calculate $good\_pairs_{1,3}$ and $good\_pairs_{2,3}$ in similar way
+				\mForEach{triple $m_1, m_2, m_3$ such that $m_i \in M \cup \{b_i\}$}
+					\mIf{$\forall_{1\leq i < j \leq 3}$: $(m_i, m_j)$ is a good $(i, j)$-pair}
+						\ls \RETURN \TRUE
+					\mEndIf
+				\mEndFor
+			\mEndIf
+		\mEndFor
+	\mEndFor
+	\ls \RETURN \FALSE
+	\mEndProcedure
+\end{algorithmic}
 
 \begin{algtext2}
 
