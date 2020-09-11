@@ -96,6 +96,8 @@ We will say that $a$ can be \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ 
 It is easy to see that every graph containing a pyramid contains an odd hole -- at least two of the paths $P_1$, $P_2$, $P_3$ will have the same parity.
 
 \paragraph{Finding Pyramids}
+
+
 \begin{alg}[Test if $G$ contains a Pyramid]
 	\label{alg:testPyramid}
 	Input: A graph $G$.
@@ -104,13 +106,13 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 \end{alg}
 \begin{algorithmic}[1]
 	\mProcedure{Contains-Pyramid}{$G$}
-	\mForEach{triangle $b_1, b_2, b_3$}
+	\mForEach{triangle $b_1, b_2, b_3$} \label{line:pyramidTriangle}
 		\mForEach{$s_1, s_2, s_3$, such that for $1 \leq i < j \leq 3$, $\{b_i, s_i\}$ is disjoint
-			\lsx  from $\{b_j, s_j\}$ and $b_ib_j$ is the only edge between them}
+			\lsx  from $\{b_j, s_j\}$ and $b_ib_j$ is the only edge between them} \label{line:pyramidTriple}
 			\mIf{there is a vertex $a$, adjacent to all of $s_1, s_2, s_3$, and to at most
-				\lsx one of $b_1, b_2, b_3$, such that if $a$ is adjacent to $b_i$, then $b_i = s_i$ \lsx}
+				\lsx one of $b_1, b_2, b_3$, such that if $a$ is adjacent to $b_i$, then $b_i = s_i$ \lsx}\label{line:a}
 				\ls $M \gets V(G) \setminus \{b_1, b_2, b_3, s_1, s_2, s_3\}$
-				\mForEach{$m \in M$}
+				\mForEach{$m \in M$} \label{line:pyramidSStart}
 					\ls $S_1(m) \gets$ the shortest path between $s_1$ and $m$ such that
 					\lsx $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a 
 					\lsx path exists.
@@ -119,9 +121,9 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 					\lsx $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a
 					\lsx path exists
 					\ls calculate $T_2(m), T_3(m)$ similarly
-				\mEndFor
-				\mForEach{$m \in M \cup \{b_1\}$}
-					\mIf{$s_1 = b_1$}
+				\mEndFor \label{line:pyramidSEnd}
+				 
+					\mIf{$s_1 = b_1$} \Comment{calculate all possible $P_1$ paths}
 						\ls $P_1(b_1) \gets$ the one-vertex path with vertex $b_1$
 						\ls \algorithmicforeach ~$m \in M$ \algorithmicdo~ $P_1(m) \gets$ \textsc{undefined}
 					\mElse
@@ -140,76 +142,52 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 							\mEndIf
 						\mEndFor
 					\mEndIf
-				\mEndFor
+				
 				\ls assign $P_2$ and $P_3$ in a similar manner
-				\ls $good\_pairs_{1,2} \gets \emptyset$
+				\ls $good\_pairs_{1,2} \gets \emptyset$ \Comment{see below for definition}
 				\mForEach{$m_1 \in M \cup \{b_1\}$} \Comment{calculate good $(1, 2)$-pairs}
 					\mIf{$P_1(m_1) \neq \UND$}
-						\ls color black the vertices of $M$ that either belong to
+						\ls color black the vertices of $M$ that either belong to \label{line:pyramidColor}
 						\lsx $P_1(m_1)$ or have a neighbor in $P_1(m_1)$
 						\lsx color all other vertices white.
 						\mForEach{$m_2 \in M \cup \{b_2\}$}
-							\mIf{$P_2(m_2)$ exists and contains no black vertices}
+							\mIf{$P_2(m_2)$ exists and contains no black vertices} \label{line:pyramidColor2}
 								\ls add $(m_1, m_2)$ to $good\_pairs_{1,2}$
 							\mEndIf
 						\mEndFor
 					\mEndIf
 				\mEndFor
 				\ls calculate $good\_pairs_{1,3}$ and $good\_pairs_{2,3}$ in similar way
-				\mForEach{triple $m_1, m_2, m_3$ such that $m_i \in M \cup \{b_i\}$}
+				\mForEach{triple $m_1, m_2, m_3$ such that $m_i \in M \cup \{b_i\}$} \label{line:m1m2m3}
 					\mIf{$\forall_{1\leq i < j \leq 3}$: $(m_i, m_j)$ is a good $(i, j)$-pair}
-						\ls \RETURN \TRUE
+						\ls \RETURN \TRUE \label{line:pyramidTrue}
 					\mEndIf
 				\mEndFor
-			\mEndIf
+			\mEndIf \label{line:pyramidEnd}
 		\mEndFor
 	\mEndFor
 	\ls \RETURN \FALSE
 	\mEndProcedure
 \end{algorithmic}
 
-\begin{algtext2}
+With definitions as above, for $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ is a \emph{good $(i, j)$-pair}, iff $m_i \in M \cup \{b_i\}$, $m_j \in M \cup \{b_j\}$, $P_i(m_i)$ and $P_j(m_j)$ both exist, and the sets $V(P_i(m_i))$,$V(P_j(m_j))$ are both disjoint and $b_ib_j$ is the only edge between them.
 
-	Enumerate all 6-tuples $(b_1, b_2, b_3, s_1, s_2, s_3)$ such that:
-	\begin{itemize}
-		\item $\{b_1, b_2, b_3\}$ is a triangle
-		\item for $1 \leq i < j \leq 3$, $\{b_i, s_i\}$ is disjoint from $\{b_j, s_j\}$ and $b_ib_j$ is the only edge between them
-		\item there is a vertex $a$ adjacent to all of $s_1, s_2, s_3$ and to at most one of $b_1, b_2, b_3$, such that if $a$ is adjacent to $b_i$, then $s_i = b_i$.
-	\end{itemize}
+It is easy to see, that if \textsc{Contains-Pyramid($G$)} outputs that $G$ contains a pyramid, it indeed does -- when we return in line \ref{line:pyramidTrue} $a$ found in line \ref{line:a} can be linked into a triangle $b_1, b_2, b_3$ it was found for via paths $P_1(m_1), P_2(m_2), P_3(m_3)$ for $m_1$, $m_2$, $m_3$ from line \ref{line:m1m2m3}. The proof of the converse is rather technical and we refer to \cite{MC05} for it.
 
-	There are $O(|V(G)|^6)$ 6-tuples, and for each we check above conditions in $O(|V(G)|)$ time. For each such 6-tuple we follow with the rest of the algorithm.
+Now we will proove the time complexity.
 
-	Let $M \leftarrow V(G) \setminus \{b_1, b_2, b_3, s_1, s_2, s_3\}$.
+\begin{theorem}
+	Procedure \textsc{Contains-Pyramid($G$)} works in $O(|V|^9)$ time.
+\end{theorem}
+\begin{proof}
+	There are $O(|V|^3)$ triangles (line \ref{line:pyramidTriangle}) and $O(|V|^3)$ triples $s_1$, $s_2$, $s_3$ (line \ref{line:pyramidTriple}), so lines \ref{line:a}-\ref{line:pyramidEnd} are executed at most $O(|V|^6)$ times.
 
-	For each $m \in M$, set $S_1(m)$ equal to the shortest path between $s_1$ and $m$ such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists. Set $S_2$ and $S_3$ similarly. Set $T_1(m)$ to be the shortest path between $m$ and $b_1$, such that $s_2, s_3, b_2, b_3$ have no neighbors in its interior, if such a path exists, and set $T_2$, $T_3$ similarly. It takes $O(|V(G)|^2)$ time to calculate paths $S_i(m)$ and $T_i(m)$ for all $i$ and $m$.
+	Checking if there exists an appropriate $a$ takes linear time (line \ref{line:a}). Calculating paths $S_i$ and $T_i$ (lines \ref{line:pyramidSStart}-\ref{line:pyramidSEnd}) takes $O(|V|^2)$ time for each $m \in M$ and $O(|V|^3)$ in total. Similarly, it takes $O(|V|^3)$ time to calculate all $P_i$ paths.
 
-	Now, we will calculate all possible paths $P_i$. For each $m \in M \cup \{b_1\}$ we will define a path $P_1(m)$ with paths $P_2(m)$, $P_3(m)$ defined in a similar manner.
+	Then, for each $m_1$ we do at most $O(|V|)$ work in line \ref{line:pyramidColor} and for each $(m_1, m_2)$ we do at most $O(|V|)$ work in line \ref{line:pyramidColor2}.
 
-	If $s_1 = b_1$ let $P_1(b_1)$ be the one-vertex path with vertex $b_1$, and let $P_1(m)$ be undefined for each $m \in M$.
-
-	If $s_1 \neq b_1$, then $P_1(b_1)$ is undefined and for all $m \in M$ we will check if all the following are true:
-	\begin{itemize}
-		\item $m$ is nonadjacent to all of $b_2, b_3, s_2, s_3$
-		\item $S_1(m)$ and $T_1(m)$ both exist
-		\item $V(S_1(m) \cap T_1(m)) = \{m\}$
-		\item there are no edges between $V(S_1(m) \setminus m)$ and $V(T_1(m) \setminus m)$
-	\end{itemize}
-	If it is true for some $m \in M$, then we assign $P_1(m) \leftarrow s_1-S_1(m)-m-T_1(m)-b_1$, otherwise we let $P_1(m)$ be undefined. It takes $O(|V(G)|^2)$ to check this, for a given $m$. We assign $P_2$ and $P_3$ in a similar manner. Total time of finding all $P_i(m)$ paths for a given 6-tuple is $O(|V(G)|^3)$.
-
-	Now we want to check if there is a triple $m_1, m_2, m_3$, so that $P_1(m_1)$, $P_2(m_2)$, $P_3(m_3)$ form a pyramid. A most obvious approach of enumerating them all would be too slow, so we do it carefully.
-
-	For $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ is a \emph{good $(i, j)$-pair}, iff $m_i \in M \cup \{b_i\}$, $m_j \in M \cup \{b_j\}$, $P_i(m_i)$ and $P_j(m_j)$ both exist, and the sets $V(P_i(m_i))$,$V(P_j(m_j))$ are both disjoint and $b_ib_j$ is the only edge between them.
-
-	We show how to find the list of all good $(1, 2)$-pairs, with similar algorithm for all other good $(i, j)$-pairs. For each $m_1 \in M \cup \{b_1\}$, we find the set of all $m_2$ such that $(m_1, m_2)$ is a good $(1,2)$-pair as follows.
-
-	If $P_1(m_1)$ does not exist, there are no such good pairs. If it exists, color black the vertices of $M$ that either belong to $P_1(m_1)$ or have a neighbor in $P_1(m_1)$. Color all other vertices white. (We can do this in $O(|V(G)|^2)$) Then for each $m_2 \in M \cup \{b_2\}$, test whether $P_2(m_2)$ exists and contains no black vertices. We do this for all $m_1$ and get a set of all $(1,2)$-good pairs. In similar way we calculate all good $(1,3)$-pair and $(2,3)$-pairs (in $O(|V(G)|^3)$ time).
-
-	Now, we examine all triples $m_1, m_2, m_3$ such that $m_i \in M \cup \{b_i\}$ and test whether $(m_i, m_j)$ is a good $(i, j)$-pair. If we find a triple such that all three pairs are good, we output that G contains a pyramid and stop.
-
-	If after examining all choices of $b_1, b_2, b_3, s_1, s_2, s_3$ we find no pyramid, output that $G$ contains no pyramid. Since there are $O(|V(G)|^6)$ such choices and it takes a time of $O(|V(G)|^3)$ to analyze each one, the total time is $O(|V(G)|^9)$.
-\end{algtext2}
-
-It is easy to see, that if algorithm outputs that $G$ contains a pyramid, it indeed does. The proof of the converse is rather technical and we refer to \cite{MC05} for it.
+	Finally, there are $O(|V|^3)$ pairs $m_1, m_2, m_3$ and checking each takes $O(1)$ time.
+\end{proof}
 
 \subsubsection{Jewels}
 
@@ -267,9 +245,9 @@ To prove that existence of $\T_2$ configuration implies that the graph is not Be
 
 Now, we shall prove the following:
 
-\begin{lemma}
+\begin{theorem}
 	If $G$ contains configuration of type $\T_2$ then $G$ is not Berge.
-\end{lemma}
+\end{theorem}
 \begin{proof}
 	Let $(v_1, v_2, v_3, v_4, P, X)$ be a configuration of type $\T_2$. Let us assume that $G$ is not Berge and consider the following:
 	\begin{itemize}
@@ -304,12 +282,24 @@ The following algorithm with running time of $O(|V(G)|^6)$ checks whether $G$ co
 
 	\noindent Output: Returns whether $G$ contains a configuration of type $T_3$ as an induced subgraph.
 \end{alg}
-\begin{algtext2}
+% \begin{algorithmic}
+% 	\mProcedure{Contains-T3}{$G$}
+% 	\mForEach{$v_1, v_2, v_5 \in V(G)$, so that $v_1v_2$ is an edge and $v_1v_5, v_2v_5$ are nonedges}
+% 	\mEndFor
+% 	\mEndProcedure
+% \end{algorithmic}
+% \begin{algorithmic}[1]
+% 	\mProcedure{Contains-Pyramid}{$G$}
+% 	\ls \RETURN \FALSE
+% 	\mEndProcedure
+% \end{algorithmic}
+
+% \begin{algtext2}
 
 	For each triple $v_1, v_2, v_5$ of vertices such that $v_1v_2$ is an edge and $v_1v_5, v_2v_5$ are nonedges find the set $Y$ of all $\{v_1, v_2, v_5\}$-complete vertices. For each anticomponent $X$ of $Y$ find the maximal connected subset $F'$ containing $v_5$ such that $v_1, v_2$ have no neighbors in $F'$ and no vertex of $F'\setminus\{v_5\}$ is $X$-complete. Let $F$ be the union of $F'$ and the set of all $X$-complete vertices that have a neighbor in $F'$ and are nonadjacent to all of $v_1, v_2$ and $v_5$.
 
 	Then, for each choice of $v_4$ that is adjacent to $v_1$ and not to $v_2$ and $v_5$ and has a neighbor in $F$ (call it $v_6$) and a nonneibhbor in $X$, we test whether there is a vertex $v_3$, adjacent to $v_2, v_4, v_5$ and not to $v_1$, with a nonneibhbor in $X$. If there is such a vertex $v_3$, find $P$ -- a path from $v_6$ to $v_5$ with interior in $F'$ and return that $v_1, \ldots v_6, P, X$ is a configuration of type $\T_3$. If we exhaust our search and find none, report that graph does not contain it.
-\end{algtext2}
+% \end{algtext2}
 
 To see that the \cref{alg:t3} has a running time of $O(|V(G)|^6)$, let us note that for each triple $v_1, v_2, v_5$ we examine, of which there are $O(|V(G)|^3)$, there are linear many choices of $X$, each taking $O(|V(G)|^2)$ time to process and generating a linear many choices of $v_4$ which take a linear time to process in turn. This gives us the total running time of $O(|V(G)|^6)$.
 
