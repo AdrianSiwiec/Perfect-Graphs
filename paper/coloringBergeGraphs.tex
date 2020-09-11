@@ -169,13 +169,13 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$.
 
   \noindent Output: A maximum cardinality stable set in $G$.
 \end{alg}
-\begin{algtext}
+\begin{algtext2}
   Let $v_1, \ldots v_n$ be an ordering of vertices of $G$. We will construct a sequence of induced subgraphs $G = G_0 \supseteq G_1 \supseteq \ldots \supseteq G_n$, so that $G_n$ is a required stable set.
 
   Let $G_0 \leftarrow G$. Then, for each $i \geq 1$, compute $\alpha(G_{i-1} \setminus v_i)$. If $\alpha(G_{i-1} \setminus v_i) = \alpha(G)$, then set $G_i \leftarrow G_{i-1} \setminus \{v_i\}$, else set $G_i \leftarrow G_{i-1}$.
 
   Return $G_n$.
-\end{algtext}
+\end{algtext2}
 
 Let us prove that $G_n$ is indeed a stable set. Suppose otherwise and let $v_iv_j$ be an edge in $G_n$ with $i < j$ and $i$ minimal. But then $\alpha(G_{i-1} \setminus v_i) = \alpha(G_{i-1}) = \alpha(G)$ so by our construction $v_i$ is not in $G_i$ and $v_iv_j$ is not an edge of $G_n$. Therefore there are no edges in $G_n$.
 
@@ -193,7 +193,7 @@ Next, let us show how to find a stable set intersecting all the maximum cardinal
 
   \noindent Output: A stable set which intersects all the maximum cardinality cliques of $G$.
 \end{alg}
-\begin{algtext}
+\begin{algtext2}
   We will create a list $Q_1, \ldots Q_t$ of all maximum cardinality cliques of $G$.
 
   Let $Q_1 \leftarrow$ a maximum cardinality clique of $G$. We calculate this by running \cref{alg:maxStableSet} on $\overline{G}$.
@@ -206,7 +206,7 @@ Next, let us show how to find a stable set intersecting all the maximum cardinal
 
   If $\omega(G \setminus S) < \omega(G)$, then $S$ meets all the maximum cardinality cliques in G so we return $S$. Otherwise we find a maximum cardinality clique in $G \setminus S$ (it will be of size $\omega(G)$, because $\omega(G \setminus S) = \omega(G)$), add it to our list as $Q_{t+1}$ and continue with longer list.
 
-\end{algtext}
+\end{algtext2}
 
 There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single clique to the list of maximum cardinality cliques requires constructing auxiliary graph for weighted maximum stable set, which is of size $O(|V|^2)$ and running \cref{alg:maxStableSet} on it. Therefore total running time is polynomial.
 
@@ -218,11 +218,11 @@ There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single cliq
 
   \noindent Output: A coloring of $G$ using $\chi(G)$ colors.
 \end{alg}
-\begin{algtext}
+\begin{algtext2}
   If $G$ is equal to its maximum cardinality stable set, color all vertices one color and return.
 
   Else find $S$ intersecting all maximum cardinality cliques of $G$ (\cref{alg:ssIntersectingCliques}). Color recursively all vertices of $G \setminus S$ with $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$ colors and all vertices of $S$ with one additional color.
-\end{algtext}
+\end{algtext2}
 
 We will call recursion at most $O(|V|)$ times, each step of recursion is polynomial in time. Therefore the running time of \cref{alg:minColoring} is polynomial.
 

@@ -39,7 +39,7 @@
 \theoremstyle{break}
 \newtheorem{alg}{Algorithm}[section]
 \newcommand*{\myproofname}{Begin}
-\newenvironment{algtext}[1][\myproofname]{\begin{proof}[#1] $ $\newline \renewcommand*{\qedsymbol}{\(End\)}}{\end{proof}}
+\newenvironment{algtext2}[1][\myproofname]{\begin{proof}[#1] $ $\newline \renewcommand*{\qedsymbol}{\(End\)}}{\end{proof}}
 
 \newcommand{\TODO}{\todo[inline]}
 % \newcommandLovász{Lovász}
@@ -63,7 +63,22 @@
 \newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
 % \usepackage{hyperref} 
 \usetikzlibrary{arrows}
-\usepackage[linesnumbered,vlined]{algorithm2e}
+\usepackage[linesnumbered,vlined,ruled,algosection]{algorithm2e}
+
+\newcommand{\mysemi}{\;}
+\let\mysemisemi\;
+\newenvironment{mynameforalgorithm}{%
+    \begin{algorithm}%
+}{%
+    \end{algorithm}%
+    \ignorespacesafterend%
+}
+\let\mynameforalgorithm\algorithm
+\let\endmynameforalgorithm\endalgorithm
+\let\listofalgorithms\mynameforlistofalgorithms
+
+\usepackage{algorithm,algpseudocode}
+
 \usepackage{amssymb}
 \usepackage{graphicx}
  \usepackage{color}
@@ -104,9 +119,9 @@
 \newcommand{\unfinishedAlg}[2][]{
 \begin{minipage}[t]{\textwidth}
 \vspace{0pt} 
-\begin{algorithm}[H]
+\begin{mynameforalgorithm}[H]
 #2
-\end{algorithm}
+\end{mynameforalgorithm}
 \vspace*{#1}
 \mycbox{}
 \end{minipage}
@@ -122,9 +137,9 @@
 	\begin{minipage}[t]{\textwidth}
     \vspace{0pt} 
 % \settoheight\foo{ % for some reason doesn't work. leave for now.
-    \begin{algorithm}[H]
+    \begin{mynameforalgorithm}[H]
     #2
-		\end{algorithm}
+		\end{mynameforalgorithm}
 % }
     \vspace*{#1}
     \mycboxx{}
