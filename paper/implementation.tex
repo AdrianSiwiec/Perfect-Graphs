@@ -48,14 +48,14 @@ With all those optimizations made, our na\"ive algorithm proved to be quite fast
 
 \todo{rewrite/rearrange text below}
 
-The Berge recognition algorithm's running time is $O(n^9)$, which brings into question its applicability to any real use case. Although time complexity is indeed a limiting factor, a number of lower level optimizations done on implementation's level (\cref{sec:Optimizations}) make a very big difference and make it usable -- or at least much more usable than na\"ive algorithm could be. Also, we explore a new frontier of implementing its most time consuming part on massively parallel GPU architecture, with good results (\cref{sec:CUDA}).
+The Berge recognition algorithm's running time is $O(n^9)$, which brings into question its applicability to any real use case. Although time complexity is indeed a limiting factor, a number of lower level optimizations done on implementation's level (\cref{sec:Optimizations}) make a very big difference and make it more viable than na\"ive algorithm, at least on some test cases. Also, we explore a new frontier of implementing its most time consuming part on massively parallel GPU architecture, with some good results (\cref{sec:CUDA}).
 
 \TODO{Anything interesting about algo/data structure?}
 
 \subsection{Optimizations}
 \label{sec:Optimizations}
 
-When implementing a complicated algorithm that has a time complexity of $O(n^9)$ optimizations can be both crucial and difficult to implement. There is not a single code path that takes up all the running time -- or at lest there isn't one from theoretical point of view. Therefore a tool for inspecting running time bottlenecks is needed. We used Valgrind's tool called \emph{callgrind} \cite{callgrind}.
+When implementing a complicated algorithm that has a time complexity of $O(n^9)$ optimizations can be both crucial and difficult to implement. There is not a single code path that takes up all the running time -- or at lest there isn't one from a theoretical point of view. Therefore a tool for inspecting running time bottlenecks is needed. We used Valgrind's tool called \emph{callgrind} \cite{callgrind}.
 
 Callgrind is a profiling tool that records the call history of a program and presents it as a call-graph. When profiling a program, event counts (data reads, cache misses etc.) are attributed directly to the function that they occurred in. In addition to that, the costs are propagated to functions upwards the call stack. For example, say internal function $worker$ consumes most of programs running time. It is called from $run1$ and $run2$, with $run2$ calls taking twice as much time. $run1$ and $run2$ are in turn called from main. Total attribution of $worker$ would be nearly 100\%, of $run1$ about 33\% and of $run2$ about 66\%. The contribution of main would also be near 100\%. We used a tool \emph{gprof2dot} \cite{gprof2dot} to generate visual call graphs from callgrind's output.
 
@@ -67,8 +67,9 @@ Callgrind is a profiling tool that records the call history of a program and pre
 
 Before any optimizatios, a major part of Berge recognition algorithm was being spent on enumerating all possible paths of given length -- this is done either to find a hole by itself, find a simple structure or check a possible near cleaner for amenable odd hole. Therefore optimizations of the path enumerating algorithm were also helpful in speeding up CCLSV implementation.
 
-\TODO{bitsets}
+Another algorithm for which we found major speedups is the algorithm to generate all possible near-cleaners (\Cref{alg:listNearCleaners}). At its very end, it returns a set that is an union \todo{after rewriting alg, point to a line}. We used a \texttt{dynamic\_bitset} from the boost library \cite{boost} for this purpose. It is a data structure to represent a set of bits, that also allows for fast bitwise operators that one can apply to builtin integers. By using it, the speedup of \Cref{alg:listNearCleaners} was about x. \todo{todo}
 
+After these optimizations, checking each potential near-cleaner (\Cref{alg:testNearCleaner}) is by far the biggest bottlenecks of the CCLSV algorithm. We didn't find any major optimizations there, but \Cref{alg:testNearCleaner} has a good potential for parrallelization, which we explore in \Cref{sec:CUDA}.
 
 \subsection{Correctness Testing}
 
@@ -90,33 +91,32 @@ We also test on graphs that we know are not perfect: we generate them by generat
 
 In total over 100 \todo{update the munber}cpu-hours of end to end tests were performed without any errors.
 
-\subsection{Parallelism with CUDA (?)}
+\section{Parallelism with CUDA}
 \label{sec:CUDA}
 
-\TODO{a section?}
 \TODO{CUDA background}
 \TODO{moderngpu - allows us to run simple transforms}
 \TODO{Implementing get NC is tough -- we rely on set<bitset> to do the work. Maybe we could use a dynamic set from Adam's link? As a "open question"}
 
-We posed a question if it would be profitable to use GPU for this problem. On one hand the graphs we are working on are small and our time complexity so large that a speedup from massively parallel architecture could be profitable. On the other the algorithm is complex and not easy to parallelise. Therefore we decided to implement whole na\"ive algorithm and most time consuming parts of the CCLSV\todo{a good name for it?} algorithm.
+We posed a question if it would be profitable to use GPU for this problem. On one hand the graphs we are working on are small and our time complexity so large that a speedup from massively parallel architecture could be profitable. On the other the algorithm is complex and not easy to parallelise. Therefore we decided to analyze the  CCLSV\todo{a good name for it?} algorithm and parrallelize parts that would benefit from it the most.
 
-\subsubsection{Na\"ive parallelisation}
+% \subsubsection{Na\"ive parallelisation}
 
-Na\"ive algorithm is very simple -- generate all possible odd hole candidates, check if any of them is an odd hole and repeat for the complement. But its parallelisation is not trivial.
+% Na\"ive algorithm is very simple -- generate all possible odd hole candidates, check if any of them is an odd hole and repeat for the complement. But its parallelisation is not trivial.
 
-The biggest problem of implementing na\"ive algorithm is in splitting the work between CUDA threads. This is very important because while GPU is faster when all its cores are working efficiently, single core performance is much slower than CPU. But it is not obvious how to split the work.
+% The biggest problem of implementing na\"ive algorithm is in splitting the work between CUDA threads. This is very important because while GPU is faster when all its cores are working efficiently, single core performance is much slower than CPU. But it is not obvious how to split the work.
 
-Our first attempt was to switch our slightly more sophisticated way of generating paths (\cref{sec:usesGeneration}) in favor of generating all combinations. We could code a prefix of a combination as a number (we use combinations with repetitions for simplicity). This would give us $|V(G)|^k$ codes for all prefixes of length $k$. Then each CUDA thread would process its part of all codes: for each code it would first check if the encoded prefix is a valid path and then generate all path candidates with that prefix. This approach has two problems: it doesn't split the work evenly enough and it does too much unneeded work (only a few prefix codes are valid). Still, implementing it on GPU gives us a program with speeds comparable to na\"ive CPU algorithm after all optimizations.
+% Our first attempt was to switch our slightly more sophisticated way of generating paths (\cref{sec:usesGeneration}) in favor of generating all combinations. We could code a prefix of a combination as a number (we use combinations with repetitions for simplicity). This would give us $|V(G)|^k$ codes for all prefixes of length $k$. Then each CUDA thread would process its part of all codes: for each code it would first check if the encoded prefix is a valid path and then generate all path candidates with that prefix. This approach has two problems: it doesn't split the work evenly enough and it does too much unneeded work (only a few prefix codes are valid). Still, implementing it on GPU gives us a program with speeds comparable to na\"ive CPU algorithm after all optimizations.
 
-A better approach is to generate all paths of some length $k$ on CPU (using algorithm described in \cref{sec:usesGeneration}), copy them on GPU and have each thread process them as described above. This is superior to the previous algorithm in utilizing GPU -- each prefix takes similar time to process. We also even out the work done by each thread by having single thread process multiple prefixes. But it puts much more strain on the CPU -- it has to generate all valid prefixes. Here we used experiments to determine best value of $k$ (it was 7 for graphs of $n < 15$ \todo{check} and 6 for larger). This yields an algorithm that beats CPU na\"ive by a factor of 50x. \todo{check}.
+% A better approach is to generate all paths of some length $k$ on CPU (using algorithm described in \cref{sec:usesGeneration}), copy them on GPU and have each thread process them as described above. This is superior to the previous algorithm in utilizing GPU -- each prefix takes similar time to process. We also even out the work done by each thread by having single thread process multiple prefixes. But it puts much more strain on the CPU -- it has to generate all valid prefixes. Here we used experiments to determine best value of $k$ (it was 7 for graphs of $n < 15$ \todo{check} and 6 for larger). This yields an algorithm that beats CPU na\"ive by a factor of 50x. \todo{check}.
 
-\subsubsection{CCLSV parallelisation}
+% \subsubsection{CCLSV parallelisation}
 
 To identify parts of CCLSV to implement, we used callgrind and found potential bottlenecks. The initial tests showed that with growing size of a graph some parts take more and more relative time. Because of callgrind's slow execution times compared to just running the program, we used manual timers for bigger tests. Using this method we identified testing all possible near-cleaners (\cref{alg:testNearCleaner}) as the biggest bottleneck for larger graphs. We considered two approaches: run whole \cref{alg:testNearCleaner} on a single CUDA core, testing multiple $X$s in parallel, or parallelize \cref{alg:testNearCleaner} itself and run it on one $X$ at a time. It turned out that second approach is better and much simpler.
 
-Let us recall the \cref{alg:testNearCleaner}. It calculates array $R$ of shortest paths, then for each 3-vertex path and an additional vertex it does $O(1)$ checks to see if they along with two paths from $R$ give us an odd hole. We will parallelise the work after calculating $R$. Let us notice, that for all $X$s all 3-vertex paths are the same. We calculate them beforehand \todo{do it also in CPU} \todo{acutally do this}. Then each thread receives a 3-vertex path and an additional vertex and performs the required checks. This is almost perfect scenario for GPU -- we do a simple SIMD work in parallel, without a lot scattered memory access.
+Let us recall the \cref{alg:testNearCleaner}. It calculates array $R$ of shortest paths, then for each 3-vertex path and an additional vertex it does $O(1)$ checks to see if they along with two paths from $R$ give us an odd hole. We will parallelise the work after calculating $R$. Let us notice, that for all $X$s all 3-vertex paths are the same. We calculate them beforehand, then each thread receives a 3-vertex path $x_1 - x_2 - x_3$ and an additional vertex $y_1$ and performs the required checks. This is almost perfect scenario for the GPU -- we do a simple SIMD work in parallel, without a lot scattered memory access.
 
-It turns out that this optimization alone speeds up \cref{alg:testNearCleaner} almost 30x \todo{check} on bigger tests, which gives us a speedup of about 5x \todo{check} for overall algorithm.
+It turns out that this optimization alone speeds up \cref{alg:testNearCleaner} almost 7x \todo{check} on bigger tests, which gives us a speedup of about 6x \todo{check} for overall algorithm.
 
 \TODO{implement other CUDA opts and describe them}
 
