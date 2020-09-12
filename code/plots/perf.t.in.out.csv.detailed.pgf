@@ -89,7 +89,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=0.985484in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 15}%
+\pgftext[x=0.985484in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 0.0}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfpathrectangle{\pgfqpoint{0.522394in}{0.820309in}}{\pgfqpoint{4.092606in}{2.524691in}}%
@@ -127,7 +127,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.777091in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 16}%
+\pgftext[x=1.777091in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 0.2}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfpathrectangle{\pgfqpoint{0.522394in}{0.820309in}}{\pgfqpoint{4.092606in}{2.524691in}}%
@@ -165,7 +165,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.568697in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 17}%
+\pgftext[x=2.568697in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 0.4}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfpathrectangle{\pgfqpoint{0.522394in}{0.820309in}}{\pgfqpoint{4.092606in}{2.524691in}}%
@@ -203,7 +203,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.360304in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 18}%
+\pgftext[x=3.360304in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 0.6}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfpathrectangle{\pgfqpoint{0.522394in}{0.820309in}}{\pgfqpoint{4.092606in}{2.524691in}}%
@@ -241,7 +241,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=4.151910in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 19}%
+\pgftext[x=4.151910in,y=0.723087in,,top]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont 0.8}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%

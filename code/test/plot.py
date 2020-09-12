@@ -147,7 +147,7 @@ sizes_in_inches = {
 func_formatter = ticker.FuncFormatter(lambda y, _: "{:g}".format(y))
 
 # labels for plot axes
-label_lca_N = "Number of nodes"
+label_lca_N = "$|V|$"
 label_time_percentage = "Time ratio"
 label_lca_preprocessing_over_s = "Nodes preprocessed per second"
 label_lca_queries_over_s = "Queries answered per second"
@@ -162,7 +162,6 @@ label_time_overall_s = "Total time [s]"
 
 # Here we declare what tests consist an experiment.
 experiments = [
-    # Perfect
     {
         "restrictions": [(csv_result, 1), (csv_algo, "Perfect|Naive")],
         "x_param": csv_N,
@@ -171,8 +170,144 @@ experiments = [
         "size": sizes_in_inches["regular"],
         "y_param": csv_overall,
         "ylog": False,
-        "x_label": "N",
+        "x_label": label_lca_N,
         "y_label": label_time_overall_s,
+    },
+    {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_algo, "Perfect|Naive"),
+            (csv_filename, "grid"),
+            (csv_N, "42|48|54|60|66|72|78|84|90|96|102"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        "y_label": label_time_overall_s,
+        "x_ticks": [42, 54, 66, 78, 90, 102],
+        "x_ticks_labels": [
+            # "$6 \\times 5$",
+            "$6 \\times 7$",
+            "$6 \\times 9$",
+            "$6 \\times 11$",
+            "$6 \\times 13$",
+            "$6 \\times 15$",
+            "$6 \\times 17$",
+        ],
+        "ylim": (0.5, 250),
+    },
+    {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_algo, "Perfect|Naive"),
+            (csv_filename, "rook"),
+            # (csv_N, "42|48|54|60|66|72|78|84|90|96|102"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        "y_label": label_time_overall_s,
+        "x_ticks": [20, 25, 30, 35, 40, 45, 50, 55, 60],
+        "x_ticks_labels": [
+            "$5 \\times 4$",
+            "$5 \\times 5$",
+            "$5 \\times 6$",
+            "$5 \\times 7$",
+            "$5 \\times 8$",
+            "$5 \\times 9$",
+            "$5 \\times 10$",
+            "$5 \\times 11$",
+            "$5 \\times 12$",
+        ],
+        "ylim": (0.5, 200),
+    },
+    {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_algo, "Perfect|Naive"),
+            (csv_filename, "knight"),
+            # (csv_N, "42|48|54|60|66|72|78|84|90|96|102"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        "y_label": label_time_overall_s,
+        "x_ticks": [32, 40, 48, 56, 64],
+        "x_ticks_labels": [
+            "$8 \\times 4$",
+            "$8 \\times 5$",
+            "$8 \\times 6$",
+            "$8 \\times 7$",
+            "$8 \\times 8$",
+        ],
+        "ylim": (0.5, 200),
+    },
+    {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_algo, "Perfect|Naive"),
+            (csv_filename, "hypercube"),
+            # (csv_N, "42|48|54|60|66|72|78|84|90|96|102"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        "y_label": label_time_overall_s,
+        "x_ticks": [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75],
+        # "x_ticks_labels": [
+        #     "$8 \\times 4$",
+        #     "$8 \\times 5$",
+        #     "$8 \\times 6$",
+        #     "$8 \\times 7$",
+        #     "$8 \\times 8$",
+        # ],
+        "ylim": (0.5, 200),
+    },
+    {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_algo, "Perfect|Naive"),
+            (csv_filename, "split"),
+            # (csv_N, "42|48|54|60|66|72|78|84|90|96|102"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        "y_label": label_time_overall_s,
+        "x_ticks": [20, 26, 32, 38, 44, 50],
+        # "x_ticks_labels": [
+        #     "$8 \\times 4$",
+        #     "$8 \\times 5$",
+        #     "$8 \\times 6$",
+        #     "$8 \\times 7$",
+        #     "$8 \\times 8$",
+        # ],
+        # "ylim": (0.5, 200),
     },
     {
         "restrictions": [
@@ -189,7 +324,7 @@ experiments = [
         "y_label": label_time_percentage,
         "ylim": (0, 1),
     },
-      {
+    {
         "restrictions": [
             (csv_result, 1),
             (csv_filename, "perf2.t.in"),
@@ -224,6 +359,7 @@ experiments = [
             (csv_result, 1),
             (csv_filename, "grid"),
             (csv_algo, "GPU Perfect|Perfect"),
+            (csv_N, "42|48|54|60|66|72|78"),
         ],
         "x_param": csv_N,
         "x_show": csv_N,
@@ -232,6 +368,18 @@ experiments = [
         "x_label": "N",
         "y_label": label_time_percentage,
         "ylim": (0, 1),
+        "x_ticks": [42, 48, 54, 60, 66, 72, 78],
+        "x_ticks_labels": [
+            # "$6 \\times 5$",
+            "$6 \\times 7$",
+            "$6 \\times 8$",
+            "$6 \\times 9$",
+            "$6 \\times 10$",
+            "$6 \\times 11$",
+            "$6 \\times 12$",
+            "$6 \\times 13$",
+            "$6 \\times 14$",
+        ],
     },
     {
         "restrictions": [
@@ -316,66 +464,6 @@ experiments = [
         "ylim": (0, 1),
         "out_prefix": "color",
     },
-    # LCA
-    # {"restrictions": [(csv_filename, "E1"), (csv_grasp, 1000)],
-    #  "x_param": csv_N, "x_show": csv_N, "type": "lines_xM", "size": sizes_in_inches["regular"],
-    #  "y_param": csv_N, "y_divide": csv_preprocessing, "ylim": E1_div_ylim,
-    #  "x_label": label_lca_N, "y_label": label_lca_preprocessing_over_s},
-    # {"restrictions": [(csv_filename, "E1"), (csv_grasp, -1)],
-    #  "x_param": csv_N, "x_show": csv_N, "type": "lines_xM", "size": sizes_in_inches["regular"],
-    #  "y_param": csv_N, "y_divide": csv_preprocessing, "ylim": E1_div_ylim,
-    #  "x_label": label_lca_N, "y_label": label_lca_preprocessing_over_s},
-    # {"restrictions": [(csv_filename, "E1"), (csv_grasp, 1000)],
-    #  "x_param": csv_N, "x_show": csv_N, "type": "lines_xM", "size": sizes_in_inches["regular"],
-    #  "y_param": csv_Q, "y_divide": csv_queries, "ylim": E1_div_ylim,
-    #  "x_label": label_lca_N, "y_label": label_lca_queries_over_s},
-    # {"restrictions": [(csv_filename, "E1"), (csv_grasp, -1)],
-    #  "x_param": csv_N, "x_show": csv_N, "type": "lines_xM", "size": sizes_in_inches["regular"],
-    #  "y_param": csv_Q, "y_divide": csv_queries, "ylim": E1_div_ylim,
-    #  "x_label": label_lca_N, "y_label": label_lca_queries_over_s},
-    # # {"restrictions": [(csv_filename, "E2")],
-    # #  "x_param": csv_batch, "x_show": csv_batch, "type": "lines", "size": sizes_in_inches["regular"],
-    # #  "yformatter": func_formatter},
-    # {"restrictions": [(csv_filename, "E2")],
-    #  "x_param": csv_batch, "x_show": csv_batch, "type": "lines", "size": sizes_in_inches["regular"],
-    #  "y_param": csv_Q, "y_divide": csv_queries, "ylim": E1_div_ylim,
-    #  "x_label": label_lca_batch_size, "y_label": label_lca_queries_over_s},
-    # {"restrictions": [(csv_filename, "E3")],
-    #  "x_param": csv_avg_height, "x_show": csv_avg_height, "type": "lines", "size": sizes_in_inches["regular"],
-    #  "yformatter": func_formatter, "ylim": E3_ylim,
-    #  "x_label": label_lca_avg_depth, "y_label": label_time_overall_s},
-    # # {"restrictions": [(csv_filename, "E3")],
-    # #  "x_param": csv_max_height, "x_show": csv_max_height, "type": "lines", "size": sizes_in_inches["regular"],
-    # #  "yformatter": func_formatter, "ylim": E3_ylim}
-    # # {"restrictions": [(csv_filename, "E4"), (csv_grasp, 1000)],
-    # #  "x_param": csv_Q, "x_show": csv_Q, "type": "lines_xM", "size": sizes_in_inches["regular"],
-    # #  "y_param": csv_overall, "ylim": E4_ylim, "yformatter": func_formatter},
-    # {"restrictions": [(csv_filename, "E4"), (csv_grasp, -1)],
-    #  "x_param": csv_Q, "x_show": csv_Q, "x_div": csv_N, "type": "lines_xM", "size": sizes_in_inches["regular"],
-    #  "y_param": csv_overall, "ylim": E4_ylim, "yformatter": func_formatter,
-    #  "x_label": label_lca_queries_over_N, "y_label": label_time_overall_s},
-    # # {"restrictions": [(csv_filename, "E4"), (csv_grasp, 1000)],
-    # #  "x_param": csv_Q, "x_show": csv_Q, "type": "lines_xM", "size": sizes_in_inches["regular"],
-    # #  "y_param": csv_Q, "y_divide": csv_queries, "ylim": E4_ylim_div},
-    # # {"restrictions": [(csv_filename, "E4"), (csv_grasp, -1)],
-    # #  "x_param": csv_Q, "x_show": csv_Q, "type": "lines_xM", "size": sizes_in_inches["regular"],
-    # #  "y_param": csv_Q, "y_divide": csv_queries, "ylim": E4_ylim_div},
-    # #Bridges
-    # {"restrictions": [(csv_filename, "kron")],
-    #  "x_param": csv_filename, "x_show": csv_N, "type": "lines", "size": sizes_in_inches["regular"],
-    #  "yformatter": func_formatter, "skipHybrid": True, "y_label" : label_time_overall_s,
-    #  "x_label": label_lca_N},
-    # {"restrictions": [(csv_filename, "cit-Patents|soc-Live|ca-hollywood|socfb-A-anon|wikipedia|road-a|road-g|road-d.USA|road-d.CTR|road-d.W|road-d.E")],
-    #  "x_param": csv_filename, "x_show": csv_filename, "type": "bars", "size": sizes_in_inches["wide"],
-    #  "yformatter": func_formatter, "skipHybrid": True, "y_label": label_time_overall_s},
-    # {"restrictions": [(csv_filename, "kron_g500-logn21|soc-LiveJ|cit-Patents|road-great-britain|USA-road-d.CTR")],
-    #  "x_param": csv_filename, "x_show": csv_filename, "type": "detailed", "size": sizes_in_inches["wideDetailed"],
-    #  "skipHybrid": True, "x_label": label_time_overall_ms},
-    # {"restrictions": [(csv_filename, "kron_g500-logn19|kron_g500-logn2|cit-Patents|soc-Live|ca-hollywood|socfb-A-anon|wikipedia|road-g|road-d.USA|road-d.CTR|road-d.W|road-d.E")],
-    #  "x_param": csv_filename, "x_show": csv_filename, "type": "detailed", "size": sizes_in_inches["huge"],
-    #   "x_label": label_time_overall_ms},
-    # # {"restrictions": [(csv_filename, ".bin")],
-    # #  "x_param": csv_M, "x_show": csv_filename, "type": "detailed", "size": sizes_in_inches["allGraphs"]},
 ]
 
 if len(sys.argv) < 2:
@@ -522,46 +610,11 @@ for i_exp, experiment in enumerate(experiments):
                     y_sum[i_xval] -= y[i_xval][i_field]
 
             ax.set_xticks(apparent_x)
-            ax.set_xticklabels(x)
-        elif experiment["type"] == "bars":
-            # ax.set_xlabel(experiment["x_show"])
-            ax.set_ylabel("Time " + experiment["y_param"] + " (s)")
-            width = 0.3
-            apparent_x = np.arange(len(x))
-            ax.set_ylim(bridges_bars_ylim[0], bridges_bars_ylim[1])
-            bar_shift = (i_algo + 0.5 - ((len(algos) - 1) / 2.0)) * width
-            ax.bar(
-                apparent_x + bar_shift,
-                y,
-                width,
-                label=algo_labels[algo],
-                color=algo_colors[algo],
-                zorder=1.99,
-                bottom=0.02,
-            )
-            ax.set_xticklabels(x)
-            ax.set_xticks(apparent_x)
-        elif experiment["type"] == "lines_xM":
-            ax.set_ylabel("Time " + experiment["y_param"] + " (s)", fontsize=font_size)
-            if "y_divide" in experiment:
-                ax.set_ylabel(experiment["y_divide"] + "/s", fontsize=font_size)
-            apparent_x = np.arange(len(x))
-            if "x_div" in experiment:
-                string_x = [val / 8000000.0 for val in x]
-                ax.set_xlabel("Queries/N")
-            else:
-                string_x = [str(val / 1000000) + "M" for val in x]
-                ax.set_xlabel(experiment["x_show"], fontsize=font_size)
-            ax.plot(
-                apparent_x,
-                y,
-                label=algo_labels[algo],
-                color=algo_colors[algo],
-                marker=algo_markers[algo],
-            )
-            # ax.yaxis.grid(which="minor", linestyle='--', linewidth=.3)
-            ax.set_xticklabels(string_x)
-            ax.set_xticks(apparent_x)
+            # ax.set_xticklabels(x)
+            # if "x_ticks" in experiment:
+                # ax.set_xticks(experiment["x_ticks"])
+            if "x_ticks_labels" in experiment:
+                ax.set_xticklabels(experiment["x_ticks_labels"])
         else:
             ax.plot(
                 x,
@@ -570,7 +623,13 @@ for i_exp, experiment in enumerate(experiments):
                 color=algo_colors[algo],
                 marker=algo_markers[algo],
             )
+
             ax.set_xticks(x)
+
+            if "x_ticks" in experiment:
+                ax.set_xticks(experiment["x_ticks"])
+            if "x_ticks_labels" in experiment:
+                ax.set_xticklabels(experiment["x_ticks_labels"])
 
         if "x_label" in experiment:
             ax.set_xlabel(experiment["x_label"])
@@ -671,7 +730,7 @@ for i_exp, experiment in enumerate(experiments):
         if "ylog" in experiment and experiment["ylog"]:
             ax.set_yscale("log")
         handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles[::-1], labels[::-1])
+        ax.legend(handles[::-1], labels[::-1], loc="best")
         fig.tight_layout()
 
     if "yformatter" in experiment:
