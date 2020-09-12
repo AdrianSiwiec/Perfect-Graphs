@@ -1,10 +1,10 @@
 Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangle and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
 
-Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, $|V| = n$, let us construct a graph $G'$ equal to the union of $G$ and a clique $K_n$. We can see that indeed $\chi(G') = n = \omega(G')$, but it gives us no indication of the structure of $G$ or $G'$. This leads us to the definition of \emph{perfect graphs}
+Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, $|V| = n$, let us construct a graph $G'$ as the union of $G$ and a clique $K_n$. We can see that indeed $\chi(G') = \omega(G') = n$, but it gives us no indication of the structure of $G$ or $G'$. This leads us to the hereditary definition of \emph{perfect graphs}.
 
 \begin{defn}[perfect graph]
 	\label{def:perfectGraph}
-	A graph $G$ is \emph{perfect} iff for its every induced subgraph $H$ we have $\chi(H) = \omega(H)$
+	A graph $G$ is \emph{perfect} if and only if for its every induced subgraph $H$ we have $\chi(H) = \omega(H)$.
 \end{defn}
 
 The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures some of the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum (weighted) clique problem, and maximum (weighted) independent set problem can be solved in polynomial time \cite{grotschel1993}. Other classical NP-complete problems are still NP-complete in perfect graphs e.g. Hamiltonian path \cite{Mller1996}, maximum cut problem \cite{Bodlaender1994} or dominating set problem \cite{Dewdney81}. \todo{all theese citations are about subclasses e.g. biparite graphs. Should we mention some subclasses?}
@@ -13,10 +13,10 @@ The most fundamental problem -- the problem of recognizing perfect graphs -- was
 
 \begin{defn}[Berge graph]
 	\label{def:bergeGraph}
-	A graph $G$ is \emph{Berge} iff both $G$ and $\overline{G}$ have no odd hole as an induced subgraph
+	A graph $G$ is \emph{Berge} if and only if both $G$ and $\overline{G}$ have no odd hole as an induced subgraph.
 \end{defn}
 
-Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003} algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \cref{sec:ellipsoidMethod}.
+Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003} algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \cref{sec:ShannonCapacity}.
 
 \section{Strong Perfect Graph Theorem}
 \label{sec:SPGT}
@@ -31,14 +31,14 @@ The first step to solve the problem of recognizing perfect graphs was the \emph{
 This theorem is a consequence of a stronger result proven by Lovász:
 \begin{theorem}
 	\label{thm:omegaalpha}
-	A graph $G$ is perfect iff for every induced subgraph $H$, the number of vertices of $H$ is at most $\alpha(H)\omega(H)$. \todo{proof?}
+	A graph $G$ is perfect if and only if for every induced subgraph $H$, the number of vertices of $H$ is at most $\alpha(H)\omega(H)$. \todo{proof!}
 \end{theorem}
 
 Then, since $\alpha(H) = \omega(\overline{H})$ and $\omega(H) = \alpha(\overline{H})$ \cref{thm:omegaalpha} implies \cref{thm:pgt}.
 
 Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd hole and no odd antihole is called \emph{Berge} (\cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
 
-In 1961 Berge conjured that a graph is perfect iff it contains no odd hole and no odd antihole in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}.
+In 1961 Berge conjured that a graph is perfect if and only if it contains no odd hole and no odd antihole in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}.
 
 \begin{theorem}[Strong perfect graph theorem]
 	\label{thm:spgt}
@@ -51,7 +51,7 @@ The proof is long and complicated. Moreover, it has little noticeable connection
 Bipartite graphs are perfect, since we can color them with two colors. From the theorem of König we get that line graphs of bipartite graphs are also perfect \cite{Knig1916, GC03}. From the perfect graph theorem (\cref{thm:pgt}) it follows that complements of bipartite graphs and complement of line graphs of bipartite graphs are also perfect. We will call these four classes \emph{basic}.
 
 \subsubsection{2-join, Homogeneous Pair and Skew Partition}
-A graph $G$ has a \emph{2-join} if its vertices can be partitioned into sets $V_1$, $V_2$, each of size at least three, and there are nonempty disjoint subsets $A_1, B_1 \subseteq V_1$ and $A_2, B_2 \subseteq V_2$, such that all vertices of $A_1$ are adjacent to all vertices of $A_2$, all vertices of $B_1$ are adjacent to all vertices of $B_2$, and these are the only edges between $V_1$ and $V_2$. When a graph $G$ has a 2-join, it can be decomposed onto two smaller graphs $G_1$, $G_2$, so that $G$ is perfect iff $G_1$ and $G_2$ are perfect \cite{Cornujols1985}.
+A graph $G$ has a \emph{2-join} if its vertices can be partitioned into sets $V_1$, $V_2$, each of size at least three, and there are nonempty disjoint subsets $A_1, B_1 \subseteq V_1$ and $A_2, B_2 \subseteq V_2$, such that all vertices of $A_1$ are adjacent to all vertices of $A_2$, all vertices of $B_1$ are adjacent to all vertices of $B_2$, and these are the only edges between $V_1$ and $V_2$. When a graph $G$ has a 2-join, it can be decomposed onto two smaller graphs $G_1$, $G_2$, so that $G$ is perfect if and only if $G_1$ and $G_2$ are perfect \cite{Cornujols1985}.
 
 A graph $G$ has a \emph{homogeneous pair} if $V(G)$ can be partitioned into subsets $A_1$, $A_2$, $B$, such that $|A_1|+|A_2| \geq 3$, $|B| \geq 2$ and if a vertex $v \in B$ is adjacent to a vertex from $A_i$, then it is adjacent to all vertices from $A_i$. Chvátal and Sbihi proved that no minimally imperfect graph has a homogeneous pair \cite{Chvtal1987}.
 
@@ -60,17 +60,17 @@ A graph $G$ has a \emph{skew partition} if $V(G)$ can be partitioned into nonemp
 The proof of \cref{thm:spgt} is a consequence of the \emph{Decomposition theorem}:
 \begin{theorem}[Decomposition theorem]
 	\label{thm:decomposition}
-	Every Berge graph $G$ is basic or has a skew partition or a homogeneous pair, or $G$ or $\overline{G}$ has a 2-join.
+	Every Berge graph $G$ is basic or has a skew partition or a homogeneous pair, or either $G$ or $\overline{G}$ has a 2-join.
 \end{theorem}
 
-See \cite{MC06} for the proof of \cref{thm:decomposition} and \cref{thm:spgt}.
+See \cite{MC06} for the proof of \cref{thm:spgt} and \cref{thm:decomposition}.
 
 \section{Recognizing Berge Graphs}
 \label{sec:recognizingBerge}
 
 The following is based on the paper by Maria \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but will aim to show the intuition behind the algorithm.
 
-Berge graph recognition algorithm could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole (\cref{AmenableHoles}).
+Berge graph recognition algorithm (later called CCLSV from the names of its authors) could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole (\cref{AmenableHoles}).
 
 \subsection{Simple forbidden structures}
 \label{SimpleStructures}
@@ -86,12 +86,12 @@ Berge graph recognition algorithm could be divided into two parts: first we chec
 
 A \emph{pyramid} in G is an induced subgraph formed by the union of a triangle \footnote{A triangle is a clique $K_3$.} $\{b_1,b_2,b_3\}$, three paths $\{P_1, P_2, P_3\}$ and another vertex $a$, so that:
 \begin{itemize}
-	\item $\forall_{1\leq i \leq 3}$ $P_i$ is a path between $a$ and $b_i$
-	\item $\forall_{1\leq i < j \leq 3}$ $a$ is the only vertex in both $P_i$ and $P_j$ and $b_ib_j$ is the only edge between $V(P_i)\setminus\{a\}$ and $V(P_j)\setminus\{a\}$.
+	\item $\forall_{1\leq i \leq 3}$ $P_i$ is a path between $a$ and $b_i$,
+	\item $\forall_{1\leq i < j \leq 3}$ $a$ is the only vertex in both $P_i$ and $P_j$ and $b_ib_j$ is the only edge between $V(P_i)\setminus\{a\}$ and $V(P_j)\setminus\{a\}$,
 	\item $a$ is adjacent to at most one of $\{b_1, b_2, b_3\}$.
 \end{itemize}
 
-We will say that $a$ can be \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ \emph{via} the paths $P_1$, $P_2$, $P_3$. Let us notice, that a pyramid is determined by its paths $P_1$, $P_2$, $P_3$.
+We will say that $a$ can be \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ \emph{via} the paths $P_1$, $P_2$, $P_3$. Let us notice, that a pyramid is uniquely determined by its paths $P_1$, $P_2$, $P_3$.
 
 It is easy to see that every graph containing a pyramid contains an odd hole -- at least two of the paths $P_1$, $P_2$, $P_3$ will have the same parity.
 
@@ -151,7 +151,7 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 						\lsx $P_1(m_1)$ or have a neighbor in $P_1(m_1)$
 						\lsx color all other vertices white.
 						\mForEach{$m_2 \in M \cup \{b_2\}$}
-							\mIf{$P_2(m_2)$ exists and contains no black vertices} \label{line:pyramidColor2}
+							\mIf{$P_2(m_2)$ exists and contains no black vertices \lsx} \label{line:pyramidColor2}
 								\ls add $(m_1, m_2)$ to $good\_pairs_{1,2}$
 							\mEndIf
 						\mEndFor
@@ -170,9 +170,9 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 	\mEndProcedure
 \end{algorithmic}
 
-With definitions as above, for $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ is a \emph{good $(i, j)$-pair}, iff $m_i \in M \cup \{b_i\}$, $m_j \in M \cup \{b_j\}$, $P_i(m_i)$ and $P_j(m_j)$ both exist, and the sets $V(P_i(m_i))$,$V(P_j(m_j))$ are both disjoint and $b_ib_j$ is the only edge between them.
+With definitions as above, for $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ is a \emph{good $(i, j)$-pair}, if and only if $m_i \in M \cup \{b_i\}$, $m_j \in M \cup \{b_j\}$, $P_i(m_i)$ and $P_j(m_j)$ both exist, and the sets $V(P_i(m_i))$,$V(P_j(m_j))$ are both disjoint and $b_ib_j$ is the only edge between them. In line \ref{line:pyramidColor} we color vertices of $P_1(m_1)$ black, so that for each $m_2$ we can check if paths $P_1(m_1)$ and $P_2(m_2)$ are disjoint in $O(|V|)$ time.
 
-It is easy to see, that if \textsc{Contains-Pyramid($G$)} outputs that $G$ contains a pyramid, it indeed does -- when we return in line \ref{line:pyramidTrue} $a$ found in line \ref{line:a} can be linked into a triangle $b_1, b_2, b_3$ it was found for via paths $P_1(m_1), P_2(m_2), P_3(m_3)$ for $m_1$, $m_2$, $m_3$ from line \ref{line:m1m2m3}. The proof of the converse is rather technical and we refer to \cite{MC05} for it.
+It is easy to see, that if \textsc{Contains-Pyramid($G$)} outputs that $G$ contains a pyramid, it indeed does -- when we return in line \ref{line:pyramidTrue} the vertex $a$ found in line \ref{line:a} can be linked into a triangle $b_1, b_2, b_3$ via paths $P_1(m_1), P_2(m_2), P_3(m_3)$ for $m_1$, $m_2$, $m_3$ from line \ref{line:m1m2m3}. The proof of the converse is rather technical and we refer to \todo{dokładny nr twierdzenia} \cite{MC05} for it.
 
 Now we will proove the time complexity.
 
@@ -199,12 +199,12 @@ Now we will proove the time complexity.
 \end{wrapfigure}
 
 
-Five vertices $v_1, \ldots, v_5$ and a path $P$ form a \emph{jewel} iff:
+Five vertices $v_1, \ldots, v_5$ and a path $P$ form a \emph{jewel} if and only if:
 
 \begin{itemize}
-	\item $v_1, \ldots, v_5$ are distinct vertices.
-	\item $v_1v_2, v_2v_3, v_3v_4, v_4v_5, v_5v_1$ are edges.
-	\item $v_1v_3, v_2v_4, v_1,v_4$ are nonedges.
+	\item $v_1, \ldots, v_5$ are distinct vertices,
+	\item $v_1v_2, v_2v_3, v_3v_4, v_4v_5, v_5v_1$ are edges,
+	\item $v_1v_3, v_2v_4, v_1,v_4$ are nonedges,
 	\item $P$ is a path between $v_1$ and $v_4$, such that $v_2, v_3, v_5$ have no neighbors in its inside.
 \end{itemize}
 
@@ -274,7 +274,7 @@ A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such 
 	\item If $v_5v_6$ is an edge, then $v_6$ is not $X$-complete.
 \end{itemize}
 
-The following algorithm with running time of $O(|V(G)|^6)$ checks whether $G$ contains a configuration of type $T_3$:
+The following algorithm with running time of $O(|V|^6)$ checks whether $G$ contains a configuration of type $\T_3$:
 
 \begin{alg}
 	\label{alg:t3}
@@ -282,31 +282,73 @@ The following algorithm with running time of $O(|V(G)|^6)$ checks whether $G$ co
 
 	\noindent Output: Returns whether $G$ contains a configuration of type $T_3$ as an induced subgraph.
 \end{alg}
-% \begin{algorithmic}
-% 	\mProcedure{Contains-T3}{$G$}
-% 	\mForEach{$v_1, v_2, v_5 \in V(G)$, so that $v_1v_2$ is an edge and $v_1v_5, v_2v_5$ are nonedges}
-% 	\mEndFor
-% 	\mEndProcedure
-% \end{algorithmic}
-% \begin{algorithmic}[1]
-% 	\mProcedure{Contains-Pyramid}{$G$}
-% 	\ls \RETURN \FALSE
-% 	\mEndProcedure
-% \end{algorithmic}
 
-% \begin{algtext2}
+\begin{algorithmic}[1]
+	\mProcedure{Contains-T3}{$G$}
+	\mForEach{$v_1, v_2, v_5 \in V(G)$, so that $v_1v_2$ is an edge \AND
+		\lsx $v_1v_5, v_2v_5$ are nonedges}
+		\ls $Y \gets$ the set of all $\{v_1, v_2, v_5\}$-complete vertices.
+		\mForEach{$X$ -- an anticomponent of $Y$}
+			\ls $F' \gets$ maximal connected subset containing $v_5$, such that $v_1, v_2$
+			\lsx have no neighbors in $F'$ and no vertex of $F'\setminus\{v_5\}$ is $X$-complete.
+			\ls $F'' \gets$ the set of all $X$-complete vertices that have a neighbor in 
+			\lsx $F'$ and are nonadjacent to all of $v_1, v_2$ and $v_5$
+			\ls $F \gets F' \cup F''$
+			\mForEach{$v_4 \in V(G) \setminus\{v_1, v_2, v_5\}$, such that $v_4$ is adjacent to $v_1$
+			\lsx and not to $v_2$ and $v_5$}
+				\mIf{$v_4$ has a neighbor in $F$ and a nonneibhbor in $X$}
+					\ls $v_6 \gets$ a neighbor of $v_4$ in $F$
+					\mForEach{$v_3 \in V(G) \setminus\{v_1, v_2, v_4, v_5, v_6\}$}
+						\mIf{$v_3$ is adjacent to $v_2, v_4, v_5$ and not adjacent to $v_1$ \lsx}
+							\ls $P \gets$ a path from $v_6$ to $v_5$ with interior in $F'$
+							\ls \RETURN \TRUE \Comment{$v_1, \ldots v_6, P, X$ is a $\T_3$}
+						\mEndIf
+					\mEndFor
+				\mEndIf
+			\mEndFor
+		\mEndFor
+	\mEndFor
+	\ls \RETURN \FALSE
+	\mEndProcedure
+\end{algorithmic}
 
-	For each triple $v_1, v_2, v_5$ of vertices such that $v_1v_2$ is an edge and $v_1v_5, v_2v_5$ are nonedges find the set $Y$ of all $\{v_1, v_2, v_5\}$-complete vertices. For each anticomponent $X$ of $Y$ find the maximal connected subset $F'$ containing $v_5$ such that $v_1, v_2$ have no neighbors in $F'$ and no vertex of $F'\setminus\{v_5\}$ is $X$-complete. Let $F$ be the union of $F'$ and the set of all $X$-complete vertices that have a neighbor in $F'$ and are nonadjacent to all of $v_1, v_2$ and $v_5$.
+We will skip the proof that each graph containing $\T_3$ is not Berge, as it is quite technical. See section 6.7 of \cite{MC05} for the proof.
 
-	Then, for each choice of $v_4$ that is adjacent to $v_1$ and not to $v_2$ and $v_5$ and has a neighbor in $F$ (call it $v_6$) and a nonneibhbor in $X$, we test whether there is a vertex $v_3$, adjacent to $v_2, v_4, v_5$ and not to $v_1$, with a nonneibhbor in $X$. If there is such a vertex $v_3$, find $P$ -- a path from $v_6$ to $v_5$ with interior in $F'$ and return that $v_1, \ldots v_6, P, X$ is a configuration of type $\T_3$. If we exhaust our search and find none, report that graph does not contain it.
-% \end{algtext2}
+\begin{theorem}
+	
+\end{theorem}
 
-To see that the \cref{alg:t3} has a running time of $O(|V(G)|^6)$, let us note that for each triple $v_1, v_2, v_5$ we examine, of which there are $O(|V(G)|^3)$, there are linear many choices of $X$, each taking $O(|V(G)|^2)$ time to process and generating a linear many choices of $v_4$ which take a linear time to process in turn. This gives us the total running time of $O(|V(G)|^6)$.
+To see that the \cref{alg:t3} has a running time of $O(|V|^6)$, let us note that for each triple $v_1, v_2, v_5$ we examine, of which there are $O(|V|^3)$, there are linear many choices of $X$, each taking $O(|V|^2)$ time to process and generating a linear many choices of $v_4$ which take a linear time to process in turn. This gives us the total running time of $O(|V|^6)$.
 
-We will skip the proof that each graph containing $\T_3$ is not Berge. See section 6 6.7 of \cite{MC05} for the proof.
+.
 
 \subsection{Amenable holes.}
 \label{AmenableHoles}
+
+First, let us introduce a few new definitions.
+
+\begin{defn}[C-major vertices]
+  Given a shortest odd hole $C$ in $G$, a node $v \in V(G) \setminus V(C)$ is $C$-major if the set of its neighbors in $C$ is not contained in any 3-node path of $C$.
+  \TODO{a picture of this, clean odd hole, amenable hole}
+\end{defn}
+
+\begin{defn}[clean odd hole]
+  An odd hole $C$ of $G$ is \emph{clean} if no vertex in $G$ is $C$-major.
+\end{defn}
+
+\begin{defn}[cleaner]
+  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{cleaner for $C$} if $X \cap V(C) = \emptyset$ and every $C$-major vertex belongs to $X$.
+\end{defn}
+
+Let us notice, that if $X$ is a cleaner for $C$ then $C$ is a clean hole in $G \setminus X$.
+
+\begin{defn}[near-cleaner]
+  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if $X$ contains all $C$-major vertices and $X \cap V(C)$ is a subset of vertex set of some 3-node path of $C$.
+\end{defn}
+
+\begin{defn}[amenable odd hole]
+  An odd hole $C$ of $G$ is \emph{amenable} if it is a shortest off hole in $G$, it is of length at least 7 and for every anticonnected set $X$ of $C$-major vertices there is a $X$-complete edge in $C$.
+\end{defn}
 
 \begin{theorem}
 	\label{thm:amenableHoles}
@@ -317,16 +359,16 @@ We will skip the proof that each graph containing $\T_3$ is not Berge. See secti
 
 The proof of this theorem is quite technical and we will not discuss it here. See section 8 of \cite{MC05} for the proof.
 
-With \cref{thm:amenableHoles} we can describe the rest of the algorithm.
+With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 
 \begin{alg}[List possible near cleaners, 9.2 of \cite{MC05}]
 	\label{alg:listNearCleaners}
 	Input: A graph $G$.
 
-	\noindent Output: $O(|V(G)|^5)$ subsets of $V(G)$, such that if $C$ is an amenable hole in $G$, then one of the subsets is a near-cleaner for $C$.
+	\noindent Output: $O(|V|^5)$ subsets of $V(G)$, such that if $C$ is an amenable hole in $G$, then one of the subsets is a near-cleaner for $C$.
 \end{alg}
 \begin{algtext2}
-	We will call a triple $(a, b, c)$ of vertices \emph{relevant} if $a, b$ are distinct (possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
+	We will call a triple $(a, b, c)$ of vertices \emph{relevant} if $a \neq b$ (but possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
 
 	Given a relevant triple $(a, b, c)$ we can compute the following:
 	\begin{itemize}
@@ -356,7 +398,7 @@ To prove the correctness of \cref{alg:listNearCleaners} we will need the followi
 
 Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c)$ is a near-cleaner for $C$. Therefore the output of the \cref{alg:listNearCleaners} is correct.
 
-\begin{alg}[Test possible near clener, 5.1 of \cite{MC05}]
+\begin{alg}[Test possible near cleaner, 5.1 of \cite{MC05}]
 	\label{alg:testNearCleaner}
 	Input: A graph $G$ containing no simple forbidden structure, and a subset $X \subseteq V(G)$.
 
@@ -367,14 +409,15 @@ Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a
 	\end{itemize}
 \end{alg}
 \begin{algtext2}
-	For every pair $x, y \in V(G)$ of distinct vertices find shortest path $R(x, y)$ between $x, y$ with no internal vertex in $X$. If there is one, let $r(x, y)$ be its length, if not, let $r(x, y)$ be infinite.
+	For every pair $x, y \in V(G)$ of distinct vertices find shortest path $R(x, y)$ between $x, y$ with no internal vertex in $X$. If there is one, let $r(x, y)$ be its length, if not, let $r(x, y) = \infty$.
 
 	For all $y_1 \in V(G)\setminus X$ and all 3-vertex paths $x_1-x_2-x_3$ of $G\setminus y_1$ we check the following:
 	\begin{itemize}
 		\item $R(x_1, y_1), R(x_2, y_2)$ both exist -- define $y_2$ as the neighbor of $y_1$ in $R(x_2, y_1)$.
-		\item $r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2)$ ($=n$ say)
+		\item $r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2)$ ($=n$ say) 
 		\item $r(x_3, y_1), r(x_3, y_2) \geq n$
 	\end{itemize}
+	\TODO{moze raczej $min(r(x_3, y_1), r(x_3, y_2)) = r(x_2, y_1) = r(x_1, y_2) = r(x_1, y_1) + 1$?}
 
 	If there is such a choice of $x_1$, $x_2$, $x_3$, $y_1$ then we output that there is an odd hole. If not, we report that there is no shortest odd hole $C$ such that $X$ is a near-cleaner for $C$.
 \end{algtext2}

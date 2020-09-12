@@ -1,5 +1,5 @@
 A repository containing the discussed source code and tests is available under the link: \href{https://github.com/AdrianSiwiec/Perfect-Graphs}{https://github.com/AdrianSiwiec/Perfect-Graphs}
-\todo{make repo public and add readme on howto run}
+\todo{make repo public and add readme on howto run, some script creating and running default tests}
 
 \section{Berge graphs recognition: na\"ive approach}
 When implementing an algorithm with the running time of $O(n^9)$ (especially one as complex as CCLSV), one of the first questions that pop up is whether this algorithm is applicable at all. We couldn't find any existing programs that test whether the graph is perfect, be it an implementation of CCLSV, or a na\"ive approach.\todo{well.. there's this java impl} So, to test the usability of CCLSV implementation, we measured it against our own na\"ive Perfect recognition algorithm. Let us describe it briefly.
@@ -11,7 +11,7 @@ To find an odd hole, we use a backtracking technique. We will enumerate all path
 This backtracking algorithm is very simple, but has a great potential for optimizations in implementation. We also use path enumeration algorithm in CCLSV algorithm, so we give much attention to its optimization.
 
 \subsubsection{Path enumerating optimizations}
-Below, we will talk about enumerating all paths. This is a generalization of the problem of finding an odd hole, if we allow a path to have a single chord between the first and the last of its vertices iff the hole formed would be odd.
+Now let's turn our attention to enumerating all paths. This is a generalization of the problem of finding an odd hole, if we allow a path to have a single chord between the first and the last of its vertices if and only if the hole formed would be odd.
 
 First of all, there are many methods for generating all possible paths to choose from. We could simply enumerate all sequences of vertices without repetition and for each one of them check if it is a path (that is if all pairs of vertices next to each other are connected and that there are no chords), but this would be too slow and render our algorithm unusable.
 
@@ -27,7 +27,7 @@ This simple change in data structure design gave us a speedup of overall running
 
 Another crucial optimization is to eliminate partial solutions that have chords right away. This is especially useful in graphs that have many chords and reduces running time dramatically.
 
-\paragraph{Array unique}
+\paragraph{Array unique.}
 
 For each path candidate $v$ we call a subroutine $areUnique(v)$ to determine whether all vertices in it are unique. As this subroutine could be called many times for generating a single path, its optimization is very important.
 
@@ -40,7 +40,7 @@ This optimization alone is crucial for performance. In our testing, all calls of
 \paragraph{Other uses for path generation}
 \label{sec:usesGeneration}
 
-Because of a good performance of our optimized algorithm for generating paths, we use it whenever possible. It can be easily modified to generate all possibly chordal paths or holes and therefore has much use in the CCLSV algorithm. For example, when searching for Jewels we generate with it all possibly chordal paths of length 5 and for each check if it has required properties of a Jewel. This proved to be much faster than generating vertices that don't have forbidden chords one by one. We use the same algorithm for generating starting vertices for a possible $T_2$ and $T_3$.
+Because of a good performance of our optimized algorithm for generating paths, we use it whenever possible. It can be easily modified to generate all possibly chordal paths or holes and therefore has much use in the CCLSV algorithm. For example, when searching for jewels we generate with it all possibly chordal paths of length 5 and for each check if it has required properties of a jewel. This proved to be much faster than generating vertices that don't have forbidden chords one by one. We use the same algorithm for generating starting vertices for a possible $\T_2$ and $\T_3$.
 
 With all those optimizations made, our na\"ive algorithm proved to be quite fast in some cases, although its running time is very dependent on the properties of the input, as we should expect from an optimized non-polynomial algorithm. See \cref{sec:experiments} for running times.
 

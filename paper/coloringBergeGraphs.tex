@@ -1,15 +1,16 @@
-A natural problem for perfect graphs is a problem of coloring them. In 1988 Martin Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in \cref{sec:coloringEllipsoid}. However due to its use of the ellipsoid method this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
+A natural problem for perfect graphs is a problem of coloring them. In 1988 Gr\"otschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in \cref{sec:coloringEllipsoid}. However due to its use of the ellipsoid method this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
 
 There has been much progress on the quest of finding a more classical algorithm coloring perfect graphs, without the use of ellipsoid method (see \cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this. \todo{better wording of this paragraph}
 
 \section{Information theory background}
 \label{sec:InformationTheory}
 
-\Cref{sec:InformationTheory} and \cref{sec:computingTheta} are based on excellent lecture notes by Lovász \cite{Lovasz95}.
+\Cref{sec:InformationTheory} and \cref{sec:computingTheta} are based on lecture notes by Lovász \cite{Lovasz95}.
 
-The polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semi-definite matrices. The connection of coloring graphs and the cones of semi-definite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this is the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
+The polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semi-definite matrices. The connection of coloring graphs and the cones of semi-definite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this was exactly the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
 
 \subsection{Shannon Capacity of a graph}
+\label{sec:ShannonCapacity}
 
 \begin{wrapfigure}{r}{0.35\textwidth}
   \input{tikzpictures/c5.tex}
@@ -18,13 +19,13 @@ The polynomial technique of coloring perfect graphs known so far arose in the fi
   % \vspace{-0.5cm}
 \end{wrapfigure}
 
-Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected iff values they represent can be confused.
+Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected if and only if values they represent can be confused.
 
 We are interested in transmission without possibility of confusion. For this example it is possible for two values to be transmitted without ambiguity e.g. values 1 and 4, which allows us to send $2^n$ non-confoundable messages in $n$ steps. But we could do better, for example we could communicate five two-step codewords e.g. "00", "12", "24", "43", "31". Each pair of these codewords includes at least one position where its values differ by two or more modulo 5, which allows the recipient to distinguish them without confusion.  This allows us to send $5^{n / 2}$ non-confoundable messages in $n$ steps.
 
-Let us be more precise. Given a graph $G$ modeling a communication channel and a number $k \geq 1$ we say that two messages $v_1v_2\ldots v_k$, $w_1w_2\ldots w_k \in G(V)^k$ of length $k$ are non-confoundable iff there is $1 \leq i \leq k$ such that $v_i$, $w_i$ are non-confoundable. We are interested in the maximum rate at which we can reliably transmit information (the \emph{Shannon capacity} of the channel defined by $G$).
+Let us be more precise. Given a graph $G$ modeling a communication channel and a number $k \geq 1$ we say that two messages $v_1v_2\ldots v_k$, $w_1w_2\ldots w_k \in V(G)^k$ of length $k$ are non-confoundable if and only if there is $1 \leq i \leq k$ such that $v_i$, $w_i$ are non-confoundable. We are interested in the maximum rate at which we can reliably transmit information (the \emph{Shannon capacity} of the channel defined by $G$).
 
-For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$. To describe longer messages we use \emph{Strong Product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ iff $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ -- which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$.
+For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$. To describe longer messages we use \emph{strong product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ if and only if $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ -- which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$.
 
 Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graphs in finite time. If we could calculate $\alpha(G^k)$ for a first few values of $k$ (we will show how to do it in \cref{alg:maxStableSet}) we could have a lower bound on $\Theta(G)$. Let us now turn into search for some usable upper bound.
 
@@ -45,7 +46,7 @@ On the other hand each term on the left hand side is $5^{-1/4}$, so the left han
 It turns out that this method extends to any graph $G$ in place of $C_5$. All we have to do is find a orthogonal representation that will give us the best bound. So, we can define the \emph{Lovász number} of a graph $G$ as \todo{this equation does not really follow from the thought process above, it is a slightly different definition}:
 $$\vartheta(G) = \min\limits_{c,U} \max\limits_{i\in V} \frac{1}{(c^\intercal u_i)^2},$$
 
-where $c$ is a unit vector in $\mathbb{R}^{|V(G)|}$ and $U$ is a orthogonal representation of $G$.
+\noindent where $c$ is a unit vector in $\mathbb{R}^{|V(G)|}$ and $U$ is a orthogonal representation of $G$.
 
 Contrary to Lovász's first hope \cite{Lovasz1979} $\vartheta(G)$ does not always equal $\Theta(G)$, it is only an upper bound on it. However, these two are equal for some graphs, including all perfect graphs, as is demonstrated in the Lovász "sandwich theorem".
 
@@ -55,48 +56,46 @@ Contrary to Lovász's first hope \cite{Lovasz1979} $\vartheta(G)$ does not alway
   $$ \omega(G) \leq \vartheta(\overline{G}) \leq \chi(G) $$
 \end{theorem}
 
-Because in perfect graphs $\omega(G) = \chi(G)$, we get $\omega(G) = \vartheta(\overline{G}) = \chi(G)$.
-
-Therefore, if for any perfect graph $G$, we could calculate $\vartheta(G)$ and $\vartheta(\overline{G})$, we would get $\omega(G)$, $\chi(G)$ and $\alpha(G)$.
+Because in perfect graphs $\omega(G) = \chi(G)$, we get $\omega(G) = \vartheta(\overline{G}) = \chi(G)$. Therefore, if for any perfect graph $G$, we could calculate $\vartheta(G)$ and $\vartheta(\overline{G})$, we would get $\omega(G)$, $\chi(G)$ and $\alpha(G)$.
 
 But how can we construct an optimum (or even good) orthogonal representation? It turns out that it can be computed in polynomial time using semidefinite optimization.
 
 \section{Computing \boldmath$\vartheta$}
 \label{sec:computingTheta}
 
-First, let us recall some definitions, with \cite{gilbertstrang2020} as a reference for linear algebra. \todo{do we want more lin. algebra definitions?}
+First, let us recall some definitions, with \cite{gilbertstrang2020} as a reference for linear algebra.
 
 \begin{defn}[eigenvector, eigenvalue]
   Let $A$ be an $n \times n$ real matrix. An \emph{eigenvector} of $A$ is a vector $x$ such that $Ax$ is parallel to $x$. In other words, there is a real or complex number $\lambda$, such that $Ax = \lambda x$. This $\lambda$ is called the \emph{eigenvalue} of $A$ belonging to eigenvector $x$.
 \end{defn}
 
-If a matrix $A$ is symmetric \footnote{Matrix $A$ is symmetric iff $A = A^\intercal$}, all the eigenvalues are real.
+If a matrix $A$ is symmetric\footnote{Matrix $A$ is symmetric if and only if $A = A^\intercal$}, all the eigenvalues are real.
 
 \begin{defn}[positive semidefinite matrix]
-  Let $A$ be an $n \times x$ symmetric matrix. $A$ is \emph{positive semidefinite} if all of its eigenvalues are nonnegative. We denote it by $A \succeq 0$.
+  Let $A$ be an $n \times n$ symmetric matrix. $A$ is \emph{positive semidefinite} if all of its eigenvalues are nonnegative. We denote it by $A \succeq 0$.
 \end{defn}
 
 We have equivalent definitions of semidefinite matrices.
 \begin{theorem}
   For a real symmetric $n \times n$ matrix $A$, the following are equivalent:
   \begin{enumerate}[(i)]
-    \item $A$ is positive semidefinite
-    \item \label{en:ei2} for every $x \in \mathbb{R}^n$, $x^\intercal Ax$ is nonnegative
-    \item for some matrix $U$, $A = U^\intercal U$
-    \item $A$ is a nonnegative linear combination of matrices of the type $xx^\intercal$
+    \item $A$ is positive semidefinite,
+    \item \label{en:ei2} for every $x \in \mathbb{R}^n$, $x^\intercal Ax$ is nonnegative,
+    \item for some matrix $U$, $A = U^\intercal U$,
+    \item $A$ is a nonnegative linear combination of matrices of the type $xx^\intercal$.
   \end{enumerate}
 \end{theorem}
 
 From (\ref{en:ei2}) it follows that diagonal entries of any positive semidefinite matrix are nonnegative and the sum of two positive semidefinite matrices is positive semidefinite.
 
-We will think of $n \times n$ matrices as vectors with $n^2$ coordinates.
+We may think equivalently of $n \times n$ matrices as vectors with $n^2$ coordinates.
 \begin{defn}[convex cone]
   A subset $C$ of $\mathbb{R}^n$ is a \emph{convex cone}, if for any positive scalars $\alpha, \beta$ and for any $x, y \in C$, $\alpha x + \beta y \in C$.
 \end{defn}
 
 The fact that the sum of two positive semidefinite matrices is again positive semidefinite, with the fact that every positive scalar multiple of a positive semidefinite matrix is positive semidefinite, translates into the geometric statement that the set of all positive semidefinite matrices forms a convex closed cone $\mathcal{P}_n$ in $\mathbb{R}^{n \times n}$ with vertex 0. This cone $\mathcal{P}_n$ is important but its structure is not trivial.
 
-\paragraph{Semidefinite programs}
+\paragraph{Semidefinite programs.}
 
 Now, we can define a \emph{semidefinite program} to be an optimization problem of the following form:
 
@@ -110,9 +109,9 @@ Here $A_1, \ldots, A_n, B$ are given symmetric $m \times m$ matrices and $c \in 
 
 The special case when $A_1, \ldots A_n, B$ are diagonal matrices is a ''generic'' linear program, in fact we can think of semidefinite programs as generalizations of linear programs. Not all properties of linear programs are carried over to semidefinite programs, but the intuition is helpful.
 
-Solving semidefinite programs is a complex topic, we refer to \cite{grotschel1993} for reference. All we need to know is that we can solve semidefinite programs up to an error of $\epsilon$ in polynomial time. One of the methods to do this is called the \emph{ellipsoid method}, hence the name for the coloring algorithm.
+Solving semidefinite programs is a complex topic, we refer to \cite{grotschel1993} for reference. All we need to know is that we can solve semidefinite programs up to an arbitrarily small error in polynomial time. One of the methods to do this is called the \emph{ellipsoid method}, hence the name for the coloring algorithm.
 
-\paragraph{Calculating \boldmath$\vartheta$}
+\paragraph{Calculating \boldmath$\vartheta$.}
 
 Let us recall, that an orthogonal representation of a graph $G = (V, E)$ is a labeling $u: V \rightarrow \mathbb{R}^d$ for some $d$, such that $u_i^\intercal u_j = 0$ for all nonedges $ij$. An \emph{orthonormal} representation is an orthogonal representation with $|u_i| = 1$ for all $i$. The \emph{angle} of an orthogonal representation is the smallest half-angle of a rotational cone containing the representing vectors.
 
@@ -159,7 +158,7 @@ The following is based on \citetitle{Laurent2005} by \citeauthor{Laurent2005} \c
 
 Given graph $G$, recall that stability number of $G$ is equal clique number of the complement of $G$. This gives us a way to compute $\alpha(G)$ for any perfect graph $G$.
 
-In fact, to calculate $\chi(\overline{G})$ and $\alpha(G)$ we only need an approximated value of $\vartheta(G)$ with precision $< \frac{1}{2}$, as the former values are always integral.
+In fact, to calculate $\chi(\overline{G})$ and $\alpha(G)$ we only need an approximated value of $\vartheta(G)$ with precision smaller than $1/2$, as the former values are always integral.
 
 We will now show how to find a stable set in $G$ of size $\alpha(G)$.
 
@@ -183,7 +182,7 @@ Because at every step we have $\alpha(G_i) = \alpha(G_{i-1})$, therefore $\alpha
 
 The running time of \cref{alg:maxStableSet} is polynomial, because we construct $n$ auxiliary graphs, each requiring calculating $\alpha$ once plus additional $O(|V|^2)$ time for constructing the graph.
 
-Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ in the following manner. Create graph $G'$ by replacing every node $v$ by a set $W_v$ of $w(v)$ nonadjacent nodes, making two nodes $x \in W_v$, $y \in W_u$ adjacent in $G'$ iff the nodes $v$, $u$ are adjacent in $G$. Then calculate a maximum cardinality stable set in $G'$ (we remark that $G'$ is still perfect because every new introduced hole is even) and return a result of those vertices in $G$ whose any (and therefore all) copies were chosen. We will use this technique later on.
+Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ in the following manner. Create graph $G'$ by replacing every node $v$ by a set $W_v$ of $w(v)$ nonadjacent nodes, making two nodes $x \in W_v$, $y \in W_u$ adjacent in $G'$ if and only if the nodes $v$, $u$ are adjacent in $G$. Then calculate a maximum cardinality stable set in $G'$ (we remark that $G'$ is still perfect because every new introduced hole is even) and return a result of those vertices in $G$ whose any (and therefore all) copies were chosen. We will use this technique later on.
 
 \subsection{Stable set intersecting all maximum cardinality cliques}
 Next, let us show how to find a stable set intersecting all the maximum cardinality cliques of $G$.
@@ -240,3 +239,5 @@ In 2015 Maffray showed an algorithm for coloring Berge graphs with no squares (a
 In 2016 Chudnovsky et al. published an algorithm that given a perfect graph $G$ with $\omega(G) = k$ colors it optimally in a time polynomial for a fixed $k$ \cite{Chudnovsky2017}.
 
 A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{Chudnovsky2019}. Before proving strong perfect graph conjecture, a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004} During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern. We analyze this algorithm and provide its pseudocode in \cref{ch:coloringSquareFree}.
+
+\TODO{Dałbym ze 2-3 zdania braggowania, ze algorytm jest duzo bardziej zlozony niz rozpoznawanie + na czym sie opiera.}

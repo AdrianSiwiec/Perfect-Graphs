@@ -148,7 +148,7 @@ A knight graph is constructed in a similar way to rook graph, but by taking pote
 
 \paragraph{Hypercube graphs}
 
-A hypercube is a generalization of a cube to a higher dimensional space. We use hypercubes that are not complete, to achieve higher granularity of data. In a hypercube of $n$ vertices there is an edge between vertices $u$ and $v$ iff binary representations of $u$ and $v$ differ by exactly one bit.
+A hypercube is a generalization of a cube to a higher dimensional space. We use hypercubes that are not complete, to achieve higher granularity of data. In a hypercube of $n$ vertices there is an edge between vertices $u$ and $v$ if and only if binary representations of $u$ and $v$ differ by exactly one bit.
 
 Hypercube graphs tell a similar story to lattice graphs and knight graphs. Na\"ive is very fast at first, but becomes unbearably slow for $|V|$ higher than 55. Unfortunately, CCLSV doesnt fare much better, although it grows slower. Again, the speedup of GPU CCLSV is noticeable, being around 4.8x for $|V| = 55$.
 

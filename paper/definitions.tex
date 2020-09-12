@@ -7,7 +7,6 @@ We use standard definitions, sourced from the book by \citeauthor{BB98} \citetit
 \end{defn}
 
 \begin{wrapfigure}{r}{0.4\textwidth}
-  \label{fig:examplePath}
   \centering\begin{tikzpicture}[scale=.7, simplegraph]
     \node(a) at (0, 0) {$v_1$};
     \node(b) at (2, 0) {$v_2$};
@@ -23,13 +22,14 @@ We use standard definitions, sourced from the book by \citeauthor{BB98} \citetit
     \draw[dashed](b) to[in=90, out=90] (d);
   \end{tikzpicture}
   \caption{An example graph $G_0$}
+  \label{fig:examplePath}
 \end{wrapfigure}
 
-We will only consider finite graphs, that is $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. The size of the vertex set of a graph $G$ will be called the \emph{cardinality} of $G$.
+We will only consider finite graphs, that is $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. When the context of $G$ is clear we will use $V$ and $E$ to denote its vertex and edge set.
 
-An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{unordered}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is all vertices $y$ such that $xy$ is an edge. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
+An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{undirected}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is all vertices $y$ such that $xy$ is an edge. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
 
-Figure \ref{fig:examplePath} shows an example of a graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
+\Cref{fig:examplePath} shows an example of a graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
 
 \begin{defn}[subgraph]
   $G' = (V', E')$ is a \emph{subgraph} of $G = (V, E)$ if $V' \subseteq V$ and $E' \subseteq E$.
@@ -53,7 +53,7 @@ For example $(\{v_1, v_2, v_3\}, \{v_1v_2\})$ is \emph{not} an induced subgraph 
 \end{defn}
 This path $P$ is usually denoted by $x_1x_2\ldots x_l$ or $x_1 - x_2 - \ldots - x_l$. The vertices $x_1$ and $x_l$ are the \emph{endvertices} and ${l-1} = |E(P)|$ is the \emph{length} of the path P. $\{x_2, \ldots x_{l-1}\}$ is the \emph{inside} of the path $P$, denoted as $P^*$.
 
-Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we would add any edge to $G_0$ it would stop being a path (sometimes we call such an edge a \emph{chord}).
+Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we would add any edge to $G_0$ it would stop being a path.
 
 
 \begin{defn}[connected graph, subset]
@@ -82,7 +82,7 @@ Notice, that a cycle is not a path (nor is a path a cycle). If we add an edge $v
 If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Otherwise, it will be called \emph{even}.
 
 \begin{defn}[complement]
-  A \emph{complement} of a graph $G = (V, E)$ is a graph $\overline{G} = (V, {V \choose 2} \setminus E)$, that is two vertices $x, y$ are adjacent in $\overline{G}$ iff they are not adjacent in $G$.
+  A \emph{complement} of a graph $G = (V, E)$ is a graph $\overline{G} = (V, {V \choose 2} \setminus E)$, that is two vertices $x, y$ are adjacent in $\overline{G}$ if and only if they are not adjacent in $G$.
 \end{defn}
 
 % Sometimes, we will call a complement of a member of a class $\Gamma$ an \emph{anti-
@@ -97,6 +97,10 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
   An \emph{anticomponent} of a graph $G$ is an induced subgraph whose complement is a component in $\overline{G}$.
 \end{defn}
 
+\begin{defn}[antihole]
+  An \emph{antihole} is a subgraph of $G$ whose complement is a hole in $G$.
+\end{defn}
+
 \begin{defn}[clique]
   A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected. We will denote a clique on $n$ vertices as $K_n$.
 \end{defn}
@@ -108,14 +112,14 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
 \begin{defn}[anticlique]
   An \emph{anticlique} is a graph in which there are no edges. We will also call anticliques \emph{independent sets}. 
 \end{defn}
-In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subseteq V$ will be called \emph{independent} (in the context of $G$) iff $G[V']$ is an anticlique.
+In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subseteq V$ will be called \emph{independent} (in the context of $G$) if and only if $G[V']$ is an anticlique.
 
 \begin{defn}[stability number]
   A \emph{stability number} of a graph $G$, denoted as $\alpha(G)$, is a cardinality of its largest induced stable set.
 \end{defn}
 
 \begin{defn}[coloring]
-  Given a graph $G$, its \emph{coloring} is a function $c: V(G) \rightarrow \mathbb{N}^+$, such that for every edge $xy \in E(G)$, $c(x)$ is different from $c(y)$. A $k-coloring$ of $G$ (if exists) is a coloring, such that for all vertices $x \in V(G)$, $c(x) \leq k$.
+  Given a graph $G$, its \emph{coloring} is a function $c: V(G) \rightarrow \mathbb{N}^+$, such that $c(x) \neq c(y)$ for every edge $xy \in E(G)$. A $k$-coloring of $G$ (if exists) is a coloring, such that $c(x) \leq k$ for all vertices $x \in V(G)$.
 \end{defn}
 
 \begin{defn}[chromatic number]
@@ -125,25 +129,3 @@ In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \
 \TODO{Defs below to ch. 1}
 
 
-\begin{defn}[C-major vertices]
-  Given a shortest off hole $C$ in $G$, a node $v \in V(G) \setminus V(C)$ is $C-major$ if the set of its neighbors in $C$ is not contained in any 3-node path of $C$.
-  \TODO{a picture of this, clean odd hole, amenable hole}
-\end{defn}
-
-\begin{defn}[clean odd hole]
-  An odd hole $C$ of $G$ is \emph{clean} if no vertex in $G$ is $C$-major.
-\end{defn}
-
-\begin{defn}[cleaner]
-  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{cleaner for $C$} if $X \cap V(C) = \emptyset$ and every $C$-major vertex belongs to $X$.
-\end{defn}
-
-Let us notice, that if $X$ is a cleaner for $C$ then $C$ is a clean hole in $G \setminus X$.
-
-\begin{defn}[near-cleaner]
-  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if $X$ contains all $C$-major vertices and $X \cap V(C)$ is a subset of vertex set of some 3-node path of $C$.
-\end{defn}
-
-\begin{defn}[amenable odd hole]
-  An odd hole $C$ of $G$ is \emph{amenable} if it is a shortest off hole in $G$, it is of length at least 7 and for every anticonnected set $X$ of $C$-major vertices there is a $X$-complete edge in $C$.
-\end{defn}
