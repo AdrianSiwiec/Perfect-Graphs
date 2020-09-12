@@ -437,86 +437,86 @@ void testDevIsAHole(context_t &context) {
   context.synchronize();
 }
 
-void testCuContainsHoleOfSize(context_t &context) {
-  Graph G(6,
-          "\
-  .XX...\
-  X.XX..\
-  XX....\
-  .X..X.\
-  ...X.X\
-  ....X.\
-  ");
-  CuGraph CG(G, context);
+// void testCuContainsHoleOfSize(context_t &context) {
+//   Graph G(6,
+//           "\
+//   .XX...\
+//   X.XX..\
+//   XX....\
+//   .X..X.\
+//   ...X.X\
+//   ....X.\
+//   ");
+//   CuGraph CG(G, context);
 
-  assert(!cuContainsHoleOfSize(CG, 3, context));
-  assert(!cuContainsHoleOfSize(CG, 4, context));
-  assert(!cuContainsHoleOfSize(CG, 5, context));
-  assert(!cuContainsHoleOfSize(CG, 6, context));
+//   assert(!cuContainsHoleOfSize(CG, 3, context));
+//   assert(!cuContainsHoleOfSize(CG, 4, context));
+//   assert(!cuContainsHoleOfSize(CG, 5, context));
+//   assert(!cuContainsHoleOfSize(CG, 6, context));
 
-  G = Graph(6,
-            "\
-  .XX...\
-  X.XX..\
-  XX..X.\
-  .X..X.\
-  ..XX.X\
-  ....X.\
-  ");
-  CuGraph CG2(G, context);
-  assert(cuContainsHoleOfSize(CG2, 4, context));
-  assert(!cuContainsHoleOfSize(CG2, 3, context));
-  assert(!cuContainsHoleOfSize(CG2, 5, context));
-  assert(!cuContainsHoleOfSize(CG2, 6, context));
+//   G = Graph(6,
+//             "\
+//   .XX...\
+//   X.XX..\
+//   XX..X.\
+//   .X..X.\
+//   ..XX.X\
+//   ....X.\
+//   ");
+//   CuGraph CG2(G, context);
+//   assert(cuContainsHoleOfSize(CG2, 4, context));
+//   assert(!cuContainsHoleOfSize(CG2, 3, context));
+//   assert(!cuContainsHoleOfSize(CG2, 5, context));
+//   assert(!cuContainsHoleOfSize(CG2, 6, context));
 
-  // assert(!cuContainsHoleOfSize(CG, 3, context, 6));
-  // assert(!cuContainsHoleOfSize(CG, 4, context, 6));
-  // assert(!cuContainsHoleOfSize(CG, 5, context, 6*6));
-  // assert(!cuContainsHoleOfSize(CG, 6, context, 6*6*6));
+//   // assert(!cuContainsHoleOfSize(CG, 3, context, 6));
+//   // assert(!cuContainsHoleOfSize(CG, 4, context, 6));
+//   // assert(!cuContainsHoleOfSize(CG, 5, context, 6*6));
+//   // assert(!cuContainsHoleOfSize(CG, 6, context, 6*6*6));
 
-  // assert(cuContainsHoleOfSize(CG2, 4, context, 6));
-  // assert(!cuContainsHoleOfSize(CG2, 3, context, 6*6));
-  // assert(!cuContainsHoleOfSize(CG2, 5, context, 6*6*6));
-  // assert(!cuContainsHoleOfSize(CG2, 6, context, 6*6*6));
-}
+//   // assert(cuContainsHoleOfSize(CG2, 4, context, 6));
+//   // assert(!cuContainsHoleOfSize(CG2, 3, context, 6*6));
+//   // assert(!cuContainsHoleOfSize(CG2, 5, context, 6*6*6));
+//   // assert(!cuContainsHoleOfSize(CG2, 6, context, 6*6*6));
+// }
 
-void testCuContainsOddHoleNaive(context_t &context) {
-  Graph G(6,
-          "\
-  .XX...\
-  X.XX..\
-  XX...X\
-  .X..X.\
-  ...X.X\
-  ..X.X.\
-  ");
-  CuGraph CG(G, context);
+// void testCuContainsOddHoleNaive(context_t &context) {
+//   Graph G(6,
+//           "\
+//   .XX...\
+//   X.XX..\
+//   XX...X\
+//   .X..X.\
+//   ...X.X\
+//   ..X.X.\
+//   ");
+//   CuGraph CG(G, context);
 
-  assert(cuContainsOddHoleNaive(CG, context));
+//   assert(cuContainsOddHoleNaive(CG, context));
 
-  G = Graph(6,
-            "\
-  .XX...\
-  X.XX..\
-  XX..XX\
-  .X..X.\
-  ..XX.X\
-  ..X.X.\
-  ");
-  CuGraph CG2(G, context);
-  assert(!cuContainsOddHoleNaive(CG2, context));
+//   G = Graph(6,
+//             "\
+//   .XX...\
+//   X.XX..\
+//   XX..XX\
+//   .X..X.\
+//   ..XX.X\
+//   ..X.X.\
+//   ");
+//   CuGraph CG2(G, context);
+//   assert(!cuContainsOddHoleNaive(CG2, context));
 
-  G = Graph(5,
-            "\
-  .X..X\
-  X.X..\
-  .X.X.\
-  ..X.X\
-  X..X.\
-  ");
-  CuGraph CG3(G, context);
-  assert(cuContainsOddHoleNaive(CG3, context));
-}
+//   G = Graph(5,
+//             "\
+//   .X..X\
+//   X.X..\
+//   .X.X.\
+//   ..X.X\
+//   X..X.\
+//   ");
+//   CuGraph CG3(G, context);
+//   assert(cuContainsOddHoleNaive(CG3, context));
+// }
 
 bool cuTestGraphSimple(const Graph &G, context_t &context, bool runNaive = true) {
   string N = to_string(G.n);
@@ -772,10 +772,10 @@ int main() {
   testDevIsDistinctValues(context);
   testDevIsAPath(context);
   testDevNextNeighbor(context);
-  testDevNextPathInPlace(context);
+  // testDevNextPathInPlace(context);
   testDevIsAHole(context);
-  testCuContainsHoleOfSize(context);
-  testCuContainsOddHoleNaive(context);
+  // testCuContainsHoleOfSize(context);
+  // testCuContainsOddHoleNaive(context);
   testCuIsPerfectNaiveHand(context);
   cuTestPerfectHandInteresting(context);
   testCuIsPerfectNaive(context);

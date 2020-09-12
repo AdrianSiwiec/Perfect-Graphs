@@ -1,0 +1,8 @@
+- cache 3-len paths in near cleaners (both cpu and CUDA)
+- vec without range checks for better performance?
+- avoid malloc/free on cuda (global arrays)
+- cuMemHostAlloc (CU_MEMHOSTALLOC_WRITECOMBINED ?)
+- devIsDistinctValues speed up?
+
+- memory allocator for recognition? new/delete takes about 30% of time [low probability]
+- Tinker with Csdp parallelism to be able to run it on Student. [v. low]

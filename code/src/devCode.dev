@@ -85,7 +85,7 @@ __device__ void devPreparePathStart(int code, int *v, int lenV, int n) {
 __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeighbor,
                                    const int *devFirstNeighbor, int Gn, int *v, int &lenV, int lenPath,
                                    bool isCycleOk = false, bool areChordsOk = false, bool savePrefix = false,
-                                   bool holeRequired = false) {
+                                   bool holeRequired = false, int inLenV = 0) {
   if (lenPath <= 1) {
     assert("(DEV ERROR) Length of next path must be at least 2" == 0);
   }
@@ -93,6 +93,8 @@ __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeigh
   if (lenV > 0 && !devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk)) {
     assert("(DEV ERROR) Input of devNextPath should be a path" == 0);
   }
+
+  int mem = v[inLenV - 1];
 
   // int savedPrefixLen = -1;
   // if (savePrefix) {
@@ -105,13 +107,17 @@ __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeigh
     lenV = 1;
   }
 
+  if (v[0] == -1) {
+    devPrintArray(v, lenV);
+  }
+
   while (true) {
     if (v[lenV - 1] == -1) {
       lenV--;
-      // if (lenV < savedPrefixLen) {
-      //   lenV = 0;
-      //   return;
-      // }
+      if (lenV < inLenV || (lenV == inLenV && mem != v[inLenV - 1])) {
+        lenV = 0;
+        return;
+      }
       if (lenV == 1) {
         v[0]++;
         if (v[0] >= Gn) {
@@ -120,34 +126,54 @@ __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeigh
         }
         continue;
       } else {
+        if (v[lenV - 2] == -1) {
+          devPrintArray(v, lenV);
+        }
+        // assert(v[lenV - 2] != -1);
         v[lenV - 1] = devGetNextNeighbor(devNextNeighbor, Gn, v[lenV - 2], v[lenV - 1]);
+        if (lenV >= inLenV && mem != v[inLenV - 1]) {
+          lenV = 0;
+          return;
+        }
+        if (v[0] == -1) printf("A\n");
         continue;
       }
     }
 
-    if (lenV < lenPath) {
+    if (lenV < Gn) {
       while (lenV > 1 && v[lenV - 1] != -1 &&
-             (!devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk, false) ||
-              (holeRequired && v[lenV - 1] <= v[0]))) {
+             (!devIsAPath(devMatrix, Gn, v, lenV, true, false, false) || (v[lenV - 1] <= v[0]))) {
         v[lenV - 1] = devGetNextNeighbor(devNextNeighbor, Gn, v[lenV - 2], v[lenV - 1]);
+        if (lenV >= inLenV && mem != v[inLenV - 1]) {
+          lenV = 0;
+          return;
+        }
       }
       if (v[lenV - 1] == -1) continue;
 
+      if ((lenV % 2) && devIsAPath(devMatrix, Gn, v, lenV, true, false, true)) return;
+
       v[lenV] = devGetFirstNeighbor(devFirstNeighbor, v[lenV - 1]);
+      if (lenV >= inLenV && mem != v[inLenV - 1]) {
+        lenV = 0;
+        return;
+      }
+      if (v[0] == -1) printf("B\n");
       lenV++;
 
-      if (lenV == lenPath && devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk)) {
+      if ((lenV % 2) && devIsAPath(devMatrix, Gn, v, lenV, true, false, true))
         return;
-      } else {
+      else
         continue;
-      }
     }
 
     do {
+      assert(lenV > 1);
       v[lenV - 1] = devGetNextNeighbor(devNextNeighbor, Gn, v[lenV - 2], v[lenV - 1]);
-    } while (v[lenV - 1] != -1 && !devIsAPath(devMatrix, Gn, v, lenV, isCycleOk, areChordsOk));
+      if (v[0] == -1) printf("C\n");
+    } while (v[lenV - 1] != -1 && !devIsAPath(devMatrix, Gn, v, lenV, true, false, true));
 
-    if (v[lenV - 1] == -1) continue;
+    if ((lenV % 2) == 0 || v[lenV - 1] == -1) continue;
 
     return;
   }
@@ -155,100 +181,107 @@ __device__ bool devNextPathInPlace(const int *devMatrix, const int *devNextNeigh
 
 __device__ bool devContainsHoleWithPrefix(const int *devMatrix, const int *devNextNeighbor,
                                           const int *devFirstNeighbor, int Gn, int *v, int lenV, int size) {
-  if (!devIsAPath(devMatrix, Gn, v, lenV, lenV == size)) return false;
+  if (!devIsAPath(devMatrix, Gn, v, lenV, true, false, false)) return false;
 
-  if (lenV == size) return devIsAHole(devMatrix, Gn, v, lenV);
+  // if (lenV == size) return devIsAHole(devMatrix, Gn, v, lenV);
 
   int inLenV = lenV;
 
   int mem = v[inLenV - 1];
 
-  if (lenV < size) {
-    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false, true);
-  }
+  // if (lenV < size) {
+  //   devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false, true);
+  // }
 
-  while (lenV == size && v[inLenV - 1] == mem) {
-    if (devIsAHole(devMatrix, Gn, v, size)) {
+  while (lenV > 0 && v[inLenV - 1] == mem) {
+    if ((lenV % 2) && devIsAHole(devMatrix, Gn, v, lenV)) {
       return true;
     }
-    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false, true);
+    devNextPathInPlace(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size, true, false, true,
+                       inLenV);
+    if ((lenV % 2) && devIsAHole(devMatrix, Gn, v, lenV)) {
+      return true;
+    }
   }
 
   return false;
 }
 
-__device__ bool devContainsHoleWithPrefixCode(const int *devMatrix, const int *devNextNeighbor,
-                                              const int *devFirstNeighbor, int Gn, int code, int codeLen,
-                                              int codeMax, int size) {
-  static const int max_size = 30;
-  assert(max_size > size);
+// __device__ bool devContainsHoleWithPrefixCode(const int *devMatrix, const int *devNextNeighbor,
+//                                               const int *devFirstNeighbor, int Gn, int code, int codeLen,
+//                                               int codeMax, int size) {
+//   static const int max_size = 30;
+//   assert(max_size > size);
 
-  if (code >= codeMax) return;
+//   if (code >= codeMax) return;
 
-  int v[max_size];
-  devPreparePathStart(code, v, codeLen, Gn);
-  int lenV = codeLen;
+//   int v[max_size];
+//   devPreparePathStart(code, v, codeLen, Gn);
+//   int lenV = codeLen;
 
-  return devContainsHoleWithPrefix(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size);
-}
+//   return devContainsHoleWithPrefix(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, v, lenV, size);
+// }
 
 // # cu* portion (ran by host, uses __device__ code)
 
-bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context,
-                          int maxThreads = _max_threads_to_run) {
-  int k = G.n;
-  int kCounter = 1;
-  while (k * G.n <= maxThreads && kCounter < size) {
-    k *= G.n;
-    kCounter++;
-  }
+// bool cuContainsHoleOfSize(const CuGraph &G, int size, context_t &context,
+//                           int maxThreads = _max_threads_to_run) {
+//   int k = G.n;
+//   int kCounter = 1;
+//   while (k * G.n <= maxThreads && kCounter < size) {
+//     k *= G.n;
+//     kCounter++;
+//   }
 
-  int *devOddHoleFound;
-  CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 1));
+//   int *devOddHoleFound;
+//   CUCHECK(cudaMalloc(&devOddHoleFound, sizeof(int) * 1));
 
-  // typedef launch_params_t<256, 16> launch_t;
-  // cout << k << endl;
-  // auto f = [=] MGPU_DEVICE(int tid, int cta) {
-  //   typedef typename launch_t::sm_ptx params_t;
-  //   enum { nt = params_t::nt, vt = params_t::vt };
+//   // typedef launch_params_t<256, 16> launch_t;
+//   // cout << k << endl;
+//   // auto f = [=] MGPU_DEVICE(int tid, int cta) {
+//   //   typedef typename launch_t::sm_ptx params_t;
+//   //   enum { nt = params_t::nt, vt = params_t::vt };
 
-  //   int codeStart = ((cta * nt) + tid) * vt;
+//   //   int codeStart = ((cta * nt) + tid) * vt;
 
-  //   for (int i = 0; i < vt; i++) {
-  //     int id = codeStart + i;
+//   //   for (int i = 0; i < vt; i++) {
+//   //     int id = codeStart + i;
 
-  //     if (devContainsHoleWithPrefixCode(G, id, kCounter, k, size)) {
-  //       devOddHoleFound[0] = 1;
-  //       return;
-  //     }
-  //   }
-  // };
+//   //     if (devContainsHoleWithPrefixCode(G, id, kCounter, k, size)) {
+//   //       devOddHoleFound[0] = 1;
+//   //       return;
+//   //     }
+//   //   }
+//   // };
 
-  // cta_transform<launch_t>(f, k, context);
-  // context.synchronize();
+//   // cta_transform<launch_t>(f, k, context);
+//   // context.synchronize();
 
-  transform(
-      [=] MGPU_DEVICE(int id, const int *devMatrix, const int *devNextNeighbor, const int *devFirstNeighbor,
-                      int Gn) {
-        if (devContainsHoleWithPrefixCode(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, id, kCounter, k,
-                                          size)) {
-          devOddHoleFound[0] = 1;
-        }
-      },
-      k, context, G.devMatrix, G.devNextNeighbor, G.devFirstNeighbor, G.n);
-  context.synchronize();
+//   transform(
+//       [=] MGPU_DEVICE(int id, const int *devMatrix, const int *devNextNeighbor, const int
+//       *devFirstNeighbor,
+//                       int Gn) {
+//         if (devContainsHoleWithPrefixCode(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, id, kCounter,
+//         k,
+//                                           size)) {
+//           devOddHoleFound[0] = 1;
+//         }
+//       },
+//       k, context, G.devMatrix, G.devNextNeighbor, G.devFirstNeighbor, G.n);
+//   context.synchronize();
 
-  int oddHoleFound[1];
-  CUCHECK(cudaMemcpy(oddHoleFound, devOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
-  context.synchronize();
+//   int oddHoleFound[1];
+//   CUCHECK(cudaMemcpy(oddHoleFound, devOddHoleFound, sizeof(int) * 1, cudaMemcpyDeviceToHost));
+//   context.synchronize();
 
-  return oddHoleFound[0];
-}
+//   return oddHoleFound[0];
+// }
 
 bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context, bool gatherStats = false) {
   if (gatherStats) StatsFactory::startTestCasePart("CPU Preparation");
 
-  int minPrefixes = 10000;
+  int minPrefixes = 2000;
+  // int minPrefixes = 20;
   int threadsToRun = 100000;
 
   int pathLen = 2;
@@ -261,38 +294,46 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context, bool ga
 
   double pretime = 0, cudatime = 0;
 
-  int cpuPathLenLimit = G.n <= 16 ? 8 : 7;
+  int cpuPathLenLimit = 20;
 
   {
     RaiiTimer pretimer("");
-    pathLen = 3;
     prefixes = vec<vec<int>>();
     v = vec<int>();
 
-    do {
-      pathLen++;
-      prefixes = vec<vec<int>>();
-      v = vec<int>();
+    // do {
+    //   pathLen++;
+    //   prefixes = vec<vec<int>>();
+    //   v = vec<int>();
 
-      do {
-        nextPathInPlace(G, v, pathLen, pathLen == size);
-        prefixes.push_back(v);
-      } while (!v.empty());
-      prefixes.pop_back();
+    //   do {
+    //     nextPathInPlace(G, v, pathLen, true);
+    //     prefixes.push_back(v);
+    //     if (v.size() > 3 && (v.size() % 2) && isHole(G, v)) return true;
+    //   } while (!v.empty());
+    //   prefixes.pop_back();
 
-      if (prefixes.empty()) {
-        break;
-      }
-    } while (pathLen < size && pathLen <= cpuPathLenLimit && prefixes.size() < minPrefixes);
+    //   if (prefixes.empty()) {
+    //     break;
+    //   }
+    // } while (pathLen < size && pathLen <= cpuPathLenLimit && prefixes.size() < minPrefixes);
 
-    while (pathLen < size && prefixes.size() < minPrefixes) {
+    for (int i = 0; i < G.n; i++) {
+      prefixes.push_back(vec<int>(1, i));
+    }
+    pathLen = 1;
+
+    while (pathLen <= G.n && prefixes.size() < minPrefixes) {
       vec<vec<int>> savedPrefixes = prefixes;
       prefixes = vec<vec<int>>();
       pathLen++;
       for (auto v : savedPrefixes) {
-        for (int i = 0; i < G.n; i++) {
-          prefixes.push_back(v);
-          prefixes.back().push_back(i);
+        for (int i : G[v.back()]) {
+          vec<int> tmp = v;
+          tmp.push_back(i);
+          if (tmp.size() > 3 && (tmp.size() % 2) && isHole(G, tmp)) return true;
+          if (tmp.size() < 3 || (v[0] < v.back() && isAPath(G, tmp, true, false, false)))
+            prefixes.push_back(tmp);
         }
       }
     }
@@ -302,11 +343,14 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context, bool ga
 
   if (gatherStats) StatsFactory::startTestCasePart("GPU Calculation");
 
+  cerr << prefixes.size() << endl;
+  int allocSize = G.n + 2;
+
   {
     RaiiTimer cudatimer("");
-    CUCHECK(cudaMalloc(&devPaths, sizeof(int) * size * prefixes.size()));
+    CUCHECK(cudaMalloc(&devPaths, sizeof(int) * allocSize * prefixes.size()));
     for (int i = 0; i < prefixes.size(); i++) {
-      CUCHECK(cudaMemcpy(devPaths + size * i, prefixes[i].data(), prefixes[i].size() * sizeof(int),
+      CUCHECK(cudaMemcpy(devPaths + allocSize * i, prefixes[i].data(), prefixes[i].size() * sizeof(int),
                          cudaMemcpyHostToDevice));
     }
 
@@ -319,8 +363,8 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context, bool ga
                              const int *devNextNeighbor, const int *devFirstNeighbor, int Gn) {
       int id = cta * dimSize + tid;
       for (int i = id; i < prefixesSize; i += threadsToRun) {
-        if (devContainsHoleWithPrefix(devMatrix, devNextNeighbor, devFirstNeighbor, Gn, devPaths + size * i,
-                                      pathLen, size)) {
+        if (devContainsHoleWithPrefix(devMatrix, devNextNeighbor, devFirstNeighbor, Gn,
+                                      devPaths + allocSize * i, pathLen, size)) {
           devOddHoleFound[0] = 1;
           return;
         }
@@ -363,18 +407,16 @@ bool cuContainsHoleOfSize2(const Graph &G, int size, context_t &context, bool ga
   return oddHoleFound[0];
 }
 
-bool cuContainsOddHoleNaive(const CuGraph &G, context_t &context, bool gatherStats = false) {
-  for (int size = 5; size <= G.n; size += 2) {
-    if (cuContainsHoleOfSize(G, size, context)) return true;
-  }
+// bool cuContainsOddHoleNaive(const CuGraph &G, context_t &context, bool gatherStats = false) {
+//   for (int size = 5; size <= G.n; size += 2) {
+//     if (cuContainsHoleOfSize(G, size, context)) return true;
+//   }
 
-  return false;
-}
+//   return false;
+// }
 
 bool cuContainsOddHoleNaive2(const Graph &G, context_t &context, bool gatherStats = false) {
-  for (int size = 5; size <= G.n; size += 2) {
-    if (cuContainsHoleOfSize2(G, size, context, gatherStats)) return true;
-  }
+  if (cuContainsHoleOfSize2(G, (G.n % 2) ? G.n : G.n - 1, context, gatherStats)) return true;
 
   return false;
 }

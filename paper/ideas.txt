@@ -1,3 +1,0 @@
-- CUDA
-- memory allocator for recognition? new/delete takes about 30% of time
-- Tinker with Csdp parallelism to be able to run it on Student.
