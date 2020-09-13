@@ -1,14 +1,20 @@
 algorithm,Filename,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	Test NC Rest,	Test NC Shortest Paths
-Perfect, Full Binary\n$|V|=100$~,	100,	1,	1,	112.873,	1.89215,	91.4163,	17.3969,	2.14799
+Perfect, Bipartite g.\n$|V|=38$,	38,	1,	1,	107.278,	0.218552,	3.02671,	99.878,	4.11454
+Perfect, Line g. of bg.\n$|V|=40$,	40,	1,	10,	110.724,	3.47618,	3.72714,	93.9848,	9.4961
 Perfect, Grid~\n$6\times 12$,	72,	1,	1,	120.753,	0.684082,	26.7513,	87.6782,	5.56214
-Perfect, Knight\n$8\times 7$~,	56,	1,	1,	121.831,	0.530088,	10.6333,	105.194,	5.36834
 Perfect, Rook\n$5\times 7$,	35,	1,	1,	126.052,	1.58354,	2.30641,	112.719,	9.29733
+Perfect, Knight\n$8\times 7$~,	56,	1,	1,	121.831,	0.530088,	10.6333,	105.194,	5.36834
 Perfect, Hypercube\n$|V|=55$~~,	55,	1,	1,	129.839,	0.49105,	10.5966,	113.3,	5.34374
+Perfect, Split graph\n$|V|=38$,	38,	1,	1,	67.3466,	4.21462,	4.78275,	55.2461,	3.03497
+Perfect, Full Binary\n$|V|=100$~,	100,	1,	1,	112.873,	1.89215,	91.4163,	17.3969,	2.14799
 
 
 algorithm,Filename,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	GPU Test NC Copy,	Test NC Shortest Paths,	GPU Test NC work
-Cuda Perfect, Full Binary\n$|V|=100$~,	100,	1,	1,	96.4218,	1.89784,	89.1326,	0.772107,	2.13854,	2.47029
+Cuda Perfect, Bipartite g.\n$|V|=38$,	38,	1,	1,	15.0302,	0.219703,	3.0054,	3.48787,	4.0738,	4.20071
+Cuda Perfect,	Line g. of bg.\n$|V|=40$, 40,	1,	10,	24.4304,	3.51194,	3.77008,	3.95635,	9.53334,	3.60822
 Cuda Perfect,	Grid~\n$6\times 12$, 72,	1,	1,	41.559,	0.675677,	25.5778,	2.59692,	5.52489,	7.14835
-Cuda Perfect, Knight\n$8\times 7~$,	56,	1,	1,	27.0968,	0.523087,	10.3777,	3.46938,	5.28617,	7.39703
 Cuda Perfect,	Rook\n$5\times 7$, 35,	1,	1,	21.3557,	1.58833,	2.27772,	4.527,	9.203,	3.69373
+Cuda Perfect, Knight\n$8\times 7~$,	56,	1,	1,	27.0968,	0.523087,	10.3777,	3.46938,	5.28617,	7.39703
 Cuda Perfect, Hypercube\n$|V|=55$~~,	55,	1,	1,	27.2933,	0.496798,	10.1085,	3.46126,	5.22856,	7.95014
+Cuda Perfect,	Split graph\n$|V|=38$, 38,	1,	1,	16.1006,	4.2116,	4.71909,	2.21727,	2.94385,	1.98076
+Cuda Perfect, Full Binary\n$|V|=100$~,	100,	1,	1,	96.4218,	1.89784,	89.1326,	0.772107,	2.13854,	2.47029

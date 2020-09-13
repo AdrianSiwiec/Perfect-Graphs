@@ -1,7 +1,7 @@
 # coding: utf-8
 
-usePgf = True
-# usePgf = False
+# usePgf = True
+usePgf = False
 
 import matplotlib as mpl
 
@@ -202,7 +202,7 @@ experiments = [
         # ],
         "ylim": (0.5, 250),
     },
-       {
+    {
         "restrictions": [
             (csv_result, 1),
             (csv_algo, "Perfect|Naive"),
@@ -218,20 +218,11 @@ experiments = [
         "yformatter": func_formatter,
         "x_label": label_lca_N,
         "y_label": label_time_overall_s,
-        # "x_ticks": [42, 54, 66, 78, 90, 102],
-        # "x_ticks": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
-        # "x_ticks_labels": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
-        #     # "$6 \\times 5$",
-        #     "$6 \\times 7$",
-        #     "$6 \\times 9$",
-        #     "$6 \\times 11$",
-        #     "$6 \\times 13$",
-        #     "$6 \\times 15$",
-        #     "$6 \\times 17$",
-        # ],
-        "ylim": (0.5, 250),
+        "x_ticks": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+        "x_ticks_labels": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+        "ylim": (0.1, 250),
     },
-       {
+    {
         "restrictions": [
             (csv_result, 1),
             (csv_algo, "Perfect|Naive"),
@@ -405,7 +396,7 @@ experiments = [
             # (csv_N, "20|25|30|35|40|45|50|55"),
             # (csv_algo, "GPU Perfect|Perfect"),
         ],
-        "x_param": csv_N,
+        "x_param": csv_filename,
         "x_show": csv_filename,
         "type": "detailed",
         "size": sizes_in_inches["wideDetailed"],
@@ -641,10 +632,10 @@ for i_exp, experiment in enumerate(experiments):
         continue
 
     # Scan for algos to plot
-    algos = set()
+    algos = list()
     for row in current_rows:
         if row[csv_algo] not in algos:
-            algos.add(row[csv_algo])
+            algos.append(row[csv_algo])
 
     for i_algo, algo in reversed(list(enumerate(algos))):
         # Filter data of a given algorithm
@@ -652,16 +643,19 @@ for i_exp, experiment in enumerate(experiments):
             filter(lambda row: True if row[csv_algo] == algo else False, current_rows)
         )
 
-        plot_by_values = set()
+        plot_by_values = list()
 
         # Get all valid x-values
         for row in algo_rows:
             if experiment["x_param"] in row:
                 val = row[experiment["x_param"]]
                 if val not in plot_by_values:
-                    plot_by_values.add(val)
+                    plot_by_values.append(val)
 
-        x = sorted(plot_by_values)
+        if experiment["type"] != "detailed":
+            x = sorted(plot_by_values)
+        else:
+            x = plot_by_values[::-1]
 
         if experiment["type"] == "detailed":
             y = [[] for _ in range(len(x))]
@@ -694,8 +688,15 @@ for i_exp, experiment in enumerate(experiments):
             apparent_x = np.arange(len(x))
             y_sum = [sum(i) for i in y]
             old_y_sum = y_sum.copy()
-            bar_shift = (i_algo + 0.5 - (len(algos) / 2.0)) * height
-            ax.invert_yaxis()
+            if len(algos) > 1:
+                if "Cuda" in algo:
+                    bar_shift = -0.5 * height
+                else:
+                    bar_shift = 0.5 * height
+            else:
+                bar_shift = 0
+            # bar_shift = (i_algo + 0.5 - (len(algos) / 2.0)) * height
+            # ax.invert_yaxis()
             for i_field, field in reversed(list(enumerate(csv_detailed_fields))):
                 if y[0][i_field] == 0:
                     alg_label = None
