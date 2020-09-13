@@ -17,7 +17,7 @@ perfectTests=(
   # "hypercubes16to50.t.in"
   # # "kingGraph3by3to12.t.in"
 
-  "perf2.t.in"
+  # "perf2.t.in"
   # "perf.t.in"
   # "fullBinary20to100.t.in"
   # "grid6by5to11.t.in"
@@ -25,10 +25,11 @@ perfectTests=(
   # "knightGraph8by4to8.t.in"
   # "rookGraph5by4to7.t.in"
   # "split20to50.t.in"
+  # "biparite.t.in"
 )
 
 pefectSupplement=(
-  "grid6by5to11.t.in"
+  # "grid6by5to11.t.in"
 )
 
 cudaPerfectSupplement=(
@@ -37,13 +38,15 @@ cudaPerfectSupplement=(
   # "rookGraph5by4to7.t.in"
   # "split20to50.t.in"
   # "knightGraph8by4to8.t.in"
-  "perf2.t.in"
+  # "perf2.t.in"
+  "biparite.t.in"
 )
 
 naivePerfectSupplement=(
   # "rookGraph5by4to7.t.in"
   # "split20to50.t.in"
-  "perf2.t.in"
+  # "perf2.t.in"
+  "biparite.t.in"
 )
 
 # naiveTests=(
@@ -81,15 +84,15 @@ done
 #   $perfectExec <$testsDir/perfectSup/$file >>$resultsDir/$file.out.csv
 # done
 
-# for file in "${cudaPerfectSupplement[@]}"; do
-#   echo "Running CuPerfect Sup on $file"
-#   $cuPerfectExec <$testsDir/cuPerfectSup/$file >>$resultsDir/$file.out.csv
-# done
+for file in "${cudaPerfectSupplement[@]}"; do
+  echo "Running CuPerfect Sup on $file"
+  $cuPerfectExec <$testsDir/cuPerfectSup/$file >>$resultsDir/$file.out.csv
+done
 
-# for file in "${naivePerfectSupplement[@]}"; do
-#   echo "Running Naive Sup on $file"
-#   $naiveExec <$testsDir/naiveSup/$file >>$resultsDir/$file.out.csv
-# done
+for file in "${naivePerfectSupplement[@]}"; do
+  echo "Running Naive Sup on $file"
+  $naiveExec <$testsDir/naiveSup/$file >>$resultsDir/$file.out.csv
+done
 
 # for file in "${naivePerfectSupplement[@]}"; do
 #   echo "Running Cu Naive Sup on $file"
