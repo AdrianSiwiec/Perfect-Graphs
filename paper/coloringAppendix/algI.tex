@@ -5,7 +5,50 @@
   \KwData{$G$ -- square-free Berge graph}
   \KwResult{A $\omega(G)$-coloring of $G$}
   \Indp
-  TODO \;
-  TODO \;
-  \Return Todo\mysemisemi
+  \If(\tcp*[f]{\Cref{thm:getPrism}}){$G$ is an Artemis graph}{
+    \Return coloring of an Artemis graph $G$ \tcp*{\Cref{thm:colorArtemis}}
+  }
+  $H \gets$ an induced prism of $G$ \tcp*{\Cref{thm:getPrism}}
+  \TODO{do we get $H$ ready from A.1.1?}
+
+  \While{$P = $ \textsc{undefined}}{
+    
+    \If{$\exists$ a component of $G \setminus(H \cup M)$ with a set of attachments in $H$ not local}{
+      $F \gets$ a minimal component of $G \setminus(H \cup M)$ with a set of attachments in $H$ not local
+
+      $M \gets \{v: v$ is a major neighbor of H$\}$\;
+      \TODO{how do we get M?}
+
+
+      $H' \gets$ \textsc{Grow-Hyperprism}$(G, H, M, F)$\;
+      \If{$H'$ is  a \LGBSK}{
+        $J \gets H'$\;
+        $(S, N) \gets$ a $J$-strip system\;
+        \TODO{how?}
+      }\Else{
+        $H \gets H'$\;
+      }
+    }
+    \Else(\tcp*[f]{$H$ is a maximal hyperprism}){
+      $M \gets \{v: v$ is a major neighbor of H$\}$\;
+      \If{$H$ is an even hyperprism}{
+        $P \gets$ \textsc{Good-Partition-From-Even-Hyperprism}$(G, H, M)$
+        \textbf{break}
+      }
+      \Else{
+        $P \gets$ \textsc{Goog-Partition-From-Odd-Hyperprism}$(G, H, M)$\;
+        \textbf{break}
+      }
+    }
+    \If(\tcp*[f]{a $J$-strip system was encountered}){$J \neq$ \textsc{undefined}}{
+      $J', (S', N') \gets$ \textsc{Growing-J-Strip}$(G, J, (S, N))$\;
+      $M \gets$ a set of major vertives w.r.t. $(S, N)$\;
+      \If{$J', (S', N')$ is a special $K_4$ system}{
+        $P \gets$ \textsc{Good-Partition-From-Special-Strip-System}$(G, (S, N), M)$
+      }\Else{
+        $P \gets$ \textsc{Good-Partition-From-J-Strip-System}$(G, J, (S, N), M)$
+      }
+    }
+  }
+  \Return \textsc{Color-Good-Partition}$(G, P)$\;
 \end{mynameforalgorithm}
