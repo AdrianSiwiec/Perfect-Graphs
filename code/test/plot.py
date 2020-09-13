@@ -1,7 +1,7 @@
 # coding: utf-8
 
-# usePgf = True
-usePgf = False
+usePgf = True
+# usePgf = False
 
 import matplotlib as mpl
 
@@ -162,16 +162,104 @@ label_time_overall_s = "Total time [s]"
 
 # Here we declare what tests consist an experiment.
 experiments = [
+    # {
+    #     "restrictions": [(csv_result, 1), (csv_algo, "Perfect|Naive")],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "lines",
+    #     "size": sizes_in_inches["regular"],
+    #     "y_param": csv_overall,
+    #     "ylog": False,
+    #     "x_label": label_lca_N,
+    #     "y_label": label_time_overall_s,
+    # },
     {
-        "restrictions": [(csv_result, 1), (csv_algo, "Perfect|Naive")],
+        "restrictions": [
+            (csv_result, 1),
+            (csv_algo, "Perfect|Naive"),
+            (csv_filename, "perf2"),
+            # (csv_N, "42|48|54|60|66|72|78|84|90|96|102"),
+        ],
         "x_param": csv_N,
         "x_show": csv_N,
         "type": "lines",
         "size": sizes_in_inches["regular"],
         "y_param": csv_overall,
-        "ylog": False,
+        "ylog": True,
+        "yformatter": func_formatter,
         "x_label": label_lca_N,
         "y_label": label_time_overall_s,
+        # "x_ticks": [42, 54, 66, 78, 90, 102],
+        "x_ticks": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+        "x_ticks_labels": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+        #     # "$6 \\times 5$",
+        #     "$6 \\times 7$",
+        #     "$6 \\times 9$",
+        #     "$6 \\times 11$",
+        #     "$6 \\times 13$",
+        #     "$6 \\times 15$",
+        #     "$6 \\times 17$",
+        # ],
+        "ylim": (0.5, 250),
+    },
+       {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_algo, "Perfect|Naive"),
+            (csv_filename, "biparite"),
+            # (csv_N, "42|48|54|60|66|72|78|84|90|96|102"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        "y_label": label_time_overall_s,
+        # "x_ticks": [42, 54, 66, 78, 90, 102],
+        # "x_ticks": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+        # "x_ticks_labels": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+        #     # "$6 \\times 5$",
+        #     "$6 \\times 7$",
+        #     "$6 \\times 9$",
+        #     "$6 \\times 11$",
+        #     "$6 \\times 13$",
+        #     "$6 \\times 15$",
+        #     "$6 \\times 17$",
+        # ],
+        "ylim": (0.5, 250),
+    },
+       {
+        "restrictions": [
+            (csv_result, 1),
+            (csv_algo, "Perfect|Naive"),
+            (csv_filename, "fullBinary"),
+            # (csv_N, "42|48|54|60|66|72|78|84|90|96|102"),
+        ],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        "y_label": label_time_overall_s,
+        "x_ticks": [30, 40, 50, 60, 70, 80, 90, 100],
+        "x_ticks_labels": [30, 40, 50, 60, 70, 80, 90, 100],
+        # "x_ticks": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+        # "x_ticks_labels": [20, 24, 28, 32, 36, 40, 44, 48, 52, 56],
+        #     # "$6 \\times 5$",
+        #     "$6 \\times 7$",
+        #     "$6 \\times 9$",
+        #     "$6 \\times 11$",
+        #     "$6 \\times 13$",
+        #     "$6 \\times 15$",
+        #     "$6 \\times 17$",
+        # ],
+        "ylim": (0.1, 250),
     },
     {
         "restrictions": [
@@ -229,7 +317,7 @@ experiments = [
             "$5 \\times 11$",
             "$5 \\times 12$",
         ],
-        "ylim": (0.5, 200),
+        "ylim": (0.1, 200),
     },
     {
         "restrictions": [
@@ -255,7 +343,7 @@ experiments = [
             "$8 \\times 7$",
             "$8 \\times 8$",
         ],
-        "ylim": (0.5, 200),
+        "ylim": (0.1, 300),
     },
     {
         "restrictions": [
@@ -281,7 +369,7 @@ experiments = [
         #     "$8 \\times 7$",
         #     "$8 \\times 8$",
         # ],
-        "ylim": (0.5, 200),
+        "ylim": (0.1, 200),
     },
     {
         "restrictions": [
