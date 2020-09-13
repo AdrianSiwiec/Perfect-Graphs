@@ -17,7 +17,7 @@ int main() {
   //   set<int> done;
 
   //   while (done.size() < (maxN - minN + 1) / step) {
-      Graph G = getBipariteGraph(8 + (rand() % 20), getDistr()).getLineGraph();
+  // Graph G = getBipariteGraph(8 + (rand() % 20), getDistr()).getLineGraph();
   //     if (rand() % 2) G = G.getComplement();
 
   //     if ((G.n % step == 0) && G.n >= minN && G.n <= maxN && done.count(G.n) == 0) {
@@ -28,11 +28,13 @@ int main() {
   // }
 
   int minN = 42;
-  int maxn = 60;
+  int maxn = 58;
   int step = 2;
-  for(int i=minN; i<=maxn; i+=step) {
-    auto G = getBipariteGraph(i, 0.5);
-    G.printOut();
+  for (int i = 0; i < 10; i++) {
+    for (int i = minN; i <= maxn; i += step) {
+      auto G = getBipariteGraph(i, 0.5);
+      G.printOut();
+    }
   }
 
   // int minN = 20;

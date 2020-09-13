@@ -25,7 +25,7 @@ perfectTests=(
   # "knightGraph8by4to8.t.in"
   # "rookGraph5by4to7.t.in"
   # "split20to50.t.in"
-  # "biparite.t.in"
+  "biparite.t.in"
 )
 
 pefectSupplement=(
