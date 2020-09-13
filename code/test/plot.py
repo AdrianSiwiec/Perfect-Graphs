@@ -1,7 +1,7 @@
 # coding: utf-8
 
 usePgf = True
-# usePgf = False
+usePgf = False
 
 import matplotlib as mpl
 
@@ -312,9 +312,9 @@ experiments = [
     {
         "restrictions": [
             (csv_result, 1),
-            (csv_filename, "perf.t.in"),
+            (csv_filename, "detailed"),
             # (csv_N, "20|25|30|35|40|45|50|55"),
-            (csv_algo, "GPU Perfect|Perfect"),
+            # (csv_algo, "GPU Perfect|Perfect"),
         ],
         "x_param": csv_N,
         "x_show": csv_N,
@@ -322,122 +322,123 @@ experiments = [
         "size": sizes_in_inches["wideDetailed"],
         "x_label": "N",
         "y_label": label_time_percentage,
-        "ylim": (0, 1),
+        "x_ticks_labels": ["aa", "bb"]
+        # "ylim": (0, 1),
     },
-    {
-        "restrictions": [
-            (csv_result, 1),
-            (csv_filename, "perf2.t.in"),
-            (csv_N, "15|16|17|18|19"),
-            (csv_algo, "GPU Perfect|Perfect"),
-        ],
-        "x_param": csv_N,
-        "x_show": csv_N,
-        "type": "detailed",
-        "size": sizes_in_inches["wideDetailed"],
-        "x_label": "N",
-        "y_label": label_time_percentage,
-        "ylim": (0, 1),
-    },
-    {
-        "restrictions": [
-            (csv_result, 1),
-            (csv_filename, "fullBinary"),
-            (csv_N, "20|25|30|35|40|45|50|55"),
-            (csv_algo, "GPU Perfect|Perfect"),
-        ],
-        "x_param": csv_N,
-        "x_show": csv_N,
-        "type": "detailed",
-        "size": sizes_in_inches["wideDetailed"],
-        "x_label": "N",
-        "y_label": label_time_percentage,
-        "ylim": (0, 1),
-    },
-    {
-        "restrictions": [
-            (csv_result, 1),
-            (csv_filename, "grid"),
-            (csv_algo, "GPU Perfect|Perfect"),
-            (csv_N, "42|48|54|60|66|72|78"),
-        ],
-        "x_param": csv_N,
-        "x_show": csv_N,
-        "type": "detailed",
-        "size": sizes_in_inches["wideDetailed"],
-        "x_label": "N",
-        "y_label": label_time_percentage,
-        "ylim": (0, 1),
-        "x_ticks": [42, 48, 54, 60, 66, 72, 78],
-        "x_ticks_labels": [
-            # "$6 \\times 5$",
-            "$6 \\times 7$",
-            "$6 \\times 8$",
-            "$6 \\times 9$",
-            "$6 \\times 10$",
-            "$6 \\times 11$",
-            "$6 \\times 12$",
-            "$6 \\times 13$",
-            "$6 \\times 14$",
-        ],
-    },
-    {
-        "restrictions": [
-            (csv_result, 1),
-            (csv_filename, "hypercube"),
-            (csv_N, "16|20|24|28|32|36|40|44|48|50"),
-            (csv_algo, "GPU Perfect|Perfect"),
-        ],
-        "x_param": csv_N,
-        "x_show": csv_N,
-        "type": "detailed",
-        "size": sizes_in_inches["wideDetailed"],
-        "x_label": "N",
-        "y_label": label_time_percentage,
-        "ylim": (0, 1),
-    },
-    {
-        "restrictions": [
-            (csv_result, 1),
-            (csv_filename, "knight"),
-            (csv_algo, "GPU Perfect|Perfect"),
-        ],
-        "x_param": csv_N,
-        "x_show": csv_N,
-        "type": "detailed",
-        "size": sizes_in_inches["wideDetailed"],
-        "x_label": "N",
-        "y_label": label_time_percentage,
-        "ylim": (0, 1),
-    },
-    {
-        "restrictions": [
-            (csv_result, 1),
-            (csv_filename, "rook"),
-            (csv_algo, "GPU Perfect|Perfect"),
-        ],
-        "x_param": csv_N,
-        "x_show": csv_N,
-        "type": "detailed",
-        "size": sizes_in_inches["wideDetailed"],
-        "x_label": "N",
-        "y_label": label_time_percentage,
-        "ylim": (0, 1),
-    },
-    {
-        "restrictions": [
-            (csv_result, 1),
-            (csv_filename, "split"),
-            (csv_algo, "GPU Perfect|Perfect"),
-        ],
-        "x_param": csv_N,
-        "x_show": csv_N,
-        "type": "detailed",
-        "size": sizes_in_inches["wideDetailed"],
-        "x_label": "N",
-        "y_label": label_time_percentage,
-        "ylim": (0, 1),
-    },
+    # {
+    #     "restrictions": [
+    #         (csv_result, 1),
+    #         (csv_filename, "perf2.t.in"),
+    #         (csv_N, "15|16|17|18|19"),
+    #         (csv_algo, "GPU Perfect|Perfect"),
+    #     ],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "detailed",
+    #     "size": sizes_in_inches["wideDetailed"],
+    #     "x_label": "N",
+    #     "y_label": label_time_percentage,
+    #     "ylim": (0, 1),
+    # },
+    # {
+    #     "restrictions": [
+    #         (csv_result, 1),
+    #         (csv_filename, "fullBinary"),
+    #         (csv_N, "20|25|30|35|40|45|50|55"),
+    #         (csv_algo, "GPU Perfect|Perfect"),
+    #     ],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "detailed",
+    #     "size": sizes_in_inches["wideDetailed"],
+    #     "x_label": "N",
+    #     "y_label": label_time_percentage,
+    #     "ylim": (0, 1),
+    # },
+    # {
+    #     "restrictions": [
+    #         (csv_result, 1),
+    #         (csv_filename, "grid"),
+    #         (csv_algo, "GPU Perfect|Perfect"),
+    #         (csv_N, "42|48|54|60|66|72|78"),
+    #     ],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "detailed",
+    #     "size": sizes_in_inches["wideDetailed"],
+    #     "x_label": "N",
+    #     "y_label": label_time_percentage,
+    #     "ylim": (0, 1),
+    #     "x_ticks": [42, 48, 54, 60, 66, 72, 78],
+    #     "x_ticks_labels": [
+    #         # "$6 \\times 5$",
+    #         "$6 \\times 7$",
+    #         "$6 \\times 8$",
+    #         "$6 \\times 9$",
+    #         "$6 \\times 10$",
+    #         "$6 \\times 11$",
+    #         "$6 \\times 12$",
+    #         "$6 \\times 13$",
+    #         "$6 \\times 14$",
+    #     ],
+    # },
+    # {
+    #     "restrictions": [
+    #         (csv_result, 1),
+    #         (csv_filename, "hypercube"),
+    #         (csv_N, "16|20|24|28|32|36|40|44|48|50"),
+    #         (csv_algo, "GPU Perfect|Perfect"),
+    #     ],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "detailed",
+    #     "size": sizes_in_inches["wideDetailed"],
+    #     "x_label": "N",
+    #     "y_label": label_time_percentage,
+    #     "ylim": (0, 1),
+    # },
+    # {
+    #     "restrictions": [
+    #         (csv_result, 1),
+    #         (csv_filename, "knight"),
+    #         (csv_algo, "GPU Perfect|Perfect"),
+    #     ],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "detailed",
+    #     "size": sizes_in_inches["wideDetailed"],
+    #     "x_label": "N",
+    #     "y_label": label_time_percentage,
+    #     "ylim": (0, 1),
+    # },
+    # {
+    #     "restrictions": [
+    #         (csv_result, 1),
+    #         (csv_filename, "rook"),
+    #         (csv_algo, "GPU Perfect|Perfect"),
+    #     ],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "detailed",
+    #     "size": sizes_in_inches["wideDetailed"],
+    #     "x_label": "N",
+    #     "y_label": label_time_percentage,
+    #     "ylim": (0, 1),
+    # },
+    # {
+    #     "restrictions": [
+    #         (csv_result, 1),
+    #         (csv_filename, "split"),
+    #         (csv_algo, "GPU Perfect|Perfect"),
+    #     ],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "detailed",
+    #     "size": sizes_in_inches["wideDetailed"],
+    #     "x_label": "N",
+    #     "y_label": label_time_percentage,
+    #     "ylim": (0, 1),
+    # },
     #
     # COLOR
     #
@@ -584,8 +585,8 @@ for i_exp, experiment in enumerate(experiments):
         if experiment["type"] == "detailed":
             # ax.set_ylabel(experiment["x_show"])
 
-            height = 0.35 / len(x)
-            apparent_x = np.arange(0, 1, 1.0 / len(x))
+            height = 0.35
+            apparent_x = np.arange(len(x))
             y_sum = [sum(i) for i in y]
             old_y_sum = y_sum.copy()
             bar_shift = (i_algo + 0.5 - (len(algos) / 2.0)) * height
@@ -597,9 +598,10 @@ for i_exp, experiment in enumerate(experiments):
                     alg_label = algo_labels[algo] + " " + algo_field_labels[field]
                     # ax.barh(apparent_x + bar_shift, y_sum, height, label=alg_label,
                     # color='white', edgecolor=algo_colors[algo], hatch=hatches[i_field], zorder=3)
-                    ax.bar(
+                    ax.barh(
                         apparent_x + bar_shift,
-                        [y_sum[i] / old_y_sum[i] for i in range(len(y_sum))],
+                        # [y_sum[i] / old_y_sum[i] for i in range(len(y_sum))],
+                        y_sum,
                         height,
                         label=alg_label,
                         color=field_colors[algo][field],
@@ -609,12 +611,14 @@ for i_exp, experiment in enumerate(experiments):
                 for i_xval, xval in enumerate(x):
                     y_sum[i_xval] -= y[i_xval][i_field]
 
-            ax.set_xticks(apparent_x)
+            ax.set_yticks(apparent_x)
+            ax.yaxis.set_tick_params(rotation=45)
             # ax.set_xticklabels(x)
             # if "x_ticks" in experiment:
-                # ax.set_xticks(experiment["x_ticks"])
+            # ax.set_xticks(experiment["x_ticks"])
             if "x_ticks_labels" in experiment:
-                ax.set_xticklabels(experiment["x_ticks_labels"])
+                ax.set_yticklabels(experiment["x_ticks_labels"])
+
         else:
             ax.plot(
                 x,
@@ -650,38 +654,72 @@ for i_exp, experiment in enumerate(experiments):
         handles, labels = ax.get_legend_handles_labels()
         legend = ax.legend(handles, labels)
 
-        # rect = patches.Rectangle((-.2,-.3),1.15,.15,linewidth=1,edgecolor='black',facecolor='white', clip_on=False)
-        # shadow = patches.Rectangle((-.19,-.31),1.15,.15,linewidth=1,edgecolor='grey',facecolor='grey', clip_on=False)
-        # ax.add_patch(shadow)
-        # ax.add_patch(rect)
+        rect = patches.Rectangle(
+            (-10, -2.1),
+            140,
+            1,
+            linewidth=1,
+            edgecolor="black",
+            facecolor="white",
+            clip_on=False,
+        )
+        shadow = patches.Rectangle(
+            (-9, -2.2),
+            140,
+            1,
+            linewidth=1,
+            edgecolor="grey",
+            facecolor="grey",
+            clip_on=False,
+        )
+        ax.add_patch(shadow)
+        ax.add_patch(rect)
 
-        # handles_and_labels = zip(ax.get_legend_handles_labels()[0], ax.get_legend_handles_labels()[1])
-        # hl_gpu = [hl for hl in handles_and_labels if "GPU" in hl[1]]
-        # handles_gpu, labels_gpu = zip(*hl_gpu)
+        handles_and_labels = list(
+            zip(ax.get_legend_handles_labels()[0], ax.get_legend_handles_labels()[1])
+        )
+        hl_gpu = [hl for hl in handles_and_labels if "GPU" in hl[1]]
+        handles_gpu, labels_gpu = zip(*hl_gpu)
 
-        # hl_cpu = [hl for hl in handles_and_labels if "GPU" not in hl[1]]
-        # handles_cpu, labels_cpu = zip(*hl_cpu)
+        hl_cpu = [hl for hl in handles_and_labels if "GPU" not in hl[1]]
+        handles_cpu, labels_cpu = zip(*hl_cpu)
 
-        # r = mpl.patches.Rectangle((0,0), 1, 1.5, fill=False, edgecolor='none', visible=False)
 
-        # labels_gpu = [l[7::] for l in labels_gpu] + ["GPU Perfect\hspace{13.15pt}"]
-        # handles_gpu = handles_ck + (r,)
+        r = mpl.patches.Rectangle(
+            (0, 0), 1, 1.5, fill=False, edgecolor="none", visible=False
+        )
 
-        # labels_tv = [l[7::] for l in labels_tv] + ["GPU TV\hspace{13.3pt}"]
+        labels_gpu = [l[12::] for l in labels_gpu] + ["GPU"]
+        handles_gpu = handles_gpu + (r,)
 
-        # handles_tv = handles_tv + (r,)
+        labels_cpu = [l[7::] for l in labels_cpu] + ["CPU"]
+        handles_cpu = handles_cpu + (r,)
 
         # labels_hy = [l[11::] for l in labels_hy] + ["GPU Hybrid"]
         # handles_hy = handles_hy + (r,)
 
-        # legend = ax.legend(handles_ck[::-1], labels_ck[::-1], loc='lower left', bbox_to_anchor=(-.27,-0.104),
-        #                    fancybox=True, shadow=False, ncol=3, frameon=False)
-        # legend1 = ax.legend(handles_tv[::-1], labels_tv[::-1], loc='lower left', bbox_to_anchor=(-.27,-0.129),
-        #                    fancybox=True, shadow=False, ncol=4, frameon=False)
-        # legend2 = ax.legend(handles_hy[::-1], labels_hy[::-1], loc='lower left', bbox_to_anchor=(-.27, -.154),
-        #                    fancybox=True, shadow=False, ncol=5, frameon=False)
-        # plt.gca().add_artist(legend)
-        # plt.gca().add_artist(legend1)
+        legend = ax.legend(
+            handles_gpu[::-1],
+            labels_gpu[::-1],
+            loc="lower left",
+            bbox_to_anchor=(-0.17, -0.254),
+            fancybox=True,
+            shadow=False,
+            ncol=6,
+            frameon=False,
+        )
+        legend1 = ax.legend(
+            handles_cpu[::-1],
+            labels_cpu[::-1],
+            loc="lower left",
+            bbox_to_anchor=(-0.17, -0.309),
+            fancybox=True,
+            shadow=False,
+            ncol=5,
+            frameon=False,
+        )
+        plt.gca().add_artist(legend)
+        plt.gca().add_artist(legend1)
 
     # elif experiment["size"] == sizes_in_inches["allGraphs"]:
     #     fig.tight_layout(rect=[0, 0.05, 1, 1])
