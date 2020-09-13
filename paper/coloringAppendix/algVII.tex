@@ -1,4 +1,4 @@
-\begin{algorithm}
+\begin{mynameforalgorithm}
   \SetKwFunction{FindSpecialK}{\textsc{Find-Special-K4-Strip-System}}
 	\Indm\nonl\FindSpecialK{$G, J, (S, N), m$}\\
   \KwData{$G$ -- square-free, Berge graph \newline
@@ -17,7 +17,7 @@
   $V(J) \gets [4]$\;
   $\forall_{i\neq j \in [4]}$: choose rungs $R_{ij}, R_{ij}$, forming line graphs $L(H)$ and $L(H')$ so that $X$ 
   saturates $L(H)$ but does not saturate $L(H')$\;
-  \Assert{$R_{ij} \neq R'_{ij} \if and only if \{i, j\} = [2]$}
+  \Assert{$R_{ij} \neq R'_{ij}$ if and only if $\{i, j\} = [2]$}
   $r_{ij}, r_{ji} \gets$ ends of each $R_{ij}$\;
   $r'_{ij}, r'_{ji} \gets$ ends of each $R'_{ij}$\;
   $\forall_{i \in [4]} T_i \gets \{r_{ij}, j \in [4] \setminus \{i\} \}$\;
@@ -46,4 +46,4 @@
     \Return $(S', N')$ -- a special $K_4$ strip system\;
   }
   \vspace{-10cm}
-\end{algorithm}
+\end{mynameforalgorithm}

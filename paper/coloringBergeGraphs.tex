@@ -230,7 +230,10 @@ We will call recursion at most $O(|V|)$ times, each step of recursion is polynom
 
 Ever since Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs, a combinatorial algorithm for doing the same has been sought. As of yet, it is not known, although there is much progress in the field.
 
-A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them. Notice, that for a graph to contain no odd hole, all three paths in a prism must have the same parity. A prism with all three paths odd is called an \emph{odd prism}.
+\begin{defn}[prism]
+  A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them. Notice, that for a graph to contain no odd hole, all three paths in a prism must have the same parity. A prism with all three paths odd is called an \emph{odd prism}.
+  \label{def:prism}
+\end{defn}
 
 In 2005 Maffray and Trotignon a coloring algorithm that colors graphs containing no odd hole, no antihole and no prism (sometimes called Artemis graphs) in $O(|V|^4|E|)$ time \cite{Maffray2006}. They later improved the time complexity to $O(|V|^2|E|)$ \cite{Lvque2009}.
 

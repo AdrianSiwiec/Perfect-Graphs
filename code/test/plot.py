@@ -1,7 +1,7 @@
 # coding: utf-8
 
-# usePgf = True
-usePgf = False
+usePgf = True
+# usePgf = False
 
 import matplotlib as mpl
 
@@ -102,7 +102,7 @@ algo_labels = {
     "Perfect": "Perfect",
     "CUDA Naive": "GPU Naive",
     "Naive": "Naive",
-    "CSDP Color": "CSDP Color",
+    "CSDP Color": "Color",
 }
 
 algo_field_labels = {
@@ -162,17 +162,6 @@ label_time_overall_s = "Total time [s]"
 
 # Here we declare what tests consist an experiment.
 experiments = [
-    # {
-    #     "restrictions": [(csv_result, 1), (csv_algo, "Perfect|Naive")],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "lines",
-    #     "size": sizes_in_inches["regular"],
-    #     "y_param": csv_overall,
-    #     "ylog": False,
-    #     "x_label": label_lca_N,
-    #     "y_label": label_time_overall_s,
-    # },
     {
         "restrictions": [
             (csv_result, 1),
@@ -404,135 +393,22 @@ experiments = [
         "x_ticks_labels": ["aaaaaaaaaaa", "bb"]
         # "ylim": (0, 1),
     },
-    # {
-    #     "restrictions": [
-    #         (csv_result, 1),
-    #         (csv_filename, "perf2.t.in"),
-    #         (csv_N, "15|16|17|18|19"),
-    #         (csv_algo, "GPU Perfect|Perfect"),
-    #     ],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "detailed",
-    #     "size": sizes_in_inches["wideDetailed"],
-    #     "x_label": "N",
-    #     "y_label": label_time_percentage,
-    #     "ylim": (0, 1),
-    # },
-    # {
-    #     "restrictions": [
-    #         (csv_result, 1),
-    #         (csv_filename, "fullBinary"),
-    #         (csv_N, "20|25|30|35|40|45|50|55"),
-    #         (csv_algo, "GPU Perfect|Perfect"),
-    #     ],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "detailed",
-    #     "size": sizes_in_inches["wideDetailed"],
-    #     "x_label": "N",
-    #     "y_label": label_time_percentage,
-    #     "ylim": (0, 1),
-    # },
-    # {
-    #     "restrictions": [
-    #         (csv_result, 1),
-    #         (csv_filename, "grid"),
-    #         (csv_algo, "GPU Perfect|Perfect"),
-    #         (csv_N, "42|48|54|60|66|72|78"),
-    #     ],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "detailed",
-    #     "size": sizes_in_inches["wideDetailed"],
-    #     "x_label": "N",
-    #     "y_label": label_time_percentage,
-    #     "ylim": (0, 1),
-    #     "x_ticks": [42, 48, 54, 60, 66, 72, 78],
-    #     "x_ticks_labels": [
-    #         # "$6 \\times 5$",
-    #         "$6 \\times 7$",
-    #         "$6 \\times 8$",
-    #         "$6 \\times 9$",
-    #         "$6 \\times 10$",
-    #         "$6 \\times 11$",
-    #         "$6 \\times 12$",
-    #         "$6 \\times 13$",
-    #         "$6 \\times 14$",
-    #     ],
-    # },
-    # {
-    #     "restrictions": [
-    #         (csv_result, 1),
-    #         (csv_filename, "hypercube"),
-    #         (csv_N, "16|20|24|28|32|36|40|44|48|50"),
-    #         (csv_algo, "GPU Perfect|Perfect"),
-    #     ],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "detailed",
-    #     "size": sizes_in_inches["wideDetailed"],
-    #     "x_label": "N",
-    #     "y_label": label_time_percentage,
-    #     "ylim": (0, 1),
-    # },
-    # {
-    #     "restrictions": [
-    #         (csv_result, 1),
-    #         (csv_filename, "knight"),
-    #         (csv_algo, "GPU Perfect|Perfect"),
-    #     ],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "detailed",
-    #     "size": sizes_in_inches["wideDetailed"],
-    #     "x_label": "N",
-    #     "y_label": label_time_percentage,
-    #     "ylim": (0, 1),
-    # },
-    # {
-    #     "restrictions": [
-    #         (csv_result, 1),
-    #         (csv_filename, "rook"),
-    #         (csv_algo, "GPU Perfect|Perfect"),
-    #     ],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "detailed",
-    #     "size": sizes_in_inches["wideDetailed"],
-    #     "x_label": "N",
-    #     "y_label": label_time_percentage,
-    #     "ylim": (0, 1),
-    # },
-    # {
-    #     "restrictions": [
-    #         (csv_result, 1),
-    #         (csv_filename, "split"),
-    #         (csv_algo, "GPU Perfect|Perfect"),
-    #     ],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "detailed",
-    #     "size": sizes_in_inches["wideDetailed"],
-    #     "x_label": "N",
-    #     "y_label": label_time_percentage,
-    #     "ylim": (0, 1),
-    # },
-    #
     # COLOR
     #
-    # {
-    #     "restrictions": [(csv_algo, "CSDP")],
-    #     "x_param": csv_N,
-    #     "x_show": csv_N,
-    #     "type": "lines",
-    #     "size": sizes_in_inches["regular_small"],
-    #     "y_param": csv_overall,
-    #     "ylog": False,
-    #     "x_label": "N",
-    #     "y_label": label_time_overall_s,
-    #     "out_prefix": "color",
-    # },
+    {
+        "restrictions": [(csv_algo, "CSDP")],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular_small"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        "y_label": label_time_overall_s,
+        "out_prefix": "color",
+        "ylim": (0.5, 250),
+    },
     # {
     #     "restrictions": [(csv_algo, "CSDP")],
     #     "x_param": csv_N,
@@ -766,18 +642,18 @@ for i_exp, experiment in enumerate(experiments):
         )
         if len(handles_and_labels) > 3:
             rect = patches.Rectangle(
-                (-28, -1.98),
-                166,
-                1,
+                (-29, -2.37),
+                165,
+                1.05,
                 linewidth=1,
                 edgecolor="black",
                 facecolor="white",
                 clip_on=False,
             )
             shadow = patches.Rectangle(
-                (-27, -1.99),
-                166,
-                1,
+                (-28.2, -2.39),
+                165,
+                1.05,
                 linewidth=1,
                 edgecolor="grey",
                 facecolor="grey",
@@ -819,7 +695,7 @@ for i_exp, experiment in enumerate(experiments):
                 hgpu1[::-1],
                 lgpu1[::-1],
                 loc="lower left",
-                bbox_to_anchor=(-0.3, -0.19),
+                bbox_to_anchor=(-0.3, -0.18),
                 fancybox=True,
                 shadow=False,
                 ncol=6,
@@ -829,7 +705,7 @@ for i_exp, experiment in enumerate(experiments):
                 hgpu2[::-1],
                 lgpu2[::-1],
                 loc="lower left",
-                bbox_to_anchor=(-0.25, -0.215),
+                bbox_to_anchor=(-0.25, -0.205),
                 fancybox=True,
                 shadow=False,
                 ncol=6,
@@ -839,7 +715,7 @@ for i_exp, experiment in enumerate(experiments):
                 hcpu1[::-1],
                 lcpu1[::-1],
                 loc="lower left",
-                bbox_to_anchor=(-0.3, -0.13),
+                bbox_to_anchor=(-0.3, -0.12),
                 fancybox=True,
                 shadow=False,
                 ncol=5,
@@ -849,7 +725,7 @@ for i_exp, experiment in enumerate(experiments):
                 hcpu2[::-1],
                 lcpu2[::-1],
                 loc="lower left",
-                bbox_to_anchor=(-0.25, -0.155),
+                bbox_to_anchor=(-0.25, -0.145),
                 fancybox=True,
                 shadow=False,
                 ncol=5,

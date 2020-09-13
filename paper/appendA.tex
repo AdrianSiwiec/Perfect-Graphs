@@ -1,0 +1,129 @@
+\chapter{Coloring Square-free Berge graphs}
+\label{ch:coloringSquareFree}
+
+The following appendix is based on the paper \citetitle{coloringSquareFree} by \citeauthor{coloringSquareFree} \cite{coloringSquareFree}.
+
+\section{Introduction}
+\TODO{some intro}
+
+Recall, that a prism (\cref{def:prism}) is a graph consisting of two disjoint triangles and two disjoint paths between them.
+
+\begin{defn}[Artemis graph]
+  A graph $G$ is an \emph{Artemis graph} if it contains no odd hole, no antihole of length at least five, and no prism.
+\end{defn}
+
+In 2003 Maffray et al. published a paper on Artemis graphs where they show polynomial algorithms to recognize and color them \cite{Maffray2006}. In 2005 Maffray et al. published a paper on Artemis graphs\cite{Maffray2005} they showed an polynomial algorithm that checks if a perfect graph contains a prism, and returns it if so.
+
+\begin{theorem}{\cite{Maffray2005}}
+  \label{thm:getPrism}
+  There is a polynomial algorithm, that given a perfect graph $G$, returns an induced prism $K$ of $G$, or an answer that $G$ contains no prisms.
+\end{theorem}
+
+
+In 2009 Maffray et al. published a paper on coloring Artemis graphs in time of $O(|V|^2|E|)$ \cite{coloringArtemis}. The paper contains simple pseudocode of the algorithm.
+
+\begin{theorem}{\cite{coloringArtemis}}
+  \label{thm:colorArtemis}
+  There is a polynomial algorithm, that given an Artemis graph $G$, returns a $\omega(G)$-coloring of $G$.
+\end{theorem}
+
+So, we will focus on square-free perfect graphs that are not Artemis graphs. Let us notice, that every antihole of length at least 6 contains a square, therefore a square-free perfect graph that is not an Artemis graph must contain a prism. We will use this fact extensively.
+
+Let us state a few definitions.
+
+\begin{defn}[subdivision]
+  In a graph $G$, subdividing an edge $uv \in E(G)$ means removing the edge $uv$ and adding a new vertex $w$ and two new edges $uw, wv$. Starting with a graph $G$, the effect of repeatedly subdividing edges prioduces a graph $H$ called a \emph{subdivision of $G$}. Note that $V(G) \subseteq V(H)$.
+\end{defn}
+
+\begin{defn}[triad]
+  In a graph $G$, a \emph{triad} is a set of three pairwise non-adjacent vertices.
+\end{defn}
+
+\begin{defn}[good partition]
+  A \emph{good partition} of a graph $G$ is a partition $(K_1, K_2, K_3, L, R)$ of $V(G)$ such that:
+  \begin{itemize}
+    \item $L$ and $R$ are not empty, and $L$ is anticomplete to $R$,
+    \item $K_1 \cup K_2$ and $K_2 \cup K_3$ are cliques,
+    \item in the graph obtained from $G$ by removing all edges between $K_1$ and $K_3$, every chordless path with one end in $K_1$, the other in $K_3$, and interior in $L$ contains a vertex from $L$ that is complete to $K_1$,
+    \item either $K_1$ is anticomplete to $K_3$, or no vertex in $L$ has neighbors in both $K_1$ and $K_3$,
+    \item for some $x \in L$ and $y \in R$, there is a triad of $G$ that contains $\{x, y\}$.
+  \end{itemize}
+\end{defn}
+
+\TODO{we need many more definitions, scan pseudocode}
+
+The algorithm we present is derived from contructive proof of the following two theorems.
+
+\begin{theorem}{}[Theorem 2.1 of \cite{coloringSquareFree}]
+  Let $G$ be a square-free Berge graph. If $G$ contains a prism, then $G$ has a good partition.
+\end{theorem}
+
+\begin{theorem}{}[Lemma 2.2 of \cite{coloringSquareFree}]
+  Let $G$ be a square-free Berge graph. Suppose that $V(G)$ has a good partition $(K_1, K_2, K_3, L, R)$. Let $G_1 = G \setminus R$, $G_2 = G \setminus L$ and for $i = 1,2$ let $c_i$ be an $\omega(G_i)$-coloring of $G_i$. Then an $\omega(G)$-coloring of $G$ can be obtained in polynomial time.
+\end{theorem}
+
+\section{Notation}
+
+In the following algorithms we use a slightly different notation than before, with many concepts represented by inline symbols. This is intended to reduce the length of algorithm's text and simplify its analysis.
+
+\begin{itemize}
+	\item $a \gets b$ -- let a be equal b.
+	\item $a :\in X$, when $X$ is a set -- let a be equal to any element of $X$
+	\item $a \xor b$, when $a$ and $b$ are logical values -- $a$ xor $b$
+	\item $V(X)$ -- vertices of structure $X$. Will be written as $X$ when obvious.
+	\item $a - b$, when $a$ and $b$ are nodes -- $a$ and $b$ are neighbors.
+	\item $a \cdots b$, when $a$ and $b$ are nodes -- $a$ and $b$ are not neighbors.
+	\item $a - X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a neighbor in $X$.
+	\item $a \cdots X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a nonneighbor in $X$.
+	\item $a \blacktriangleleft  X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is complete to $X$.
+	\item $a \ntriangleleft X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is anticomplete to $X$.
+	\item $X \setComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is complete to $Y$.
+	\item $X \setAntiComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is anticomplete to $Y$.
+	\item $[n]$  -- $\{1, \ldots, n\}$.
+	\item \LGBSK -- the line-graph of a biparite subdivision of $K_4$.
+
+	\item Strip $S_{uv}$ is \emph{rich} if and only if $S_{uv} \setminus T_{uv} \neq \emptyset$
+\end{itemize}
+\TODO{Introduction on unknown structures - J-strip etc etc}
+
+\section{Algorithms}
+
+\graphAppendix{Color Graph}
+\input{coloringAppendix/algI.tex}
+\clearpage
+
+\graphAppendix{Color Good Partition}
+\input{coloringAppendix/algII.tex}
+\clearpage
+
+\graphAppendix{Grow Hyperprism}
+\input{coloringAppendix/algIII.tex}
+\clearpage
+
+\graphAppendix{Good Partition from an even hyperprism}
+\input{coloringAppendix/algIV.tex}
+\clearpage
+
+\graphAppendix{Good Partition from odd hyperprism}
+\input{coloringAppendix/algV.tex}
+\clearpage
+
+\graphAppendix{Good Partition from $J$-strip system}
+\input{coloringAppendix/algVIa.tex}
+\clearpage
+
+\graphAppendix{Good Partition from a special $K_4$ strip system}
+\input{coloringAppendix/algVIb.tex}
+\clearpage
+
+\graphAppendix{Find a special $K_4$ system}
+\input{coloringAppendix/algVII.tex}
+\clearpage
+
+\graphAppendix{Growing a $J$-strip}
+\input{coloringAppendix/algVIII.tex}
+\clearpage
+
+% \graphAppendix{LAST}
+% \input{coloringAppendix/algIXa.tex}
+% \clearpage
