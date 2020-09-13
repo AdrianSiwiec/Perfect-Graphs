@@ -1,0 +1,14 @@
+algorithm,Filename,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	Test NC Rest,	Test NC Shortest Paths
+Perfect, Full Binary\n$|V|=100$~,	100,	1,	1,	112.873,	1.89215,	91.4163,	17.3969,	2.14799
+Perfect, Grid~\n$6\times 12$,	72,	1,	1,	120.753,	0.684082,	26.7513,	87.6782,	5.56214
+Perfect, Knight\n$8\times 7$~,	56,	1,	1,	121.831,	0.530088,	10.6333,	105.194,	5.36834
+Perfect, Rook\n$5\times 7$,	35,	1,	1,	126.052,	1.58354,	2.30641,	112.719,	9.29733
+Perfect, Hypercube\n$|V|=55$~~,	55,	1,	1,	129.839,	0.49105,	10.5966,	113.3,	5.34374
+
+
+algorithm,Filename,	n,	result,	num_runs,	Overall,	Simple Structures,	Get Near Cleaners,	GPU Test NC Copy,	Test NC Shortest Paths,	GPU Test NC work
+Cuda Perfect, Full Binary\n$|V|=100$~,	100,	1,	1,	96.4218,	1.89784,	89.1326,	0.772107,	2.13854,	2.47029
+Cuda Perfect,	Grid~\n$6\times 12$, 72,	1,	1,	41.559,	0.675677,	25.5778,	2.59692,	5.52489,	7.14835
+Cuda Perfect, Knight\n$8\times 7~$,	56,	1,	1,	27.0968,	0.523087,	10.3777,	3.46938,	5.28617,	7.39703
+Cuda Perfect,	Rook\n$5\times 7$, 35,	1,	1,	21.3557,	1.58833,	2.27772,	4.527,	9.203,	3.69373
+Cuda Perfect, Hypercube\n$|V|=55$~~,	55,	1,	1,	27.2933,	0.496798,	10.1085,	3.46126,	5.22856,	7.95014
