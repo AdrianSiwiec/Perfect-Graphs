@@ -1,0 +1,6 @@
+algorithm,Filename,	n,	result,	num_runs,	Overall,	Color rest,	Color CSDP
+CSDP Color,Full Binary\n$|V|=45$,	45,	1,	1,	68.6522,	0.0653983,	68.5865
+CSDP Color,Grid~\n$5\times 9$,	45,	1,	1,	111.625,	0.048918,	111.575
+CSDP Color,Knight\n$6\times 7$~,	42,	1,	1,	72.7231,	0.0451544,	72.6776
+CSDP Color,Rook\n$6\times 8$,	48,	1,	1,	41.783,	16.6873,	25.0956
+CSDP Color,Hypercube\n$|V|=55$~~,	40,	1,	1,	51.0268,	0.045727,	50.9807

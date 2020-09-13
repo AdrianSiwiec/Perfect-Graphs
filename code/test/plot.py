@@ -1,7 +1,7 @@
 # coding: utf-8
 
-usePgf = True
-# usePgf = False
+# usePgf = True
+usePgf = False
 
 import matplotlib as mpl
 
@@ -313,6 +313,7 @@ experiments = [
         "restrictions": [
             (csv_result, 1),
             (csv_filename, "detailed"),
+            (csv_algo, "Perfect|Naive"),
             # (csv_N, "20|25|30|35|40|45|50|55"),
             # (csv_algo, "GPU Perfect|Perfect"),
         ],
@@ -441,28 +442,45 @@ experiments = [
     #
     # COLOR
     #
+    # {
+    #     "restrictions": [(csv_algo, "CSDP")],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "lines",
+    #     "size": sizes_in_inches["regular_small"],
+    #     "y_param": csv_overall,
+    #     "ylog": False,
+    #     "x_label": "N",
+    #     "y_label": label_time_overall_s,
+    #     "out_prefix": "color",
+    # },
+    # {
+    #     "restrictions": [(csv_algo, "CSDP")],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "detailed",
+    #     "size": sizes_in_inches["wideDetailed_small"],
+    #     "x_label": "N",
+    #     "y_label": label_time_percentage,
+    #     "ylim": (0, 1),
+    #     "out_prefix": "color",
+    # },
     {
-        "restrictions": [(csv_algo, "CSDP")],
+        "restrictions": [
+            (csv_result, 1),
+            (csv_filename, "detailed"),
+            (csv_algo, "CSDP")
+            # (csv_N, "20|25|30|35|40|45|50|55"),
+            # (csv_algo, "GPU Perfect|Perfect"),
+        ],
         "x_param": csv_N,
-        "x_show": csv_N,
-        "type": "lines",
-        "size": sizes_in_inches["regular_small"],
-        "y_param": csv_overall,
-        "ylog": False,
-        "x_label": "N",
-        "y_label": label_time_overall_s,
-        "out_prefix": "color",
-    },
-    {
-        "restrictions": [(csv_algo, "CSDP")],
-        "x_param": csv_N,
-        "x_show": csv_N,
+        "x_show": csv_filename,
         "type": "detailed",
-        "size": sizes_in_inches["wideDetailed_small"],
-        "x_label": "N",
-        "y_label": label_time_percentage,
-        "ylim": (0, 1),
+        "size": sizes_in_inches["wideDetailed"],
+        "x_label": label_time_overall_s,
+        "x_ticks_labels": ["aaaaaaaaaaa", "bb"],
         "out_prefix": "color",
+        # "ylim": (0, 1),
     },
 ]
 
@@ -654,105 +672,124 @@ for i_exp, experiment in enumerate(experiments):
 
         handles, labels = ax.get_legend_handles_labels()
         legend = ax.legend(handles, labels)
-
-        rect = patches.Rectangle(
-            (-28, -1.98),
-            166,
-            1,
-            linewidth=1,
-            edgecolor="black",
-            facecolor="white",
-            clip_on=False,
-        )
-        shadow = patches.Rectangle(
-            (-27, -1.99),
-            166,
-            1,
-            linewidth=1,
-            edgecolor="grey",
-            facecolor="grey",
-            clip_on=False,
-        )
-        ax.add_patch(shadow)
-        ax.add_patch(rect)
-
         handles_and_labels = list(
             zip(ax.get_legend_handles_labels()[0], ax.get_legend_handles_labels()[1])
         )
-        hl_gpu = [hl for hl in handles_and_labels if "GPU" in hl[1]]
-        handles_gpu, labels_gpu = zip(*hl_gpu)
+        if len(handles_and_labels) > 3:
+            rect = patches.Rectangle(
+                (-28, -1.98),
+                166,
+                1,
+                linewidth=1,
+                edgecolor="black",
+                facecolor="white",
+                clip_on=False,
+            )
+            shadow = patches.Rectangle(
+                (-27, -1.99),
+                166,
+                1,
+                linewidth=1,
+                edgecolor="grey",
+                facecolor="grey",
+                clip_on=False,
+            )
+            ax.add_patch(shadow)
+            ax.add_patch(rect)
 
-        hl_cpu = [hl for hl in handles_and_labels if "GPU" not in hl[1]]
-        handles_cpu, labels_cpu = zip(*hl_cpu)
+            hl_gpu = [hl for hl in handles_and_labels if "GPU" in hl[1]]
+            handles_gpu, labels_gpu = zip(*hl_gpu)
 
+            hl_cpu = [hl for hl in handles_and_labels if "GPU" not in hl[1]]
+            handles_cpu, labels_cpu = zip(*hl_cpu)
 
-        r = mpl.patches.Rectangle(
-            (0, 0), 0.01, 0.01, fill=False, edgecolor="none", visible=False
-        )
+            r = mpl.patches.Rectangle(
+                (0, 0), 0.01, 0.01, fill=False, edgecolor="none", visible=False
+            )
 
-        labels_gpu = [l[12::] for l in labels_gpu] + ["GPU"]
-        handles_gpu = handles_gpu + (r,)
-        lgpu1 = labels_gpu[-3:]
-        hgpu1 = handles_gpu[-3:]
+            labels_gpu = [l[12::] for l in labels_gpu] + ["GPU"]
+            handles_gpu = handles_gpu + (r,)
+            lgpu1 = labels_gpu[-3:]
+            hgpu1 = handles_gpu[-3:]
 
-        lgpu2 = labels_gpu[:-3] + ["Test near cleaners:"]
-        hgpu2 = handles_gpu[:-3] + (r,)
+            lgpu2 = labels_gpu[:-3] + ["Test near cleaners:"]
+            hgpu2 = handles_gpu[:-3] + (r,)
 
-        labels_cpu = [l[7::] for l in labels_cpu] + ["CPU"]
-        handles_cpu = handles_cpu + (r,)
-        lcpu1 = labels_cpu[-3:]
-        hcpu1 = handles_cpu[-3:]
+            labels_cpu = [l[7::] for l in labels_cpu] + ["CPU"]
+            handles_cpu = handles_cpu + (r,)
+            lcpu1 = labels_cpu[-3:]
+            hcpu1 = handles_cpu[-3:]
 
-        lcpu2 = labels_cpu[:-3] + ["Test near cleaners:"]
-        hcpu2 = handles_cpu[:-3] + (r,)
+            lcpu2 = labels_cpu[:-3] + ["Test near cleaners:"]
+            hcpu2 = handles_cpu[:-3] + (r,)
 
+            # labels_hy = [l[11::] for l in labels_hy] + ["GPU Hybrid"]
+            # handles_hy = handles_hy + (r,)
 
-        # labels_hy = [l[11::] for l in labels_hy] + ["GPU Hybrid"]
-        # handles_hy = handles_hy + (r,)
-
-        legend = ax.legend(
-            hgpu1[::-1],
-            lgpu1[::-1],
-            loc="lower left",
-            bbox_to_anchor=(-0.3, -0.19),
-            fancybox=True,
-            shadow=False,
-            ncol=6,
-            frameon=False,
-        )
-        legend1 = ax.legend(
-            hgpu2[::-1],
-            lgpu2[::-1],
-            loc="lower left",
-            bbox_to_anchor=(-0.25, -0.215),
-            fancybox=True,
-            shadow=False,
-            ncol=6,
-            frameon=False,
-        )
-        legend2 = ax.legend(
-            hcpu1[::-1],
-            lcpu1[::-1],
-            loc="lower left",
-            bbox_to_anchor=(-0.3, -0.13),
-            fancybox=True,
-            shadow=False,
-            ncol=5,
-            frameon=False,
-        )
-        legend3 = ax.legend(
-            hcpu2[::-1],
-            lcpu2[::-1],
-            loc="lower left",
-            bbox_to_anchor=(-0.25, -0.155),
-            fancybox=True,
-            shadow=False,
-            ncol=5,
-            frameon=False,
-        )
-        plt.gca().add_artist(legend)
-        plt.gca().add_artist(legend1)
-        plt.gca().add_artist(legend2)
+            legend = ax.legend(
+                hgpu1[::-1],
+                lgpu1[::-1],
+                loc="lower left",
+                bbox_to_anchor=(-0.3, -0.19),
+                fancybox=True,
+                shadow=False,
+                ncol=6,
+                frameon=False,
+            )
+            legend1 = ax.legend(
+                hgpu2[::-1],
+                lgpu2[::-1],
+                loc="lower left",
+                bbox_to_anchor=(-0.25, -0.215),
+                fancybox=True,
+                shadow=False,
+                ncol=6,
+                frameon=False,
+            )
+            legend2 = ax.legend(
+                hcpu1[::-1],
+                lcpu1[::-1],
+                loc="lower left",
+                bbox_to_anchor=(-0.3, -0.13),
+                fancybox=True,
+                shadow=False,
+                ncol=5,
+                frameon=False,
+            )
+            legend3 = ax.legend(
+                hcpu2[::-1],
+                lcpu2[::-1],
+                loc="lower left",
+                bbox_to_anchor=(-0.25, -0.155),
+                fancybox=True,
+                shadow=False,
+                ncol=5,
+                frameon=False,
+            )
+            plt.gca().add_artist(legend)
+            plt.gca().add_artist(legend1)
+            plt.gca().add_artist(legend2)
+        else:
+            rect = patches.Rectangle(
+                (-28, -1.98),
+                166,
+                1,
+                linewidth=1,
+                edgecolor="black",
+                facecolor="white",
+                clip_on=False,
+            )
+            shadow = patches.Rectangle(
+                (-27, -1.99),
+                166,
+                1,
+                linewidth=1,
+                edgecolor="grey",
+                facecolor="grey",
+                clip_on=False,
+            )
+            ax.add_patch(shadow)
+            ax.add_patch(rect)
 
     # elif experiment["size"] == sizes_in_inches["allGraphs"]:
     #     fig.tight_layout(rect=[0, 0.05, 1, 1])
