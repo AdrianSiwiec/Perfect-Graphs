@@ -63,21 +63,22 @@
 \newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
 % \usepackage{hyperref} 
 \usetikzlibrary{arrows}
-\usepackage[linesnumbered,vlined,ruled,algosection]{algorithm2e}
+\usepackage[linesnumbered,vlined,algosection]{algorithm2e}
 
 \newcommand{\mysemi}{\;}
 \let\mysemisemi\;
-\newenvironment{mynameforalgorithm}{%
-  \begin{algorithm}%
-    }{%
-  \end{algorithm}%
-  \ignorespacesafterend%
-}
+% \newenvironment{mynameforalgorithm}{%
+%   \begin{algorithm}%
+%     }{%
+%   \end{algorithm}%
+%   \ignorespacesafterend%
+% }
 \let\mynameforalgorithm\algorithm
 \let\endmynameforalgorithm\endalgorithm
 \let\listofalgorithms\mynameforlistofalgorithms
 
-\usepackage{algorithm,algpseudocode}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \let\myWhile\While
 \let\EndmyWhile\EndWhile
@@ -115,9 +116,9 @@
 {\printandpush\algorithmicprocedure\ \textproc{#1}\ifthenelse{\equal{#2}{}}{}{(#2)}}%
 {\popandprint\algorithmicend\ \algorithmicprocedure}%
 \algdef{C}[IF]{IF}{mElsIf}[1]
-  {\popandprint\pushindent\algorithmicelse\ \algorithmicif\ #1\ \algorithmicthen}%
+{\popandprint\pushindent\algorithmicelse\ \algorithmicif\ #1\ \algorithmicthen}%
 \algdef{Ce}[ELSE]{IF}{mElse}{mEndIf}
-  {\popandprint\pushindent\algorithmicelse}%
+{\popandprint\pushindent\algorithmicelse}%
 \algdef{SE}[IF]{mIf}{mEndIf}[1]
 {\printandpush\algorithmicif\ #1\ \algorithmicthen}
 {\popandprint\algorithmicend\ \algorithmicif}%
@@ -131,6 +132,15 @@
 \algnewcommand{\UND}{\textsc{undefined}}
 \algnewcommand{\RETURN}{\textbf{return}~}
 \algrenewcommand\algorithmiccomment[1]{\hfill \textsc{\textbackslash\textbackslash} #1}
+
+\newcommand\fs@nobottomruled{\def\@fs@cfont{\bfseries}\let\@fs@capt\floatc@ruled
+  \def\@fs@pre{height.8pt depth0pt \kern2pt}%
+  \def\@fs@post{}% Formerly \def\@fs@post{\kern2pt\hrule\relax}%
+  \def\@fs@mid{\kern2pt\kern2pt}%
+  \let\@fs@iftopcapt\iftrue}
+
+\floatstyle{nobottomruled}
+\restylefloat{algorithm}
 
 \makeatother
 
