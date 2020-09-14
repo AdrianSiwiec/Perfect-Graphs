@@ -8,13 +8,16 @@ mkdir -p $resultsDir
 colorExec="$scriptDir/../../obj/test/colorPerfTest/color.e"
 
 colorTests=(
-  "perf.t.in"
-  "perfLin.t.in"
-  "fullBinary20to45.t.in"
-  "grid5by4to9.t.in"
-  "hypercube20to40.t.in"
-  "knightGraph6by4to8.t.in"
-  "rookGraph6by4to8.t.in"
+  # "perf.t.in"
+
+  # "fullBinary20to45.t.in"
+  # "grid5by4to9.t.in"
+  # "hypercube20to40.t.in"
+  # "knightGraph6by4to8.t.in"
+  # "rookGraph6by4to8.t.in"
+  "biparite18to48.t.in"
+  # "perfLin.t.in"
+  # "split.t.in"
 )
 
 # for file in "${colorTests[@]}"; do

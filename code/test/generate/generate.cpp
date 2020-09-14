@@ -9,33 +9,33 @@
 int main() {
   srand(time(0));
 
-  // int minN = ;
-  // int maxN = 56;
-  // int step = 2;
+  int minN = 20;
+  int maxN = 45;
+  int step = 5;
 
-  // for (int i = 0; i < 10; i++) {
-  //   set<int> done;
-
-  //   while (done.size() < (maxN - minN + 1) / step) {
-  // Graph G = getBipariteGraph(8 + (rand() % 20), getDistr()).getLineGraph();
-  //     if (rand() % 2) G = G.getComplement();
-
-  //     if ((G.n % step == 0) && G.n >= minN && G.n <= maxN && done.count(G.n) == 0) {
-  //       G.printOut();
-  //       done.insert(G.n);
-  //     }
-  //   }
-  // }
-
-  int minN = 42;
-  int maxn = 58;
-  int step = 2;
   for (int i = 0; i < 10; i++) {
-    for (int i = minN; i <= maxn; i += step) {
-      auto G = getBipariteGraph(i, 0.5);
-      G.printOut();
+    set<int> done;
+
+    while (done.size() < (maxN - minN + 1) / step) {
+      Graph G = getBipariteGraph(8 + (rand() % 20), getDistr()).getLineGraph();
+      // if (rand() % 2) G = G.getComplement();
+
+      if ((G.n % step == 0) && G.n >= minN && G.n <= maxN && done.count(G.n) == 0) {
+        G.printOut();
+        done.insert(G.n);
+      }
     }
   }
+
+  // int minN = 18;
+  // int maxn = 48;
+  // int step = 6;
+  // for (int i = 0; i < 10; i++) {
+  //   for (int i = minN; i <= maxn; i += step) {
+  //     auto G = getBipariteGraph(i, 0.5);
+  //     G.printOut();
+  //   }
+  // }
 
   // int minN = 20;
   // int maxN = 45;
@@ -67,8 +67,10 @@ int main() {
   //   G.printOut();
   // }
 
-  // for (int i = 10; i <= 25; i+=3) {
-  //   Graph G = getSplitGraph(i, getDistr());
-  //   G.printOut();
+  // for (int k = 0; k < 10; k++) {
+  //   for (int i = 12; i <= 24; i += 3) {
+  //     Graph G = getSplitGraph(i, getDistr());
+  //     G.printOut();
+  //   }
   // }
 }
