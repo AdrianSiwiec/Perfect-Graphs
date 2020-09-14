@@ -407,7 +407,7 @@ experiments = [
         "x_label": label_lca_N,
         "y_label": label_time_overall_s,
         "out_prefix": "color",
-        "ylim": (0.5, 250),
+        "ylim": (0.2, 350),
     },
     # {
     #     "restrictions": [(csv_algo, "CSDP")],

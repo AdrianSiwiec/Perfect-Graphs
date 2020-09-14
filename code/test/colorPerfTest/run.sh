@@ -16,8 +16,15 @@ colorTests=(
   # "knightGraph6by4to8.t.in"
   # "rookGraph6by4to8.t.in"
   # "biparite18to48.t.in"
+  # "split.t.in"
+
   "perfLin.t.in"
+  "lattice.t.in"
+  "rook.t.in"
+  "knight.t.in"
+  "hypercube.t.in"
   "split.t.in"
+  "fullBinary.t.in"
 )
 
 # for file in "${colorTests[@]}"; do
