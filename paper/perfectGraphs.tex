@@ -300,17 +300,17 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 \begin{algorithmic}[1]
 	\mProcedure{Contains-T3}{$G$}
 	\mForEach{$v_1, v_2, v_5 \in V(G)$, so that $v_1v_2$ is an edge \AND
-		\lsx $v_1v_5, v_2v_5$ are nonedges}
+		\lsx $v_1v_5, v_2v_5$ are nonedges \label{line:t3start}}
 		\ls $Y \gets$ the set of all $\{v_1, v_2, v_5\}$-complete vertices.
 		\mForEach{$X$ -- an anticomponent of $Y$}
-			\ls $F' \gets$ maximal connected subset containing $v_5$, such that $v_1, v_2$
+			\ls $F' \gets$ maximal connected subset containing $v_5$, such that $v_1, v_2$ \label{line:t3n4start}
 			\lsx have no neighbors in $F'$ and no vertex of $F'\setminus\{v_5\}$ is $X$-complete.
 			\ls $F'' \gets$ the set of all $X$-complete vertices that have a neighbor in 
 			\lsx $F'$ and are nonadjacent to all of $v_1, v_2$ and $v_5$
-			\ls $F \gets F' \cup F''$
+			\ls $F \gets F' \cup F''$ \label{line:t3mid}
 			\mForEach{$v_4 \in V(G) \setminus\{v_1, v_2, v_5\}$, such that $v_4$ is adjacent to $v_1$
 			\lsx and not to $v_2$ and $v_5$}
-				\mIf{$v_4$ has a neighbor in $F$ and a nonneibhbor in $X$}
+				\mIf{$v_4$ has a neighbor in $F$ and a nonneibhbor in $X$ \label{line:t3v4if}}
 					\ls $v_6 \gets$ a neighbor of $v_4$ in $F$
 					\mForEach{$v_3 \in V(G) \setminus\{v_1, v_2, v_4, v_5, v_6\}$}
 						\mIf{$v_3$ is adjacent to $v_2, v_4, v_5$ and not adjacent to $v_1$ \lsx}
@@ -319,7 +319,7 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 						\mEndIf
 					\mEndFor
 				\mEndIf
-			\mEndFor
+			\mEndFor \label{line:t3n4end}
 		\mEndFor
 	\mEndFor
 	\ls \RETURN \FALSE
@@ -329,12 +329,13 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 We will skip the proof that each graph containing $\T_3$ is not Berge, as it is quite technical. See section 6.7 of \cite{MC05} for the proof.
 
 \begin{theorem}
-	
+	\Cref{alg:t3} runs in $O(|V|^6)$ time.
 \end{theorem}
+\begin{proof}
+	There are $O(|V|^3)$ triples $(v_1, v_2, v_5)$ we enumerate in line \ref{line:t3start}. For each, there are $O(|V|)$ $X$s, so lines \ref{line:t3n4start}-\ref{line:t3n4end} are executed $O(|V|^4)$ times.
 
-To see that the \cref{alg:t3} has a running time of $O(|V|^6)$, let us note that for each triple $v_1, v_2, v_5$ we examine, of which there are $O(|V|^3)$, there are linear many choices of $X$, each taking $O(|V|^2)$ time to process and generating a linear many choices of $v_4$ which take a linear time to process in turn. This gives us the total running time of $O(|V|^6)$.
-
-.
+	Each execution of lines \ref{line:t3n4start}-\ref{line:t3mid} takes $O(|V|^2)$ time, and there are $O(|V|)$ $v_4$s to enumerate. Line \ref{line:t3v4if} takes $O(|V|)$ time and then there are $O(|V|)$ $v_3$s to enumerate. Each is checked in $O(1)$ time. If we find the correct one, we calculate a path $P$, but return right away, so we calculate $P$ at most once in whole algorithm.
+\end{proof}
 
 \subsection{Amenable holes.}
 \label{AmenableHoles}
@@ -388,7 +389,7 @@ With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 
 \begin{algorithmic}[1]
 	\mProcedure{List-Possible-Near-Cleaners}{$G$}
-	\ls $X \gets \emptyset$
+	\ls $\mathcal{X} \gets \emptyset$
 	\mForEach{relevant triple $(a, b, c)$}
 		\ls $A \gets$ anticomponents of $N(\{a, b\})$
 		\mIf{$c$ is $N(\{a, b\})$-complete}
@@ -407,19 +408,20 @@ With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 			\mEndIf
 		\mEndFor
 		\ls $Z \gets$ the set of all $Y \cup W$-complete vertices
-		\ls $X \gets X \cup (Y \cup Z)$ 
+		\ls $X(a, b, c) \gets Y \cup Z)$ \Comment{we use $X(a, b, c)$ in the proof of correctness}
+		\ls $\mathcal{X} \gets \mathcal{X} \cup X(a, b, c)$
 	\mEndFor
-	\ls $N \gets \emptyset$
+	\ls $\mathcal{N} \gets \emptyset$
 	\mForEach{edge $uv \in E(G)$}
-		\ls $N \gets N \cup N(\{u, v\})$
+		\ls $\mathcal{N} \gets \mathcal{N} \cup N(\{u, v\})$
 	\mEndFor
-	\ls $R \gets \emptyset$
+	\ls $\mathcal{R} \gets \emptyset$
 	\mForEach{$X_i \in X$}
 		\mForEach{$N_j \in N$}
-			\ls $R \gets R \cup (X_i \cup N_j)$
+			\ls $\mathcal{R} \gets \mathcal{R} \cup (X_i \cup N_j)$
 		\mEndFor
 	\mEndFor
-	\ls \RETURN $R$
+	\ls \RETURN $\mathcal{R}$
 	\mEndProcedure
 \end{algorithmic}
 
@@ -427,14 +429,19 @@ To prove the correctness of \cref{alg:listNearCleaners} we will need the followi
 
 \begin{theorem}[9.1 of \cite{MC05}]
 	\label{thm:91}
-	Let $C$ be a shortest odd hole in $G$, with length at least 7. Then there is a relevant triple $(a, b, c)$ of vertices such that
+	Let $C$ be a shortest odd hole in $G$, with length at least seven. Then there is a relevant triple $(a, b, c)$ of vertices such that
 	\begin{itemize}
 		\item the set of all $C$-major vertices not in $X(a, b, c)$ is anticonnected
 		\item $X(a, b, c) \cap V(C)$ is a subset of the vertex set of some 3-vertex path of $C$.
 	\end{itemize}
 \end{theorem}
 
-Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c)$ is a near-cleaner for $C$. Therefore the output of the \cref{alg:listNearCleaners} is correct.
+\begin{theorem}
+	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then the result of the \Cref{alg:listNearCleaners} on the graph $G$ is a set $\mathcal{R}$, such that for every shortest amenable hole $C$, there is a near-cleaner for $C$ in $\mathcal{R}$.
+\end{theorem}
+\begin{proof}
+	Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c) \in \mathcal{R}$ is a near-cleaner for $C$. Therefore the output of the \cref{alg:listNearCleaners} is correct.
+\end{proof}
 
 \begin{alg}[Test possible near cleaner, 5.1 of \cite{MC05}]
 	\label{alg:testNearCleaner}
@@ -446,32 +453,56 @@ Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a
 		\item There is no shortest odd hole $C$ such that $X$ is a near-cleaner for $C$.
 	\end{itemize}
 \end{alg}
-\begin{algtext2}
-	For every pair $x, y \in V(G)$ of distinct vertices find shortest path $R(x, y)$ between $x, y$ with no internal vertex in $X$. If there is one, let $r(x, y)$ be its length, if not, let $r(x, y) = \infty$.
 
-	For all $y_1 \in V(G)\setminus X$ and all 3-vertex paths $x_1-x_2-x_3$ of $G\setminus y_1$ we check the following:
-	\begin{itemize}
-		\item $R(x_1, y_1), R(x_2, y_2)$ both exist -- define $y_2$ as the neighbor of $y_1$ in $R(x_2, y_1)$.
-		\item $r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2) = min(r(x_3, y_1), r(x_3, y_2))$ 
-	\end{itemize}
+\begin{algorithmic}[1]
+	\mProcedure{Test-Near-Cleaner}{$G, X$}
+		\mForEach{pair $x, y \in V(G)$, such that $x \neq y$}
+			\mIf{there is a path between $x$ and $y$ with no internal vertices in $X$ \lsx}
+				\ls $R(x, y) \gets$ the shortest path $R(x, y)$ between $x, y$ with no
+				\lsx internal vertex in $X$.
+				\ls $r(x, y) \gets$ the length of $R(x, y)$
+			\mElse
+				\ls $R(x, y) \gets \textsc{undefined}$
+				\ls $r(x, y) \gets \infty$
+			\mEndIf
+			\mForEach{$y_1 \in V(G) \setminus X$}
+				\mForEach{3-vertex path $x_1-x_2-x_3$ of $G\setminus y_1$}
+					\mIf{$R(x_1, y_1), R(x_2, y_2)$ both exist}
+						\ls $y_2 \gets$ the neighbor of $y_1$ in $R(x_2, y_1)$
+						\mIf{$r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2) =$\lsx$min(r(x_3, y_1), r(x_3, y_2))$}
+						\ls \RETURN an odd hole found
+						\mEndIf
+					\mEndIf
+				\mEndFor
+			\mEndFor
+		\mEndFor
+		\RETURN no odd hole found
+	\mEndProcedure
+\end{algorithmic}
 
-	If there is such a choice of $x_1$, $x_2$, $x_3$, $y_1$ then we output that there is an odd hole. If not, we report that there is no shortest odd hole $C$ such that $X$ is a near-cleaner for $C$.
-\end{algtext2}
 
-\begin{wrapfigure}{r}{0.35\textwidth}
-	\input{tikzpictures/nearCleanerFound.tex}
-	\caption{An odd hole is found}%
-	\vspace{-0.5cm}
-\end{wrapfigure}
 
 Below we will prove that if the \cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The proof of the correctness of the other possible result is more complicated, see section 4 and theorem 5.1 of \cite{MC05}.
 
+\begin{theorem}[Theorem 5.1 of \cite{MC05}]
+	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Let $X$ be a subset of $V(G)$. If \Cref{alg:testNearCleaner} reports an odd hole, then $G$ contains an odd hole.
+\end{theorem}
 \begin{proof}
 	Let us suppose that there is a choice of $x_1$, $x_2$, $x_3$, $y_1$ satisfying the three conditions in the \cref{alg:testNearCleaner} and let $y_2$ and $n$ be defined as in there. We claim that $G$ contains an odd hole.
+	
+	{\makeatletter
+	\let\par\@@par
+	\par\parshape0
+	\everypar{}\begin{wrapfigure}{r}{0.3\textwidth}
+		\input{tikzpictures/nearCleanerFound.tex}
+		\caption{An odd hole is found}%
+		% \vspace{-0.2cm}
+		\end{wrapfigure}
+		Let $R(x_1, y_1) = p_1-\ldots -p_n$, and let $R(x_2, y_1) = q_1-\ldots -q_{n+1}$, where $p_1 = x_1$, $p_n = q_{n+1} = y_1$, $q_1 = x_2$ and $q_n = y_2$. From the definition of $R(x_1, y_1)$ and $R(x_2, y_1)$, none of $p_2, \ldots, p_{n-1}, q_2, \ldots, q_n$ belong to $X$. Also, from the definition of $y_1$, $y_1 \notin X$.
 
-	Let $R(x_1, y_1) = p_1-\ldots -p_n$, and let $R(x_2, y_1) = q_1-\ldots -q_{n+1}$, where $p_1 = x_1$, $p_n = q_{n+1} = y_1$, $q_1 = x_2$ and $q_n = y_2$. From the definition of $R(x_1, y_1)$ and $R(x_2, y_1)$, none of $p_2, \ldots, p_{n-1}, q_2, \ldots, q_n$ belong to $X$. Also, from the definition of $y_1$, $y_1 \notin X$.
+		Let $R(x_1, y_1) = p_1-\ldots -p_n$, and let $R(x_2, y_1) = q_1-\ldots -q_{n+1}$, where $p_1 = x_1$, $p_n = q_{n+1} = y_1$, $q_1 = x_2$ and $q_n = y_2$. From the definition of $R(x_1, y_1)$ and $R(x_2, y_1)$, none of $p_2, \ldots, p_{n-1}, q_2, \ldots, q_n$ belong to $X$. Also, from the definition of $y_1$, $y_1 \notin X$.
 
-	Since $r(x_1, y_1) = r(x_2, y_1) - 1$ and since $x_1$, $x_2$ are nonadjacent it follows that $x_2$ does not belong to $R(x_1, y_1)$ and $x_1$ does not belong to $R(x_2, y_1)$. Since $r(x_3, y_1), r(x_3, y_2) \geq n (= r(x_1, y_2))$ it follows that $x_3$ does not belong to $R(x_1, y_1)$ or to $R(x_2, y_1)$, and has no neighbors in $R(x_1, y_1) \cup R(x_2, y_1)$ other than $x_1$, $x_2$. Since $r(x_1, y_2) = n$ we get that $y_2$ does not belong to $R(x_1, y_1)$.
+		Since $r(x_1, y_1) = r(x_2, y_1) - 1$ and since $x_1$, $x_2$ are nonadjacent it follows that $x_2$ does not belong to $R(x_1, y_1)$ and $x_1$ does not belong to $R(x_2, y_1)$. Since $r(x_3, y_1), r(x_3, y_2) \geq n (= r(x_1, y_2))$ it follows that $x_3$ does not belong to $R(x_1, y_1)$ or to $R(x_2, y_1)$, and has no neighbors in $R(x_1, y_1) \cup R(x_2, y_1)$ other than $x_1$, $x_2$. Since $r(x_1, y_2) = n$ we get that $y_2$ does not belong to $R(x_1, y_1)$.\par}%
 
 	We claim first that the insides of paths $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertices. For suppose that there are $2 \leq i \leq n-1$ and $2 \leq j \leq n$ that $p_i = q_j$. Then the subpaths of these two paths between $p_i$, $y_1$ are both subpaths of the shortest paths, and therefore have the same length, that is $j=i+1$. So $p_1-\ldots-p_1-q_{j+1}-\ldots-q_n$ contains a path between $x_1$, $y_2$ of length $\leq n-2$, contradicting that $r(x_1, y_2) = n$. So $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertex except $y_1$.
 
@@ -481,6 +512,11 @@ Below we will prove that if the \cref{alg:testNearCleaner} reports an odd hole i
 
 	Now, since $x_1$, $x_2$ are nonadjacent $i \geq 2$. But also $r(x_2, y_1) \geq n$ and so $j+n-i \geq n$, that is $j \geq i$. So we get $i=j$. Let us choose $i$ minimum, then $x_3-x_1-\ldots-p_i-q_i-\ldots-x_2-x_3$ is an odd hole, which was what we wanted.
 \end{proof}
+
+\begin{wrapfigure}{r}{0.35\textwidth}
+	
+\end{wrapfigure}
+
 
 \subsection{Summary}
 

@@ -9,14 +9,14 @@
 int main() {
   srand(time(0));
 
-  int minN = 20;
-  int maxN = 45;
+  int minN = 50;
+  int maxN = 50;
   int step = 5;
 
   for (int i = 0; i < 10; i++) {
     set<int> done;
 
-    while (done.size() < (maxN - minN + 1) / step) {
+    while (done.size() < (maxN - minN + step) / step) {
       Graph G = getBipariteGraph(8 + (rand() % 20), getDistr()).getLineGraph();
       // if (rand() % 2) G = G.getComplement();
 
@@ -68,7 +68,7 @@ int main() {
   // }
 
   // for (int k = 0; k < 10; k++) {
-  //   for (int i = 12; i <= 24; i += 3) {
+  //   for (int i = 24; i <= 30; i += 3) {
   //     Graph G = getSplitGraph(i, getDistr());
   //     G.printOut();
   //   }
