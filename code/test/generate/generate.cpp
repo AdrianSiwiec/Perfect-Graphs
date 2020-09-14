@@ -37,13 +37,13 @@ int main() {
   //   }
   // }
 
-  int minN = 18;
-  int maxN = 48;
-  for (int k = minN; k <= maxN; k+=6) {
-  // for (int k = minN; k <= maxN; k++) {
-    Graph G = getFullBinaryTree(k);
-    G.printOut();
-  }
+  // int minN = 18;
+  // int maxN = 48;
+  // for (int k = minN; k <= maxN; k+=6) {
+  // // for (int k = minN; k <= maxN; k++) {
+  //   Graph G = getFullBinaryTree(k);
+  //   G.printOut();
+  // }
 
   // // vec<vec<int>> sizes = {{5, 4}, {5, 5}, {5, 6}, {5, 7}, {5, 8}, {5, 9}};
   // vec<vec<int>> sizes = {{6, 3}, {6, 4}, {6, 5}, {6, 6}, {6, 7}, {6, 8}};
@@ -67,10 +67,10 @@ int main() {
   //   G.printOut();
   // }
 
-  // for (int k = 0; k < 10; k++) {
-  //   for (int i = 9; i <= 19; i += 3) {
-  //     Graph G = getSplitGraph(i, getDistr());
-  //     G.printOut();
-  //   }
-  // }
+  for (int k = 0; k < 10; k++) {
+    for (int i = 9; i <= 24; i += 3) {
+      Graph G = getSplitGraph(i, getDistr());
+      G.printOut();
+    }
+  }
 }

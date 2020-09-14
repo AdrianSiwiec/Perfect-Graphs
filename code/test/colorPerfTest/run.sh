@@ -18,13 +18,13 @@ colorTests=(
   # "biparite18to48.t.in"
   # "split.t.in"
 
-  "perfLin.t.in"
-  "lattice.t.in"
-  "rook.t.in"
-  "knight.t.in"
-  "hypercube.t.in"
+  # "perfLin.t.in"
+  # "lattice.t.in"
+  # "rook.t.in"
+  # "knight.t.in"
+  # "hypercube.t.in"
   "split.t.in"
-  "fullBinary.t.in"
+  # "fullBinary.t.in"
 )
 
 # for file in "${colorTests[@]}"; do

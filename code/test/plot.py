@@ -102,7 +102,7 @@ algo_labels = {
     "Perfect": "Perfect",
     "CUDA Naive": "GPU Naive",
     "Naive": "Naive",
-    "CSDP Color": "Color",
+    "CSDP Color": "",
 }
 
 algo_field_labels = {
@@ -112,7 +112,7 @@ algo_field_labels = {
     csv_testNCShortestPaths: "Calculare $R$",
     csv_gpuCopyR: "Copy $R$",
     csv_gpuWork: "GPU test",
-    csv_color_res: "Rest",
+    csv_color_res: "Graph manipulation",
     csv_color_CSDP: "CSDP",
 }
 field_colors = {
@@ -428,7 +428,7 @@ experiments = [
             # (csv_N, "20|25|30|35|40|45|50|55"),
             # (csv_algo, "GPU Perfect|Perfect"),
         ],
-        "x_param": csv_N,
+        "x_param": csv_filename,
         "x_show": csv_filename,
         "type": "detailed",
         "size": sizes_in_inches["wideDetailed"],
@@ -633,7 +633,6 @@ for i_exp, experiment in enumerate(experiments):
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles[::-1], labels[::-1], ncol=3)
     elif experiment["type"] == "detailed":
-        fig.tight_layout(rect=[0, 0.1, 1, 1])
 
         handles, labels = ax.get_legend_handles_labels()
         legend = ax.legend(handles, labels)
@@ -641,6 +640,7 @@ for i_exp, experiment in enumerate(experiments):
             zip(ax.get_legend_handles_labels()[0], ax.get_legend_handles_labels()[1])
         )
         if len(handles_and_labels) > 3:
+            fig.tight_layout(rect=[0, 0.1, 1, 1])
             rect = patches.Rectangle(
                 (-29, -2.37),
                 165,
@@ -735,23 +735,33 @@ for i_exp, experiment in enumerate(experiments):
             plt.gca().add_artist(legend1)
             plt.gca().add_artist(legend2)
         else:
+            fig.tight_layout(rect=[0, 0.04, 1, 1])
             rect = patches.Rectangle(
-                (-28, -1.98),
-                166,
-                1,
+                (-5, -1.42),
+                140,
+                .35,
                 linewidth=1,
                 edgecolor="black",
                 facecolor="white",
                 clip_on=False,
             )
             shadow = patches.Rectangle(
-                (-27, -1.99),
-                166,
-                1,
+                (-3.5, -1.44),
+                140,
+                .35,
                 linewidth=1,
                 edgecolor="grey",
                 facecolor="grey",
                 clip_on=False,
+            )
+            legend = ax.legend(
+                handles[::-1],
+                labels[::-1],
+                shadow=False,
+                ncol=2,
+                frameon=False,
+                loc="lower left",
+                bbox_to_anchor=(-0.00, -0.115),
             )
             ax.add_patch(shadow)
             ax.add_patch(rect)
