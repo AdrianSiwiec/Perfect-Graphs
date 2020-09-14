@@ -8,9 +8,9 @@ The following appendix is based on the paper \citetitle{coloringSquareFree} by \
 
 Recall, that a prism (\cref{def:prism}) is a graph consisting of two disjoint triangles and two disjoint paths between them.
 
-\begin{defn}[Artemis graph]
+\begin{defnTwo}[Artemis graph]
   A graph $G$ is an \emph{Artemis graph} if it contains no odd hole, no antihole of length at least five, and no prism.
-\end{defn}
+\end{defnTwo}
 
 In 2003 Maffray et al. published a paper on Artemis graphs where they show polynomial algorithms to recognize and color them \cite{Maffray2006}. In 2005 Maffray et al. published a paper on Artemis graphs\cite{Maffray2005} they showed an polynomial algorithm that checks if a perfect graph contains a prism, and returns it if so.
 
@@ -31,15 +31,15 @@ So, we will focus on square-free perfect graphs that are not Artemis graphs. Let
 
 Let us state a few definitions.
 
-\begin{defn}[subdivision]
+\begin{defnTwo}[subdivision]
   In a graph $G$, subdividing an edge $uv \in E(G)$ means removing the edge $uv$ and adding a new vertex $w$ and two new edges $uw, wv$. Starting with a graph $G$, the effect of repeatedly subdividing edges prioduces a graph $H$ called a \emph{subdivision of $G$}. Note that $V(G) \subseteq V(H)$.
-\end{defn}
+\end{defnTwo}
 
-\begin{defn}[triad]
+\begin{defnTwo}[triad]
   In a graph $G$, a \emph{triad} is a set of three pairwise non-adjacent vertices.
-\end{defn}
+\end{defnTwo}
 
-\begin{defn}[good partition]
+\begin{defnTwo}[good partition]
   A \emph{good partition} of a graph $G$ is a partition $(K_1, K_2, K_3, L, R)$ of $V(G)$ such that:
   \begin{itemize}
     \item $L$ and $R$ are not empty, and $L$ is anticomplete to $R$,
@@ -48,7 +48,7 @@ Let us state a few definitions.
     \item either $K_1$ is anticomplete to $K_3$, or no vertex in $L$ has neighbors in both $K_1$ and $K_3$,
     \item for some $x \in L$ and $y \in R$, there is a triad of $G$ that contains $\{x, y\}$.
   \end{itemize}
-\end{defn}
+\end{defnTwo}
 
 \TODO{we need many more definitions, scan pseudocode}
 
@@ -88,31 +88,31 @@ In the following algorithms we use a slightly different notation than before, wi
 
 \section{Algorithms}
 
-\graphAppendix{Color Graph}
+\graphAppendix{Color square-free perfect graph}
 \input{coloringAppendix/algI.tex}
 \clearpage
 
-\graphAppendix{Color Good Partition}
+\graphAppendix{Color good partition}
 \input{coloringAppendix/algII.tex}
 \clearpage
 
-\graphAppendix{Grow Hyperprism}
+\graphAppendix{Grow hyperprism}
 \input{coloringAppendix/algIII.tex}
 \clearpage
 
-\graphAppendix{Good Partition from an even hyperprism}
+\graphAppendix{Good partition from an even hyperprism}
 \input{coloringAppendix/algIV.tex}
 \clearpage
 
-\graphAppendix{Good Partition from odd hyperprism}
+\graphAppendix{Good partition from an odd hyperprism}
 \input{coloringAppendix/algV.tex}
 \clearpage
 
-\graphAppendix{Good Partition from $J$-strip system}
+\graphAppendix{Good partition from a $J$-strip system}
 \input{coloringAppendix/algVIa.tex}
 \clearpage
 
-\graphAppendix{Good Partition from a special $K_4$ strip system}
+\graphAppendix{Good partition from a special $K_4$ strip system}
 \input{coloringAppendix/algVIb.tex}
 \clearpage
 

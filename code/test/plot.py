@@ -98,11 +98,11 @@ algo_markers = {
 }
 
 algo_labels = {
-    "Cuda Perfect": "GPU Perfect",
-    "Perfect": "Perfect",
-    "CUDA Naive": "GPU Naive",
-    "Naive": "Naive",
-    "CSDP Color": "",
+    "Cuda Perfect": "GPU CCLSV",
+    "Perfect": "CCLSV",
+    "CUDA Naive": 'GPU Na"ive',
+    "Naive": "Naïve",
+    "CSDP Color": "Color",
 }
 
 algo_field_labels = {
@@ -117,17 +117,17 @@ algo_field_labels = {
 }
 field_colors = {
     "Perfect": {
-        csv_simpleStructures: "#0f2231",
-        csv_getNearCleaners: "#2c6593",
-        csv_testNCShortestPaths: "#6ca5d3",
-        csv_testNCRest: "#aaaaaa",
+        csv_simpleStructures: "#2a1500",
+        csv_getNearCleaners: "#804000",
+        csv_testNCShortestPaths: "#d46a00",
+        csv_testNCRest: "#ff942a",
     },
     "Cuda Perfect": {
-        csv_simpleStructures: "#1a1a1a",
-        csv_getNearCleaners: "#4d4d4d",
-        csv_testNCShortestPaths: "#808080",
-        csv_gpuCopyR: "#b3b3b3",
-        csv_gpuWork: "#d2d2d2",
+        csv_simpleStructures: "#08131c",
+        csv_getNearCleaners: "#193a54",
+        csv_testNCShortestPaths: "#2a608c",
+        csv_gpuCopyR: "#3b86c4",
+        csv_gpuWork: "#73a9d5",
     },
     "CUDA Naive": {csv_cpuPreparation: "#ff0000", csv_gpuCalculation: "#aa0000"},
     "CSDP Color": {csv_color_res: "#0f2231", csv_color_CSDP: "#6ca5d3"},
@@ -395,8 +395,22 @@ experiments = [
     },
     # COLOR
     #
+    # {
+    #     "restrictions": [(csv_algo, "CSDP")],
+    #     "x_param": csv_N,
+    #     "x_show": csv_N,
+    #     "type": "lines",
+    #     "size": sizes_in_inches["regular_small"],
+    #     "y_param": csv_overall,
+    #     "ylog": True,
+    #     "yformatter": func_formatter,
+    #     "x_label": label_lca_N,
+    #     "y_label": label_time_overall_s,
+    #     "out_prefix": "color",
+    #     "ylim": (0.2, 350),
+    # },
     {
-        "restrictions": [(csv_algo, "CSDP")],
+        "restrictions": [(csv_algo, "CSDP"), (csv_filename, "lattice|rook|knight")],
         "x_param": csv_N,
         "x_show": csv_N,
         "type": "lines",
@@ -405,6 +419,8 @@ experiments = [
         "ylog": True,
         "yformatter": func_formatter,
         "x_label": label_lca_N,
+        "x_ticks": [18, 24, 30, 36, 42, 48],
+        "x_ticks_labels": ["$6\\times 3$", "", "$6\\times 5$", "", "$6\\times 7$", ""],
         "y_label": label_time_overall_s,
         "out_prefix": "color",
         "ylim": (0.2, 350),
@@ -672,7 +688,7 @@ for i_exp, experiment in enumerate(experiments):
                 (0, 0), 0.01, 0.01, fill=False, edgecolor="none", visible=False
             )
 
-            labels_gpu = [l[12::] for l in labels_gpu] + ["GPU"]
+            labels_gpu = [l[10::] for l in labels_gpu] + ["GPU"]
             handles_gpu = handles_gpu + (r,)
             lgpu1 = labels_gpu[-3:]
             hgpu1 = handles_gpu[-3:]
@@ -680,7 +696,7 @@ for i_exp, experiment in enumerate(experiments):
             lgpu2 = labels_gpu[:-3] + ["Test near cleaners:"]
             hgpu2 = handles_gpu[:-3] + (r,)
 
-            labels_cpu = [l[7::] for l in labels_cpu] + ["CPU"]
+            labels_cpu = [l[5::] for l in labels_cpu] + ["CPU"]
             handles_cpu = handles_cpu + (r,)
             lcpu1 = labels_cpu[-3:]
             hcpu1 = handles_cpu[-3:]
@@ -737,23 +753,24 @@ for i_exp, experiment in enumerate(experiments):
         else:
             fig.tight_layout(rect=[0, 0.04, 1, 1])
             rect = patches.Rectangle(
-                (-5, -1.42),
+                (0, -1.42),
                 140,
-                .35,
+                0.35,
                 linewidth=1,
                 edgecolor="black",
                 facecolor="white",
                 clip_on=False,
             )
             shadow = patches.Rectangle(
-                (-3.5, -1.44),
+                (1, -1.44),
                 140,
-                .35,
+                0.35,
                 linewidth=1,
                 edgecolor="grey",
                 facecolor="grey",
                 clip_on=False,
             )
+            labels = [l[6::] for l in labels]
             legend = ax.legend(
                 handles[::-1],
                 labels[::-1],
@@ -813,7 +830,7 @@ for i_exp, experiment in enumerate(experiments):
         if "ylog" in experiment and experiment["ylog"]:
             ax.set_yscale("log")
         handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles[::-1], labels[::-1], loc="best")
+        legend = ax.legend(handles[::-1], labels[::-1], loc="upper left")
         fig.tight_layout()
 
     if "yformatter" in experiment:

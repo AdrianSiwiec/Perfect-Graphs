@@ -62,10 +62,10 @@
 \definecolor{currentstroke}{rgb}{0.501961,0.501961,0.501961}%
 \pgfsetstrokecolor{currentstroke}%
 \pgfsetdash{}{0pt}%
-\pgfpathmoveto{\pgfqpoint{0.842745in}{0.080808in}}%
-\pgfpathlineto{\pgfqpoint{3.825315in}{0.080808in}}%
-\pgfpathlineto{\pgfqpoint{3.825315in}{0.348269in}}%
-\pgfpathlineto{\pgfqpoint{0.842745in}{0.348269in}}%
+\pgfpathmoveto{\pgfqpoint{0.938614in}{0.080808in}}%
+\pgfpathlineto{\pgfqpoint{3.921184in}{0.080808in}}%
+\pgfpathlineto{\pgfqpoint{3.921184in}{0.348269in}}%
+\pgfpathlineto{\pgfqpoint{0.938614in}{0.348269in}}%
 \pgfpathclose%
 \pgfusepath{stroke,fill}%
 \end{pgfscope}%
@@ -78,10 +78,10 @@
 \definecolor{currentstroke}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{currentstroke}%
 \pgfsetdash{}{0pt}%
-\pgfpathmoveto{\pgfqpoint{0.810789in}{0.096092in}}%
-\pgfpathlineto{\pgfqpoint{3.793359in}{0.096092in}}%
-\pgfpathlineto{\pgfqpoint{3.793359in}{0.363553in}}%
-\pgfpathlineto{\pgfqpoint{0.810789in}{0.363553in}}%
+\pgfpathmoveto{\pgfqpoint{0.917309in}{0.096092in}}%
+\pgfpathlineto{\pgfqpoint{3.899880in}{0.096092in}}%
+\pgfpathlineto{\pgfqpoint{3.899880in}{0.363553in}}%
+\pgfpathlineto{\pgfqpoint{0.917309in}{0.363553in}}%
 \pgfpathclose%
 \pgfusepath{stroke,fill}%
 \end{pgfscope}%
@@ -1050,7 +1050,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.328421in,y=0.177750in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont  Graph manipulation}%
+\pgftext[x=1.328421in,y=0.177750in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont Graph manipulation}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -1073,7 +1073,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=2.912039in,y=0.177750in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont  CSDP}%
+\pgftext[x=2.912039in,y=0.177750in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont CSDP}%
 \end{pgfscope}%
 \end{pgfpicture}%
 \makeatother%

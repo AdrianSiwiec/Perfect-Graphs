@@ -2,6 +2,7 @@
 #include <map>
 #include <random>
 #include "commons.h"
+#include "jewels.h"
 #include "oddHoles.h"
 #include "perfect.h"
 #include "testCommons.h"
@@ -67,10 +68,24 @@ int main() {
   //   G.printOut();
   // }
 
-  for (int k = 0; k < 10; k++) {
-    for (int i = 9; i <= 24; i += 3) {
-      Graph G = getSplitGraph(i, getDistr());
-      G.printOut();
-    }
-  }
+  // for (int k = 0; k < 10; k++) {
+  //   for (int i = 9; i <= 24; i += 3) {
+  //     Graph G = getSplitGraph(i, getDistr());
+  //     G.printOut();
+  //   }
+  // }
+  Graph G(9,
+          "\
+  .X....X.X\
+  X.X....X.\
+  .X.X.....\
+  ..X.X...X\
+  ...X.X..X\
+  ....X.XX.\
+  X....X.X.\
+  .X...XX..\
+  X..XX....\
+  ");
+
+  cout << findJewelNaive(G);
 }

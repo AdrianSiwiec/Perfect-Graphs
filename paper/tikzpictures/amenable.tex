@@ -1,0 +1,29 @@
+\centering\begin{tikzpicture}[scale=.7,simplegraph]
+  \def\ngon{7}
+  \node[regular polygon,regular polygon sides=\ngon,minimum size=3cm, draw=none] (p) {};
+  \foreach\x in {1,...,\ngon}{\node[] (p\x) at (p.corner \x){$v_\x$};}
+
+  \draw(p1) to (p2);
+  \draw(p2) to (p3);
+  \draw(p3) to (p4);
+  \draw(p4) to (p5);
+  \draw(p5) to (p6);
+  \draw(p6) to (p7);
+  \draw(p7) to (p1);
+
+  \node (p8) at (-4, 3){$v_8$};
+  \node (p9) at (-4.5, 0){$v_9$};
+
+  \draw(p8) to[out=0, in=150] (p1);
+  \draw(p8) to (p2);
+  \draw(p8) to (p3);
+  \draw(p8) to[out=30, in=60, looseness=1.2] (p6);
+
+  \draw(p9) to (p2);
+  \draw(p9) to (p3);
+  \draw(p9) to[out=-60, in=-90, looseness=1.5] (p6);
+
+  \node[draw=none] (px) at (0, -4.5){};
+  \node[draw=none] (px) at (0, 4.4){};
+
+\end{tikzpicture}%

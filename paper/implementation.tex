@@ -25,7 +25,7 @@ We have an array $first$ in which for each vertex is written its first neighbor 
 
 This simple change in data structure design gave us a speedup of overall running time of our algorithm in the range of 20x\todo{check this}.
 
-Another crucial optimization is to eliminate partial solutions that have chords right away. This is especially useful in graphs that have many chords and reduces running time dramatically.
+Another crucial optimization is to eliminate partial solutions that have edges between not consecutive vertices right away. Also, when we look for an odd hole specifically, we can assume that its first vertex we enumerate is the lowest. Those two optimizations alone make a huge difference. With them, our na\"ive algorithm implementation went from being able to check graphs with $|V|$ up to 12-14, within a couple of minutes, to being faster than CCLSV on most of our tests.
 
 \paragraph{Array unique.}
 
@@ -35,12 +35,12 @@ A theoretically optimal solution in general would be to have a hashing set of ve
 
 In our use case, a few optimizations can be made. First, we don't need a hashing set. We can have an array of bools, of size $|V(G)|$ and mark vertices of a path there. Paths are usually much shorter than $|V(G)|$, but we operate on small graphs, so we can afford this. Second, we notice that we don't need to create this array for each call of $areUnique$ procedure. Let's instead have a static array $stamp$ of ints and a static $counter$ of how many times we called $areUnique$ method. For each element of a path $v_i$, if the value of $stamp$ array is equal to $counter$ we report that vertices are not unique. Else we set $stamp[v_i] = counter$. When returning from the $areUnique$ method we increment $counter$.
 
-This optimization alone is crucial for performance. In our testing, all calls of $areUnique$ took abour 70\% of total running time of the CCLSV algorithm, and virtually all running time of the na\"ive algorithm \todo{check}. After using static $stamp$ array, it fell to 5.2\% in CCLSV and to X\% in na\"ive. The overall speedup of the CCLSV algorithm was about 6x. \todo{check if for sure it didn't use path speedup} The speedup of na\"ive algorithm was even greater -- about 20x.
+This optimization almost cuts down na\"ive algorithm's running time in half.
 
 \paragraph{Other uses for path generation}
 \label{sec:usesGeneration}
 
-Because of a good performance of our optimized algorithm for generating paths, we use it whenever possible. It can be easily modified to generate all possibly chordal paths or holes and therefore has much use in the CCLSV algorithm. For example, when searching for jewels we generate with it all possibly chordal paths of length 5 and for each check if it has required properties of a jewel. This proved to be much faster than generating vertices that don't have forbidden chords one by one. We use the same algorithm for generating starting vertices for a possible $\T_2$ and $\T_3$.
+Because of a good performance of our optimized algorithm for generating paths, we use it whenever possible. It can be easily modified to generate all possibly chordal paths or holes and therefore has much use in the CCLSV algorithm. For example, when searching for jewels we generate with it all possibly chordal paths of length 5 and for each check if it has required properties of a jewel. This proved to be much faster than generating vertices that don't have forbidden chords one by one. We use the same algorithm for generating starting vertices for a possible $\T_2$ and $\T_3$. Before optimizing path enumeration algorithm, all calls of $areUnique$ alone took abour 70\% of total running time of the CCLSV algorithm. After optimizing $areUnique$, path enumeration still took more than 50\% of total running time. After all optimizations it is almost unnoticable.
 
 With all those optimizations made, our na\"ive algorithm proved to be quite fast in some cases, although its running time is very dependent on the properties of the input, as we should expect from an optimized non-polynomial algorithm. See \cref{sec:experiments} for running times.
 
@@ -58,12 +58,6 @@ The Berge recognition algorithm's running time is $O(n^9)$, which brings into qu
 When implementing a complicated algorithm that has a time complexity of $O(n^9)$ optimizations can be both crucial and difficult to implement. There is not a single code path that takes up all the running time -- or at lest there isn't one from a theoretical point of view. Therefore a tool for inspecting running time bottlenecks is needed. We used Valgrind's tool called \emph{callgrind} \cite{callgrind}.
 
 Callgrind is a profiling tool that records the call history of a program and presents it as a call-graph. When profiling a program, event counts (data reads, cache misses etc.) are attributed directly to the function that they occurred in. In addition to that, the costs are propagated to functions upwards the call stack. For example, say internal function $worker$ consumes most of programs running time. It is called from $run1$ and $run2$, with $run2$ calls taking twice as much time. $run1$ and $run2$ are in turn called from main. Total attribution of $worker$ would be nearly 100\%, of $run1$ about 33\% and of $run2$ about 66\%. The contribution of main would also be near 100\%. We used a tool \emph{gprof2dot} \cite{gprof2dot} to generate visual call graphs from callgrind's output.
-
-\TODO{example of a call graph?}
-
-\TODO{callgrind}
-\TODO{first result to best result gains (like: we are 20x faster than what first comes to mind)}
-\TODO{regenerate speedup results to make sure what the gains were}
 
 Before any optimizatios, a major part of Berge recognition algorithm was being spent on enumerating all possible paths of given length -- this is done either to find a hole by itself, find a simple structure or check a possible near cleaner for amenable odd hole. Therefore optimizations of the path enumerating algorithm were also helpful in speeding up CCLSV implementation.
 
@@ -94,11 +88,11 @@ In total over 100 \todo{update the munber}cpu-hours of end to end tests were per
 \section{Parallelism with CUDA}
 \label{sec:CUDA}
 
-\TODO{CUDA background}
-\TODO{moderngpu - allows us to run simple transforms}
+CUDA is a parrallel computing platform model created by Nvidia and executed on Nvidia GPUs. It allows to run a program in parallel by many CUDA threads at once. Although usually described by PRAM models, implementing PRAM algorithm in CUDA architecture is not as straightforward as implementing RAM algorith on a cpu. Some of the causes are: synchronization between threads is very costly, there are multiple memory models to choose from, threads run divided in blocks and it is possible to efficiently share memory within blocks and copying memory from and back to CPU suffers from large latency. What is more, there are no standard dynamic structures in PRAM model, let alone CUDA, that are taken for granted in PRAM model, such as hashing maps or sets. We used a library called \emph{moderngpu} for our implementation, because it allows a slightly cleaner code.
+
 \TODO{Implementing get NC is tough -- we rely on set<bitset> to do the work. Maybe we could use a dynamic set from Adam's link? As a "open question"}
 
-We posed a question if it would be profitable to use GPU for this problem. On one hand the graphs we are working on are small and our time complexity so large that a speedup from massively parallel architecture could be profitable. On the other the algorithm is complex and not easy to parallelise. Therefore we decided to analyze the  CCLSV\todo{a good name for it?} algorithm and parrallelize parts that would benefit from it the most.
+We posed a question if it would be profitable to use GPU for the problem of recognizing Berge graphs. On one hand the graphs we are working on are small and our time complexity so large that a speedup from massively parallel architecture could be profitable. On the other the algorithm is complex and not easy to parallelise. Therefore we decided to analyze the  CCLSV algorithm and parrallelize parts that would benefit from it the most.
 
 % \subsubsection{Na\"ive parallelisation}
 
@@ -116,7 +110,5 @@ To identify parts of CCLSV to implement, we used callgrind and found potential b
 
 Let us recall the \cref{alg:testNearCleaner}. It calculates array $R$ of shortest paths, then for each 3-vertex path and an additional vertex it does $O(1)$ checks to see if they along with two paths from $R$ give us an odd hole. We will parallelise the work after calculating $R$. Let us notice, that for all $X$s all 3-vertex paths are the same. We calculate them beforehand, then each thread receives a 3-vertex path $x_1 - x_2 - x_3$ and an additional vertex $y_1$ and performs the required checks. This is almost perfect scenario for the GPU -- we do a simple SIMD work in parallel, without a lot scattered memory access.
 
-It turns out that this optimization alone speeds up \cref{alg:testNearCleaner} almost 7x \todo{check} on bigger tests, which gives us a speedup of about 6x \todo{check} for overall algorithm.
-
-\TODO{implement other CUDA opts and describe them}
+The part of the CCLSV implemented on the gpu achieved speedup of up to 15x. Which gives us a speedup of up to 9x for overall algorithm.
 

@@ -1342,10 +1342,10 @@
 \pgfsetstrokeopacity{0.800000}%
 \pgfsetdash{}{0pt}%
 \pgfpathmoveto{\pgfqpoint{0.717840in}{2.291296in}}%
-\pgfpathlineto{\pgfqpoint{1.736484in}{2.291296in}}%
-\pgfpathquadraticcurveto{\pgfqpoint{1.758706in}{2.291296in}}{\pgfqpoint{1.758706in}{2.313518in}}%
-\pgfpathlineto{\pgfqpoint{1.758706in}{2.767222in}}%
-\pgfpathquadraticcurveto{\pgfqpoint{1.758706in}{2.789444in}}{\pgfqpoint{1.736484in}{2.789444in}}%
+\pgfpathlineto{\pgfqpoint{1.772344in}{2.291296in}}%
+\pgfpathquadraticcurveto{\pgfqpoint{1.794567in}{2.291296in}}{\pgfqpoint{1.794567in}{2.313518in}}%
+\pgfpathlineto{\pgfqpoint{1.794567in}{2.767222in}}%
+\pgfpathquadraticcurveto{\pgfqpoint{1.794567in}{2.789444in}}{\pgfqpoint{1.772344in}{2.789444in}}%
 \pgfpathlineto{\pgfqpoint{0.717840in}{2.789444in}}%
 \pgfpathquadraticcurveto{\pgfqpoint{0.695617in}{2.789444in}}{\pgfqpoint{0.695617in}{2.767222in}}%
 \pgfpathlineto{\pgfqpoint{0.695617in}{2.313518in}}%
@@ -1389,7 +1389,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.051173in,y=2.667222in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont Perfect}%
+\pgftext[x=1.051173in,y=2.667222in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont CCLSV}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetrectcap%
@@ -1433,7 +1433,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.051173in,y=2.512284in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont GPU Perfect}%
+\pgftext[x=1.051173in,y=2.512284in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont GPU CCLSV}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetrectcap%
@@ -1471,7 +1471,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.051173in,y=2.357346in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont Naive}%
+\pgftext[x=1.051173in,y=2.357346in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont Naïve}%
 \end{pgfscope}%
 \end{pgfpicture}%
 \makeatother%

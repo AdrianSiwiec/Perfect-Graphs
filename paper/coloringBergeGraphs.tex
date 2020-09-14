@@ -33,7 +33,13 @@ Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graph
 
 For a channel defined by a graph $C_5$, using five messages of length 2 to communicate gives us a lower bound on $\Theta(G)$ equal $\sqrt{5}$ (as does calculating $\alpha(C_5^2)$).
 
-Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ as its "handle" and 5 "ribs" of unit length \todo{picture}. Open it up to the point where non-consecutive ribs are orthogonal, that is form an angle of 90$^\circ$. This way we get a representation of $C_5$ by 5 unit vectors $u_1, \ldots u_5$ so that each $u_i$ forms the same angle with $e_1$ and any two non-adjacent nodes are represented with orthogonal vectors. We can calculate $e_1^\intercal u_i = 5 ^ {-1/4}$.
+\begin{wrapfigure}{l}{0.4\textwidth}
+  \input{tikzpictures/umbrella.tex}
+  \caption{Lovász's umbrella}
+  \label{fig:umbrella}
+\end{wrapfigure}
+
+Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ as its "handle" and 5 "ribs" of unit length.  Open it up to the point where non-consecutive ribs are orthogonal, that is form an angle of 90$^\circ$. This way we get a representation of $C_5$ by 5 unit vectors $u_1, \ldots u_5$ so that each $u_i$ forms the same angle with $e_1$ and any two non-adjacent nodes are represented with orthogonal vectors. See \Cref{fig:umbrella}. We can calculate $e_1^\intercal u_i = 5 ^ {-1/4}$.
 
 It turns out, that we can obtain a similar representation of the nodes of $C_5^k$ by unit vectors $v_i \in \mathbb{R}^{3k}$, so that any two non-adjacent nodes are labeled with orthogonal vectors (this representation is sometimes called the \emph{orthogonal representation} \cite{Lovsz1989Orthogonal}). Moreover, we still get $e_1^\intercal v_i = 5^{-k/4}$ for every $i \in V(C_5^k)$ (the proof is quite technical and we omit it here).
 
@@ -162,7 +168,7 @@ In fact, to calculate $\chi(\overline{G})$ and $\alpha(G)$ we only need an appro
 
 We will now show how to find a stable set in $G$ of size $\alpha(G)$. We will construct a sequence of induced subgraphs $G = G_0 \supseteq G_1 \supseteq \ldots \supseteq G_{|V|}$, so that $G_{|V|}$ is a required stable set.
 
-\begin{alg}[maximum cardinality stable set in a perfect graph]
+\begin{alg}[Maximum cardinality stable set in a perfect graph]
   \label{alg:maxStableSet}
   Input: A perfect graph $G = (V, E)$.
 
@@ -198,7 +204,7 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$. We will co
 
 Given a natural weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ using the following modification: 
 
-\begin{alg}[maximum weighted stable set in a perfect graph]
+\begin{alg}[Maximum weighted stable set in a perfect graph]
   \label{alg:maxWeightedStableSet}
   Input: A perfect graph $G = (V, E)$ and a weight function $w : V \rightarrow \mathbb{N}$.
 
@@ -226,7 +232,7 @@ We create graph $G'$ by replacing every node $v$ by a set $W_v$ of $w(v)$ nonadj
 Next, let us show how to find a stable set intersecting all the maximum cardinality cliques of $G$. We will create a list $Q_1, \ldots Q_t$ of all maximum cardinality cliques of $G$ and return a stable set intersecting them all.
 
 Recall that to calculate a maximum cardinality clique of $G$, we can calculate a maximum cardinality stable set of $\overline{G}$.
-\begin{alg}
+\begin{alg}[Stable set intersecting all maximum cardinality cliques]
   \label{alg:ssIntersectingCliques}
   Input: A perfect graph $G = (V, E)$.
 
@@ -258,7 +264,7 @@ There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single cliq
 
 \subsection{Minimum coloring}
 
-\begin{alg}
+\begin{alg}[Color perfect graph]
   \label{alg:minColoring}
   Input: A perfect graph $G = (V, E)$.
 
@@ -297,6 +303,6 @@ In 2015 Maffray showed an algorithm for coloring Berge graphs with no squares (a
 
 In 2016 Chudnovsky et al. published an algorithm that given a perfect graph $G$ with $\omega(G) = k$ colors it optimally in a time polynomial for a fixed $k$ \cite{Chudnovsky2017}.
 
-A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{Chudnovsky2019}. Before proving strong perfect graph conjecture, a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004} During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern. We analyze this algorithm and provide its pseudocode in \cref{ch:coloringSquareFree}.
+A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{Chudnovsky2019}. Before proving strong perfect graph conjecture, a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern.
 
-\TODO{Dałbym ze 2-3 zdania braggowania, ze algorytm jest duzo bardziej zlozony niz rozpoznawanie + na czym sie opiera.}
+The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is a member of class that is simpler to analyze and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{Chudnovsky2019} is of much more mathematical ''flavor'' then \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper is far from straightforward. We do it in the Appendix A.

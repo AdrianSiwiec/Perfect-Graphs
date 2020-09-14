@@ -1,0 +1,24 @@
+\centering\begin{tikzpicture}[scale=0.7,simplegraph]
+  \node(z) at (6.07,- 6.07) {};
+  % \node(zi)[draw=none] at (10.94, -6.07){};
+  % \node(zii)[draw=none] at (10.94, -5.07){};
+  \node(p1) at (9.23, -3.22) {$c_1$};
+  \node(p2) at (11.37, -3.44) {$c_2$};
+  \node(p3) at (11.72, -7.29) {$c_3$};
+  \node(p4) at (9.91, -9.99) {$c_4$};
+  \node(p5) at (8.57, -7.19) {$c_5$};
+
+  \draw[dashed] (p1) to (p2);
+  \draw[dashed] (p2) to (p3);
+  \draw[dashed] (p3) to (p4);
+  \draw[dashed] (p4) to (p5);
+  \draw[dashed] (p5) to (p1);
+
+  \draw[-{Triangle[width=7pt,length=6pt]}, line width=2pt] (z) to[edge node={node [draw=none,above] {$u_1$}}] (p1);
+  \draw[-{Triangle[width=7pt,length=6pt]}, line width=2pt] (z) to[edge node={node [pos=0.7, draw=none,below] {$u_2$}}] (p2);
+  \draw[-{Triangle[width=7pt,length=6pt]}, line width=2pt] (z) to[edge node={node [pos=0.7, draw=none, below right] {$u_3$}}] (p3);
+  \draw[-{Triangle[width=7pt,length=6pt]}, line width=2pt] (z) to[edge node={node [draw=none,below] {$u_4$}}] (p4);
+  \draw[-{Triangle[width=7pt,length=6pt]}, line width=2pt] (z) to[edge node={node [pos=0.7,draw=none,below] {$u_5$}}] (p5);
+  \draw[dotted, line width = 1.5pt] (z) to (10.64, -6.07);
+  \draw[dotted, line width = 1.5pt] (10.64, -5.27) to[out=0, in=0, looseness=1.9] (10.64, -6.07);
+\end{tikzpicture}%

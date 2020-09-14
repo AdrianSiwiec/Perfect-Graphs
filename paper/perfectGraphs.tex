@@ -254,7 +254,6 @@ To prove that existence of $\T_2$ configuration implies that the graph is not Be
 		\item $P$ is of length at least 5 and there exist nonadjacent $x, y \in X$, such that there are exactly two edges between $x, y$ and $P^*$, namely $xp_2$ and $yp_{n-1}$,
 		\item or $P$ is of length 3 and there is an odd antipath joining internal vertices of $P$ with interior in $X$.
 	\end{itemize}
-	\TODO{We may use this lemma quite often, might want to provide proof if so.}
 \end{lemma}
 
 Now, we shall prove the following:
@@ -290,7 +289,7 @@ A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such 
 
 The following algorithm with running time of $O(|V|^6)$ checks whether $G$ contains a configuration of type $\T_3$:
 
-\begin{alg}
+\begin{alg}[Test if $G$ contains a $\T_3$]
 	\label{alg:t3}
 	Input: A graph $G$.
 
@@ -334,7 +333,7 @@ We will skip the proof that each graph containing $\T_3$ is not Berge, as it is 
 \begin{proof}
 	There are $O(|V|^3)$ triples $(v_1, v_2, v_5)$ we enumerate in line \ref{line:t3start}. For each, there are $O(|V|)$ $X$s, so lines \ref{line:t3n4start}-\ref{line:t3n4end} are executed $O(|V|^4)$ times.
 
-	Each execution of lines \ref{line:t3n4start}-\ref{line:t3mid} takes $O(|V|^2)$ time, and there are $O(|V|)$ $v_4$s to enumerate. Line \ref{line:t3v4if} takes $O(|V|)$ time and then there are $O(|V|)$ $v_3$s to enumerate. Each is checked in $O(1)$ time. If we find the correct one, we calculate a path $P$, but return right away, so we calculate $P$ at most once in whole algorithm.
+	Each execution of lines \ref{line:t3n4start}-\ref{line:t3mid} takes $O(|V|^2)$ time, and there are $O(|V|)$ $v_4$s to enumerate. Line \ref{line:t3v4if} takes $O(|V|)$ time and then there are $O(|V|)$ $v_3$ to enumerate. Each is checked in $O(1)$ time. If we find the correct one, we calculate a path $P$, but return right away, so we calculate $P$ at most once in whole algorithm.
 \end{proof}
 
 \subsection{Amenable holes.}
@@ -348,7 +347,6 @@ First, let us introduce a few new definitions.
 
 \begin{defn}[C-major vertices]
   Given a shortest odd hole $C$ in $G$, a node $v \in V(G) \setminus V(C)$ is $C$-major if the set of its neighbors in $C$ is not contained in any 3-node path of $C$.
-  \TODO{a picture of this, clean odd hole, amenable hole}
 \end{defn}
 
 \begin{defn}[clean odd hole]
@@ -366,8 +364,24 @@ Let us notice, that if $X$ is a cleaner for $C$ then $C$ is a clean hole in $G \
 \end{defn}
 
 \begin{defn}[amenable odd hole]
-  An odd hole $C$ of $G$ is \emph{amenable} if it is a shortest off hole in $G$, it is of length at least 7 and for every anticonnected set $X$ of $C$-major vertices there is a $X$-complete edge in $C$.
+  An odd hole $C$ of $G$ is \emph{amenable} if it is a shortest odd hole in $G$, it is of length at least 7 and for every anticonnected set $X$ of $C$-major vertices there is a $X$-complete edge in $C$.
 \end{defn}
+
+\begin{figure}
+  \begin{minipage}{.5\textwidth}
+      \input{tikzpictures/amenable.tex}
+			\captionof{figure}{Amenable odd hole}
+			\label{fig:amenableOddHole}
+  \end{minipage}%
+  \begin{minipage}{.5\textwidth}
+      \input{tikzpictures/notAmenable.tex}
+			\caption{Not amenable odd hole}
+			\label{fig:notAmenableHole}
+  \end{minipage}
+  \end{figure}
+
+Some pictures might be helpful. \Cref{fig:amenableOddHole} shows an example of an amenable odd hole $C = v_1, \ldots, v_7$. It is not a clean hole -- vertices $v_8$ and $v_9$ are $C$-major, and $v_8, v_9, v_1, v_2, v_3$ is an axample of a near-cleaner for $C$.
+\Cref{fig:notAmenableHole} shows an odd hole $C = v_1, \ldots, v_7$ that is not amenable, because there is no $\{v_8, v_9\}$-complete edge in $C$.
 
 \begin{theorem}
 	\label{thm:amenableHoles}
@@ -376,7 +390,7 @@ Let us notice, that if $X$ is a cleaner for $C$ then $C$ is a clean hole in $G \
 	% \TODO{Dobre pytanie. Te 9 kroków to da się zawrzeć w 1-2 zdaniach każde? Jeśli nie, to tylko napisałbym ogólnikowo, że "jest sekwencja kroków, która to robi, tu jest odnośnik"}
 \end{theorem}
 
-The proof of this theorem is quite technical and we will not discuss it here. See section 8 of \cite{MC05} for the proof.
+The proof of this theorem is quite technical and we will not discuss it here. See section 8 of \cite{MC05} for the proof. We can see an example of the contraposition of the \Cref{thm:amenableHoles} working in \Cref{fig:notAmenableHole} -- vertices $v_1$, $v_2$, $v_8$, $v_6$, $v_7$ and a path $v_1-v_9-v_5-v_6$ form a jewel.
 
 With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 
