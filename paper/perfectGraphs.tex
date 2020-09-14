@@ -29,10 +29,24 @@ The first step to solve the problem of recognizing perfect graphs was the \emph{
 \end{theorem}
 
 This theorem is a consequence of a stronger result proven by Lovász:
-\begin{theorem}
+\begin{theorem}[\cite{LL72}, Claim 1 of \cite{GC03}]
 	\label{thm:omegaalpha}
-	A graph $G$ is perfect if and only if for every induced subgraph $H$, the number of vertices of $H$ is at most $\alpha(H)\omega(H)$. \todo{proof!}
+	A graph $G$ is perfect if and only if for every induced subgraph $H$, the number of vertices of $H$ is at most $\alpha(H)\omega(H)$.
 \end{theorem}
+\todo{proof? min. 1 page}
+% \begin{proof}
+% 	First assume that $G$ is perfect -- for every induced subgraph $H$, $\omega(G) = \chi(H)$. Since the number of vertices of $H$ is at most $\alpha(H)\chi(H)$, the claim follows.
+
+% 	The proof of the converse we show is due to Gasparyan \cite{Gasparian1996}. Assume that $G$ is not perfect. Let $H$ be a minimally imperfect subgraph of $G$ and let $n$ be the number of vertices of $H$. Let $\alpha = \alpha(H), \omega = \omega(H)$.
+
+% 	Then, because $H$ is \emph{minimally} imperfect, it satisfies:
+% 	\begin{itemize}
+% 		\item $\omega = \chi(H \setminus v)$, for every $v \in H(V)$,
+% 		\item $\omega = \omega(H \setminus S)$, for every stable set $S \subseteq V(H)$. 
+% 	\end{itemize}
+
+% 	Let $A_0$ be a maximal stable set of $H$. Then $|A_0| = \alpha$ and for each $s \in A_0$ fix an $\omega$-coloring of the graph $H \setminus s$.
+% \end{proof}
 
 Then, since $\alpha(H) = \omega(\overline{H})$ and $\omega(H) = \alpha(\overline{H})$ \cref{thm:omegaalpha} implies \cref{thm:pgt}.
 
@@ -327,6 +341,10 @@ To see that the \cref{alg:t3} has a running time of $O(|V|^6)$, let us note that
 
 First, let us introduce a few new definitions.
 
+\begin{defn}[relevant triple]
+	Given a graph $G$, a triple $(a, b, c)$ of vertices is called \emph{relevant} if $a \neq b$ (but possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
+\end{defn}
+
 \begin{defn}[C-major vertices]
   Given a shortest odd hole $C$ in $G$, a node $v \in V(G) \setminus V(C)$ is $C$-major if the set of its neighbors in $C$ is not contained in any 3-node path of $C$.
   \TODO{a picture of this, clean odd hole, amenable hole}
@@ -367,23 +385,43 @@ With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 
 	\noindent Output: $O(|V|^5)$ subsets of $V(G)$, such that if $C$ is an amenable hole in $G$, then one of the subsets is a near-cleaner for $C$.
 \end{alg}
-\begin{algtext2}
-	We will call a triple $(a, b, c)$ of vertices \emph{relevant} if $a \neq b$ (but possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
 
-	Given a relevant triple $(a, b, c)$ we can compute the following:
-	\begin{itemize}
-		\item $r(a,b,c) \leftarrow$~the cardinality of the largest anticomponent of $N(a, b)$, that contains a nonneibhbor of $c$, or 0, if $c$ is $N(a, b)$-complete.
-		\item $Y(a,b,c) \leftarrow$~the union of all anticomponents of $N(a, b)$ that have cardinality strictly greater than $r(a, b, c)$.
-		\item $W(a, b, c) \leftarrow$~the anticomponent of $N(a,b) \cup \{c\}$ that contains $c$.
-		\item $Z(a, b, c) \leftarrow$~the set of all $Y(a, b, c) \cup W(a,b,c)$-complete vertices.
-		\item $X(a, b, c) \leftarrow$~$Y(a,b,c) \cup Z(a,b,c)$.
-	\end{itemize}
-
-	For every two adjacent vertices $u, v$ compute the set $N(u, v)$ and list all such sets.
-	For each relevant triple $(a,b,c)$ compute the set $X(a,b,c)$ and list all such sets.
-
-	Output all subsets of $V(G)$ that are the union of a set from the first list and a set from the second list.
-\end{algtext2}
+\begin{algorithmic}[1]
+	\mProcedure{List-Possible-Near-Cleaners}{$G$}
+	\ls $X \gets \emptyset$
+	\mForEach{relevant triple $(a, b, c)$}
+		\ls $A \gets$ anticomponents of $N(\{a, b\})$
+		\mIf{$c$ is $N(\{a, b\})$-complete}
+			\ls $r \gets 0$
+		\mElse
+			\ls $r \gets$ the cardinality of the largest set of $A$ that contains 
+			\lsx a nonneibhbor of $c$ 
+		\mEndIf
+		\ls $Y \gets \emptyset$ 
+		\mForEach{$A_i \in A$}
+			\mIf{$|V(A_i)| > r$}
+				\ls $Y \gets Y \cup A_i$
+			\mEndIf
+			\mIf{$c \in A_i$}
+				\ls $W \gets A_i$
+			\mEndIf
+		\mEndFor
+		\ls $Z \gets$ the set of all $Y \cup W$-complete vertices
+		\ls $X \gets X \cup (Y \cup Z)$ 
+	\mEndFor
+	\ls $N \gets \emptyset$
+	\mForEach{edge $uv \in E(G)$}
+		\ls $N \gets N \cup N(\{u, v\})$
+	\mEndFor
+	\ls $R \gets \emptyset$
+	\mForEach{$X_i \in X$}
+		\mForEach{$N_j \in N$}
+			\ls $R \gets R \cup (X_i \cup N_j)$
+		\mEndFor
+	\mEndFor
+	\ls \RETURN $R$
+	\mEndProcedure
+\end{algorithmic}
 
 To prove the correctness of \cref{alg:listNearCleaners} we will need the following theorem.
 
@@ -414,10 +452,8 @@ Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a
 	For all $y_1 \in V(G)\setminus X$ and all 3-vertex paths $x_1-x_2-x_3$ of $G\setminus y_1$ we check the following:
 	\begin{itemize}
 		\item $R(x_1, y_1), R(x_2, y_2)$ both exist -- define $y_2$ as the neighbor of $y_1$ in $R(x_2, y_1)$.
-		\item $r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2)$ ($=n$ say) 
-		\item $r(x_3, y_1), r(x_3, y_2) \geq n$
+		\item $r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2) = min(r(x_3, y_1), r(x_3, y_2))$ 
 	\end{itemize}
-	\TODO{moze raczej $min(r(x_3, y_1), r(x_3, y_2)) = r(x_2, y_1) = r(x_1, y_2) = r(x_1, y_1) + 1$?}
 
 	If there is such a choice of $x_1$, $x_2$, $x_3$, $y_1$ then we output that there is an odd hole. If not, we report that there is no shortest odd hole $C$ such that $X$ is a near-cleaner for $C$.
 \end{algtext2}
