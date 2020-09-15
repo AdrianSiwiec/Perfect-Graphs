@@ -28,9 +28,9 @@ We ran tests on nine classes of perfect graphs.
 
 In \Cref{fig:graphClasses} we present small examples of some of the above classes. Let us describe them briefly.
 
-An \emph{Erd\H{o}s--Rényi} model is a method of generating random graphs. Every possible edge is included in a graph with probability $1/2$. We generated them as long as we found enough perfect graphs for each $|V|$ we wanted to test. \todo{implement generating perfect graphs by removing long cycles} This method of generating perfect graphs is very inefficient and we couldn't generate any graphs with $|V| \geq 20$. Second, those graphs favour the na\"ive algortihm, because there is very low probability of long paths to appear.
+% An \emph{Erd\H{o}s--Rényi} model is a method of generating random graphs. Every possible edge is included in a graph with probability $1/2$. We generated them as long as we found enough perfect graphs for each $|V|$ we wanted to test. \todo{implement generating perfect graphs by removing long cycles} This method of generating perfect graphs is very inefficient and we couldn't generate any graphs with $|V| \geq 20$. Second, those graphs favour the na\"ive algortihm, because there is very low probability of long paths to appear.
 
-Next, we generate bipartite graphs in similar manner -- each edge between two equal sized node sets has a probability of $1/2$ to appear. We also generate line graphs of bipartite graphs. This gives us graphs of varying $|V|$, so we repeated the process until we had sufficieng number of graphs for each $|V|$.
+We generate random bipartite graphs by creating two equal-sized sets of vertices and every possible edge between them has a probability of $1/2$ to appear. We also generate line graphs of bipartite graphs. This gives us graphs of varying $|V|$, so we repeated the process until we had sufficieng number of graphs for each $|V|$.
 
 There are also a few interesting classes of perfect graphs that appear on a grid, or a checker board. In lattice graph, each vertex is connected to vertices that are above, below, to the left and to the right of it, if such vertices exist. See \Cref{fig:lattice} for an example of a $4 \times 4$ lattice graph. If we imagine our grid to be a chessboard we can define a rook graph to have an edge, when the rook from chess can move from one vertex to another in one move. See \Cref{fig:rook} for an example of $4 \times 4$ rook graph. In similar manner we can define a knight graph (\Cref{fig:knight}).
 
@@ -141,7 +141,6 @@ Examples of full binary graph, and lattice graph show that getting near cleaners
 
 % There are no long paths here, so na\"ive algorithm works great (\cref{plot:splitLines}). What is interesting, when looking at detailed times of GPU CCLSV, we can see that checking the existence of simple forbidden structures takes more than 30\% of the time. This opens a possibility of further GPU speedups, not explored by us.
 
-\pagebreak
 \section{Coloring Berge Graphs}
 
 \subsection{Ellipsoid method}
@@ -150,7 +149,7 @@ We used an open source CSDP \cite{csdpRepo, csdp1999} library, that implements p
 
 \TODO{setting $\epsilon = 1/2$ in csdp helped a lot -- how much?}
 
-Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \cref{sec:coloringEllipsoid}. In most of our tests, the majority of running time was consumed on calculating $\vartheta$ of various graphs. As it was done by an external library, there isn't much optimization potential for us. One thing of note is, that specifying the precision of $\vartheta$ we want to calculate to be $1/3$ sped up the algorithm by TODO. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
+Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \Cref{sec:coloringEllipsoid}. In most of our tests, the majority of running time was consumed on calculating $\vartheta$ of various graphs. As it was done by an external library, there isn't much optimization potential for us. One thing of note is, that specifying the precision of $\vartheta$ we want to calculate to be $1/3$ sped up the algorithm by TODO. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
 
 \subsubsection{Experiments and results}
 

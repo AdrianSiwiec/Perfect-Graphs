@@ -1,16 +1,18 @@
-A natural problem for perfect graphs is a problem of coloring them. In 1988 Gr\"otschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in \cref{sec:coloringEllipsoid}. However due to its use of the ellipsoid method this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
+A natural problem for perfect graphs is a problem of coloring them. In 1988 Gr\"otschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in \Cref{sec:coloringEllipsoid}. However due to its use of the ellipsoid method this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
 
-There has been much progress on the quest of finding a more classical algorithm coloring perfect graphs, without the use of ellipsoid method (see \cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this. \todo{better wording of this paragraph}
+There has been much progress on the quest of finding a more classical algorithm coloring perfect graphs, without the use of ellipsoid method (see \Cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this. \todo{better wording of this paragraph}
 
 \section{Information theory background}
 \label{sec:InformationTheory}
 
-\Cref{sec:InformationTheory} and \cref{sec:computingTheta} are based on lecture notes by Lovász \cite{Lovasz95}.
+\Cref{sec:InformationTheory} and \Cref{sec:computingTheta} are based on lecture notes by Lovász \cite{Lovasz95}.
 
 The polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semi-definite matrices. The connection of coloring graphs and the cones of semi-definite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this was exactly the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
 
 \subsection{Shannon Capacity of a graph}
 \label{sec:ShannonCapacity}
+
+Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected if and only if values they represent can be confused.
 
 \begin{wrapfigure}{r}{0.35\textwidth}
   \input{tikzpictures/c5.tex}
@@ -19,27 +21,25 @@ The polynomial technique of coloring perfect graphs known so far arose in the fi
   % \vspace{-0.5cm}
 \end{wrapfigure}
 
-Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected if and only if values they represent can be confused.
-
 We are interested in transmission without possibility of confusion. For this example it is possible for two values to be transmitted without ambiguity e.g. values 1 and 4, which allows us to send $2^n$ non-confoundable messages in $n$ steps. But we could do better, for example we could communicate five two-step codewords e.g. "00", "12", "24", "43", "31". Each pair of these codewords includes at least one position where its values differ by two or more modulo 5, which allows the recipient to distinguish them without confusion.  This allows us to send $5^{n / 2}$ non-confoundable messages in $n$ steps.
 
 Let us be more precise. Given a graph $G$ modeling a communication channel and a number $k \geq 1$ we say that two messages $v_1v_2\ldots v_k$, $w_1w_2\ldots w_k \in V(G)^k$ of length $k$ are non-confoundable if and only if there is $1 \leq i \leq k$ such that $v_i$, $w_i$ are non-confoundable. We are interested in the maximum rate at which we can reliably transmit information (the \emph{Shannon capacity} of the channel defined by $G$).
 
 For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$. To describe longer messages we use \emph{strong product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ if and only if $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ -- which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$.
 
-Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graphs in finite time. If we could calculate $\alpha(G^k)$ for a first few values of $k$ (we will show how to do it in \cref{alg:maxStableSet}) we could have a lower bound on $\Theta(G)$. Let us now turn into search for some usable upper bound.
+Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graphs in finite time. If we could calculate $\alpha(G^k)$ for a first few values of $k$ (we will show how to do it in \Cref{alg:maxStableSet}) we could have a lower bound on $\Theta(G)$. Let us now turn into search for some usable upper bound.
 
 \subsection{Lovász number}
 
 For a channel defined by a graph $C_5$, using five messages of length 2 to communicate gives us a lower bound on $\Theta(G)$ equal $\sqrt{5}$ (as does calculating $\alpha(C_5^2)$).
+
+Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ as its "handle" and 5 "ribs" of unit length.  Open it up to the point where non-consecutive ribs are orthogonal, that is form an angle of 90$^\circ$. This way we get a representation of $C_5$ by 5 unit vectors $u_1, \ldots u_5$ so that each $u_i$ forms the same angle with $e_1$ and any two non-adjacent nodes are represented with orthogonal vectors. See \Cref{fig:umbrella}. We can calculate $e_1^\intercal u_i = 5 ^ {-1/4}$.
 
 \begin{wrapfigure}{l}{0.4\textwidth}
   \input{tikzpictures/umbrella.tex}
   \caption{Lovász's umbrella}
   \label{fig:umbrella}
 \end{wrapfigure}
-
-Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ as its "handle" and 5 "ribs" of unit length.  Open it up to the point where non-consecutive ribs are orthogonal, that is form an angle of 90$^\circ$. This way we get a representation of $C_5$ by 5 unit vectors $u_1, \ldots u_5$ so that each $u_i$ forms the same angle with $e_1$ and any two non-adjacent nodes are represented with orthogonal vectors. See \Cref{fig:umbrella}. We can calculate $e_1^\intercal u_i = 5 ^ {-1/4}$.
 
 It turns out, that we can obtain a similar representation of the nodes of $C_5^k$ by unit vectors $v_i \in \mathbb{R}^{3k}$, so that any two non-adjacent nodes are labeled with orthogonal vectors (this representation is sometimes called the \emph{orthogonal representation} \cite{Lovsz1989Orthogonal}). Moreover, we still get $e_1^\intercal v_i = 5^{-k/4}$ for every $i \in V(C_5^k)$ (the proof is quite technical and we omit it here).
 
@@ -69,7 +69,7 @@ But how can we construct an optimum (or even good) orthogonal representation? It
 \section{Computing \boldmath$\vartheta$}
 \label{sec:computingTheta}
 
-First, let us recall some definitions, with \cite{gilbertstrang2020} as a reference for linear algebra.
+First, let us recall some definitions, with \cite{gilbertstrang2020} as a reference for the linear algebra.
 
 \begin{defn}[eigenvector, eigenvalue]
   Let $A$ be an $n \times n$ real matrix. An \emph{eigenvector} of $A$ is a vector $x$ such that $Ax$ is parallel to $x$. In other words, there is a real or complex number $\lambda$, such that $Ax = \lambda x$. This $\lambda$ is called the \emph{eigenvalue} of $A$ belonging to eigenvector $x$.
@@ -124,7 +124,6 @@ Let us recall, that an orthogonal representation of a graph $G = (V, E)$ is a la
 \begin{theorem}[Proposition 5.1 of \cite{Lovasz95}]
   The minimum angle $\phi$ of any orthogonal representation of $G$ is given by $\cos^2\phi = 1/\vartheta(G)$.
 \end{theorem}
-\TODO{mark all theorems everywhere accordingly}
 
 This leads us to definition of $\vartheta(G)$ in terms of semidefinite programming.
 
@@ -199,7 +198,7 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$. We will co
 
   Because at every step we have $\alpha(G_i) = \alpha(G_{i-1})$, therefore $\alpha(G_{|V|}) = \alpha(G)$, so $G_{|V|}$ is required maximum cardinality stable set.
   
-  The running time of \cref{alg:maxStableSet} is polynomial, because we construct $|V|$ auxiliary graphs, each requiring calculating $\alpha$ once plus additional $O(|V|^2)$ time for constructing the graph.
+  The running time of \Cref{alg:maxStableSet} is polynomial, because we construct $|V|$ auxiliary graphs, each requiring calculating $\alpha$ once plus additional $O(|V|^2)$ time for constructing the graph.
 \end{proof}
 
 Given a natural weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ using the following modification: 
@@ -260,7 +259,7 @@ Recall that to calculate a maximum cardinality clique of $G$, we can calculate a
 
 To understand \Cref{alg:ssIntersectingCliques}, let us note that $S$ calculated in line \ref{line:ssGetS} has a weight equal $t$, which means that $S$ meets each of $Q_1, \ldots Q_t$. Then, if $\omega(G \setminus S) < \omega(G)$, then $S$ meets all the maximum cardinality cliques in G so we return $S$.
 
-There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single clique to the list of maximum cardinality cliques requires constructing auxiliary graph for weighted maximum stable set, which is of size $O(|V|^2)$ and running \cref{alg:maxStableSet} on it. Therefore total running time is polynomial.
+There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single clique to the list of maximum cardinality cliques requires constructing auxiliary graph for weighted maximum stable set, which is of size $O(|V|^2)$ and running \Cref{alg:maxStableSet} on it. Therefore total running time is polynomial.
 
 \subsection{Minimum coloring}
 
@@ -285,7 +284,7 @@ There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single cliq
   \mEndProcedure
 \end{algorithmic}
 
-Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$. We will call recursion at most $O(|V|)$ times, each step of recursion is polynomial in time. Therefore the running time of \cref{alg:minColoring} is polynomial.
+Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$. We will call recursion at most $O(|V|)$ times, each step of recursion is polynomial in time. Therefore the running time of \Cref{alg:minColoring} is polynomial.
 
 \section{Classical algorithms}
 \label{sec:classicalColoring}

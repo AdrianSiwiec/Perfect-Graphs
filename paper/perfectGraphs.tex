@@ -9,14 +9,14 @@ Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to furt
 
 The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures some of the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum (weighted) clique problem, and maximum (weighted) independent set problem can be solved in polynomial time \cite{grotschel1993}. Other classical NP-complete problems are still NP-complete in perfect graphs e.g. Hamiltonian path \cite{Mller1996}, maximum cut problem \cite{Bodlaender1994} or dominating set problem \cite{Dewdney81}. There are many subclasses of perfect graphs, we take a look and benchmark our implementations on some of them in \Cref{sec:experiments}
 
-The most fundamental problem -- the problem of recognizing perfect graphs -- was open since its posing in 1961 until recently. Its solution, a polynomial algorithm recognizing perfect graphs is a union of the strong perfect graph theorem (\cref{sec:SPGT}) stating that a graph is perfect if and only if it is Berge and an algorithm for recognizing Berge graphs in polynomial time (\cref{sec:recognizingBerge}).
+The most fundamental problem -- the problem of recognizing perfect graphs -- was open since its posing in 1961 until recently. Its solution, a polynomial algorithm recognizing perfect graphs is a union of the strong perfect graph theorem (\Cref{sec:SPGT}) stating that a graph is perfect if and only if it is Berge and an algorithm for recognizing Berge graphs in polynomial time (\Cref{sec:recognizingBerge}).
 
 \begin{defn}[Berge graph]
 	\label{def:bergeGraph}
 	A graph $G$ is \emph{Berge} if and only if both $G$ and $\overline{G}$ have no odd hole as an induced subgraph.
 \end{defn}
 
-Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003} algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \cref{sec:ShannonCapacity}.
+Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003} algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \Cref{sec:ShannonCapacity}.
 
 \section{Strong Perfect Graph Theorem}
 \label{sec:SPGT}
@@ -48,9 +48,9 @@ This theorem is a consequence of a stronger result proven by Lovász:
 % 	Let $A_0$ be a maximal stable set of $H$. Then $|A_0| = \alpha$ and for each $s \in A_0$ fix an $\omega$-coloring of the graph $H \setminus s$.
 % \end{proof}
 
-Then, since $\alpha(H) = \omega(\overline{H})$ and $\omega(H) = \alpha(\overline{H})$ \cref{thm:omegaalpha} implies \cref{thm:pgt}.
+Then, since $\alpha(H) = \omega(\overline{H})$ and $\omega(H) = \alpha(\overline{H})$ \Cref{thm:omegaalpha} implies \Cref{thm:pgt}.
 
-Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd hole and no odd antihole is called \emph{Berge} (\cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
+Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd hole and no odd antihole is called \emph{Berge} (\Cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
 
 In 1961 Berge conjured that a graph is perfect if and only if it contains no odd hole and no odd antihole in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}.
 
@@ -62,7 +62,7 @@ In 1961 Berge conjured that a graph is perfect if and only if it contains no odd
 The proof is long and complicated. Moreover, it has little noticeable connection to the algorithm of recognizing Berge graphs we discuss later. Therefore we will discuss it very briefly following the overview by Cornuéjols \cite{GC03}.
 
 \subsubsection{Basic classes of perfect graphs}
-Bipartite graphs are perfect, since we can color them with two colors. From the theorem of König we get that line graphs of bipartite graphs are also perfect \cite{Knig1916, GC03}. From the perfect graph theorem (\cref{thm:pgt}) it follows that complements of bipartite graphs and complement of line graphs of bipartite graphs are also perfect. We will call these four classes \emph{basic}.
+Bipartite graphs are perfect, since we can color them with two colors. From the theorem of König we get that line graphs of bipartite graphs are also perfect \cite{Knig1916, GC03}. From the perfect graph theorem (\Cref{thm:pgt}) it follows that complements of bipartite graphs and complement of line graphs of bipartite graphs are also perfect. We will call these four classes \emph{basic}.
 
 \subsubsection{2-join, Homogeneous Pair and Skew Partition}
 A graph $G$ has a \emph{2-join} if its vertices can be partitioned into sets $V_1$, $V_2$, each of size at least three, and there are nonempty disjoint subsets $A_1, B_1 \subseteq V_1$ and $A_2, B_2 \subseteq V_2$, such that all vertices of $A_1$ are adjacent to all vertices of $A_2$, all vertices of $B_1$ are adjacent to all vertices of $B_2$, and these are the only edges between $V_1$ and $V_2$. When a graph $G$ has a 2-join, it can be decomposed onto two smaller graphs $G_1$, $G_2$, so that $G$ is perfect if and only if $G_1$ and $G_2$ are perfect \cite{Cornujols1985}.
@@ -71,46 +71,50 @@ A graph $G$ has a \emph{homogeneous pair} if $V(G)$ can be partitioned into subs
 
 A graph $G$ has a \emph{skew partition} if $V(G)$ can be partitioned into nonempty subsets $A, B, C, D$ such that there are all possible edges between $A$ and $B$ and no edges between $C$ and $D$. Chudnovsky et at. proved that no minimally imperfect graph has a skew partition.
 
-The proof of \cref{thm:spgt} is a consequence of the \emph{Decomposition theorem}:
+The proof of \Cref{thm:spgt} is a consequence of the \emph{Decomposition theorem}:
 \begin{theorem}[Decomposition theorem, stated as Theorem 4.2 of \cite{GC03}]
 	\label{thm:decomposition}
 	Every Berge graph $G$ is basic or has a skew partition or a homogeneous pair, or either $G$ or $\overline{G}$ has a 2-join.
 \end{theorem}
 
-See \cite{MC06} for the full proof of \cref{thm:spgt} and \cite{GC03} for its shorter overview.
+See \cite{MC06} for the full proof of \Cref{thm:spgt} and \cite{GC03} for its shorter overview.
 
 \section{Recognizing Berge Graphs}
 \label{sec:recognizingBerge}
 
-The following is based on the paper by Maria \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but will aim to show the intuition behind the algorithm.
+The following is based on the paper by \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but will aim to show the intuition behind the algorithm.
 
-Berge graph recognition algorithm (later called CCLSV from the names of its authors) could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole (\cref{AmenableHoles}).
+Berge graph recognition algorithm (later called CCLSV from the names of its authors) could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\Cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole (\Cref{AmenableHoles}).
 
 \subsection{Simple forbidden structures}
 \label{SimpleStructures}
 
 \subsubsection{Pyramids}
 
-\begin{wrapfigure}{r}{0.35\textwidth}
-	\input{tikzpictures/pyramid.tex}
-	\caption{An example  of a pyramid.}%
-	\vspace{-1.2cm}
-\end{wrapfigure}
-
 
 A \emph{pyramid} in G is an induced subgraph formed by the union of a triangle \footnote{A triangle is a clique $K_3$.} $\{b_1,b_2,b_3\}$, three paths $\{P_1, P_2, P_3\}$ and another vertex $a$, so that:
+
+\begin{minipage}{0.60\textwidth}
 \begin{itemize}
 	\item $\forall_{1\leq i \leq 3}$ $P_i$ is a path between $a$ and $b_i$,
 	\item $\forall_{1\leq i < j \leq 3}$ $a$ is the only vertex in both $P_i$ and $P_j$ and $b_ib_j$ is the only edge between $V(P_i)\setminus\{a\}$ and $V(P_j)\setminus\{a\}$,
 	\item $a$ is adjacent to at most one of $\{b_1, b_2, b_3\}$.
 \end{itemize}
+\end{minipage}%
+% \begin{minipage}
+\begin{wrapfigure}{r}{0.32\textwidth}
+	\vspace{-2.5cm}
+	\input{tikzpictures/pyramid.tex}
+	\caption{An example  of a pyramid.}%
+	\vspace{-1.2cm}
+\end{wrapfigure}
+% \end{minipage}
 
 We will say that $a$ can be \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ \emph{via} the paths $P_1$, $P_2$, $P_3$. Let us notice, that a pyramid is uniquely determined by its paths $P_1$, $P_2$, $P_3$.
 
 It is easy to see that every graph containing a pyramid contains an odd hole -- at least two of the paths $P_1$, $P_2$, $P_3$ will have the same parity.
 
-\paragraph{Finding Pyramids}
-
+\paragraph{Finding Pyramids.}
 
 \begin{alg}[Test if $G$ contains a Pyramid]
 	\label{alg:testPyramid}
@@ -209,7 +213,7 @@ Now we will proove the time complexity.
 \begin{wrapfigure}{r}{0.35\textwidth}
 	\input{tikzpictures/jewel.tex}
 	\caption{An example of a jewel.}
-	\vspace{-1.5cm}
+	\vspace{-1.8cm}
 \end{wrapfigure}
 
 
@@ -226,7 +230,7 @@ Most obvious way to find a jewel would be to enumerate all (possibly chordal) cy
 
 \subsubsection{Configurations of type $\T_1$}
 
-A configuration of type $\T_1$ is a hole of length 5. To find it, we simply iterate over all paths of length 4 and check if there exists a fifth vertex to complete the hole. See \cref{sec:usesGeneration} for more implementation details.
+A configuration of type $\T_1$ is a hole of length 5. To find it, we simply iterate over all paths of length 4 and check if there exists a fifth vertex to complete the hole. See \Cref{sec:usesGeneration} for more implementation details.
 
 \subsubsection{Configurations of type $\T_2$}
 
@@ -265,8 +269,8 @@ Now, we shall prove the following:
 	Let $(v_1, v_2, v_3, v_4, P, X)$ be a configuration of type $\T_2$. Let us assume that $G$ is not Berge and consider the following:
 	\begin{itemize}
 		\item if $P$ is even, then $v_1, v_2, v_3, v_4, P, v_1$ is an odd hole,
-		\item if $P$ is of length 3. \todo{I merged a couple of proofs from \cite{MC06}, check in the morning if this is correct.} Let us name its vertices $v_1, p_2, p_3, v_4$. It follows from \cref{lem:Roussel-Rubio}, that there exists an odd antipath between $p_2$ and $p_3$ with interior in $X$. We can complete it with $v_2p_2$ and $v_2p_3$ into an odd antihole,
-		\item if $P$ is odd with the length of at least 5 \todo{check in the morning}, it follows from \cref{lem:Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2, x, p_2, \ldots, p_{n-1}, y, v_2$.
+		\item if $P$ is of length 3. \todo{I merged a couple of proofs from \cite{MC06}, check in the morning if this is correct.} Let us name its vertices $v_1, p_2, p_3, v_4$. It follows from \Cref{lem:Roussel-Rubio}, that there exists an odd antipath between $p_2$ and $p_3$ with interior in $X$. We can complete it with $v_2p_2$ and $v_2p_3$ into an odd antihole,
+		\item if $P$ is odd with the length of at least 5 \todo{check in the morning}, it follows from \Cref{lem:Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2, x, p_2, \ldots, p_{n-1}, y, v_2$.
 	\end{itemize}
 \end{proof}
 
@@ -293,7 +297,7 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 	\label{alg:t3}
 	Input: A graph $G$.
 
-	\noindent Output: Returns whether $G$ contains a configuration of type $T_3$ as an induced subgraph.
+	\noindent Output: Returns whether $G$ contains a configuration of type $\T_3$ as an induced subgraph.
 \end{alg}
 
 \begin{algorithmic}[1]
@@ -439,7 +443,7 @@ With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 	\mEndProcedure
 \end{algorithmic}
 
-To prove the correctness of \cref{alg:listNearCleaners} we will need the following theorem.
+To prove the correctness of \Cref{alg:listNearCleaners} we will need the following theorem.
 
 \begin{theorem}[Theorem 9.1 of \cite{MC05}]
 	\label{thm:91}
@@ -454,7 +458,7 @@ To prove the correctness of \cref{alg:listNearCleaners} we will need the followi
 	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then the result of the \Cref{alg:listNearCleaners} on the graph $G$ is a set $\mathcal{R}$, such that for every shortest amenable hole $C$, there is a near-cleaner for $C$ in $\mathcal{R}$.
 \end{theorem}
 \begin{proof}
-	Let us suppose that $C$ is an amenable hole in $G$. By \cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c) \in \mathcal{R}$ is a near-cleaner for $C$. Therefore the output of the \cref{alg:listNearCleaners} is correct.
+	Let us suppose that $C$ is an amenable hole in $G$. By \Cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \Cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c) \in \mathcal{R}$ is a near-cleaner for $C$. Therefore the output of the \Cref{alg:listNearCleaners} is correct.
 \end{proof}
 
 \begin{alg}[Test possible near cleaner, 5.1 of \cite{MC05}]
@@ -496,21 +500,21 @@ To prove the correctness of \cref{alg:listNearCleaners} we will need the followi
 
 
 
-Below we will prove that if the \cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The proof of the correctness of the other possible result is more complicated, see section 4 and theorem 5.1 of \cite{MC05}.
+Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The proof of the correctness of the other possible result is more complicated, see section 4 and theorem 5.1 of \cite{MC05}.
 
 \begin{theorem}[Theorem 5.1 of \cite{MC05}]
 	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Let $X$ be a subset of $V(G)$. If \Cref{alg:testNearCleaner} reports an odd hole, then $G$ contains an odd hole.
 \end{theorem}
 \begin{proof}
-	Let us suppose that there is a choice of $x_1$, $x_2$, $x_3$, $y_1$ satisfying the three conditions in the \cref{alg:testNearCleaner} and let $y_2$ and $n$ be defined as in there. We claim that $G$ contains an odd hole.
+	Let us suppose that there is a choice of $x_1$, $x_2$, $x_3$, $y_1$ satisfying the three conditions in the \Cref{alg:testNearCleaner} and let $y_2$ and $n$ be defined as in there. We claim that $G$ contains an odd hole.
 	
 	{\makeatletter
 	\let\par\@@par
 	\par\parshape0
-	\everypar{}\begin{wrapfigure}{r}{0.3\textwidth}
+	\everypar{}\begin{wrapfigure}{r}{0.35\textwidth}
 		\input{tikzpictures/nearCleanerFound.tex}
 		\caption{An odd hole is found}%
-		% \vspace{-0.2cm}
+		\vspace{-0.3cm}
 		\end{wrapfigure}
 		Let $R(x_1, y_1) = p_1-\ldots -p_n$, and let $R(x_2, y_1) = q_1-\ldots -q_{n+1}$, where $p_1 = x_1$, $p_n = q_{n+1} = y_1$, $q_1 = x_2$ and $q_n = y_2$. From the definition of $R(x_1, y_1)$ and $R(x_2, y_1)$, none of $p_2, \ldots, p_{n-1}, q_2, \ldots, q_n$ belong to $X$. Also, from the definition of $y_1$, $y_1 \notin X$.
 
@@ -527,11 +531,8 @@ Below we will prove that if the \cref{alg:testNearCleaner} reports an odd hole i
 	Now, since $x_1$, $x_2$ are nonadjacent $i \geq 2$. But also $r(x_2, y_1) \geq n$ and so $j+n-i \geq n$, that is $j \geq i$. So we get $i=j$. Let us choose $i$ minimum, then $x_3-x_1-\ldots-p_i-q_i-\ldots-x_2-x_3$ is an odd hole, which was what we wanted.
 \end{proof}
 
-\begin{wrapfigure}{r}{0.35\textwidth}
-	
-\end{wrapfigure}
 
 
-\subsection{Summary}
+% \subsection{Summary}
 
-\TODO{todo?}
+% \TODO{todo?}
