@@ -13,7 +13,7 @@ This backtracking algorithm is very simple, but has a great potential for optimi
 \subsubsection{Path enumerating optimizations}
 Now let's turn our attention to enumerating all paths. This is a generalization of the problem of finding an odd hole, if we allow a path to have a single additional edge between the first and the last of its vertices if and only if the hole formed would be odd.
 
-First of all, there are many methods for generating all possible paths to choose from. We could simply enumerate all sequences of vertices without repetition and for each one of them check if it is a path (that is if all pairs of vertices next to each other are connected and that there are no other edges), but this would be too slow and render our algorithm unusable.
+First of all, there are many methods for generating all possible paths to choose from. We could simply enumerate all sequences of vertices without repetition and for each one of them check if it is a path, i.e., if all pairs of vertices next to each other are connected and that there are no other edges, but this would be too slow and render our algorithm unusable.
 
 We will create a method that enumerates all paths in some order. We notice that returning a new path for each call of the enumeration method is wasteful. Therefore, we need a method that receives a reference to a path on the input (or a special flag indicating it should generate first path) and returns next path in some order (or a first path, or a code signaling all paths have been generated) using memory from the input. As this method will be used many, many times we require of it to work in place with constant additional space.
 
@@ -23,19 +23,19 @@ But we can do much better with some care and a better data structure. For a give
 
 We have an array $first$ in which for each vertex is written its first neighbor on its neighbors list, and an array $next$ of size $|V(G)|^2$ where for each pair of vertices $a, b$ if $a$ and $b$ are connected, there is written a neighbor of $a$ that is next after $b$ in a neighbors list of $a$ (or a flag indicating $b$ is $a$'s last neighbor). Then, say our input is a path $v = v_1, \ldots v_k$. If $next[v_{k-1}][v_k]$ exists we change $v_k$ to $next[v_{k-1}][v_k]$ and return $v$. If it indicated that $v_k$ is $v_{k-1}$'s last neighbor, we set $v_{k-1}$ to $next[v_{k-2}][v_{k-1}]$ and then $v_k$ to $first[v_{k-1}]$ (or we go further back, if all neighbors of $v_{k-2}$ are done).
 
-This simple change in data structure design gave us a speedup of overall running time of our algorithm in the range of 20x\todo{check this}.
+This simple change in data structure design gave us a speedup of overall running time of our algorithm in the range of about 5x.
 
-Another crucial optimization is to eliminate partial solutions that have edges between not consecutive vertices right away. Also, when we look for an odd hole specifically, we can assume that its first vertex we enumerate is the lowest. Those two optimizations alone make a huge difference. With them, our na\"ive algorithm implementation went from being able to check graphs with $|V|$ up to 12-14, within a couple of minutes, to being faster than CCLSV on most of our tests.
+Another crucial optimization is to eliminate partial solutions that have edges between not consecutive vertices right away. Also, when we look for an odd hole specifically, we can assume that its first vertex we enumerate is the lowest. Those two optimizations make a huge difference. With them, our na\"ive algorithm implementation went from being able to check graphs with $|V|$ up to 12-14, within a couple of minutes, to being faster than CCLSV on most of our tests.
 
 \paragraph{Array unique.}
 
-For each path candidate $v$ we call a subroutine $areUnique(v)$ to determine whether all vertices in it are unique. As this subroutine could be called many times for generating a single path, its optimization is very important.
+For each path candidate $v$ we call a subroutine \texttt{areUnique}$(v)$ to determine whether all vertices in it are unique. As this subroutine could be called many times for generating a single path, its optimization is very important.
 
 A theoretically optimal solution in general would be to have a hashing set of vertices. For each vertex in a path candidate, we check if it is already in a set. If it is, return that not all vertices are unique, else add it to the set.
 
-In our use case, a few optimizations can be made. First, we don't need a hashing set. We can have an array of bools, of size $|V(G)|$ and mark vertices of a path there. Paths are usually much shorter than $|V(G)|$, but we operate on small graphs, so we can afford this. Second, we notice that we don't need to create this array for each call of $areUnique$ procedure. Let's instead have a static array $stamp$ of ints and a static $counter$ of how many times we called $areUnique$ method. For each element of a path $v_i$, if the value of $stamp$ array is equal to $counter$ we report that vertices are not unique. Else we set $stamp[v_i] = counter$. When returning from the $areUnique$ method we increment $counter$.
+In our use case, a few optimizations can be made. First, we don't need a hashing set. We can have an array of bools, of size $|V(G)|$ and mark vertices of a path there. Paths are usually much shorter than $|V(G)|$, but we operate on small graphs, so we can afford this. Second, we notice that we don't need to create this array for each call of \texttt{areUnique} procedure. Let's instead have a static array $stamp$ of ints and a static $counter$ of how many times we called \texttt{areUnique} method. For each element of a path $v_i$, if the value of $stamp$ array is equal to $counter$ we report that vertices are not unique. Else we set $stamp[v_i] = counter$. When returning from the \texttt{areUnique} method we increment $counter$.
 
-This optimization almost cuts down na\"ive algorithm's running time in half.
+This optimization alone almost cuts down na\"ive algorithm's running time in half.
 
 \paragraph{Other uses for path generation.}
 \label{sec:usesGeneration}
@@ -46,11 +46,7 @@ With all those optimizations made, our na\"ive algorithm proved to be quite fast
 
 \section{Berge graphs recognition: polynomial algorithm}
 
-\todo{rewrite/rearrange text below}
-
-The Berge recognition algorithm's running time is $O(n^9)$, which brings into question its applicability to any real use case. Although time complexity is indeed a limiting factor, a number of lower level optimizations done on implementation's level (\Cref{sec:Optimizations}) make a very big difference and make it more viable than na\"ive algorithm, at least on some test cases. Also, we explore a new frontier of implementing its most time consuming part on massively parallel GPU architecture, with some good results (\Cref{sec:CUDA}).
-
-\TODO{Anything interesting about algo/data structure?}
+The Berge recognition algorithm's running time is $O(n^9)$, which brings into question its applicability to any real use case. Although time complexity is indeed a limiting factor, a number of lower level optimizations done on implementation's level make a very big difference and make it more viable than na\"ive algorithm, at least on some test cases. Also, we explore a new frontier of implementing its most time consuming part on massively parallel GPU architecture, with some good results (\Cref{sec:CUDA}).
 
 \subsection{Optimizations}
 \label{sec:Optimizations}
@@ -61,9 +57,11 @@ Callgrind is a profiling tool that records the call history of a program and pre
 
 Before any optimizatios, a major part of Berge recognition algorithm was being spent on enumerating all possible paths of given length -- this is done either to find a hole by itself, find a simple structure or check a possible near cleaner for amenable odd hole. Therefore optimizations of the path enumerating algorithm were also helpful in speeding up CCLSV implementation.
 
-Another algorithm for which we found major speedups is the algorithm to generate all possible near-cleaners (\Cref{alg:listNearCleaners}). At its very end, it returns a set that is an union \todo{after rewriting alg, point to a line}. We used a \texttt{dynamic\_bitset} from the boost library \cite{boost} for this purpose. It is a data structure to represent a set of bits, that also allows for fast bitwise operators that one can apply to builtin integers. By using it, the speedup of \Cref{alg:listNearCleaners} was about x. \todo{todo}
+% \emergencystretch=10em
 
-After these optimizations, checking each potential near-cleaner (\Cref{alg:testNearCleaner}) is by far the biggest bottlenecks of the CCLSV algorithm. We didn't find any major optimizations there, but \Cref{alg:testNearCleaner} has a good potential for parrallelization, which we explore in \Cref{sec:CUDA}.
+Another algorithm for which we found major speedups is the algorithm to generate all possible near-cleaners \Cref{alg:listNearCleaners}). We optimized it by using a a \texttt{dynamic\_bitset} from the boost library \cite{boost}. It is a data structure to represent a set of bits, that also allows for fast bitwise operators that one can apply to builtin integers. At the very end of \Cref{alg:listNearCleaners} a set $\mathcal{R}$ is constructed, which is an union of all possible unions of pairs $X_i$ and $N_j$. We used \texttt{dynamic\_bitset} to represent each of the sets $X_i$ and $N_j$, and the set $\mathcal{R}$. This significantly speeds up the operation of union of two sets (line \ref{line:listNCcalcR}). With this modification, the speedup of \Cref{alg:listNearCleaners} was about 20\%.
+
+After these optimizations, checking each potential near-cleaner by \Cref{alg:testNearCleaner} is by far the biggest bottleneck of the CCLSV algorithm. We didn't find any major optimizations there, but the \Cref{alg:testNearCleaner} has a good potential for parrallelization, which we explore in \Cref{sec:CUDA}.
 
 \subsection{Correctness Testing}
 
@@ -73,24 +71,25 @@ In an algorithm this complex, debugging can be difficult and time consuming, so 
 
 Whole algorithm was divided into subroutines used in many places. One of such subroutines is a path generation algorithm described above (\Cref{sec:usesGeneration}). There are many other generalized methods we implemented: checking if a set of vertices is $X$-complete, getting a set of components of a graph, creating a induced graph or finding a shortest path, such that each internal vertex satisfies a predicate. Each of those and many more methods have unit tests that check their general use and edge cases. This allowed us to debug very effectively and have complex algorithms be simple to analyze.
 
-In addition to correctness checking, extensive unit test suite allowed us to optimize our algorithm and test different subroutines with ease, without fear of introducing bugs.
+In addition to correctness checking, extensive unit test suite allowed us to optimize our algorithm and test different subroutines with ease, without the fear of introducing bugs.
 
 \subsubsection{End to end tests}
 
 In addition to unit tests, we employ a range of end to end tests, that check the final answer of the algorithm. We compare answer to the na\"ive algorithm's answer and also to the result of the algorithm on CUDA (\Cref{sec:CUDA}).
 
-Also, we test the algorithm on graphs that we know are perfect -- such as bipartite graphs, line graphs of bipartite graphs and complements thereof. In addition to that, a test on all perfect graphs up to a size of 10\todo{update to 11?} was performed -- we used \cite{graphRepo} as a source of perfect graphs.
+Also, we test the algorithm on graphs that we know are perfect -- such as bipartite graphs, line graphs of bipartite graphs and complements thereof. In addition to that, a test on all perfect graphs up to a size of 10 was performed -- we used \cite{graphRepo} as a source of perfect graphs.
 
 We also test on graphs that we know are not perfect: we generate them by generating an odd hole and adding it with some edges to a random graph.
 
-In total over 100 \todo{update the munber}cpu-hours of end to end tests were performed without any errors.
+In total over 200 cpu-hours of end to end tests were performed without any errors.
 
 \section{Parallelism with CUDA}
 \label{sec:CUDA}
 
-CUDA is a parrallel computing platform model created by Nvidia and executed on Nvidia GPUs. It allows to run a program in parallel by many CUDA threads at once. Although usually described by PRAM models, implementing PRAM algorithm in CUDA architecture is not as straightforward as implementing RAM algorith on a cpu. Some of the causes are: synchronization between threads is very costly, there are multiple memory models to choose from, threads run divided in blocks and it is possible to efficiently share memory within blocks and copying memory from and back to CPU suffers from large latency. What is more, there are no standard dynamic structures in PRAM model, let alone CUDA, that are taken for granted in PRAM model, such as hashing maps or sets. We used a library called \emph{moderngpu} for our implementation, because it allows a slightly cleaner code.
+CUDA is a parrallel computing platform model created by Nvidia and executed on Nvidia GPUs. It allows to run a program in by many CUDA threads at once. Although usually described by the the PRAM models, implementing PRAM algorithm in CUDA architecture is not as straightforward as implementing a RAM algorith on a cpu. Some of the causes are: synchronization between threads is very costly, there are multiple memory models to choose from, threads run divided in blocks and it is possible to efficiently share memory within blocks and copying memory from and back to CPU suffers from a large latency. What is more, there are no standard dynamic structures in the PRAM model, let alone CUDA, that are taken for granted in the RAM model, such as hashing maps or sets. 
+% We used a library called \emph{moderngpu} for our implementation, because it allows a slightly cleaner code.
 
-\TODO{Implementing get NC is tough -- we rely on set<bitset> to do the work. Maybe we could use a dynamic set from Adam's link? As a "open question"}
+% \TODO{Implementing get NC is tough -- we rely on set<bitset> to do the work. Maybe we could use a dynamic set from Adam's link? As a "open question"}
 
 We posed a question if it would be profitable to use GPU for the problem of recognizing Berge graphs. On one hand the graphs we are working on are small and our time complexity so large that a speedup from massively parallel architecture could be profitable. On the other the algorithm is complex and not easy to parallelise. Therefore we decided to analyze the  CCLSV algorithm and parrallelize parts that would benefit from it the most.
 
@@ -108,7 +107,7 @@ We posed a question if it would be profitable to use GPU for the problem of reco
 
 To identify parts of CCLSV to implement, we used callgrind and found potential bottlenecks. The initial tests showed that with growing size of a graph some parts take more and more relative time. Because of callgrind's slow execution times compared to just running the program, we used manual timers for bigger tests. Using this method we identified testing all possible near-cleaners (\Cref{alg:testNearCleaner}) as the biggest bottleneck for larger graphs. We considered two approaches: run whole \Cref{alg:testNearCleaner} on a single CUDA core, testing multiple $X$s in parallel, or parallelize \Cref{alg:testNearCleaner} itself and run it on one $X$ at a time. It turned out that second approach is better and much simpler.
 
-Let us recall the \Cref{alg:testNearCleaner}. It calculates array $R$ of shortest paths, then for each 3-vertex path and an additional vertex it does $O(1)$ checks to see if they along with two paths from $R$ give us an odd hole. We will parallelise the work after calculating $R$. Let us notice, that for all $X$s all 3-vertex paths are the same. We calculate them beforehand, then each thread receives a 3-vertex path $x_1 - x_2 - x_3$ and an additional vertex $y_1$ and performs the required checks. This is almost perfect scenario for the GPU -- we do a simple SIMD work in parallel, without a lot scattered memory access.
+Let us recall the \Cref{alg:testNearCleaner}. It calculates array $R$ of shortest paths, then for each 3-vertex path and an additional vertex it does $O(1)$ checks to see if they along with two paths from $R$ give us an odd hole. We will parallelise the work after calculating $R$, that is, lines \ref{line:cudaStart}-\ref{line:cudaEnd} of the \Cref{alg:testNearCleaner}. Let us notice, that for all $X$s all 3-vertex paths enumerated in line \ref{line:3vertex} are the same. We calculate them beforehand, then each CUDA thread receives one 3-vertex path $x_1 - x_2 - x_3$ and an additional vertex $y_1$ and performs the required checks in lines \ref{line:cudaWorkStard}-\ref{line:cudaWorkEnd}. This is almost perfect scenario for the GPU -- we do a simple SIMD work in parallel, without a lot scattered memory access.
 
-The part of the CCLSV implemented on the gpu achieved speedup of up to 15x. Which gives us a speedup of up to 9x for overall algorithm.
+The part of the CCLSV implemented on the gpu achieved speedup of up to 15x. Which gives us a speedup of up to 9x for overall CCLSV algorithm.
 

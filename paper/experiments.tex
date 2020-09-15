@@ -3,7 +3,7 @@
 
 \subsubsection{Data sets}
 
-Let us describe experiments and their results. All of our algorithms search for an odd hole or an odd antihole and stop when find one, or a evidence of one. Therefore, their running times are greatest with perfect graphs on the input and we decided to use mainly\todo{run some smart nonperfect tests} perfect graphs for our performance benchmarks. For every test, the vertex number were shuffled.
+Let us describe experiments and their results. All of our algorithms search for an odd hole or an odd antihole and stop when find one, or a evidence of one. Therefore, their running times are greatest with perfect graphs on the input and we decided to use mainly\todo{run some smart nonperfect tests} perfect graphs for our performance benchmarks. For every test, the vertex number were shuffled. For every randomly generated graph class and for each size, we ran the tests on 10 graphs generated with different seeds and took their average running time.
 
 Below, we first present our data sets then overall time results on them and lastly a plot breaking down what parts of CCLSV and GPU CCLSV constitute their overall running time.
 
@@ -36,7 +36,6 @@ There are also a few interesting classes of perfect graphs that appear on a grid
 
 A hypercube is a generalization of a cube to a higher dimensional space. We use hypercubes that are not complete, to achieve higher granularity of data. In a hypercube of $n$ vertices there is an edge between vertices $u$ and $v$ if and only if binary representations of $u$ and $v$ differ by exactly one bit.
 
-\TODO{split better granulity and detailed}
 Split graphs we use are unions of cliques and independent sets of same size, with some edges between them. In generating them, each edge between a vertex from a clique and a vertex from an independent set has had $1/2$ chance to appear.
 
 Finally, we benchmark on full binary trees to see how CCLSV works with a tree as an input.
@@ -147,11 +146,15 @@ Examples of full binary graph, and lattice graph show that getting near cleaners
 
 We used an open source CSDP \cite{csdpRepo, csdp1999} library, that implements predictor corrector variant of the semidefinite programming algorithm to calculate $\vartheta(G)$, given $G$ on the input. The CSDP library has been used in many recent publications across different fields, such as \cite{Ampountolas_2017, Adasme_2011}.
 
-\TODO{setting $\epsilon = 1/2$ in csdp helped a lot -- how much?}
-
-Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \Cref{sec:coloringEllipsoid}. In most of our tests, the majority of running time was consumed on calculating $\vartheta$ of various graphs. As it was done by an external library, there isn't much optimization potential for us. One thing of note is, that specifying the precision of $\vartheta$ we want to calculate to be $1/3$ sped up the algorithm by TODO. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
+Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \Cref{sec:coloringEllipsoid}. In most of our tests, the majority of running time was consumed on calculating $\vartheta$ of various graphs. As it was done by an external library, there isn't much optimization potential for us. One thing of note is, that specifying the precision of $\vartheta$ we want to calculate to be $1/3$ sped up the algorithm by TODO. Also, we cache results of calculatin $\vartheta$, meaning that throught whole execution of our coloring algorithm, we only calculate $\vartheta$ for each graph once. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
 
 \subsubsection{Experiments and results}
+
+We ran our tests on the data sets generated in the same way as for perfect graph recognition. We only adjusted grah sizes to get the running times of up to a couple of minutes. 
+
+First, we present overall running times of the coloring algorithm (\Cref{fig:CSDPLines}) and then breakdown the running time in two parts: calculating $\vartheta$ by the CSDP library and graphs manipulations which constitute the rest of the coloring algorithm (\Cref{fig:CSDPDet}). We note that $\vartheta$ calculation is highly dependent on the type of the graph. For our biggest tested cases of $|V| = 48$, all required calculations of $\vartheta$ take almost 7 minutes in biparite graphs, but only 12 seconds in line graphs of bipartite graphs. Because CSDP library is highly optimized, it is expected that it would run much faster on some graphs. Hovewer, it is not clear what could we do to speedup the running times on tests that CSDP is slow on, such as bipartite graphs of lattice graphs. A potential improvement would be to again use CUDA, this time for $\vartheta$ calculations, possibly utilizing the cuSOLVER library \cite{cusolver}.
+
+We notice that on some graphs, namely line graphs of bipartite graphs, rook graphs and split graphs the time taken by operations other than calculating $\vartheta$ by the CSDP library is quite significant. Hovewer, the overall running times on these graphs are low, so we didn't particularly optimize this, so probably some improvements could be made if need be.
 
 \begin{figure}
   % \begin{subfigure}{.5\textwidth}
@@ -200,12 +203,12 @@ Calculating $\vartheta(G)$ is the most complicated part of the coloring algorith
     \caption{Full binary trees}
   \end{subfigure}
   \caption{Overall times of CSDP Color}
+  \label{fig:CSDPLines}
 \end{figure}
 
 \begin{figure}
   \centering
   \input{plots/color.detailed.csv.detailed.pgf}
   \caption{Detailed times of coloring}
+  \label{fig:CSDPDet}
 \end{figure}
-
-A few things of note. We notice that in rook graphs the graph manipulation other than calculating CSDP takes close to half of overall running time (\cref{plot:colorRookDet}). We didn't particularly optimize this, other than by use of methods developed for Berge graph recognition algorithm. There are surely some optimizations to be made here if need be. Altough, as we can see on other plots, it won't help in majority of the cases.

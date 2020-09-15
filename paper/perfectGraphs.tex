@@ -7,16 +7,16 @@ Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to furt
 	A graph $G$ is \emph{perfect} if and only if for its every induced subgraph $H$ we have $\chi(H) = \omega(H)$.
 \end{defn}
 
-The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures some of the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum (weighted) clique problem, and maximum (weighted) independent set problem can be solved in polynomial time \cite{grotschel1993}. Other classical NP-complete problems are still NP-complete in perfect graphs e.g. Hamiltonian path \cite{Mller1996}, maximum cut problem \cite{Bodlaender1994} or dominating set problem \cite{Dewdney81}. There are many subclasses of perfect graphs, we take a look and benchmark our implementations on some of them in \Cref{sec:experiments}
+The notion of perfect graphs was first introduced by Berge in 1961 \cite{CB61} and it indeed captures some of the idea of graph being ''simple'' -- in all perfect graphs the coloring problem, maximum (weighted) clique problem, and maximum (weighted) independent set problem can be solved in polynomial time \cite{grotschel1993}. Other classical NP-complete problems remain hard in perfect graphs e.g. Hamiltonian path \cite{Mller1996}, maximum cut problem \cite{Bodlaender1994} or dominating set problem \cite{Dewdney81}. There are many well-known subclasses of perfect graphs, we take a look and benchmark our implementations on some of them in \Cref{sec:experiments}
 
-The most fundamental problem -- the problem of recognizing perfect graphs -- was open since its posing in 1961 until recently. Its solution, a polynomial algorithm recognizing perfect graphs is a union of the strong perfect graph theorem (\Cref{sec:SPGT}) stating that a graph is perfect if and only if it is Berge and an algorithm for recognizing Berge graphs in polynomial time (\Cref{sec:recognizingBerge}).
+The most fundamental problem -- the problem of recognizing perfect graphs -- was open since its posing in 1961 until recently. Its solution, a polynomial algorithm recognizing perfect graphs, is a union of the strong perfect graph theorem (\Cref{sec:SPGT}) stating that a graph is perfect if and only if it is Berge and an algorithm for recognizing Berge graphs in polynomial time (\Cref{sec:recognizingBerge}).
 
 \begin{defn}[Berge graph]
 	\label{def:bergeGraph}
 	A graph $G$ is \emph{Berge} if and only if both $G$ and $\overline{G}$ have no odd hole as an induced subgraph.
 \end{defn}
 
-Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003} algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \Cref{sec:ShannonCapacity}.
+Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003}, algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \Cref{sec:ShannonCapacity}.
 
 \section{Strong Perfect Graph Theorem}
 \label{sec:SPGT}
@@ -82,7 +82,7 @@ See \cite{MC06} for the full proof of \Cref{thm:spgt} and \cite{GC03} for its sh
 \section{Recognizing Berge Graphs}
 \label{sec:recognizingBerge}
 
-The following is based on the paper by \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but will aim to show the intuition behind the algorithm.
+The following is based on the paper by \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but we will aim to show the intuition behind the algorithm.
 
 Berge graph recognition algorithm (later called CCLSV from the names of its authors) could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\Cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole (\Cref{AmenableHoles}).
 
@@ -110,7 +110,7 @@ A \emph{pyramid} in G is an induced subgraph formed by the union of a triangle \
 \end{wrapfigure}
 % \end{minipage}
 
-We will say that $a$ can be \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ \emph{via} the paths $P_1$, $P_2$, $P_3$. Let us notice, that a pyramid is uniquely determined by its paths $P_1$, $P_2$, $P_3$.
+We will say that $a$ is \emph{linked onto} the triangle $\{b_1, b_2, b_3\}$ \emph{via} the paths $P_1$, $P_2$, $P_3$. Let us notice, that a pyramid is uniquely determined by its paths $P_1$, $P_2$, $P_3$.
 
 It is easy to see that every graph containing a pyramid contains an odd hole -- at least two of the paths $P_1$, $P_2$, $P_3$ will have the same parity.
 
@@ -250,7 +250,7 @@ A configuration of type $\T_2$ is a tuple $(v_1, v_2, v_3, v_4, P, X)$, such tha
 
 Checking if configuration of type $\T_2$ exists in our graph is straightforward: we enumerate all paths $v_1\ldots v_4$, calculate set of all $\{v_1, v_2, v_4\}$-complete vertices and its anticomponents. Then, for each anticomponent $X$ we check if required path $P$ exists.
 
-To prove that existence of $\T_2$ configuration implies that the graph is not Berge, we will need the following Roussel-Rubio lemma:
+To prove that the existence of $\T_2$ configuration implies that the graph is not Berge, we will need the following lemma:
 
 \begin{lemma}[Roussel-Rubio Lemma \cite{RR01,MC05}]\label{lem:Roussel-Rubio}
 	Let $G$ be Berge, $X$ be an anticonnected subset of $V(G)$, $P$ be an odd path $p_1\ldots p_n$ in $G\setminus X$ with length at least 3, such that $p_1$ and $p_n$ are $X$-complete and $p_2, \ldots, p_{n-1}$ are not. Then:
@@ -313,7 +313,7 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 			\ls $F \gets F' \cup F''$ \label{line:t3mid}
 			\mForEach{$v_4 \in V(G) \setminus\{v_1, v_2, v_5\}$, such that $v_4$ is adjacent to $v_1$
 			\lsx and not to $v_2$ and $v_5$}
-				\mIf{$v_4$ has a neighbor in $F$ and a nonneibhbor in $X$ \label{line:t3v4if}}
+				\mIf{$v_4$ has a neighbor in $F$ and a nonneighbor in $X$ \label{line:t3v4if}}
 					\ls $v_6 \gets$ a neighbor of $v_4$ in $F$
 					\mForEach{$v_3 \in V(G) \setminus\{v_1, v_2, v_4, v_5, v_6\}$}
 						\mIf{$v_3$ is adjacent to $v_2, v_4, v_5$ and not adjacent to $v_1$ \lsx}
@@ -425,8 +425,8 @@ With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 				\ls $W \gets A_i$
 			\mEndIf
 		\mEndFor
-		\ls $Z \gets$ the set of all $Y \cup W$-complete vertices
-		\ls $X(a, b, c) \gets Y \cup Z)$ \Comment{we use $X(a, b, c)$ in the proof of correctness}
+		\ls $Z \gets$ the set of all $(Y \cup W)$-complete vertices
+		\ls $X(a, b, c) \gets Y \cup Z$ \Comment{we use $X(a, b, c)$ in the proof of correctness}
 		\ls $\mathcal{X} \gets \mathcal{X} \cup X(a, b, c)$
 	\mEndFor
 	\ls $\mathcal{N} \gets \emptyset$
@@ -434,9 +434,9 @@ With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 		\ls $\mathcal{N} \gets \mathcal{N} \cup N(\{u, v\})$
 	\mEndFor
 	\ls $\mathcal{R} \gets \emptyset$
-	\mForEach{$X_i \in X$}
-		\mForEach{$N_j \in N$}
-			\ls $\mathcal{R} \gets \mathcal{R} \cup (X_i \cup N_j)$
+	\mForEach{$X_i \in \mathcal{X}$}
+		\mForEach{$N_j \in \mathcal{N}$}
+			\ls $\mathcal{R} \gets \mathcal{R} \cup (X_i \cup N_j)$ \label{line:listNCcalcR}
 		\mEndFor
 	\mEndFor
 	\ls \RETURN $\mathcal{R}$
@@ -483,18 +483,18 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 				\ls $R(x, y) \gets \textsc{undefined}$
 				\ls $r(x, y) \gets \infty$
 			\mEndIf
-			\mForEach{$y_1 \in V(G) \setminus X$}
-				\mForEach{3-vertex path $x_1-x_2-x_3$ of $G\setminus y_1$}
-					\mIf{$R(x_1, y_1), R(x_2, y_2)$ both exist}
+			\mForEach{$y_1 \in V(G) \setminus X$} \label{line:cudaStart}
+				\mForEach{3-vertex path $x_1-x_2-x_3$ of $G\setminus y_1$} \label{line:3vertex}
+					\mIf{$R(x_1, y_1), R(x_2, y_2)$ both exist} \label{line:cudaWorkStard}
 						\ls $y_2 \gets$ the neighbor of $y_1$ in $R(x_2, y_1)$
 						\mIf{$r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2) =$\lsx$min(r(x_3, y_1), r(x_3, y_2))$}
 						\ls \RETURN an odd hole found
 						\mEndIf
-					\mEndIf
+					\mEndIf \label{line:cudaWorkEnd}
 				\mEndFor
-			\mEndFor
+			\mEndFor \label{line:cudaEnd}
 		\mEndFor
-		\RETURN no odd hole found
+		\ls \RETURN no odd hole found
 	\mEndProcedure
 \end{algorithmic}
 
@@ -520,15 +520,15 @@ Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole i
 
 		Let $R(x_1, y_1) = p_1-\ldots -p_n$, and let $R(x_2, y_1) = q_1-\ldots -q_{n+1}$, where $p_1 = x_1$, $p_n = q_{n+1} = y_1$, $q_1 = x_2$ and $q_n = y_2$. From the definition of $R(x_1, y_1)$ and $R(x_2, y_1)$, none of $p_2, \ldots, p_{n-1}, q_2, \ldots, q_n$ belong to $X$. Also, from the definition of $y_1$, $y_1 \notin X$.
 
-		Since $r(x_1, y_1) = r(x_2, y_1) - 1$ and since $x_1$, $x_2$ are nonadjacent it follows that $x_2$ does not belong to $R(x_1, y_1)$ and $x_1$ does not belong to $R(x_2, y_1)$. Since $r(x_3, y_1), r(x_3, y_2) \geq n (= r(x_1, y_2))$ it follows that $x_3$ does not belong to $R(x_1, y_1)$ or to $R(x_2, y_1)$, and has no neighbors in $R(x_1, y_1) \cup R(x_2, y_1)$ other than $x_1$, $x_2$. Since $r(x_1, y_2) = n$ we get that $y_2$ does not belong to $R(x_1, y_1)$.\par}%
+		Since $r(x_1, y_1) = r(x_2, y_1) - 1$ and since $x_1$, $x_2$ are nonadjacent it follows that $x_2$ does not belong to $R(x_1, y_1)$ and $x_1$ does not belong to $R(x_2, y_1)$. Since $r(x_3, y_1), r(x_3, y_2) \geq n = r(x_1, y_2)$ it follows that $x_3$ does not belong to $R(x_1, y_1)$ or to $R(x_2, y_1)$, and has no neighbors in $R(x_1, y_1) \cup R(x_2, y_1)$ other than $x_1$, $x_2$. Since $r(x_1, y_2) = n$ we get that $y_2$ does not belong to $R(x_1, y_1)$.\par}%
 
-	We claim first that the insides of paths $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertices. For suppose that there are $2 \leq i \leq n-1$ and $2 \leq j \leq n$ that $p_i = q_j$. Then the subpaths of these two paths between $p_i$, $y_1$ are both subpaths of the shortest paths, and therefore have the same length, that is $j=i+1$. So $p_1-\ldots-p_1-q_{j+1}-\ldots-q_n$ contains a path between $x_1$, $y_2$ of length $\leq n-2$, contradicting that $r(x_1, y_2) = n$. So $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertex except $y_1$.
+	We claim first that the insides of paths $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertices. For suppose that there are $2 \leq i \leq n-1$ and $2 \leq j \leq n$ that $p_i = q_j$. Then the subpaths of these two paths between $p_i$, $y_1$ are both subpaths of the shortest paths, and therefore have the same length equal to $j=i+1$. So $p_1-\ldots-p_1-q_{j+1}-\ldots-q_n$ contains a path between $x_1$, $y_2$ of length $\leq n-2$, contradicting that $r(x_1, y_2) = n$. So $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertex except $y_1$.
 
 	If there are no edges between $R(x_1, y_1) \setminus y_1$ and $R(x_2, y_1) \setminus y_1$ then the union of these two paths and a path $x_1-x_3-x_2$ form an odd hole, so the answer is correct.
 
 	Suppose that $p_iq_j$ is an edge for some $1\leq i \leq n-1$ and $1 \leq j \leq n$. We claim $i \geq j$. If $j = 1$ this is clear so let us assume $j > 1$. Then there is a path between $x_1$, $y_2$ within $\{p_1, \ldots , p_i, q_j, \ldots q_n\}$ which has length $\leq n-j+1$ and has no internal vertex in $X$ (since $j > 1$); and since $r(x_1, y_2) = n$, it follows that $n-j+i \geq n$, that is, $i \geq j$ as claimed.
 
-	Now, since $x_1$, $x_2$ are nonadjacent $i \geq 2$. But also $r(x_2, y_1) \geq n$ and so $j+n-i \geq n$, that is $j \geq i$. So we get $i=j$. Let us choose $i$ minimum, then $x_3-x_1-\ldots-p_i-q_i-\ldots-x_2-x_3$ is an odd hole, which was what we wanted.
+	Now, since $x_1$, $x_2$ are nonadjacent $i \geq 2$. But also $r(x_2, y_1) \geq n$ and so $j+n-i \geq n$, which gives us $j \geq i$. So we get $i=j$. Let us choose $i$ minimum, then $x_3-x_1-\ldots-p_i-q_i-\ldots-x_2-x_3$ is an odd hole, which was what we wanted.
 \end{proof}
 
 

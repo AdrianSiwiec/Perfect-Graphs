@@ -1,7 +1,7 @@
-We use standard definitions, sourced from the book by \citeauthor{BB98} \citetitle*{BB98}, modified and extended as needed.
+We begin by recalling the basic notions of graph theory. We use standard definitions, sourced from the book by \citeauthor{BB98} \citetitle*{BB98}, modified and extended as needed.
 
 \begin{defn}[graph]
-  A \emph{graph} $G$ is an ordered pair of disjoint sets $(V, E)$ such that $E$ is the subset of the set $V \choose 2$ that is of unordered pairs of $V$.
+  A \emph{graph} $G$ is an ordered pair of disjoint sets $(V, E)$ such that $E$ is the subset of the set $V \choose 2$, that is, of unordered pairs of $V$.
 \end{defn}
 
 \begin{wrapfigure}{r}{0.4\textwidth}
@@ -23,11 +23,11 @@ We use standard definitions, sourced from the book by \citeauthor{BB98} \citetit
   \label{fig:examplePath}
 \end{wrapfigure}
 
-We will only consider finite graphs, that is $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. When the context of $G$ is clear we will use $V$ and $E$ to denote its vertex and edge set. The size of the vertex set $V(G)$ is sometimes called a \emph{cardinality} of $G$.
+We will only consider finite graphs, that is, $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. When the context of $G$ is clear we will use $V$ and $E$ to denote its vertex and edge set.
 
-An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ mean the same edge (all our graphs are \emph{undirected}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is all vertices $y$ such that $xy$ is an edge. Similarly, for $X \subseteq V(G)$, by $N(X)$ we will denote the neighborhood of $X$, that is all vertices of $v \in V(G) \setminus X$, so that there is a $x \in X$, that $xv$ is an edge in $G$. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
+An edge $\{x, y\}$ is said to \emph{join}, or be between vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ denote the same edge (all our graphs are \emph{undirected}). If $xy \in E(G)$ then $x$ and $y$ are adjacent, connected or neighboring. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is, all vertices $y$ such that $xy$ is an edge. Similarly, for $X \subseteq V(G)$, by $N(X)$ we will denote the neighborhood of $X$, meaning all vertices of $v \in V(G) \setminus X$, so that there is a $x \in X$, that $xv$ is an edge in $G$. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
 
-\Cref{fig:examplePath} shows an example of a graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
+\Cref{fig:examplePath} shows an example graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
 
 \begin{defn}[subgraph]
   $G' = (V', E')$ is a \emph{subgraph} of $G = (V, E)$ if $V' \subseteq V$ and $E' \subseteq E$.
@@ -45,13 +45,15 @@ For example $(\{v_1, v_2, v_3\}, \{v_1v_2\})$ is \emph{not} an induced subgraph 
   Given set $X \subseteq V$, vertex $v \notin X$ is \emph{$X$-complete} if it is adjacent to every node $x \in X$. A set $Y \subseteq V$ is $X$-complete if $X \cap Y = \emptyset$ and every node $y \in Y$ is $X$-complete.
 \end{defn}
 
+For example, for $X = \{v_2\}$, the set $\{v_1, v_3\}$ is $X$-complete in $G$, while the set $\{v_3, v_4\}$ is not.
+
 \begin{defn}[path]
   A \emph{path} is a graph $P$ of the form
   \[ V(P) = \{x_1, x_2, \ldots, x_l\},\quad E(P) = \{x_1x_2, x_2x_3, \ldots, x_{l-1}x_l\} \]
 \end{defn}
 This path $P$ is usually denoted by $x_1x_2\ldots x_l$ or $x_1 - x_2 - \ldots - x_l$. The vertices $x_1$ and $x_l$ are the \emph{endvertices} and ${l-1} = |E(P)|$ is the \emph{length} of the path P. $\{x_2, \ldots x_{l-1}\}$ is the \emph{inside} of the path $P$, denoted as $P^*$. Notice that we don't allow any edges other than the ones between consecutive vertices for a graph to be called a path.
 
-Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we would add any edge to $G_0$ it would stop being a path.
+Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we  added any edge to $G_0$ it would stop being a path.
 
 
 \begin{defn}[connected graph, subset]
@@ -71,7 +73,7 @@ Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we
 
 This cycle $C$ is usually denoted by $x_1x_2\ldots x_lx_1$ or $x_1 - x_2 - \ldots - x_l - x_1$. $l = |E(C)|$ is the \emph{length} of the cycle $C$. Sometimes we will denote the cycle of length $l$ as $C_l$.
 
-Notice, that a cycle is not a path (nor is a path a cycle). If we add an edge $v_1v_4$ to the path $G_0$ it becomes an even cycle $C_4$.
+Notice that if we add an edge $v_1v_4$ to the path $G_0$ it becomes an even cycle $C_4$.
 
 \begin{defn}[hole]
   A \emph{hole} is a cycle of length at least four.
@@ -80,15 +82,15 @@ Notice, that a cycle is not a path (nor is a path a cycle). If we add an edge $v
 If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Otherwise, it will be called \emph{even}.
 
 \begin{defn}[complement]
-  A \emph{complement} of a graph $G = (V, E)$ is a graph $\overline{G} = (V, {V \choose 2} \setminus E)$, that is two vertices $x, y$ are adjacent in $\overline{G}$ if and only if they are not adjacent in $G$.
+  A \emph{complement} of a graph $G = (V, E)$ is a graph $\overline{G} = (V, {V \choose 2} \setminus E)$, that is, two vertices $x, y$ are adjacent in $\overline{G}$ if and only if they are not adjacent in $G$.
 \end{defn}
 
 % Sometimes, we will call a complement of a member of a class $\Gamma$ an \emph{anti-
 % $\Gamma$}, e.g. graph $G = (\{v_1, v_2, v_3, v_4\}, \{v_1v_3, v_2v_4\})$ is an anticycle.
 
 \begin{defn}[anticonnected graph, subset]
-  A graph $G$ is anticonnected if $\overline{G}$ is connected.
-  A subset $X$ is anticonnected if $\overline{G}[X]$ is connected.
+  A graph $G$ is \emph{anticonnected} if $\overline{G}$ is connected.
+  A subset $X$ is \emph{anticonnected} if $\overline{G}[X]$ is connected.
 \end{defn}
 
 \begin{defn}[anticomponent]
@@ -100,7 +102,7 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
 \end{defn}
 
 \begin{defn}[clique]
-  A \emph{complete} graph or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is every two vertices are connected. We will denote a clique on $n$ vertices as $K_n$.
+  A \emph{complete graph} or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is, every two vertices are connected. We will denote a clique on $n$ vertices as $K_n$.
 \end{defn}
 
 \begin{defn}[clique number]
@@ -108,7 +110,7 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
 \end{defn}
 
 \begin{defn}[anticlique]
-  An \emph{anticlique} is a graph in which there are no edges. We will also call anticliques \emph{independent sets}. 
+  An \emph{anticlique} is a graph in which there are no edges. We will also call anticliques \emph{independent sets} or \emph{stable sets}. 
 \end{defn}
 In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subseteq V$ will be called \emph{independent} (in the context of $G$) if and only if $G[V']$ is an anticlique.
 
@@ -125,7 +127,7 @@ In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \
 \end{defn}
 
 \begin{defn}[line graph]
-  The \emph{line graph} of a graph $G = (V, E)$ is the graph $L(G)$ with vertex set equal $E$, where $e, h \in E$ are adjacent in $L(G)$ if and only if they share an end in $G$.
+  The \emph{line graph} of a graph $G = (V, E)$ is the graph $L(G)$ with $V(L(G)) = E$ and $E(L(G)) = \{e_1 e_2: e_1, e_2 \in E, e_1 \cap e_2 \neq \emptyset\}$, that is, $e_1, e_2 \in E$ are adjacent if and only if they share an endpoint in $G$.
 \end{defn}
 
 
