@@ -51,7 +51,7 @@
   }
 }
 
-\unfinishedAlg[-.55cm]{
+\noindent\continueAlg[-18.55cm]{
   \setcounter{AlgoLine}{19}
   \GreyElse{\transparent{.4}{// $\forall_{i\in[3]} X \cap C_i = \emptyset$}}{
     \GreyIf{\transparent{.4}{$n$ \textup{is even and} $H$ \textup{is even, or} $n$ \textup{is odd and} $H$ \textup{is odd}}}{
@@ -99,13 +99,12 @@
         \Assert{$H$ is odd}
         $R_3 \gets$ any $3$-rung with ends $a_3, b_3$, such that $\{a_3, b_3\} \setAntiComplete \{f_1, f_n\}$\;
         \Return $V(R_1) \cup V(R_2) \cup V(R_3) \cup \{f_1, \ldots, f_n\}$ - a \LGBSK\;
-        \TODO{Is it valid input for part of ALG I?}
       }
     }
   }
 }
 
-\continueAlg[-10.6cm]{
+\noindent\continueAlg[-11.6cm]{
   \setcounter{AlgoLine}{42}
   \GreyElse{\transparent{.4}{// $\forall_{i\in[3]} X \cap C_i = \emptyset$}}{ 
     \GreyElse{\transparent{.4}{ // $n$ \textup{is odd and} $H$ \textup{is even, or} $n$ \textup{is even and} $H$ \textup{is odd}}}{

@@ -23,7 +23,7 @@ Perfect graphs are interesting not only because of their theoretical properties,
 
 The first step to solve the problem of recognizing perfect graphs was the \emph{(weak) perfect graph theorem} first conjured by Berge in 1961~\cite{CB61} and then proven by Lovász in 1972~\cite{LL72}.
 
-\begin{theorem}[Perfect graph theorem]
+\begin{theorem}[Perfect graph theorem from \cite{LL72}]
 	\label{thm:pgt}
 	A graph is perfect if and only if its complement graph is also perfect.
 \end{theorem}
@@ -54,7 +54,7 @@ Odd holes are not perfect, since their chromatic number is 3 and their largest c
 
 In 1961 Berge conjured that a graph is perfect if and only if it contains no odd hole and no odd antihole in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}.
 
-\begin{theorem}[Strong perfect graph theorem]
+\begin{theorem}[Strong perfect graph theorem, Theorem 1.1 of \cite{MC06}]
 	\label{thm:spgt}
 	A graph is perfect if and only if it is Berge.
 \end{theorem}
@@ -72,12 +72,12 @@ A graph $G$ has a \emph{homogeneous pair} if $V(G)$ can be partitioned into subs
 A graph $G$ has a \emph{skew partition} if $V(G)$ can be partitioned into nonempty subsets $A, B, C, D$ such that there are all possible edges between $A$ and $B$ and no edges between $C$ and $D$. Chudnovsky et at. proved that no minimally imperfect graph has a skew partition.
 
 The proof of \cref{thm:spgt} is a consequence of the \emph{Decomposition theorem}:
-\begin{theorem}[Decomposition theorem]
+\begin{theorem}[Decomposition theorem, stated as Theorem 4.2 of \cite{GC03}]
 	\label{thm:decomposition}
 	Every Berge graph $G$ is basic or has a skew partition or a homogeneous pair, or either $G$ or $\overline{G}$ has a 2-join.
 \end{theorem}
 
-See \cite{MC06} for the proof of \cref{thm:spgt} and \cref{thm:decomposition}.
+See \cite{MC06} for the full proof of \cref{thm:spgt} and \cite{GC03} for its shorter overview.
 
 \section{Recognizing Berge Graphs}
 \label{sec:recognizingBerge}
@@ -186,11 +186,11 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 
 With definitions as above, for $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ is a \emph{good $(i, j)$-pair}, if and only if $m_i \in M \cup \{b_i\}$, $m_j \in M \cup \{b_j\}$, $P_i(m_i)$ and $P_j(m_j)$ both exist, and the sets $V(P_i(m_i))$,$V(P_j(m_j))$ are both disjoint and $b_ib_j$ is the only edge between them. In line \ref{line:pyramidColor} we color vertices of $P_1(m_1)$ black, so that for each $m_2$ we can check if paths $P_1(m_1)$ and $P_2(m_2)$ are disjoint in $O(|V|)$ time.
 
-It is easy to see, that if \textsc{Contains-Pyramid($G$)} outputs that $G$ contains a pyramid, it indeed does -- when we return in line \ref{line:pyramidTrue} the vertex $a$ found in line \ref{line:a} can be linked into a triangle $b_1, b_2, b_3$ via paths $P_1(m_1), P_2(m_2), P_3(m_3)$ for $m_1$, $m_2$, $m_3$ from line \ref{line:m1m2m3}. The proof of the converse is rather technical and we refer to \todo{dokładny nr twierdzenia} \cite{MC05} for it.
+It is easy to see, that if \textsc{Contains-Pyramid($G$)} outputs that $G$ contains a pyramid, it indeed does -- when we return in line \ref{line:pyramidTrue} the vertex $a$ found in line \ref{line:a} can be linked into a triangle $b_1, b_2, b_3$ via paths $P_1(m_1), P_2(m_2), P_3(m_3)$ for $m_1$, $m_2$, $m_3$ from line \ref{line:m1m2m3}. The proof of the converse is rather technical and we refer to Theorem 2.2 of \cite{MC05} for it.
 
 Now we will proove the time complexity.
 
-\begin{theorem}
+\begin{theorem}[part of Theorem 2.2 of \cite{MC05}]
 	Procedure \textsc{Contains-Pyramid($G$)} works in $O(|V|^9)$ time.
 \end{theorem}
 \begin{proof}
@@ -239,8 +239,8 @@ A configuration of type $\T_1$ is a hole of length 5. To find it, we simply iter
 
 A configuration of type $\T_2$ is a tuple $(v_1, v_2, v_3, v_4, P, X)$, such that:
 \begin{itemize}
-	\item $v_1v_2v_3v_4$ is a path in $G$.
-	\item $X$ is an anticomponent of the set of all $\{v_1, v_2, v_4\}$-complete vertices.
+	\item $v_1v_2v_3v_4$ is a path in $G$,
+	\item $X$ is an anticomponent of the set of all $\{v_1, v_2, v_4\}$-complete vertices,
 	\item $P$ is a path in $G\setminus(X \cup \{v_2, v_3\})$ between $v_1$ and $v_4$ and no vertex in $P^*$ is $X$-complete or adjacent to $v_2$ or adjacent to $v_3$.
 \end{itemize}
 
@@ -258,15 +258,15 @@ To prove that existence of $\T_2$ configuration implies that the graph is not Be
 
 Now, we shall prove the following:
 
-\begin{theorem}
+\begin{theorem}[Theorem 6.3 of \cite{MC05}]
 	If $G$ contains configuration of type $\T_2$ then $G$ is not Berge.
 \end{theorem}
 \begin{proof}
 	Let $(v_1, v_2, v_3, v_4, P, X)$ be a configuration of type $\T_2$. Let us assume that $G$ is not Berge and consider the following:
 	\begin{itemize}
-		\item If $P$ is even, then $v_1, v_2, v_3, v_4, P, v_1$ is an odd hole,
-		\item If $P$ is of length 3. \todo{I merged a couple of proofs from \cite{MC06}, check in the morning if this is correct.} Let us name its vertices $v_1, p_2, p_3, v_4$. It follows from \cref{lem:Roussel-Rubio}, that there exists an odd antipath between $p_2$ and $p_3$ with interior in $X$. We can complete it with $v_2p_2$ and $v_2p_3$ into an odd antihole.
-		\item If $P$ is odd with the length of at least 5 \todo{check in the morning}, it follows from \cref{lem:Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2, x, p_2, \ldots, p_{n-1}, y, v_2$.
+		\item if $P$ is even, then $v_1, v_2, v_3, v_4, P, v_1$ is an odd hole,
+		\item if $P$ is of length 3. \todo{I merged a couple of proofs from \cite{MC06}, check in the morning if this is correct.} Let us name its vertices $v_1, p_2, p_3, v_4$. It follows from \cref{lem:Roussel-Rubio}, that there exists an odd antipath between $p_2$ and $p_3$ with interior in $X$. We can complete it with $v_2p_2$ and $v_2p_3$ into an odd antihole,
+		\item if $P$ is odd with the length of at least 5 \todo{check in the morning}, it follows from \cref{lem:Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2, x, p_2, \ldots, p_{n-1}, y, v_2$.
 	\end{itemize}
 \end{proof}
 
@@ -280,10 +280,10 @@ Now, we shall prove the following:
 
 A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such that:
 \begin{itemize}
-	\item $v_1, \ldots v_6$ are distinct vertices.
-	\item $v_1v_2$, $v_3v_4$, $v_1v_4$, $v_2v_3$, $v_3v_5$, $v_4v_6$ are edges, and $v_1v_3$, $v_2v_4$, $v_1v_5$, $v_2v_5$, $v_1v_6$, $v_2v_6$, $v_4v_5$ are nonedges.
-	\item $X$ is an anticomponent of the set of all $\{v_1, v_2, v_5\}$-complete vertices, and $v_3$, $v_4$ are not $X$-complete.
-	\item $P$ is a path of $G \setminus ( X \cup \{v_1, v_2, v_3, v_4\} )$ between $v_5$ and $v_6$ and no vertex in $P*$ is $X$-complete or adjacent to $v_1$ or adjacent to $v_2$.
+	\item $v_1, \ldots v_6$ are distinct vertices,
+	\item $v_1v_2$, $v_3v_4$, $v_1v_4$, $v_2v_3$, $v_3v_5$, $v_4v_6$ are edges, and $v_1v_3$, $v_2v_4$, $v_1v_5$, $v_2v_5$, $v_1v_6$, $v_2v_6$, $v_4v_5$ are nonedges,
+	\item $X$ is an anticomponent of the set of all $\{v_1, v_2, v_5\}$-complete vertices, and $v_3$, $v_4$ are not $X$-complete,
+	\item $P$ is a path of $G \setminus ( X \cup \{v_1, v_2, v_3, v_4\} )$ between $v_5$ and $v_6$ and no vertex in $P*$ is $X$-complete or adjacent to $v_1$ or adjacent to $v_2$,
 	\item If $v_5v_6$ is an edge, then $v_6$ is not $X$-complete.
 \end{itemize}
 
@@ -327,7 +327,7 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 
 We will skip the proof that each graph containing $\T_3$ is not Berge, as it is quite technical. See section 6.7 of \cite{MC05} for the proof.
 
-\begin{theorem}
+\begin{theorem}[part of Theorem 6.4 of \cite{MC05}]
 	\Cref{alg:t3} runs in $O(|V|^6)$ time.
 \end{theorem}
 \begin{proof}
@@ -383,7 +383,7 @@ Let us notice, that if $X$ is a cleaner for $C$ then $C$ is a clean hole in $G \
 Some pictures might be helpful. \Cref{fig:amenableOddHole} shows an example of an amenable odd hole $C = v_1, \ldots, v_7$. It is not a clean hole -- vertices $v_8$ and $v_9$ are $C$-major, and $v_8, v_9, v_1, v_2, v_3$ is an axample of a near-cleaner for $C$.
 \Cref{fig:notAmenableHole} shows an odd hole $C = v_1, \ldots, v_7$ that is not amenable, because there is no $\{v_8, v_9\}$-complete edge in $C$.
 
-\begin{theorem}
+\begin{theorem}[Theorem 8.1 of \cite{MC05}]
 	\label{thm:amenableHoles}
 	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then every shortest hole in $G$ is amenable.
 	% \TODO{Any ideas on what else to say here? List all 9 steps?}
@@ -441,16 +441,16 @@ With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 
 To prove the correctness of \cref{alg:listNearCleaners} we will need the following theorem.
 
-\begin{theorem}[9.1 of \cite{MC05}]
+\begin{theorem}[Theorem 9.1 of \cite{MC05}]
 	\label{thm:91}
 	Let $C$ be a shortest odd hole in $G$, with length at least seven. Then there is a relevant triple $(a, b, c)$ of vertices such that
 	\begin{itemize}
-		\item the set of all $C$-major vertices not in $X(a, b, c)$ is anticonnected
+		\item the set of all $C$-major vertices not in $X(a, b, c)$ is anticonnected,
 		\item $X(a, b, c) \cap V(C)$ is a subset of the vertex set of some 3-vertex path of $C$.
 	\end{itemize}
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}[Theorem 9.2 of \cite{MC05}]
 	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then the result of the \Cref{alg:listNearCleaners} on the graph $G$ is a set $\mathcal{R}$, such that for every shortest amenable hole $C$, there is a near-cleaner for $C$ in $\mathcal{R}$.
 \end{theorem}
 \begin{proof}
@@ -463,7 +463,7 @@ To prove the correctness of \cref{alg:listNearCleaners} we will need the followi
 
 	\noindent Output: Determines one of the following:
 	\begin{itemize}
-		\item $G$ has an odd hole
+		\item $G$ has an odd hole,
 		\item There is no shortest odd hole $C$ such that $X$ is a near-cleaner for $C$.
 	\end{itemize}
 \end{alg}

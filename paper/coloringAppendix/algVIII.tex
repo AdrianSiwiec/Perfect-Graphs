@@ -1,15 +1,15 @@
-\unfinishedAlg[-.45cm]{
+\unfinishedAlg[4.55cm]{
 	\SetKwFunction{GrowJStrip}{\textsc{Growing-J-Strip}}
 	\Indm\nonl\GrowJStrip{$G, J, (S, N)$}\\
 	\KwData{$G$ -- square-free, Berge graph \newline
 		$J$ -- a $3$-connected graph with appearance in $G$ \newline
 		$(S, N)$ -- a $J$-strip system \newline
-		\TODO{make sure def of $J$ is correct}
+		% \TODO{make sure def of $J$ is correct}
 	}
 	\KwResult{$J'$ and a maximal $J'$-strip system, or a special strip system}
 	\Indp	
 	$M \gets$ vertices of $G \setminus V(S, N)$ that are major on some choice of Rungs of $(S, N)$\;
-	\TODO{$M$ like ALGI} 
+	% \TODO{$M$ like ALGI} 
 	\If {$\exists m : m$ is not major on some choice of rungs of $(S, N)$}{
 		$OUT \gets$ \FindSpecialK{$G, J, (S, N), m$} \;
 		\If{$OUT$ is a special strip system}{
@@ -21,20 +21,22 @@
 	}
 	\ElseIf{$\exists F$ : $F$ is a component of $G\setminus(V(S,N) \cup M)$, 
 		such that no member of $F$ is major w.r.t. $(S, N)$ 
-		and set of attachments of $F$ on $H (?)$ is not local}{
+		and set of attachments of $F$ on $H$ is not local}{
 		\Assert[6.2, or actually SPGT 8.5]{}
-		$F \gets$ minimal (component?) with this property\;
+		$F \gets$ minimal component with this property\;
+		% \TODO{minimal (component?)}
 								
 		\If{$\exists v \in V(J): X \subset \bigcup(S_{uv} : uv \in E(J))$}{
-			\TODO{what is X?}
-			$x :\in X \cap S_{uv} \setminus N_v$, for some $uv \in E(J)$\; \TODO{brackets?}
+			% \TODO{what is X?}
+			$x :\in X \cap S_{uv} \setminus N_v$, for some $uv \in E(J)$\; 
+			% \TODO{brackets?}
 			$x' :\in X \cap S_{u'v}$, for some $u'v \in E(J), u' \neq u$\;
 			\Assert{$\{x, x'\}$ is not local w.r.t. $(S,N)$}
 			$L(H) \gets \forall_{i,j \in E(J)}$ choose $ij$-rung $R_{ij}$, so that $x \in V(R_{uv}), x' \in V(R_{u'v})$\;
 			\Assert{$\{x, x'\}$ is not local w.r.t. $L(H)$}
 			$H \gets$ inverse line graph of $L(H)$\;
 			$D \gets$ a branch of $H$ with ends $d, u$: $\delta_H(d) \setminus E(D) = (X \cap E(H)) \setminus E(D)$\;
-			\TODO{How can we get $H$ from $L(H)$}
+			% \TODO{How can we get $H$ from $L(H)$}
 			$P \gets$ a path with ends $p_1, p_2$, so that: \nonl \;
 			\pushline $p_1 \blacktriangleleft N_v \setminus N_{vu}$ and
 			no other vertex of $P$ has neighbors in $N_v \setminus N_{uv}$ \nonl \;
@@ -50,10 +52,11 @@
 			\Assert{Every choice of rungs is broad}
 		}
 	}
+	\vspace{-5cm}
 }
 
-\continueAlg[-9cm]{
-  \setcounter{AlgoLine}{18}
+\continueAlg[-10cm]{
+  \setcounter{AlgoLine}{19}
 	\GreyIf{\transparent{.4}{$\exists F \ldots$}} {
 		\GreyElse{\transparent{.4}{ //  $\nexists v \in V(J): X \subset \bigcup(S_{uv} : uv \in E(J))$}}{
 			\Assert{every choice of rungs has the same traversal. (Hard to assert)} 

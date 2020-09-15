@@ -5,6 +5,9 @@ The following appendix is based on the paper \citetitle{coloringSquareFree} by \
 
 \section{Introduction}
 \TODO{some intro}
+We give a brief overview of the square-free perfect graph coloring algorithm and a pseudocode thereof. The work is not intended to be self-contained and will be impossible to fully understand without \cite{coloringSquareFree} at hand. But when reading \cite{coloringSquareFree}, one may pose a question of what sort of an algorithm emerges from it, and we believe the pseudocode below gives a first overview and is a major step required before an attempt to implement it would be made. For some, looking at the pseudocode could provide a better way to analyze and possibly simplify the algorithm.
+
+What we present would not be trivial to implement. For example in many places we say ''choose $x$, so that \dots'', without specifying how to do it. A most glaring example is calculating an inverse of a line graph (in \Cref{alg:growingJStrip}) which is a complicated algorithm in and of itself, see \cite{Liu2014} for reference.
 
 Recall, that a prism (\cref{def:prism}) is a graph consisting of two disjoint triangles and two disjoint paths between them.
 
@@ -44,13 +47,11 @@ Let us state a few definitions.
   \begin{itemize}
     \item $L$ and $R$ are not empty, and $L$ is anticomplete to $R$,
     \item $K_1 \cup K_2$ and $K_2 \cup K_3$ are cliques,
-    \item in the graph obtained from $G$ by removing all edges between $K_1$ and $K_3$, every chordless path with one end in $K_1$, the other in $K_3$, and interior in $L$ contains a vertex from $L$ that is complete to $K_1$,
+    \item in the graph obtained from $G$ by removing all edges between $K_1$ and $K_3$, every path with one end in $K_1$, the other in $K_3$, and interior in $L$ contains a vertex from $L$ that is complete to $K_1$,
     \item either $K_1$ is anticomplete to $K_3$, or no vertex in $L$ has neighbors in both $K_1$ and $K_3$,
     \item for some $x \in L$ and $y \in R$, there is a triad of $G$ that contains $\{x, y\}$.
   \end{itemize}
 \end{defnTwo}
-
-\TODO{we need many more definitions, scan pseudocode}
 
 The algorithm we present is derived from contructive proof of the following two theorems.
 
@@ -62,68 +63,223 @@ The algorithm we present is derived from contructive proof of the following two 
   Let $G$ be a square-free Berge graph. Suppose that $V(G)$ has a good partition $(K_1, K_2, K_3, L, R)$. Let $G_1 = G \setminus R$, $G_2 = G \setminus L$ and for $i = 1,2$ let $c_i$ be an $\omega(G_i)$-coloring of $G_i$. Then an $\omega(G)$-coloring of $G$ can be obtained in polynomial time.
 \end{theorem}
 
+A few more structures are used throughout the algorithm. Let us define them.
+
+For definitions \ref{def:majorNeiOfPrism} and \ref{def:localSubOfPrism}, let $K$ be a prism with triangles $\{a_1, a_2, a_3\}$ and $\{b_1, b_2, b_3\}$ and with paths $R_1, R_2, R_3$, where each $R_i$ has ends $a_i$ and $b_1$.
+
+\begin{defnTwo}[major neighbor of a prism]
+  A vertex $v \in V(G) \setminus K$ is a \emph{major neighbor} of pritm $K$ is and only if it has at least two neighbors in $\{a_1, a_2, a_3\}$ and at least two neighbors in $\{b_1, b_2, b_3\}$.
+  \label{def:majorNeiOfPrism}
+\end{defnTwo}
+
+\begin{defnTwo}[local subset of a prism]
+  A subset $X \subseteq V(K)$ is \emph{local} if either $X \subseteq \{a_1, a_2, a_3\}$, or $X \subseteq \{b_1, b_2, b_3\}$, or $X \subseteq R_i$ for some $i \in \{1, 2, 3\}$.
+  \label{def:localSubOfPrism}
+\end{defnTwo}
+
+\begin{defnTwo}[attachment]
+  Let $F, K$ be an induced subgraphs of a graph $G$, with $V(F) \cap V(K) = \emptyset$. Any vertex $k \in V(K)$ that has a neighbor in $V(F)$ in a graph $G$ is called an \emph{attachment} of $F$ in $K$. Whenever any vertex $k \in V(K)$ has an attachment of $F$ we say that $F$ \emph{attaches} to $K$.
+\end{defnTwo}
+
+\begin{defnTwo}[hyperprism]
+  A \emph{hyperprism} is a graph $H$, whose vertices can be partitioned into nine sets:
+  $$
+  \begin{tabular}{c c c}
+    $A_1$ & $C_1$ & $B_1$ \\
+    $A_2$ & $C_2$ & $B_2$ \\
+    $A_3$ & $C_3$ & $B_3$
+  \end{tabular}
+  $$
+  \noindent with the following properties:
+  \begin{itemize}
+    \item each of $A_1, A_2, A_3, B_1, B_2, B_3$ is nonempty,
+    \item for distinct $i, j \in \{1, 2, 3\}$, $A_i$ is complete to $A_j$, and $B_i$ is complete to $B_j$, and there are no other edges between $A_i \cup B_i \cup C_i$ and $A_j \cup B_j \cup C_j$,
+    \item for each $i \in \{1, 2, 3\}$, every vertex of $A_i \cup B_i \cup C_i$ belongs to a path between $A_i$ and $B_i$ with interior in $C_i$.
+  \end{itemize}
+\end{defnTwo}
+
+Whenever we will speak about hyperprisms, we will denote its subsets as in the above definition, unless stated otherwise.
+
+For a hyperprism $H$ we have a few more definitions:
+
+\begin{defnTwo}[$i$-rung of a hyperprism]
+  For each $i \in \{1, 2, 3\}$, any path from $A_i$ to $B_i$ with interior in $C_i$ is called an \emph{$i$-rung}.
+\end{defnTwo}
+
+\begin{defnTwo}[strip of a hyperprism]
+  For each $i \in \{1, 2, 3\}$, the triple $(A_i, C_i, B_i)$ is called a \emph{strip} of the hyperprism.
+\end{defnTwo}
+
+\begin{defnTwo}[instance of a hyperprism]
+  For each $i \in \{1, 2, 3\}$, let us pick any $i$-rung $R_i$. Then $R_1$, $R_2$, $R_3$ form a prism. Any such prism is called an \emph{instance} of a hyperprism.
+\end{defnTwo}
+
+From the definition of an instance of a hyperprism, we can see that any prism is also a hyperprism.
+
+Let us note, that if a hyperprism $H$ contains no odd hole, all rungs have the same parity. We then call the hyperprism odd or even accordingly.
+
+Given a graph $G$ that contains a hyperprism $H$, we can define a few more structures.
+
+\begin{defnTwo}[major neighbor of a hyperprism]
+  A vertex $v \in V(G) \setminus V(H)$ is a \emph{major neighbor} of $H$, if it is a major neighbor of some instance of $H$.
+\end{defnTwo}
+
+\begin{defnTwo}[local subset of a hyperprism]
+  A subset $X \subseteq V(H)$ is a local subset of a hyperprism $H$ if either $X \subseteq A_i \cup A_2 \cup A_3$ or $X \subseteq B_1 \cup B_2 \cup B_3$ or $X \subseteq A_i \cup B_i \cup C_i$ for some $i \in \{1, 2, 3\}$.
+\end{defnTwo}
+
+\begin{defnTwo}[maximal hyperprism]
+  A hyperprism $H$ is \emph{maximal} if there is no hyperprism $H'$ in $G$, such that $V(H) \varsubsetneq V(H')$.
+\end{defnTwo}
+
+
+
+
+\Cref{alg:growHyperprism} for growing hyperprism is based upon the following theorem. Recall that by $K_4$ we denote a clique on 4 vertices.
+\begin{theorem}[Lemma 3.3 of \cite{coloringSquareFree}]
+  Let $G$ be a berge graph, let $H$ be a hyperprism in $G$ and let $M$ be the set of major neighbors of $H$ in $G$. Let $F$ be a component of $V(G) \setminus(V(H) \cup M)$, such that the set of attachments of $F$ in $H$ is not local. Then one can find in polynomial time one of the following
+  \begin{itemize}
+    \item a path $P$, with $\emptyset \neq V(P) \subseteq V(F)$, such that $V(H) \cup V(P)$ induces a hyperprism,
+    \item a path $P$, with $\emptyset \neq V(P) \subseteq V(F)$, and for each $i \in \{1, 2, 3\}$ an $i$-rung $R_i$ of $H$, such that $V(P) \cup V(R_1) \cup V(R_2) \cup V(R_3)$ induces the line graph of a bipartite subdivision of $K_4$.
+  \end{itemize}
+  \label{thm:growingHyperprism}
+\end{theorem}
+
+If at any time during growing a hyperprism we encounter the latter outcome of the \Cref{thm:growingHyperprism} we stop it and instead focus on the newly found line graph of a bipartite subdivision of $K_4$. Algorithms \ref{alg:goodPartitionJStrip}, \ref{alg:goodPartitionSpecialK4}, \ref{alg:findSpecialK4} and \ref{alg:growingJStrip} take their roots in the following theorem.
+
+\begin{theorem}[Theorem 6.1 of \cite{coloringSquareFree}]
+  Let $G$ be a square-free Berge graph, and assume that $G$ contains the line graph of a bipartite subdivision of $K_4$. Then $G$ admits a good partition.
+\end{theorem}
+
+Before providing the pseudocode, we need a few more definitions.
+
+\begin{defnTwo}[branch]
+  Given a graph $G$, a \emph{branch} is a path whose interior vertices have degree 2 and whose ends have degree at leas 3. A \emph{branch-vertex} is any vertex of degree at least 3.
+\end{defnTwo}
+
+\begin{defnTwo}[appearance of a graph]
+  Given a graph $G$, and \emph{appearance} of a graph $J$ is any induced subgraph of $G$ that is isomorphic to the line graph $L(H)$ of a bipartite subdivision $H$ of $J$. An appearance of $J$ is \emph{degenerate} if either $J = H = K_{3, 3}$\footnote{$K_{n, m}$ is a complete bipartite graph with $n$ vertices on the one side and $m$ vertices on the other}, or $J = K_4$ and the four vertices of $J$ form a square in $H$.
+\end{defnTwo}
+
+Note that a degenerate appearance of a graph contains a square.
+
+\begin{defnTwo}[overshadowed appearance]
+  An appearance of $L(H)$ of $J$ in $G$ is \emph{overshadowed} if there is a branch $B$ of $H$, of length at least 3, with ends $b_1, b_2$, such that some vertex of $G$ is non-adjacent in $G$ to at most one vertex in $\{b_1x \in V(L(H))$, for $x \in V(H), b_1x \in E(H)\}$ and at most one vertex in $\{b_2x \in V(L(H))$, for $x \in V(H), b_2x \in E(H)\}$.
+\end{defnTwo}
+
+\begin{defnTwo}[$J$-enlargement]
+  An \emph{enlargement} of a 3-connected graph $J$, or a $J$-enlargement is any 3-connected graph $J'$ such that there is a proper induced subgraph of $J'$ that is isomorphic to a subdivision of $J$.
+\end{defnTwo}
+
+\begin{defnTwo}[$J$-strip system, $uv$-rung]
+  Let $J$ be a 3-connected graph and let $G$ be a perfect graph. A \emph{$J$-strip system} $(S, N)$ in $G$ means
+  \begin{itemize}
+    \item for each edge $uv$ of $J$, a subset $S_{uv} = S_{vu}$ of $V(G)$,
+    \item for each vertex $v$ of $J$, s subset $N_v$ of $V(G)$,
+    \item $N_{uv} = S_{uv} \cap N_u$,
+  \end{itemize}
+  such that if we define a $uv$-rung to be a path $R$ of $G$ with ends $s, t$, where $V(R) \subseteq S_{uv}$, and $s$ is the unique vertex of $R$ in $N_u$, and $t$ is the unique vertex of $R$ in $N_v$, the following conditions are met:
+  \begin{itemize}
+    \item the sets $S_{uv}$, for $uv \in E(J)$ are pairwise disjoint,
+    \item for each $u \in V(J)$, $N_u \subseteq \bigcup_{uv \in E(J)} S_{uv}$,
+    \item for each $uv \in E(J)$, every vertex of $S_{uv}$ is in a $uv$-rung,
+    \item for any two edges $uv, wx$ of $J$, with $u, v, w, x$ all distinct, there are no edges between $S_{uv}$ and $S_{wx}$,
+    \item if $uv, uw \in E(J)$, with $v \neq w$, then $N_{uv}$ is complete to $N_{uw}$ and there are no other edges between $S_{uv}$ and $S_{uw}$,
+    \item for each $uv \in E(J)$, there is a \emph{special} $uv$-rung, such that for every cycle $C$ of $J$, the sum of the lengths of the special $uv$-rungs for $uv \in E(C)$ has the same parity as $|V(C)|$.
+  \end{itemize}
+\end{defnTwo}
+
+\noindent The vertex set of $(S, N)$, denoted by $V(S, N)$ is the set $\bigcup_{uv \in E(J)} S_{uv}$. Note that in general $N_{uv}$ is different from $N_{vu}$. On the other hand $S_{uv} = S_{vu}$.
+
+A $J$-strip system has the following properties:
+\begin{itemize}
+  \item for distinct $u, v \in V(J)$, if $uv \in E(J)$, then $N_u \cap N_v \subseteq S_{uv}$ and if $uv \notin E(J)$ then $N_u \cap N_v = \emptyset$,
+  \item for $uv \in E(J)$ and $w \in V(J)$, if $w \neq u$ then $S_{uv} \cap N_w = \emptyset$,
+  \item for every $uv \in E(J)$, all $uv$-rungs have lengths of the same parity,
+  \item for every cycle $C$ of $J$ and every choice of $uv$-rung for every $uv \in E(C)$, the sums of the lengths of the $uv$-rungs have the same parity as $|V(C)|$. In particular, for each edge $uv \in E(J)$, all $uv$-rungs have the same parity.
+\end{itemize}
+
+\begin{defnTwo}[choice of rungs]
+  Given a $J$-strip system, by a \emph{choice of rungs} we mean the choice of one $uv$-rung for each edge $uv$ of $J$.
+\end{defnTwo}
+
+Given a square-free perfect graph $G$ and a $J$-strip system, for every choice of rungs, the subgraph of $G$ induced by their union is the line-graph of a bipartite subdivision of $J$.
+
+\begin{defnTwo}[saturating $J$-strip system]
+  $X \subseteq V(G)$ \emph{saturates} the strip system if for every $u \in V(J)$ there is at most one neighbor $v$ of $u$ such that $N_{uv} \nsubseteq X$.
+\end{defnTwo}
+
+\begin{defnTwo}[major vertex w.r.t. a strip system]
+  A vertex $v \in V(G) \setminus V(S, N)$  is \emph{major} with respect to (w.r.t.) the strip system if the set of its neighbors saturates the strip system.
+\end{defnTwo}
+
+\begin{defnTwo}[major vertex w.r.t. some choice of rungs]
+  A vertex $v \in V(G) \setminus V(S, N)$  is \emph{major} with respect to (w.r.t.) some choice of rungs if the $J$-strip system defined by this choice of rungs is saturated by the set of neighbors of $v$.
+\end{defnTwo}
+
+\begin{defnTwo}[subset local w.r.t. a strip system]
+  A subset $X \subseteq V(S, N)$ is \emph{local} with respect to (w.r.t.) the strip system, if either $X \subseteq N_v$ for some $v \in V(J)$ or $X \subseteq S_{uv}$ for some $uv \in E(J)$.
+\end{defnTwo}
+
+The outline of the algorithm is as follows. Given a square-free perfect graph, first we test if it is an Artemis graph. If so, we color it according to \Cref{thm:colorArtemis}. If not, \Cref{thm:getPrism} gives us a prism $K$. We want to extend $K$ either to a maximal hyperprism or to the line graph of a bipartite subdivision of $K_4$. For each of them, we can construct a good partition, which we color recursively.
+
 \section{Notation}
 
 In the following algorithms we use a slightly different notation than before, with many concepts represented by inline symbols. This is intended to reduce the length of algorithm's text and simplify its analysis.
 
 \begin{itemize}
-	\item $a \gets b$ -- let a be equal b.
-	\item $a :\in X$, when $X$ is a set -- let a be equal to any element of $X$
-	\item $a \xor b$, when $a$ and $b$ are logical values -- $a$ xor $b$
-	\item $V(X)$ -- vertices of structure $X$. Will be written as $X$ when obvious.
-	\item $a - b$, when $a$ and $b$ are nodes -- $a$ and $b$ are neighbors.
-	\item $a \cdots b$, when $a$ and $b$ are nodes -- $a$ and $b$ are not neighbors.
-	\item $a - X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a neighbor in $X$.
-	\item $a \cdots X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a nonneighbor in $X$.
-	\item $a \blacktriangleleft  X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is complete to $X$.
-	\item $a \ntriangleleft X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is anticomplete to $X$.
-	\item $X \setComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is complete to $Y$.
-	\item $X \setAntiComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is anticomplete to $Y$.
-	\item $[n]$  -- $\{1, \ldots, n\}$.
+	\item $a :\in X$, when $X$ is a set -- let a be equal to any element of $X$,
+	\item $a \xor b$, when $a$ and $b$ are logical values -- $a$ xor $b$,
+	\item $V(X)$ -- vertices of structure $X$. Will be written as $X$ when obvious,
+	\item $a - b$, when $a$ and $b$ are nodes -- $a$ and $b$ are neighbors,
+	\item $a \cdots b$, when $a$ and $b$ are nodes -- $a$ and $b$ are not neighbors,
+	\item $a - X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a neighbor in $X$,
+	\item $a \cdots X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a nonneighbor in $X$,
+	\item $a \blacktriangleleft  X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is complete to $X$,
+	\item $a \ntriangleleft X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is anticomplete to $X$,
+	\item $X \setComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is complete to $Y$,
+	\item $X \setAntiComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is anticomplete to $Y$,
+	\item $[n]$  -- $\{1, \ldots, n\}$,
 	\item \LGBSK -- the line-graph of a biparite subdivision of $K_4$.
-
-	\item Strip $S_{uv}$ is \emph{rich} if and only if $S_{uv} \setminus T_{uv} \neq \emptyset$
 \end{itemize}
-\TODO{Introduction on unknown structures - J-strip etc etc}
 
+Also, throughout the algorithms, we have many lines with asserts. These check some of the properties required before proceeding, and should all be true.
+
+\clearpage
 \section{Algorithms}
 
-\graphAppendix{Color square-free perfect graph}
+\graphAppendix{Color square-free perfect graph}{alg:colorSquareFree}
 \input{coloringAppendix/algI.tex}
 \clearpage
 
-\graphAppendix{Color good partition}
-\input{coloringAppendix/algII.tex}
+\graphAppendix{Color good partition}{alg:colorGoodPartition}
+\noindent\input{coloringAppendix/algII.tex}
 \clearpage
 
-\graphAppendix{Grow hyperprism}
-\input{coloringAppendix/algIII.tex}
+\graphAppendix{Grow hyperprism}{alg:growHyperprism}
+\noindent\input{coloringAppendix/algIII.tex}
 \clearpage
 
-\graphAppendix{Good partition from an even hyperprism}
+\graphAppendix{Good partition from an even hyperprism}{alg:goodPartitionEvenH}
 \input{coloringAppendix/algIV.tex}
 \clearpage
 
-\graphAppendix{Good partition from an odd hyperprism}
+\graphAppendix{Good partition from an odd hyperprism}{alg:goodPartitionOddH}
 \input{coloringAppendix/algV.tex}
 \clearpage
 
-\graphAppendix{Good partition from a $J$-strip system}
+\graphAppendix{Good partition from a $J$-strip system}{alg:goodPartitionJStrip}
 \input{coloringAppendix/algVIa.tex}
 \clearpage
 
-\graphAppendix{Good partition from a special $K_4$ strip system}
+\graphAppendix{Good partition from a special $K_4$ strip system}{alg:goodPartitionSpecialK4}
 \input{coloringAppendix/algVIb.tex}
 \clearpage
 
-\graphAppendix{Find a special $K_4$ system}
+\graphAppendix{Find a special $K_4$ system}{alg:findSpecialK4}
 \input{coloringAppendix/algVII.tex}
 \clearpage
 
-\graphAppendix{Growing a $J$-strip}
-\input{coloringAppendix/algVIII.tex}
+\graphAppendix{Growing a $J$-strip}{alg:growingJStrip}
+\noindent\input{coloringAppendix/algVIII.tex}
 \clearpage
-
-% \graphAppendix{LAST}
-% \input{coloringAppendix/algIXa.tex}
-% \clearpage

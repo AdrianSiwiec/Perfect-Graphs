@@ -9,7 +9,6 @@
     \Return coloring of an Artemis graph $G$ \tcp*{\Cref{thm:colorArtemis}}
   }
   $H \gets$ an induced prism of $G$ \tcp*{\Cref{thm:getPrism}}
-  \TODO{do we get $H$ ready from A.1.1?}
 
   \While{$P = $ \textsc{undefined}}{
     
@@ -17,14 +16,11 @@
       $F \gets$ a minimal component of $G \setminus(H \cup M)$ with a set of attachments in $H$ not local
 
       $M \gets \{v: v$ is a major neighbor of H$\}$\;
-      \TODO{how do we get M?}
-
 
       $H' \gets$ \textsc{Grow-Hyperprism}$(G, H, M, F)$\;
       \If{$H'$ is  a \LGBSK}{
         $J \gets H'$\;
         $(S, N) \gets$ a $J$-strip system\;
-        \TODO{how?}
       }\Else{
         $H \gets H'$\;
       }
@@ -51,4 +47,5 @@
     }
   }
   \Return \textsc{Color-Good-Partition}$(G, P)$\;
+  \vspace{-5cm}
 \end{mynameforalgorithm}
