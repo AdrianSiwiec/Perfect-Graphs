@@ -1,6 +1,6 @@
-A natural problem for perfect graphs is a problem of coloring them. In 1988 Gr\"otschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in \Cref{sec:coloringEllipsoid}. However due to its use of the ellipsoid method this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
+A natural problem for perfect graphs is a problem of coloring them. In 1988 Gr\"otschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in \Cref{sec:coloringEllipsoid}. However due to its use of the ellipsoid method, this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
 
-There has been much progress on the quest of finding a more classical algorithm coloring perfect graphs, without the use of ellipsoid method (see \Cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this. \todo{better wording of this paragraph}
+There has been much progress on the quest of finding an algorithm coloring perfect graphs, without the use of ellipsoid method (see \Cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this.
 
 \section{Information theory background}
 \label{sec:InformationTheory}
@@ -31,9 +31,9 @@ Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graph
 
 \subsection{Lovász number}
 
-For a channel defined by a graph $C_5$, using five messages of length 2 to communicate gives us a lower bound on $\Theta(G)$ equal $\sqrt{5}$ (as does calculating $\alpha(C_5^2)$).
+For a channel defined by a graph $C_5$, using five messages of length 2 to communicate gives us a lower bound on $\Theta(G)$ equal $\sqrt{5}$ (as does calculating $\sqrt{\alpha(C_5^2)}$).
 
-Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ as its "handle" and 5 "ribs" of unit length.  Open it up to the point where non-consecutive ribs are orthogonal, i.e., form an angle of 90$^\circ$. This way we get a representation of $C_5$ by 5 unit vectors $u_1, \ldots u_5$ so that each $u_i$ forms the same angle with $e_1$ and any two non-adjacent nodes are represented with orthogonal vectors. See \Cref{fig:umbrella}. We can calculate $e_1^\intercal u_i = 5 ^ {-1/4}$.
+Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ as its "handle" and 5 "ribs" of unit length.  Open it up to the point where non-consecutive ribs are orthogonal, i.e., form an angle of 90$^\circ$. This way we get a representation of $C_5$ by 5 unit vectors $u_1, \ldots, u_5$ so that each $u_i$ forms the same angle with $e_1$ and any two non-adjacent vertices are represented with orthogonal vectors. See \Cref{fig:umbrella}. We can calculate $e_1^\intercal u_i = 5 ^ {-1/4}$.
 
 
 \begin{wrapfigure}{r}{0.4\textwidth}
@@ -42,14 +42,14 @@ Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ 
   \label{fig:umbrella}
 \end{wrapfigure}
 
-It turns out, that we can obtain a similar representation of the nodes of $C_5^k$ by unit vectors $v_i \in \mathbb{R}^{3k}$, so that any two non-adjacent nodes are labeled with orthogonal vectors (this representation is sometimes called the \emph{orthogonal representation} \cite{Lovsz1989Orthogonal}). Moreover, we still get $e_1^\intercal v_i = 5^{-k/4}$ for every $i \in V(C_5^k)$ (the proof is quite technical and we omit it here).
+It turns out, that we can obtain a similar representation of the vertices of $C_5^k$ by unit vectors $v_i \in \mathbb{R}^{3k}$, so that any two non-adjacent vertices are labeled with orthogonal vectors (this representation is sometimes called the \emph{orthogonal representation} \cite{Lovsz1989Orthogonal}). Moreover, we still get $e_1^\intercal v_i = 5^{-k/4}$ for every $i \in V(C_5^k)$ (the proof is quite technical and we omit it here).
 
 If $S$ is any stable set in $C_5^k$, then $\{v_i: i \in S\}$ is a set of mutually orthogonal unit vectors, so we could extend $S$ to $S'$, so that $\{v_i: i \in S'\}$ is a basis of $\mathbb{R}^{3k}$. This gives us
 $$\sum\limits_{i\in S}(e_1^\intercal v_i)^2 \leq \sum\limits_{i \in S'}(e_1^\intercal v_i)^2 \leq ? = 1$$
 \todo{todo}
 Each term on the left hand side is $5^{-k/4}$, so the left hand side is equal to $|S|5^{-k/2}$, and so $|S| \leq 5^{k/2}$. Since $|S|$ was an arbitrary stable set, we get $\alpha(C_5^k) \leq 5 ^{k/2}$ and $\Theta(C_5) = \sqrt{5}$.
 
-It turns out that this method extends to any graph $G$ in place of $C_5$. All we have to do is to find a orthogonal representation that will give us the best bound. So, we can define the \emph{Lovász number} of a graph $G$ as \todo{this equation does not really follow from the thought process above, it is a slightly different definition}:
+It turns out that this method extends to any graph $G$ in place of $C_5$. All we have to do is to find a orthogonal representation that will give us the best bound. So, we can define the \emph{Lovász number} of a graph $G$ as:
 $$\vartheta(G) = \min\limits_{c,U} \max\limits_{i\in V} \frac{1}{(c^\intercal u_i)^2},$$
 
 \noindent where $c$ is a unit vector in $\mathbb{R}^{|V(G)|}$ and $U$ is an orthogonal representation of $G$.
@@ -96,7 +96,7 @@ From (\ref{en:ei2}) it follows that diagonal entries of any positive semidefinit
 
 We may think equivalently of $n \times n$ matrices as vectors with $n^2$ coordinates.
 \begin{defn}[convex cone]
-  A subset $C$ of $\mathbb{R}^n$ is a \emph{convex cone}, if for any positive scalars $\alpha, \beta$ and for any $x, y \in C$, $\alpha x + \beta y \in C$.
+  A subset $C$ of $\mathbb{R}^n$ is a \emph{convex cone}, if and only if for any positive scalars $\alpha, \beta$ and for any $x, y \in C$, $\alpha x + \beta y \in C$.
 \end{defn}
 
 The fact that the sum of two positive semidefinite matrices is again positive semidefinite, with the fact that every positive scalar multiple of a positive semidefinite matrix is positive semidefinite, translates into the geometric statement that the set of all positive semidefinite matrices forms a convex closed cone $\mathcal{P}_n$ in $\mathbb{R}^{n \times n}$ with vertex 0. This cone $\mathcal{P}_n$ is important but its structure is not trivial.
@@ -119,7 +119,7 @@ Solving semidefinite programs is a complex topic, we refer to \cite{grotschel199
 
 \paragraph{Calculating \boldmath$\vartheta$.}
 
-Let us recall, that an orthogonal representation of a graph $G = (V, E)$ is a labeling $u: V \rightarrow \mathbb{R}^d$ for some $d$, such that $u_i^\intercal u_j = 0$ for all nonedges $ij$. An \emph{orthonormal} representation is an orthogonal representation with $|u_i| = 1$ for all $i$. The \emph{angle} of an orthogonal representation is the smallest half-angle of a rotational cone containing the representing vectors.
+Let us recall, that an orthogonal representation of a graph $G = (V, E)$ is a labeling $u: V \rightarrow \mathbb{R}^d$ for some $d$, such that $u_i^\intercal u_j = 0$ for all anticonnected vertices $i, j$. An \emph{orthonormal} representation is an orthogonal representation with $|u_i| = 1$ for all $i$. The \emph{angle} of an orthogonal representation is the smallest half-angle of a rotational cone containing the representing vectors.
 
 \begin{theorem}[Proposition 5.1 of \cite{Lovasz95}]
   The minimum angle $\phi$ of any orthogonal representation of $G$ is given by $\cos^2\phi = 1/\vartheta(G)$.
@@ -176,7 +176,7 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$. We will co
 
 \begin{algorithmic}[1]
   \mProcedure{Get-Max-Stable-Set}{$G$}
-  \ls $v_1, \ldots, v_n \gets$ an ordering of $V(G)$
+  \ls $v_1, \ldots, v_n \gets$ vertices of $G$
   \ls $G_0 \leftarrow G$
   \ls $\alpha_G = \alpha(G)$
   \mForEach{$1 \leq i \leq |V|$}
@@ -198,7 +198,7 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$. We will co
 
   Because at every step we have $\alpha(G_i) = \alpha(G_{i-1})$, therefore $\alpha(G_{|V|}) = \alpha(G)$, so $G_{|V|}$ is required maximum cardinality stable set.
   
-  The running time of \Cref{alg:maxStableSet} is polynomial, because we construct $|V|$ auxiliary graphs, each requiring calculating $\alpha$ once plus additional $O(|V|^2)$ time for constructing the graph.
+  The running time of \Cref{alg:maxStableSet} is polynomial, because we construct $|V|$ auxiliary graphs, each requiring calculating $\alpha$ once with additional $O(|V|^2)$ time for constructing the graph.
 \end{proof}
 
 Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ using the following modification: 
@@ -225,7 +225,7 @@ Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the ma
   \mEndProcedure
 \end{algorithmic}
 
-We create graph $G'$ by replacing every node $v$ by a set $W_v$ of $w(v)$ nonadjacent nodes, making two nodes $x \in W_v$, $y \in W_u$ adjacent in $G'$ if and only if the nodes $v$, $u$ are adjacent in $G$. Then we can calculate a maximum cardinality stable set in $G'$ (we remark that $G'$ is still perfect because every new introduced hole is even) and return a result of those vertices in $G$ whose any (and therefore all) copies were chosen.
+We create graph $G'$ by replacing every vertex $v$ by a set $W_v$ of $w(v)$ nonadjacent vertices, making two vertices $x \in W_v$, $y \in W_u$ adjacent in $G'$ if and only if the vertices $v$, $u$ are adjacent in $G$. Then we can calculate a maximum cardinality stable set in $G'$ (we remark that $G'$ is still perfect because every new introduced hole is even) and return a result of those vertices in $G$ whose any (and therefore all) copies were chosen.
 
 \subsection{Stable set intersecting all maximum cardinality cliques}
 Next, let us show how to find a stable set intersecting all the maximum cardinality cliques of $G$. We will create a list $Q_1, \ldots Q_t$ of all maximum cardinality cliques of $G$ and return a stable set intersecting them all.
@@ -296,7 +296,7 @@ Ever since Grötschel et al. published an ellipsoid-method-based polynomial algo
   \label{def:prism}
 \end{defn}
 
-In 2005 Maffray and Trotignon a coloring algorithm that colors graphs containing no odd hole, no antihole and no prism (sometimes called Artemis graphs) in $O(|V|^4|E|)$ time \cite{Maffray2006}. They later improved the time complexity to $O(|V|^2|E|)$ \cite{coloringArtemis}.
+In 2005 Maffray and Trotignon showed a coloring algorithm that colors graphs containing no odd hole, no antihole and no prism (sometimes called Artemis graphs) in $O(|V|^4|E|)$ time \cite{Maffray2006}. They later improved the time complexity to $O(|V|^2|E|)$ \cite{coloringArtemis}.
 
 In 2015 Maffray showed an algorithm for coloring Berge graphs with no squares (a square is a $C_4$) and no odd prism \cite{Maff2015}.
 
@@ -304,4 +304,4 @@ In 2016 Chudnovsky et al. published an algorithm that given a perfect graph $G$ 
 
 A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{coloringSquareFree}. Before proving strong perfect graph conjecture, a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern.
 
-The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is a member of class that is simpler to analyze and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper is far from straightforward. We provide its pseudocode in the Appendix A.
+The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is not a member of class that is simpler to analyze and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper is far from straightforward. We provide its pseudocode in the Appendix A.

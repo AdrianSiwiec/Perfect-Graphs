@@ -10,23 +10,23 @@
 int main() {
   srand(time(0));
 
-  // int minN = 18;
-  // int maxN = 48;
-  // int step = 6;
+  int minN = 18;
+  int maxN = 36;
+  int step = 6;
 
-  // for (int i = 0; i < 10; i++) {
-  //   set<int> done;
+  for (int i = 0; i < 1; i++) {
+    set<int> done;
 
-  //   while (done.size() < (maxN - minN + step) / step) {
-  //     Graph G = getBipariteGraph(8 + (rand() % 20), getDistr()).getLineGraph();
-  //     // if (rand() % 2) G = G.getComplement();
+    while (done.size() < (maxN - minN + step) / step) {
+      Graph G = getBipariteGraph(8 + (rand() % 20), getDistr()).getLineGraph();
+      // if (rand() % 2) G = G.getComplement();
 
-  //     if ((G.n % step == 0) && G.n >= minN && G.n <= maxN && done.count(G.n) == 0) {
-  //       G.printOut();
-  //       done.insert(G.n);
-  //     }
-  //   }
-  // }
+      if ((G.n % step == 0) && G.n >= minN && G.n <= maxN && done.count(G.n) == 0) {
+        G.printOut();
+        done.insert(G.n);
+      }
+    }
+  }
 
   // int minN = 18;
   // int maxn = 48;
@@ -74,18 +74,18 @@ int main() {
   //     G.printOut();
   //   }
   // }
-  Graph G(9,
-          "\
-  .X....X.X\
-  X.X....X.\
-  .X.X.....\
-  ..X.X...X\
-  ...X.X..X\
-  ....X.XX.\
-  X....X.X.\
-  .X...XX..\
-  X..XX....\
-  ");
+  // Graph G(9,
+  //         "\
+  // .X....X.X\
+  // X.X....X.\
+  // .X.X.....\
+  // ..X.X...X\
+  // ...X.X..X\
+  // ....X.XX.\
+  // X....X.X.\
+  // .X...XX..\
+  // X..XX....\
+  // ");
 
-  cout << findJewelNaive(G);
+  // cout << findJewelNaive(G);
 }

@@ -23,8 +23,9 @@ colorTests=(
   # "rook.t.in"
   # "knight.t.in"
   # "hypercube.t.in"
-  "split.t.in"
+  # "split.t.in"
   # "fullBinary.t.in"
+  "tmp.t.in"
 )
 
 # for file in "${colorTests[@]}"; do

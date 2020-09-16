@@ -1,6 +1,6 @@
-Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangle and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
+Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangles and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
 
-Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, $|V| = n$, let us construct a graph $G'$ as the union of $G$ and a clique $K_n$. We can see that indeed $\chi(G') = \omega(G') = n$, but it gives us no indication of the structure of $G$ or $G'$. This leads us to the hereditary definition of \emph{perfect graphs}.
+Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, let us construct a graph $G'$ as the union of $G$ and a clique $K_{|V|}$. We can see that indeed $\chi(G') = \omega(G') = |V|$, but it gives us no indication of the structure of $G$ or $G'$. This leads us to the hereditary definition of \emph{perfect graphs}.
 
 \begin{defn}[perfect graph]
 	\label{def:perfectGraph}
@@ -16,14 +16,14 @@ The most fundamental problem -- the problem of recognizing perfect graphs -- was
 	A graph $G$ is \emph{Berge} if and only if both $G$ and $\overline{G}$ have no odd hole as an induced subgraph.
 \end{defn}
 
-Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003}, algorithms to solve semidefinite programs grew out of the theory of perfect graphs. We will take a look at semidefinite programs and at perfect graph's relation to Shannon capacity in \Cref{sec:ShannonCapacity}.
+Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003}, algorithms to solve semidefinite programs grew out of the theory of perfect graphs. We will take a look at semidefinite programs and at perfect graph's relation to the Shannon capacity in \Cref{sec:ShannonCapacity}.
 
 \section{Strong perfect graph theorem}
 \label{sec:SPGT}
 
 The first step to solve the problem of recognizing perfect graphs was the \emph{(weak) perfect graph theorem} first conjured by Berge in 1961~\cite{CB61} and then proven by Lovász in 1972~\cite{LL72}.
 
-\begin{theorem}[Perfect graph theorem from \cite{LL72}]
+\begin{theorem}[Perfect graph theorem \cite{LL72}]
 	\label{thm:pgt}
 	A graph is perfect if and only if its complement graph is also perfect.
 \end{theorem}
@@ -47,7 +47,7 @@ This theorem is a consequence of a stronger result proven by Lovász:
 % 	Let $A_0$ be a maximal stable set of $H$. Then $|A_0| = \alpha$ and for each $s \in A_0$ fix an $\omega$-coloring of the graph $H \setminus s$.
 % \end{proof}
 
-Then, since $\alpha(H) = \omega(\overline{H})$ and $\omega(H) = \alpha(\overline{H})$ \Cref{thm:omegaalpha} implies \Cref{thm:pgt}.
+Then, since $\alpha(H) = \omega(\overline{H})$ and $\omega(H) = \alpha(\overline{H})$ \Cref{thm:omegaalpha} implies \Cref{thm:pgt}. We skip the proof of \Cref{thm:omegaalpha}, as it is quite technical.
 
 Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd hole and no odd antihole is called \emph{Berge} (\Cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
 
@@ -83,7 +83,7 @@ See \cite{MC06} for the full proof of \Cref{thm:spgt} and \cite{GC03} for its sh
 
 The following is based on the paper by \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but we will aim to show the intuition behind the algorithm.
 
-Berge graph recognition algorithm (later called CCLSV from the names of its authors) could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\Cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole (\Cref{AmenableHoles}).
+Berge graph recognition algorithm (later called CCLSV from the names of its authors) could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\Cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole or for shortest odd antihole (\Cref{AmenableHoles}).
 
 \subsection{Simple forbidden structures}
 \label{SimpleStructures}
@@ -140,7 +140,7 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 					\ls calculate $T_2(m), T_3(m)$ similarly
 				\mEndFor \label{line:pyramidSEnd}
 				 
-					\mIf{$s_1 = b_1$} \Comment{calculate all possible $P_1$ paths}
+					\mIf{$s_1 = b_1$ \label{line:ShortestPathsStart}} \Comment{calculate all possible $P_1$ paths}
 						\ls $P_1(b_1) \gets$ the one-vertex path with vertex $b_1$
 						\ls \algorithmicforeach ~$m \in M$ \algorithmicdo~ $P_1(m) \gets$ \textsc{undefined}
 					\mElse
@@ -158,9 +158,9 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 								\ls $P_1(m) \gets$ \textsc{undefined}
 							\mEndIf
 						\mEndFor
-					\mEndIf
+					\mEndIf 
 				
-				\ls assign $P_2$ and $P_3$ in a similar manner
+				\ls assign $P_2$ and $P_3$ in a similar manner \label{line:ShortestPathsEnd}
 				\ls $good\_pairs_{1,2} \gets \emptyset$ \Comment{see below for definition}
 				\mForEach{$m_1 \in M \cup \{b_1\}$} \Comment{calculate good $(1, 2)$-pairs}
 					\mIf{$P_1(m_1) \neq \UND$}
@@ -200,11 +200,11 @@ Now we will proove the time complexity.
 \begin{proof}
 	There are $O(|V|^3)$ triangles (line \ref{line:pyramidTriangle}) and $O(|V|^3)$ triples $s_1$, $s_2$, $s_3$ (line \ref{line:pyramidTriple}), so lines \ref{line:a}-\ref{line:pyramidEnd} are executed at most $O(|V|^6)$ times.
 
-	Checking if there exists an appropriate $a$ takes linear time (line \ref{line:a}). Calculating paths $S_i$ and $T_i$ (lines \ref{line:pyramidSStart}-\ref{line:pyramidSEnd}) takes $O(|V|^2)$ time for each $m \in M$ and $O(|V|^3)$ in total. Similarly, it takes $O(|V|^3)$ time to calculate all $P_i$ paths.
+	Checking if there exists an appropriate $a$ takes linear time (line \ref{line:a}). Calculating paths $S_i$ and $T_i$ (lines \ref{line:pyramidSStart}-\ref{line:pyramidSEnd}) takes $O(|V|^2)$ time for each $m \in M$ and $O(|V|^3)$ in total. Similarly, it takes $O(|V|^3)$ time to calculate all $P_i$ paths (lines \ref{line:ShortestPathsStart}-\ref{line:ShortestPathsEnd}).
 
 	Then, for each $m_1$ we do at most $O(|V|)$ work in line \ref{line:pyramidColor} and for each $(m_1, m_2)$ we do at most $O(|V|)$ work in line \ref{line:pyramidColor2}.
 
-	Finally, there are $O(|V|^3)$ pairs $m_1, m_2, m_3$ and checking each takes $O(1)$ time.
+	Finally, there are $O(|V|^3)$ pairs $m_1, m_2, m_3$ and checking each takes $O(1)$ time which gives us the overall running time of $O(|V|^9)$.
 \end{proof}
 
 \subsubsection{Jewels}
@@ -226,7 +226,9 @@ Five vertices $v_1, \ldots, v_5$ and a path $P$ form a \emph{jewel} if and only 
 	\item $P$ is a path between $v_1$ and $v_4$, such that $v_2, v_3, v_5$ have no neighbors in its inside.
 \end{itemize}
 
-Most obvious way to find a jewel would be to enumerate all (possibly chordal) cycles of length 5 as $v_1, \ldots v_5$, check if it has all required nonedges and if it does, try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole Berge recognition algorithm takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
+Notice that given a jewel $v_1, \ldots, v_5, P$, if the path $P$ is odd, then $v_1$-$P$-$v_4$-$v_5$-$v_1$ is an odd hole. If the path $P$ is even, then $v_1$-$P$-$v_4$-$v_3$-$v_2$-$v_1$ is an odd hole.
+
+Most obvious way to find a jewel is to enumerate all (possibly chordal) cycles of length 5 as $v_1, \ldots v_5$, check if it has all required nonedges and if it does, try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole Berge recognition algorithm takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
 
 \subsubsection{Configurations of type $\T_1$}
 
@@ -238,7 +240,7 @@ A configuration of type $\T_1$ is a hole of length 5. To find it, we simply iter
 \begin{wrapfigure}{r}{0.35\textwidth}
 	\input{tikzpictures/t2.tex}
 	\caption{An example of a $\T_2$.}%
-	\vspace{-1.5cm}
+	\vspace{-.5cm}
 \end{wrapfigure}
 
 A configuration of type $\T_2$ is a tuple $(v_1, v_2, v_3, v_4, P, X)$, such that:
@@ -250,7 +252,7 @@ A configuration of type $\T_2$ is a tuple $(v_1, v_2, v_3, v_4, P, X)$, such tha
 
 Checking if configuration of type $\T_2$ exists in our graph is straightforward: we enumerate all paths $v_1\ldots v_4$, calculate set of all $\{v_1, v_2, v_4\}$-complete vertices and its anticomponents. Then, for each anticomponent $X$ we check if required path $P$ exists.
 
-To prove that the existence of $\T_2$ configuration implies that the graph is not Berge, we will need the following lemma:
+To prove that the existence of a configuration of type $\T_2$ implies that the graph is not Berge, we will need the following lemma:
 
 \begin{lemma}[Roussel-Rubio Lemma \cite{RR01,MC05}]\label{lem:Roussel-Rubio}
 	Let $G$ be Berge, $X$ be an anticonnected subset of $V(G)$, $P$ be an odd path $p_1\ldots p_n$ in $G\setminus X$ with length at least 3, such that $p_1$ and $p_n$ are $X$-complete and $p_2, \ldots, p_{n-1}$ are not. Then:
@@ -270,16 +272,17 @@ Now, we shall prove the following:
 	\begin{itemize}
 		\item if $P$ is even, then $v_1, v_2, v_3, v_4, P, v_1$ is an odd hole,
 		\item if $P$ is of length 3, let us name its vertices $v_1, p_2, p_3, v_4$. It follows from \Cref{lem:Roussel-Rubio}, that there exists an odd antipath between $p_2$ and $p_3$ with interior in $X$. We can complete it with $v_2p_2$ and $v_2p_3$ into an odd antihole,
-		\item if $P$ is odd with the length of at least 5, it follows from \Cref{lem:Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2-x-p_2-\ldots-p_{n-1}-y-v_2$.
+		\item if $P$ is odd with the length of at least 5, it follows from \Cref{lem:Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2$-$x$-$p_2$-$\ldots$-$p_{n-1}$-$y$-$v_2$.
 	\end{itemize}
 \end{proof}
 
 \subsubsection{Configurations of type $\T_3$}
 
 \begin{wrapfigure}{r}{0.35\textwidth}
+	\vspace{-1cm}
 	\input{tikzpictures/t3.tex}
 	\caption{An example of a $\T_3$.}%
-	\vspace{-1.5cm}
+	\vspace{-2cm}
 \end{wrapfigure}
 
 A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such that:
@@ -291,7 +294,7 @@ A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such 
 	\item If $v_5v_6$ is an edge, then $v_6$ is not $X$-complete.
 \end{itemize}
 
-The following algorithm with running time of $O(|V|^6)$ checks whether $G$ contains a configuration of type $\T_3$:
+% The following algorithm with running time of $O(|V|^6)$ checks whether $G$ contains a configuration of type $\T_3$:
 
 \begin{alg}[Test if $G$ contains a $\T_3$]
 	\label{alg:t3}
@@ -318,7 +321,7 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 					\mForEach{$v_3 \in V(G) \setminus\{v_1, v_2, v_4, v_5, v_6\}$}
 						\mIf{$v_3$ is adjacent to $v_2, v_4, v_5$ and not adjacent to $v_1$ \lsx}
 							\ls $P \gets$ a path from $v_6$ to $v_5$ with interior in $F'$
-							\ls \RETURN \TRUE \Comment{$v_1, \ldots v_6, P, X$ is a $\T_3$}
+							\ls \RETURN \TRUE \Comment{$v_1, \ldots v_6, P, X$ is a $\T_3$} \label{line:t3found}
 						\mEndIf
 					\mEndFor
 				\mEndIf
@@ -329,7 +332,7 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 	\mEndProcedure
 \end{algorithmic}
 
-We will skip the proof that each graph containing $\T_3$ is not Berge, as it is quite technical. See section 6.7 of \cite{MC05} for the proof.
+It is easy to see that when \Cref{alg:t3} reports a configuration of type $\T_3$ in line \ref{line:t3found}, there indeed is one. We will skip the proof that each graph containing a $\T_3$ is not Berge, as it is quite technical. See section 6.7 of \cite{MC05} for the proof.
 
 \begin{theorem}[part of Theorem 6.4 of \cite{MC05}]
 	\label{thm:t3Time}
@@ -343,33 +346,32 @@ We will skip the proof that each graph containing $\T_3$ is not Berge, as it is 
 
 \subsection{Amenable holes.}
 \label{AmenableHoles}
-
-First, let us introduce a few new definitions.
+As we will see (\Cref{thm:amenableHoles}), if graphs $G$ and $\overline{G}$ contain no jewels, pyramids or configurations of type $\T_1, \T_2$ or $\T_3$, then every shortest odd hole in $G$ or $\overline{G}$ will have a special structure and we will call it amenable. This fact will help us determine if $G$ or $\overline{G}$ contain an odd hole. But first, let us introduce a few new definitions.
 
 \begin{defn}[relevant triple]
-	Given a graph $G$, a triple $(a, b, c)$ of vertices is called \emph{relevant} if $a \neq b$ (but possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
+	Given a graph $G$, a triple $(a, b, c)$ of vertices is called \emph{relevant} if and only if $a \neq b$ (but possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
 \end{defn}
 
 \begin{defn}[C-major vertices]
-  Given a shortest odd hole $C$ in $G$, a node $v \in V(G) \setminus V(C)$ is $C$-major if the set of its neighbors in $C$ is not contained in any 3-node path of $C$.
+  Given a shortest odd hole $C$ in $G$, a vertex $v \in V(G) \setminus V(C)$ is $C$-major if and only if the set of its neighbors in $C$ is not contained in any 3-vertex path of $C$.
 \end{defn}
 
 \begin{defn}[clean odd hole]
-  An odd hole $C$ of $G$ is \emph{clean} if no vertex in $G$ is $C$-major.
+  An odd hole $C$ of $G$ is \emph{clean} if and only if no vertex in $G$ is $C$-major.
 \end{defn}
 
 \begin{defn}[cleaner]
-  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{cleaner for $C$} if $X \cap V(C) = \emptyset$ and every $C$-major vertex belongs to $X$.
+  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{cleaner for $C$} if and only if $X \cap V(C) = \emptyset$ and every $C$-major vertex belongs to $X$.
 \end{defn}
 
 Let us notice, that if $X$ is a cleaner for $C$, then $C$ is a clean hole in $G \setminus X$.
 
 \begin{defn}[near-cleaner]
-  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if $X$ contains all $C$-major vertices and $X \cap V(C)$ is a subset of vertex set of some 3-node path of $C$.
+  Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if and only if $X$ contains all $C$-major vertices and $X \cap V(C)$ is a subset of vertex set of some 3-vertex path of $C$.
 \end{defn}
 
 \begin{defn}[amenable odd hole]
-  An odd hole $C$ of $G$ is \emph{amenable} if it is a shortest odd hole in $G$, it is of length at least 7 and for every anticonnected set $X$ of $C$-major vertices there is a $X$-complete edge in $C$.
+  An odd hole $C$ of $G$ is \emph{amenable} if and only if it is a shortest odd hole in $G$, $|E(C)| \geq 7$, and for every anticonnected set $X$ of $C$-major vertices there is a $X$-complete edge in $C$.
 \end{defn}
 
 \begin{figure}
@@ -385,8 +387,8 @@ Let us notice, that if $X$ is a cleaner for $C$, then $C$ is a clean hole in $G 
   \end{minipage}
   \end{figure}
 
-Some pictures might be helpful. \Cref{fig:amenableOddHole} shows an example of an amenable odd hole $C = v_1, \ldots, v_7$. It is not a clean hole -- vertices $v_8$ and $v_9$ are $C$-major, and $v_8, v_9, v_1, v_2, v_3$ is an axample of a near-cleaner for $C$.
-\Cref{fig:notAmenableHole} shows an odd hole $C = v_1, \ldots, v_7$ that is not amenable, because there is no $\{v_8, v_9\}$-complete edge in $C$.
+Some pictures might be helpful. \Cref{fig:amenableOddHole} shows an example of an amenable odd hole $C = v_1$-$\ldots$-$v_7$-$v_1$. It is not a clean hole -- vertices $v_8$ and $v_9$ are $C$-major, and $\{v_8, v_9, v_1, v_2, v_3\}$ is an axample of a near-cleaner for $C$.
+\Cref{fig:notAmenableHole} shows an odd hole $C = v_1$-$\ldots$-$v_7$-$v_1$ that is not amenable, because there is no $\{v_8, v_9\}$-complete edge in $C$.
 
 \begin{theorem}[Theorem 8.1 of \cite{MC05}]
 	\label{thm:amenableHoles}
@@ -395,11 +397,11 @@ Some pictures might be helpful. \Cref{fig:amenableOddHole} shows an example of a
 	% \TODO{Dobre pytanie. Te 9 kroków to da się zawrzeć w 1-2 zdaniach każde? Jeśli nie, to tylko napisałbym ogólnikowo, że "jest sekwencja kroków, która to robi, tu jest odnośnik"}
 \end{theorem}
 
-The proof of this theorem is quite technical and we will not discuss it here. See section 8 of \cite{MC05} for the proof. We can see an example of the contraposition of the \Cref{thm:amenableHoles} working in \Cref{fig:notAmenableHole} -- vertices $v_1$, $v_2$, $v_8$, $v_6$, $v_7$ and a path $v_1-v_9-v_5-v_6$ form a jewel.
+The proof of this theorem is quite technical and we will not discuss it here. See section 8 of \cite{MC05} for the proof. We can see an example of the contraposition of the \Cref{thm:amenableHoles} working in \Cref{fig:notAmenableHole} -- vertices $v_1$, $v_2$, $v_8$, $v_6$, $v_7$ and a path $v_1$-$v_9$-$v_5$-$v_6$ form a jewel.
 
 With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 
-\begin{alg}[List possible near cleaners, 9.2 of \cite{MC05}]
+\begin{alg}[List possible near cleaners]
 	\label{alg:listNearCleaners}
 	Input: A graph $G$.
 
@@ -463,7 +465,7 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 	Let us suppose that $C$ is an amenable hole in $G$. By \Cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \Cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c) \in \mathcal{R}$ is a near-cleaner for $C$. Therefore the output of the \Cref{alg:listNearCleaners} is correct.
 \end{proof}
 
-\begin{alg}[Test possible near cleaner, 5.1 of \cite{MC05}]
+\begin{alg}[Test possible near cleaner]
 	\label{alg:testNearCleaner}
 	Input: A graph $G$ containing no simple forbidden structure, and a subset $X \subseteq V(G)$.
 
@@ -488,8 +490,9 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 			\mForEach{$y_1 \in V(G) \setminus X$} \label{line:cudaStart}
 				\mForEach{3-vertex path $x_1-x_2-x_3$ of $G\setminus y_1$} \label{line:3vertex}
 					\mIf{$R(x_1, y_1), R(x_2, y_2)$ both exist} \label{line:cudaWorkStard}
-						\ls $y_2 \gets$ the neighbor of $y_1$ in $R(x_2, y_1)$
-						\mIf{$r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2) =$\lsx$min(r(x_3, y_1), r(x_3, y_2))$}
+						\ls $y_2 \gets$ the neighbor of $y_1$ in $R(x_2, y_1)$ \label{line:definey2}
+						\mIf{$r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2)$ \AND
+						\lsx $r(x_2, y_1) \leq min(r(x_3, y_1), r(x_3, y_2))$ \label{line:manyconditions}}
 						\ls \RETURN an odd hole found
 						\mEndIf
 					\mEndIf \label{line:cudaWorkEnd}
@@ -500,10 +503,6 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 	\mEndProcedure
 \end{algorithmic}
 
-
-
-Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The proof of the correctness of the other possible result is more complicated, see section 4 and Theorem 5.1 of \cite{MC05}.
-
 \begin{theorem}[Theorem 5.1 of \cite{MC05}]
 	\label{thm:testNCWorks}
 	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Let $X$ be a subset of $V(G)$. If \Cref{alg:testNearCleaner} reports an odd hole, then $G$ contains an odd hole, else there is no shortest odd hole $C$ in $G$, such that $X$ is a near-cleaner for $C$.
@@ -511,7 +510,7 @@ Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole i
 \begin{proof}
 	Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The rest of the proof is more complicated, see section 4 and Theorem 5.1 of \cite{MC05}.
 
-	Let us suppose that there is a choice of $x_1$, $x_2$, $x_3$, $y_1$ satisfying the three conditions in the \Cref{alg:testNearCleaner} and let $y_2$ and $n$ be defined as in there. We claim that $G$ contains an odd hole.
+	Let us suppose that there is a choice of $x_1$, $x_2$, $x_3$, $y_1$ satisfying conditions in lines \ref{line:cudaWorkStard} and \ref{line:manyconditions}, let $y_2$ be defined as in line \ref{line:definey2} and let $k = r(x_2, y_1)$. We claim that $G$ contains an odd hole.
 	
 	{\makeatletter
 	\let\par\@@par
@@ -521,69 +520,65 @@ Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole i
 		\caption{An odd hole is found}%
 		\vspace{-0.3cm}
 		\end{wrapfigure}
-		Let $R(x_1, y_1) = p_1-\ldots -p_n$, and let $R(x_2, y_1) = q_1-\ldots -q_{n+1}$, where $p_1 = x_1$, $p_n = q_{n+1} = y_1$, $q_1 = x_2$ and $q_n = y_2$. From the definition of $R(x_1, y_1)$ and $R(x_2, y_1)$, none of $p_2, \ldots, p_{n-1}, q_2, \ldots, q_n$ belong to $X$. Also, from the definition of $y_1$, $y_1 \notin X$.
+		Let $R(x_1, y_1) = p_1$-$\ldots$-$p_k$, and let $R(x_2, y_1) = q_1$-$\ldots$-$q_{k+1}$, where $p_1 = x_1$, $p_k = q_{k+1} = y_1$, $q_1 = x_2$ and $q_k = y_2$. From the definition of $R(x_1, y_1)$ and $R(x_2, y_1)$, none of $p_2, \ldots, p_{k-1}, q_2, \ldots, q_k$ belong to $X$. Also, from the definition of $y_1$, $y_1 \notin X$.
 
-		Let $R(x_1, y_1) = p_1-\ldots -p_n$, and let $R(x_2, y_1) = q_1-\ldots -q_{n+1}$, where $p_1 = x_1$, $p_n = q_{n+1} = y_1$, $q_1 = x_2$ and $q_n = y_2$. From the definition of $R(x_1, y_1)$ and $R(x_2, y_1)$, none of $p_2, \ldots, p_{n-1}, q_2, \ldots, q_n$ belong to $X$. Also, from the definition of $y_1$, $y_1 \notin X$.
+		Since $r(x_1, y_1) = r(x_2, y_1) - 1$ and since $x_1$, $x_2$ are nonadjacent it follows that $x_2$ does not belong to $R(x_1, y_1)$ and $x_1$ does not belong to $R(x_2, y_1)$. Since $r(x_3, y_1), r(x_3, y_2) \geq k = r(x_1, y_2)$ it follows that $x_3$ does not belong to $R(x_1, y_1)$ or to $R(x_2, y_1)$, and has no neighbors in $R(x_1, y_1) \cup R(x_2, y_1)$ other than $x_1$, $x_2$. Since $r(x_1, y_2) = k$ we get that $y_2$ does not belong to $R(x_1, y_1)$.
+		
+		We claim first that the insides of paths $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertices. For suppose that there are $2 \leq i \leq k-1$ and $2 \leq j \leq k$ that $p_i = q_j$. Then the subpaths of these two paths between $p_i$, $y_1$ are both subpaths of the shortest paths, and therefore have the same length equal to $j=i+1$. So $p_1$-$\ldots$-$p_1$-$q_{j+1}$-$\ldots$-$q_k$ contains a path between $x_1$, $y_2$ of length $\leq k-2$, contradicting that $r(x_1, y_2) = k$. So $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertices except $y_1$.\par}%
 
-		Since $r(x_1, y_1) = r(x_2, y_1) - 1$ and since $x_1$, $x_2$ are nonadjacent it follows that $x_2$ does not belong to $R(x_1, y_1)$ and $x_1$ does not belong to $R(x_2, y_1)$. Since $r(x_3, y_1), r(x_3, y_2) \geq n = r(x_1, y_2)$ it follows that $x_3$ does not belong to $R(x_1, y_1)$ or to $R(x_2, y_1)$, and has no neighbors in $R(x_1, y_1) \cup R(x_2, y_1)$ other than $x_1$, $x_2$. Since $r(x_1, y_2) = n$ we get that $y_2$ does not belong to $R(x_1, y_1)$.\par}%
+	If there are no edges between $R(x_1, y_1) \setminus \{y_1\}$ and $R(x_2, y_1) \setminus \{y_1\}$ then the union of these two paths and a path $x_1$-$x_3$-$x_2$ forms an odd hole, so the answer is correct.
 
-	We claim first that the insides of paths $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertices. For suppose that there are $2 \leq i \leq n-1$ and $2 \leq j \leq n$ that $p_i = q_j$. Then the subpaths of these two paths between $p_i$, $y_1$ are both subpaths of the shortest paths, and therefore have the same length equal to $j=i+1$. So $p_1-\ldots-p_1-q_{j+1}-\ldots-q_n$ contains a path between $x_1$, $y_2$ of length $\leq n-2$, contradicting that $r(x_1, y_2) = n$. So $R(x_1, y_1)$ and $R(x_2, y_1)$ have no common vertex except $y_1$.
+	Suppose that $p_iq_j$ is an edge for some $1\leq i \leq k-1$ and $1 \leq j \leq k$. We claim $i \geq j$. If $j = 1$ this is clear so let us assume $j > 1$. Then there is a path between $x_1$, $y_2$ within $\{p_1, \ldots , p_i, q_j, \ldots q_k\}$ which has length $\leq k-j+1$ and has no internal vertex in $X$ (since $j > 1$); and since $r(x_1, y_2) = k$, it follows that $k-j+i \geq k$, that is, $i \geq j$ as claimed.
 
-	If there are no edges between $R(x_1, y_1) \setminus y_1$ and $R(x_2, y_1) \setminus y_1$ then the union of these two paths and a path $x_1-x_3-x_2$ form an odd hole, so the answer is correct.
-
-	Suppose that $p_iq_j$ is an edge for some $1\leq i \leq n-1$ and $1 \leq j \leq n$. We claim $i \geq j$. If $j = 1$ this is clear so let us assume $j > 1$. Then there is a path between $x_1$, $y_2$ within $\{p_1, \ldots , p_i, q_j, \ldots q_n\}$ which has length $\leq n-j+1$ and has no internal vertex in $X$ (since $j > 1$); and since $r(x_1, y_2) = n$, it follows that $n-j+i \geq n$, that is, $i \geq j$ as claimed.
-
-	Now, since $x_1$, $x_2$ are nonadjacent $i \geq 2$. But also $r(x_2, y_1) \geq n$ and so $j+n-i \geq n$, which gives us $j \geq i$. So we get $i=j$. Let us choose $i$ minimum, then $x_3-x_1-\ldots-p_i-q_i-\ldots-x_2-x_3$ is an odd hole, which was what we wanted.
+	Now, since $x_1$, $x_2$ are nonadjacent, we have $i \geq 2$. But also $r(x_2, y_1) \geq k$ and so $j+k-i \geq k$, which gives us $j \geq i$. So we get $i=j$. Let us choose $i$ minimum, then $x_3$-$x_1$-$\ldots$-$p_i$-$q_i$-$\ldots$-$x_2$-$x_3$ is an odd hole, which was what we wanted.
 \end{proof}
 
+\subsection{Algorithm for perfect graph recognition}
 
-
-\subsection{Algorithm for Berge graphs recognition}
-
-To summarize, we present a complete algorithm for recognizing Berge graphs.
-\begin{alg}[Determine if a graph is Berge]
+To summarize, we present a complete algorithm for recognizing perfect graphs.
+\begin{alg}[Determine if a graph is perfect]
 	\label{alg:testNearCleaner}
 	Input: A graph $G$.
 
-	\noindent Output: Determines if $G$ is Berge.
+	\noindent Output: Determines if $G$ is perfect.
 	\label{alg:bergeness}
 \end{alg}
 
 \begin{algorithmic}[1]
-	\mProcedure{Check-Berge}{$G$}
+	\mProcedure{Check-Is-Perfect}{$G$}
 		\mIf{\texttt{Contains-Pyramid}$(G)$ \OR \texttt{Contains-Jewel}$(G)$ \OR \lsx 
 		\texttt{Contains-T1}$(G)$ \OR \texttt{Contains-T2}$(G)$ \OR \texttt{Contains-T3}$(G)$ \label{line:simpleStart}}
-			\ls \RETURN $G$ is not Berge
+			\ls \RETURN $G$ is not perfect
 		\mEndIf
 		\mIf{\texttt{Contains-Pyramid}$(\overline{G})$ \OR \texttt{Contains-Jewel}$(\overline{G})$ \OR \lsx 
 		\texttt{Contains-T1}$(\overline{G})$ \OR \texttt{Contains-T2}$(\overline{G})$ \OR \texttt{Contains-T3}$(\overline{G})$}
-			\ls \RETURN $G$ is not Berge
+			\ls \RETURN $G$ is not perfect
 		\mEndIf \label{line:simpleEnd}
 		\ls $\mathcal{R} \gets $\texttt{List-Possible-Near-Cleaners}$(G)$ \label{line:getR}
 		\mForEach{$X \in \mathcal{R}$} \label{line:testXStart}
 			\mIf{\texttt{Test-Near-Cleaner}$(G, X)$ reports an odd hole}
-				\ls \RETURN $G$ is not Berge
+				\ls \RETURN $G$ is not perfect
 			\mEndIf
 		\mEndFor \label{line:testXEnd}
 		\ls $\mathcal{R'} \gets $\texttt{List-Possible-Near-Cleaners}$(\overline{G})$
 		\mForEach{$X \in \mathcal{R'}$}
 			\mIf{\texttt{Test-Near-Cleaner}$(\overline{G}, X)$ reports an odd hole}
-				\ls \RETURN $G$ is not Berge
+				\ls \RETURN $G$ is not perfect
 			\mEndIf
 		\mEndFor
-		\ls \RETURN $G$ is Berge
+		\ls \RETURN $G$ is perfect
 	\mEndProcedure
 \end{algorithmic}
 
 \begin{theorem}[Theorem 10.1 of \cite{MC05}]
-	Given a graph $G = (V, E)$, \Cref{alg:bergeness} works in $O(|V|^9)$ time and determines is $G$ is Berge.
+	Given a graph $G = (V, E)$, \Cref{alg:bergeness} works in $O(|V|^9)$ time and determines if $G$ is perfect.
 \end{theorem}
 \begin{proof}
 	First, in lines \ref{line:simpleStart}-\ref{line:simpleEnd} we test whether $G$ or $\overline{G}$ contain a pyramid, a jewel or a configuration of type $\T_1, \T_2$ or $\T_3$. If it is not the case, then by \Cref{thm:amenableHoles} every shortest odd hole in $G$ and in $\overline{G}$ is amenable. 
 	
-	By \Cref{thm:92} in line \ref{line:getR} we get a set $\mathcal{R}$, such that if $G$ contains an amenable hole $C$, one of the sets $X \in \mathcal{R}$ is a near-cleaner for $C$. In lines \ref{line:testXStart}-\ref{line:testXEnd} we test each $X \in \mathcal{R}$ and if an odd hole is reported, then by \Cref{thm:testNCWorks} $G$ is not Berge. If for all $X \in \mathcal{R}$ an odd hole is not reported, then by \Cref{thm:amenableHoles}, \Cref{thm:92} and \Cref{thm:testNCWorks} there is no odd hole in $G$. We  run the same procedure on $\overline{G}$ and if again we do not detect an odd hole, then $G$ is Berge and by \Cref{thm:spgt} $G$ is perfect.
+	By \Cref{thm:92} in line \ref{line:getR} we get a set $\mathcal{R}$, such that if $G$ contains an amenable hole $C$, one of the sets $X \in \mathcal{R}$ is a near-cleaner for $C$. In lines \ref{line:testXStart}-\ref{line:testXEnd} we test each $X \in \mathcal{R}$ and if an odd hole is reported, then by \Cref{thm:testNCWorks} $G$ is not Berge. If for all $X \in \mathcal{R}$ an odd hole is not reported, then by \Cref{thm:amenableHoles}, \Cref{thm:92} and \Cref{thm:testNCWorks} there is no odd hole in $G$. We run the same checks on $\overline{G}$ and if again we do not detect an odd hole, then $G$ is Berge and by \Cref{thm:spgt} $G$ is perfect.
 
-	Finally, let us add up the total running time. By \Cref{thm:containsPyramid9} checking if there is a pyramid in $G$ or $\overline{G}$ takes $O(|V|^9)$ time. Testing for jewels takes $O(|V|^7)$ time, testing for a configuration of type $\T_1$ takes $O(|V|^5)$ time and testing for configuration of type $\T_2$ takes $O(|V|^6)$ time. By \Cref{thm:t3Time} testing for a configuration of type $\T_3$ takes $O(|V|^6)$ time. Running \Cref{alg:listNearCleaners} takes $O(|V|^5)$ time and returns $O(|V|^5)$ subsets. For each subset running \Cref{alg:testNearCleaner} takes $O(|V|^4)$ time, so testing all possible near-cleaners takes $O(|V|^9)$ time. Then we repeat on the $\overline{G}$.
+	Finally, let us add up the total running time. By \Cref{thm:containsPyramid9} checking if there is a pyramid in $G$ or $\overline{G}$ takes $O(|V|^9)$ time. Testing for jewels takes $O(|V|^7)$ time, testing for a configuration of type $\T_1$ takes $O(|V|^5)$ time and testing for configuration of type $\T_2$ takes $O(|V|^6)$ time. By \Cref{thm:t3Time} testing for a configuration of type $\T_3$ takes $O(|V|^6)$ time. Running \Cref{alg:listNearCleaners} takes $O(|V|^5)$ time and returns $O(|V|^5)$ subsets. For each subset running \Cref{alg:testNearCleaner} takes $O(|V|^4)$ time, so testing all possible near-cleaners takes $O(|V|^9)$ time.
 
-	The overall running time is $O(|V|^9)$ with testing for pyramids and testing all possible near-cleaners being algorithms with biggest time complexity.
+	The overall running time is $O(|V|^9)$ with testing for pyramids and testing all possible near-cleaners being parts with biggest time complexity.
 \end{proof}

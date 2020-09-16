@@ -3,7 +3,7 @@
 
 \subsubsection{Data sets}
 
-Let us describe experiments and their results. All of our algorithms search for an odd hole or an odd antihole and stop when find one, or a evidence of one. Therefore, their running times are greatest with perfect graphs on the input and we decided to use mainly\todo{run some smart nonperfect tests} perfect graphs for our performance benchmarks. For every test, the vertex number were shuffled. For every randomly generated graph class and for each size, we ran the tests on 10 graphs generated with different seeds and took their average running time.
+Let us describe experiments and their results. All of our algorithms search for an odd hole or an odd antihole and stop when find one, or a evidence of one. Therefore, their running times are greatest with perfect graphs on the input and we decided to use\todo{run some smart nonperfect tests} perfect graphs for our performance benchmarks. For every test, the vertex number were shuffled. For every randomly generated graph class and for each size, we ran the tests on 10 graphs generated with different seeds and took their average running time.
 
 Below, we first present our data sets then overall time results on them and lastly a plot breaking down what parts of CCLSV and GPU CCLSV constitute their overall running time.
 
@@ -32,17 +32,19 @@ In \Cref{fig:graphClasses} we present small examples of some of the above classe
 
 % An \emph{Erd\H{o}s--Rényi} model is a method of generating random graphs. Every possible edge is included in a graph with probability $1/2$. We generated them as long as we found enough perfect graphs for each $|V|$ we wanted to test. \todo{implement generating perfect graphs by removing long cycles} This method of generating perfect graphs is very inefficient and we couldn't generate any graphs with $|V| \geq 20$. Second, those graphs favour the na\"ive algortihm, because there is very low probability of long paths to appear.
 
-We generate random bipartite graphs by creating two equal-sized sets of vertices and every possible edge between them has a probability of $p = 0.5$ to appear. In this way we can also generate line graphs of bipartite graphs. This gives us graphs of varying $|V|$, so we repeated the process until we had sufficieng number of graphs for each $|V|$.
+We generate random bipartite graphs by creating two equal-sized sets of vertices, and then added every possible edge between them with a probability of $p = 0.5$. In this way we can also generate line graphs of random bipartite graphs. This gives us graphs of varying $|V|$, so we repeated the process until we had sufficieng number of graphs for each $|V|$.
 
-There are also a few interesting classes of perfect graphs that appear on a grid, or a checker board. In lattice graph, each vertex is connected to vertices that are above, below, to the left and to the right of it, if such vertices exist. See \Cref{fig:lattice} for an example of a $4 \times 4$ lattice graph. If we imagine our grid to be a chessboard we can define a rook graph to have an edge, when the rook from chess can move from one vertex to another in one move. See \Cref{fig:rook} for an example of $4 \times 4$ rook graph. In similar manner we can define a knight graph (\Cref{fig:knight}).
+There are also a few interesting classes of perfect graphs that appear on a grid, or a checker board. In lattice graph, each vertex is connected to vertices that are above, below, to the left and to the right of it, if such vertices exist. See \Cref{fig:lattice} for an example of a $4 \times 4$ lattice graph. If we imagine our grid to be a chessboard we can define two vertices a rook graph to share an edge, when the rook from chess can move from one vertex to the other in one move. See \Cref{fig:rook} for an example of $4 \times 4$ rook graph. In similar manner we can define a knight graph (\Cref{fig:knight}).
 
 A hypercube is a generalization of a cube to a higher dimensional space. We use hypercubes that are not complete, to achieve higher granularity of data. In a hypercube of $n$ vertices there is an edge between vertices $u$ and $v$ if and only if binary representations of $u$ and $v$ differ by exactly one bit.
 
-Split graphs we use are unions of cliques and independent sets of same size, with some edges between them. In generating them, each edge between a vertex from a clique and a vertex from an independent set has had $1/2$ chance to appear.
+Split graphs we use are unions of cliques and independent sets of same size, with some edges between them. In generating them, each edge between a vertex from a clique and a vertex from an independent set has had a chance $p = 0.5$ to appear.
 
 Finally, we benchmark on full binary trees to see how CCLSV works with a tree as an input.
 
 \subsubsection{Time results}
+
+We ran our tests on Intel Xeon E5-2690 CPU and Nvidia Tesla K80 GPU with 4992 CUDA cores.
 
 % \begin{figure}
 %   \centering
@@ -114,11 +116,11 @@ Finally, we benchmark on full binary trees to see how CCLSV works with a tree as
   \label{plot:perfDetailed}
 \end{figure}
 
-First, let us take a look at the performance of CCLSV algorithm. If we limit runtime to about two minutes, we can run it on graphs of sizes up to 40-70, depending on the type of the graph we test. What is interesting, that there isn't that much of a variance of the running time depending on the type of graph we test on. This is a big advantage of CCLSV over the na\"ive algorithm, which is highly dependent on the type of input. On some graphs, it works almost instantenously, what is to be expected, given its nature of enumerating paths. But on some graphs, e.g. lattice graphs (\Cref{plot:gridLines}) its overall running time grows much faster than CCLSV's.
+First, let us take a look at the performance of CCLSV algorithm. If we limit runtime to about two minutes, we can run it on graphs of sizes up to 40-70, depending on the type of the graph we test.  Worth noting is the fact that there isn't that much of a variance of the running time depending on the type of graph we test on. This is a big advantage of CCLSV over the na\"ive algorithm, which is highly dependent on the type of input. On some graphs, it works almost instantenously, what is to be expected, given its method of enumerating paths. But on some graphs, e.g. lattice graphs (\Cref{plot:gridLines}) its overall running time grows much faster than CCLSV's.
 
 Let us turn our attention to the GPU CCLSV's results. \Cref{plot:perfDetailed} shows breakdown of each implementation running times on a single graph of each class. We can clearly see that in most cases testing possible near-cleaners takes most of the running time, so the speedup by the GPU is significant. 
 
-Examples of full binary graphs, and lattice graphs show that getting near cleaners still can be a big bottleneck. Parallelization of this method could be considered in the future. A possible idea would be to use recently developed dynamic dictionary for the GPU \cite{Ashkiani2018}. When running GPU CCLSV on split graphs, quite a lot of time is spent checking simple structures. This should be parallelizable, the biggest challange we can see is spreading work evenly across CUDA threads.
+Examples of full binary graphs, and lattice graphs show that getting possible near cleaners still can be a big bottleneck. Parallelization of this method could be considered in the future. A possible idea would be to use recently developed dynamic dictionary for the GPU \cite{Ashkiani2018}. When running GPU CCLSV on split graphs, quite a lot of time is spent checking simple structures. The biggest challange we can see is in an attempt to parallelise this is spreading work evenly across CUDA threads.
 
 % When looking at the results (\Cref{plot:perfLines}), while na\"ive algorithm's time is almost zero, we see the CCLSV running time climbing with the growth of $|V|$, with only moderate improvement by GPU CCLSV. Slight GPU improvement is explained by anylysis of the components of the overall time (\Cref{plot:perfDet}). Testing all near cleaners takes up around half of total time, so we cannot speed up the overall time by much. These are also relatively small tests, so the latency from copying data to the GPU is significant.
 
@@ -144,11 +146,11 @@ Examples of full binary graphs, and lattice graphs show that getting near cleane
 
 \section{Coloring Berge graphs}
 
-\subsection{Ellipsoid method}
+\subsubsection{Ellipsoid method}
 
 We used an open source CSDP \cite{csdpRepo, csdp1999} library, that implements predictor corrector variant of the semidefinite programming algorithm to calculate $\vartheta(G)$, given $G$ on the input. The CSDP library has been used in many recent publications across different fields, such as \cite{Ampountolas_2017, Adasme_2011}.
 
-Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \Cref{sec:coloringEllipsoid}. In most of our tests, the majority of running time was consumed on calculating $\vartheta$ of various graphs. As it was done by an external library, there isn't much optimization potential for us. One thing of note is, that specifying the precision of $\vartheta$ we want to calculate to be $1/3$ sped up the algorithm by TODO. Also, we cache results of calculatin $\vartheta$, meaning that throught whole execution of our coloring algorithm, we only calculate $\vartheta$ for each graph once. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
+Calculating $\vartheta(G)$ is the most complicated part of the coloring algorithm. With that done by an external library, the rest of the program is a straightforward implementation of the algorithms in \Cref{sec:coloringEllipsoid}. In most of our tests, the majority of running time was consumed on calculating $\vartheta$ of various graphs. As it was done by an external library, there isn't much optimization potential for us. One thing of note is, that by specifying the precision of $\vartheta$ we want to calculate to be $1/3$ the algorithm sped up  by 20-40\%. Also, we cache results of calculatin $\vartheta$, meaning that throught whole execution of our coloring algorithm, we only calculate $\vartheta$ for each graph once. Our main goal of the implementation was to check if this method is still impractical, even on modern equipment. Let us proceed straight to experiments and results.
 
 \subsubsection{Experiments and results}
 
@@ -211,16 +213,16 @@ We ran our tests on the data sets generated in the same way as for perfect graph
   \label{fig:CSDPDet}
 \end{figure}
 
-First, we present overall running times of the coloring algorithm (\Cref{fig:CSDPLines}) and then breakdown the running time in two parts: calculating $\vartheta$ by the CSDP library and graphs manipulations which constitute the rest of the coloring algorithm (\Cref{fig:CSDPDet}). We note that $\vartheta$ calculation is highly dependent on the type of the graph. For our biggest tested cases of $|V| = 48$, all required calculations of $\vartheta$ take almost 7 minutes in biparite graphs, but only 12 seconds in line graphs of bipartite graphs. Because CSDP library is highly optimized, it is expected that it would run much faster on some graphs. However, it is not clear what could we do to speedup the running times on tests that CSDP is slow on, such as bipartite graphs of lattice graphs. A potential improvement would be to again use CUDA, this time for $\vartheta$ calculations, possibly utilizing the cuSOLVER library \cite{cusolver}.
+First, we present overall running times of the coloring algorithm (\Cref{fig:CSDPLines}) and then breakdown the running time in two parts: calculating $\vartheta$ by the CSDP library and graphs manipulations which constitute the rest of the coloring algorithm (\Cref{fig:CSDPDet}). We note that $\vartheta$ calculation is highly dependent on the type of the graph. For our biggest tested cases of $|V| = 48$, all required calculations of $\vartheta$ take almost 7 minutes in bipartite graphs, but only 12 seconds in line graphs of bipartite graphs. Because CSDP library is highly optimized, it is expected that it would run much faster on some graphs. However, it is not clear what could we do to speedup the running times on tests that CSDP is slow on, such as bipartite graphs or lattice graphs. A potential improvement would be to again use CUDA, this time for $\vartheta$ calculations, possibly utilizing the cuSOLVER library \cite{cusolver}.
 
 
-We notice that on some graphs, namely line graphs of bipartite graphs, rook graphs and split graphs the time taken by operations other than calculating $\vartheta$ by the CSDP library is quite significant. However, the overall running times on these graphs are low, so we didn't particularly optimize this, so probably some improvements could be made here.
+We notice that on some graphs, namely line graphs of bipartite graphs, rook graphs and split graphs the time taken by operations other than calculating $\vartheta$ is quite significant. However, the overall running times on these graphs are low, so we didn't particularly optimize this, so probably some improvements could be made here.
 
 \section{Conclusions}
-We implemented and benchmarked two different approaches for recognizing perfect graphs. Both have their positives and drawbacks -- CCLSV's running times are more predictable, but on many graphs it is noticeably slower than the na\"ive algorithm. On the other hand, running na\"ive algorithm on a graph we don't know any properties of can lead to unbearably slow running time.
+We implemented and benchmarked two different approaches for recognizing perfect graphs. Both have their positives and drawbacks -- CCLSV's running times are more predictable, but on many graphs it is noticeably slower than the na\"ive algorithm. On the other hand, running na\"ive algorithm on a graph we don't know any properties of can lead to unbearably slow performance.
 
 The GPU CCLSV implementation shows that using parallel computation can be very profitable for this task. A further research can be done to see if further progress could be made, however there is no obvious improvement we can see. Generating all possible near-cleaners makes a heavy use of sets (our tests indicated that if we simply list all combinations of sets $X_i$ and $N_j$, the resulting list $\mathcal{R}$ would be much bigger than necessary). Possibly a newly developed dynamic dictionary for the GPU \cite{Ashkiani2018} would be of use here. Testing for simple forbidden structures should also be parallelizable, although our preliminary tests indicated that spreading all the work evenly between CUDA threads is not trivial.
 
 A GPU implementation of na\"ive algorithm could also be considered for future work. We have created one, but after all path-enumaration optimizations of the CPU implementation we didn't manage to achieve any noticeable speedup. The reason again was, that we could't spread the work evenly between CUDA threads. Because some prefixes of paths require much more processing than others, this is not a trivial task and a careful study would be needed.
 
-We also implemented algorithm for coloring perfect graphs. It is not entirely unusable, although far from fast. Maybe a better way of calculating $\vartheta$ could be found, or the GPU could be again usable for this task. We point to Nvidia's \cite{cusolver} as a possible starting point.
+We also implemented algorithm for coloring perfect graphs. It is not entirely unusable, although far from fast. Maybe a better way of calculating $\vartheta$ could be found, or the GPU could again be usable for this task. We point to Nvidia's cuSOLVER  cite{cusolver} as a possible starting point.

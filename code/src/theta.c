@@ -5,26 +5,6 @@
 
 /* This theta.c file is based on  Csdp/theta/theta.c of Csdp project: https://github.com/coin-or/Csdp */
 
-int user_exit(n, k, C, a, dobj, pobj, constant_offset, constraints, X, y, Z, params) int n;
-int k;
-struct blockmatrix C;
-double *a;
-double dobj;
-double pobj;
-double constant_offset;
-struct constraintmatrix *constraints;
-struct blockmatrix X;
-double *y;
-struct blockmatrix Z;
-struct paramstruc params;
-{
-  double gap = trace_prod(X, Z);
-
-  if(gap < 0.1) return 2;
-
-  return 0;
-}
-
 double theta(int n, int m, int *from, int *to) {
   int i;
   int j;

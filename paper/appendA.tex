@@ -11,7 +11,7 @@ What we present would not be trivial to implement. For example in many places we
 Recall, that a prism (\cref{def:prism}) is a graph consisting of two disjoint triangles and two disjoint paths between them.
 
 \begin{defnTwo}[Artemis graph]
-  A graph $G$ is an \emph{Artemis graph} if it contains no odd hole, no antihole of length at least five, and no prism.
+  A graph $G$ is an \emph{Artemis graph} if and only if it contains no odd hole, no antihole of length at least five, and no prism.
 \end{defnTwo}
 
 In 2003 Maffray et al. published a paper on Artemis graphs where they show polynomial algorithms to recognize and color them \cite{Maffray2006}. In 2005 Maffray et al. published a paper on Artemis graphs \cite{Maffray2005} they showed an polynomial algorithm that checks if a perfect graph contains a prism, and returns it if so.
@@ -72,7 +72,7 @@ For definitions \ref{def:majorNeiOfPrism} and \ref{def:localSubOfPrism}, let $K$
 \end{defnTwo}
 
 \begin{defnTwo}[local subset of a prism]
-  A subset $X \subseteq V(K)$ is \emph{local} if either $X \subseteq \{a_1, a_2, a_3\}$, or $X \subseteq \{b_1, b_2, b_3\}$, or $X \subseteq R_i$ for some $i \in \{1, 2, 3\}$.
+  A subset $X \subseteq V(K)$ is \emph{local} if and only if either $X \subseteq \{a_1, a_2, a_3\}$, or $X \subseteq \{b_1, b_2, b_3\}$, or $X \subseteq R_i$ for some $i \in \{1, 2, 3\}$.
   \label{def:localSubOfPrism}
 \end{defnTwo}
 
@@ -120,15 +120,15 @@ Let us note, that if a hyperprism $H$ contains no odd hole, all rungs have the s
 Given a graph $G$ that contains a hyperprism $H$, we can define a few more structures.
 
 \begin{defnTwo}[major neighbor of a hyperprism]
-  A vertex $v \in V(G) \setminus V(H)$ is a \emph{major neighbor} of $H$, if it is a major neighbor of some instance of $H$.
+  A vertex $v \in V(G) \setminus V(H)$ is a \emph{major neighbor} of $H$, if and only if it is a major neighbor of some instance of $H$.
 \end{defnTwo}
 
 \begin{defnTwo}[local subset of a hyperprism]
-  A subset $X \subseteq V(H)$ is a local subset of a hyperprism $H$ if either $X \subseteq A_i \cup A_2 \cup A_3$ or $X \subseteq B_1 \cup B_2 \cup B_3$ or $X \subseteq A_i \cup B_i \cup C_i$ for some $i \in \{1, 2, 3\}$.
+  A subset $X \subseteq V(H)$ is a local subset of a hyperprism $H$ if and only if either $X \subseteq A_i \cup A_2 \cup A_3$ or $X \subseteq B_1 \cup B_2 \cup B_3$ or $X \subseteq A_i \cup B_i \cup C_i$ for some $i \in \{1, 2, 3\}$.
 \end{defnTwo}
 
 \begin{defnTwo}[maximal hyperprism]
-  A hyperprism $H$ is \emph{maximal} if there is no hyperprism $H'$ in $G$, such that $V(H) \varsubsetneq V(H')$.
+  A hyperprism $H$ is \emph{maximal} if and only if there is no hyperprism $H'$ in $G$, such that $V(H) \varsubsetneq V(H')$.
 \end{defnTwo}
 
 
@@ -157,13 +157,13 @@ Before providing the pseudocode, we need a few more definitions.
 \end{defnTwo}
 
 \begin{defnTwo}[appearance of a graph]
-  Given a graph $G$, and \emph{appearance} of a graph $J$ is any induced subgraph of $G$ that is isomorphic to the line graph $L(H)$ of a bipartite subdivision $H$ of $J$. An appearance of $J$ is \emph{degenerate} if either $J = H = K_{3, 3}$\footnote{$K_{n, m}$ is a complete bipartite graph with $n$ vertices on the one side and $m$ vertices on the other}, or $J = K_4$ and the four vertices of $J$ form a square in $H$.
+  Given a graph $G$, and \emph{appearance} of a graph $J$ is any induced subgraph of $G$ that is isomorphic to the line graph $L(H)$ of a bipartite subdivision $H$ of $J$. An appearance of $J$ is \emph{degenerate} if and only if either $J = H = K_{3, 3}$\footnote{$K_{n, m}$ is a complete bipartite graph with $n$ vertices on the one side and $m$ vertices on the other}, or $J = K_4$ and the four vertices of $J$ form a square in $H$.
 \end{defnTwo}
 
 Note that a degenerate appearance of a graph contains a square.
 
 \begin{defnTwo}[overshadowed appearance]
-  An appearance of $L(H)$ of $J$ in $G$ is \emph{overshadowed} if there is a branch $B$ of $H$, of length at least 3, with ends $b_1, b_2$, such that some vertex of $G$ is non-adjacent in $G$ to at most one vertex in $\{b_1x \in V(L(H))$, for $x \in V(H), b_1x \in E(H)\}$ and at most one vertex in $\{b_2x \in V(L(H))$, for $x \in V(H), b_2x \in E(H)\}$.
+  An appearance of $L(H)$ of $J$ in $G$ is \emph{overshadowed} if and only if there is a branch $B$ of $H$, of length at least 3, with ends $b_1, b_2$, such that some vertex of $G$ is non-adjacent in $G$ to at most one vertex in $\{b_1x \in V(L(H))$, for $x \in V(H), b_1x \in E(H)\}$ and at most one vertex in $\{b_2x \in V(L(H))$, for $x \in V(H), b_2x \in E(H)\}$.
 \end{defnTwo}
 
 \begin{defnTwo}[$J$-enlargement]
@@ -205,19 +205,19 @@ A $J$-strip system has the following properties:
 Given a square-free perfect graph $G$ and a $J$-strip system, for every choice of rungs, the subgraph of $G$ induced by their union is the line-graph of a bipartite subdivision of $J$.
 
 \begin{defnTwo}[saturating $J$-strip system]
-  $X \subseteq V(G)$ \emph{saturates} the strip system if for every $u \in V(J)$ there is at most one neighbor $v$ of $u$ such that $N_{uv} \nsubseteq X$.
+  $X \subseteq V(G)$ \emph{saturates} the strip system if and only if for every $u \in V(J)$ there is at most one neighbor $v$ of $u$ such that $N_{uv} \nsubseteq X$.
 \end{defnTwo}
 
 \begin{defnTwo}[major vertex w.r.t. a strip system]
-  A vertex $v \in V(G) \setminus V(S, N)$  is \emph{major} with respect to (w.r.t.) the strip system if the set of its neighbors saturates the strip system.
+  A vertex $v \in V(G) \setminus V(S, N)$  is \emph{major} with respect to (w.r.t.) the strip system if and only if the set of its neighbors saturates the strip system.
 \end{defnTwo}
 
 \begin{defnTwo}[major vertex w.r.t. some choice of rungs]
-  A vertex $v \in V(G) \setminus V(S, N)$  is \emph{major} with respect to (w.r.t.) some choice of rungs if the $J$-strip system defined by this choice of rungs is saturated by the set of neighbors of $v$.
+  A vertex $v \in V(G) \setminus V(S, N)$  is \emph{major} with respect to (w.r.t.) some choice of rungs if and only if the $J$-strip system defined by this choice of rungs is saturated by the set of neighbors of $v$.
 \end{defnTwo}
 
 \begin{defnTwo}[subset local w.r.t. a strip system]
-  A subset $X \subseteq V(S, N)$ is \emph{local} with respect to (w.r.t.) the strip system, if either $X \subseteq N_v$ for some $v \in V(J)$ or $X \subseteq S_{uv}$ for some $uv \in E(J)$.
+  A subset $X \subseteq V(S, N)$ is \emph{local} with respect to (w.r.t.) the strip system, if and only if either $X \subseteq N_v$ for some $v \in V(J)$ or $X \subseteq S_{uv}$ for some $uv \in E(J)$.
 \end{defnTwo}
 
 The outline of the algorithm is as follows. Given a square-free perfect graph, first we test if it is an Artemis graph. If so, we color it according to \Cref{thm:colorArtemis}. If not, \Cref{thm:getPrism} gives us a prism $K$. We want to extend $K$ either to a maximal hyperprism or to the line graph of a bipartite subdivision of $K_4$. For each of them, we can construct a good partition, which we color recursively.
@@ -230,16 +230,16 @@ In the following algorithms we use a slightly different notation than before, wi
 	\item $a :\in X$, when $X$ is a set -- let $a$ be equal to any element of $X$,
 	\item $a \xor b$, when $a$ and $b$ are logical values -- $a$ xor $b$,
 	\item $V(X)$ -- vertices of structure $X$. Will be written as $X$ when obvious,
-	\item $a - b$, when $a$ and $b$ are nodes -- $a$ and $b$ are neighbors,
-	\item $a \cdots b$, when $a$ and $b$ are nodes -- $a$ and $b$ are not neighbors,
-	\item $a - X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a neighbor in $X$,
-	\item $a \cdots X$, when $a$ is a node and $X$ is a set of nodes -- $a$ has a nonneighbor in $X$,
-	\item $a \blacktriangleleft  X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is complete to $X$,
-	\item $a \ntriangleleft X$, when $a$ is a node and $X$ is a set of nodes -- $a$ is anticomplete to $X$,
-	\item $X \setComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is complete to $Y$,
-	\item $X \setAntiComplete Y$, when $X$ and $Y$ are set of nodes -- $X$ is anticomplete to $Y$,
+	\item $a - b$, when $a$ and $b$ are vertices -- $a$ and $b$ are neighbors,
+	\item $a \cdots b$, when $a$ and $b$ are vertices -- $a$ and $b$ are not neighbors,
+	\item $a - X$, when $a$ is a vertex and $X$ is a set of vertices -- $a$ has a neighbor in $X$,
+	\item $a \cdots X$, when $a$ is a vertex and $X$ is a set of vertices -- $a$ has a nonneighbor in $X$,
+	\item $a \blacktriangleleft  X$, when $a$ is a vertex and $X$ is a set of vertices -- $a$ is complete to $X$,
+	\item $a \ntriangleleft X$, when $a$ is a vertex and $X$ is a set of vertices -- $a$ is anticomplete to $X$,
+	\item $X \setComplete Y$, when $X$ and $Y$ are set of vertices -- $X$ is complete to $Y$,
+	\item $X \setAntiComplete Y$, when $X$ and $Y$ are set of vertices -- $X$ is anticomplete to $Y$,
 	\item $[n]$  -- $\{1, \ldots, n\}$,
-	\item \LGBSK -- the line-graph of a biparite subdivision of $K_4$.
+	\item \LGBSK -- the line-graph of a bipartite subdivision of $K_4$.
 \end{itemize}
 
 Also, throughout the algorithms, we have many lines with asserts. These check some of the properties required before proceeding, and should all be true.
