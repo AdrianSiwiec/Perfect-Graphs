@@ -2096,7 +2096,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.899691in,y=0.135029in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont Calculare \(\displaystyle R\)}%
+\pgftext[x=1.899691in,y=0.135029in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont Calculate \(\displaystyle R\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -2108,10 +2108,10 @@
 \pgfsetstrokecolor{currentstroke}%
 \pgfsetstrokeopacity{0.000000}%
 \pgfsetdash{}{0pt}%
-\pgfpathmoveto{\pgfqpoint{2.736312in}{0.135029in}}%
-\pgfpathlineto{\pgfqpoint{2.958534in}{0.135029in}}%
-\pgfpathlineto{\pgfqpoint{2.958534in}{0.212806in}}%
-\pgfpathlineto{\pgfqpoint{2.736312in}{0.212806in}}%
+\pgfpathmoveto{\pgfqpoint{2.736216in}{0.135029in}}%
+\pgfpathlineto{\pgfqpoint{2.958438in}{0.135029in}}%
+\pgfpathlineto{\pgfqpoint{2.958438in}{0.212806in}}%
+\pgfpathlineto{\pgfqpoint{2.736216in}{0.212806in}}%
 \pgfpathclose%
 \pgfusepath{fill}%
 \end{pgfscope}%
@@ -2119,7 +2119,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.047423in,y=0.135029in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont Copy \(\displaystyle R\)}%
+\pgftext[x=3.047327in,y=0.135029in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont Copy \(\displaystyle R\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -2131,10 +2131,10 @@
 \pgfsetstrokecolor{currentstroke}%
 \pgfsetstrokeopacity{0.000000}%
 \pgfsetdash{}{0pt}%
-\pgfpathmoveto{\pgfqpoint{3.667509in}{0.135029in}}%
-\pgfpathlineto{\pgfqpoint{3.889732in}{0.135029in}}%
-\pgfpathlineto{\pgfqpoint{3.889732in}{0.212806in}}%
-\pgfpathlineto{\pgfqpoint{3.667509in}{0.212806in}}%
+\pgfpathmoveto{\pgfqpoint{3.667413in}{0.135029in}}%
+\pgfpathlineto{\pgfqpoint{3.889635in}{0.135029in}}%
+\pgfpathlineto{\pgfqpoint{3.889635in}{0.212806in}}%
+\pgfpathlineto{\pgfqpoint{3.667413in}{0.212806in}}%
 \pgfpathclose%
 \pgfusepath{fill}%
 \end{pgfscope}%
@@ -2142,7 +2142,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.978621in,y=0.135029in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont GPU test}%
+\pgftext[x=3.978524in,y=0.135029in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont GPU test}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
@@ -2223,7 +2223,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=1.899691in,y=0.480169in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont  Calculare \(\displaystyle R\)}%
+\pgftext[x=1.899691in,y=0.480169in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont  Calculate \(\displaystyle R\)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
@@ -2235,10 +2235,10 @@
 \pgfsetstrokecolor{currentstroke}%
 \pgfsetstrokeopacity{0.000000}%
 \pgfsetdash{}{0pt}%
-\pgfpathmoveto{\pgfqpoint{2.736312in}{0.480169in}}%
-\pgfpathlineto{\pgfqpoint{2.958534in}{0.480169in}}%
-\pgfpathlineto{\pgfqpoint{2.958534in}{0.557947in}}%
-\pgfpathlineto{\pgfqpoint{2.736312in}{0.557947in}}%
+\pgfpathmoveto{\pgfqpoint{2.736216in}{0.480169in}}%
+\pgfpathlineto{\pgfqpoint{2.958438in}{0.480169in}}%
+\pgfpathlineto{\pgfqpoint{2.958438in}{0.557947in}}%
+\pgfpathlineto{\pgfqpoint{2.736216in}{0.557947in}}%
 \pgfpathclose%
 \pgfusepath{fill}%
 \end{pgfscope}%
@@ -2246,7 +2246,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=3.047423in,y=0.480169in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont  CPU test}%
+\pgftext[x=3.047327in,y=0.480169in,left,base]{\color{textcolor}\rmfamily\fontsize{8.000000}{9.600000}\selectfont  CPU test}%
 \end{pgfscope}%
 \end{pgfpicture}%
 \makeatother%

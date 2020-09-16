@@ -4,7 +4,6 @@
 The following appendix is based on the paper \citetitle{coloringSquareFree} by \citeauthor{coloringSquareFree} \cite{coloringSquareFree}.
 
 \section{Introduction}
-\TODO{some intro}
 We give a brief overview of the square-free perfect graph coloring algorithm and a pseudocode thereof. The work is not intended to be self-contained and will be impossible to fully understand without \cite{coloringSquareFree} at hand. But when reading \cite{coloringSquareFree}, one may pose a question of what sort of an algorithm emerges from it, and we believe the pseudocode below gives a first overview and is a major step required before an attempt to implement it would be made. For some, looking at the pseudocode could provide a better way to analyze and possibly simplify the algorithm.
 
 What we present would not be trivial to implement. For example in many places we say ''choose $x$, so that \dots'', without specifying how to do it. A most glaring example is calculating an inverse of a line graph (in \Cref{alg:growingJStrip}) which is a complicated algorithm in and of itself, see \cite{Liu2014} for reference.
@@ -15,7 +14,7 @@ Recall, that a prism (\cref{def:prism}) is a graph consisting of two disjoint tr
   A graph $G$ is an \emph{Artemis graph} if it contains no odd hole, no antihole of length at least five, and no prism.
 \end{defnTwo}
 
-In 2003 Maffray et al. published a paper on Artemis graphs where they show polynomial algorithms to recognize and color them \cite{Maffray2006}. In 2005 Maffray et al. published a paper on Artemis graphs\cite{Maffray2005} they showed an polynomial algorithm that checks if a perfect graph contains a prism, and returns it if so.
+In 2003 Maffray et al. published a paper on Artemis graphs where they show polynomial algorithms to recognize and color them \cite{Maffray2006}. In 2005 Maffray et al. published a paper on Artemis graphs \cite{Maffray2005} they showed an polynomial algorithm that checks if a perfect graph contains a prism, and returns it if so.
 
 \begin{theorem}{\cite{Maffray2005}}
   \label{thm:getPrism}
@@ -184,7 +183,7 @@ Note that a degenerate appearance of a graph contains a square.
     \item for each $u \in V(J)$, $N_u \subseteq \bigcup_{uv \in E(J)} S_{uv}$,
     \item for each $uv \in E(J)$, every vertex of $S_{uv}$ is in a $uv$-rung,
     \item for any two edges $uv, wx$ of $J$, with $u, v, w, x$ all distinct, there are no edges between $S_{uv}$ and $S_{wx}$,
-    \item if $uv, uw \in E(J)$, with $v \neq w$, then $N_{uv}$ is complete to $N_{uw}$ and there are no other edges between $S_{uv}$ and $S_{uw}$,
+    \item if $uv, uw \in E(J)$ with $v \neq w$, then $N_{uv}$ is complete to $N_{uw}$ and there are no other edges between $S_{uv}$ and $S_{uw}$,
     \item for each $uv \in E(J)$, there is a \emph{special} $uv$-rung, such that for every cycle $C$ of $J$, the sum of the lengths of the special $uv$-rungs for $uv \in E(C)$ has the same parity as $|V(C)|$.
   \end{itemize}
 \end{defnTwo}
@@ -193,8 +192,8 @@ Note that a degenerate appearance of a graph contains a square.
 
 A $J$-strip system has the following properties:
 \begin{itemize}
-  \item for distinct $u, v \in V(J)$, if $uv \in E(J)$, then $N_u \cap N_v \subseteq S_{uv}$ and if $uv \notin E(J)$ then $N_u \cap N_v = \emptyset$,
-  \item for $uv \in E(J)$ and $w \in V(J)$, if $w \neq u$ then $S_{uv} \cap N_w = \emptyset$,
+  \item for distinct $u, v \in V(J)$, if $uv \in E(J)$, then $N_u \cap N_v \subseteq S_{uv}$ and if $uv \notin E(J)$, then $N_u \cap N_v = \emptyset$,
+  \item for $uv \in E(J)$ and $w \in V(J)$, if $w \neq u$, then $S_{uv} \cap N_w = \emptyset$,
   \item for every $uv \in E(J)$, all $uv$-rungs have lengths of the same parity,
   \item for every cycle $C$ of $J$ and every choice of $uv$-rung for every $uv \in E(C)$, the sums of the lengths of the $uv$-rungs have the same parity as $|V(C)|$. In particular, for each edge $uv \in E(J)$, all $uv$-rungs have the same parity.
 \end{itemize}
@@ -228,7 +227,7 @@ The outline of the algorithm is as follows. Given a square-free perfect graph, f
 In the following algorithms we use a slightly different notation than before, with many concepts represented by inline symbols. This is intended to reduce the length of algorithm's text and simplify its analysis.
 
 \begin{itemize}
-	\item $a :\in X$, when $X$ is a set -- let a be equal to any element of $X$,
+	\item $a :\in X$, when $X$ is a set -- let $a$ be equal to any element of $X$,
 	\item $a \xor b$, when $a$ and $b$ are logical values -- $a$ xor $b$,
 	\item $V(X)$ -- vertices of structure $X$. Will be written as $X$ when obvious,
 	\item $a - b$, when $a$ and $b$ are nodes -- $a$ and $b$ are neighbors,

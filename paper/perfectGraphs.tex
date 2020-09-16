@@ -16,9 +16,9 @@ The most fundamental problem -- the problem of recognizing perfect graphs -- was
 	A graph $G$ is \emph{Berge} if and only if both $G$ and $\overline{G}$ have no odd hole as an induced subgraph.
 \end{defn}
 
-Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003}, algorithms to solve semi-definite programs grew out of the theory of perfect graphs. We will take a look at semi-definite programs and at perfect graph's relation to Shannon capacity in \Cref{sec:ShannonCapacity}.
+Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003}, algorithms to solve semidefinite programs grew out of the theory of perfect graphs. We will take a look at semidefinite programs and at perfect graph's relation to Shannon capacity in \Cref{sec:ShannonCapacity}.
 
-\section{Strong Perfect Graph Theorem}
+\section{Strong perfect graph theorem}
 \label{sec:SPGT}
 
 The first step to solve the problem of recognizing perfect graphs was the \emph{(weak) perfect graph theorem} first conjured by Berge in 1961~\cite{CB61} and then proven by Lovász in 1972~\cite{LL72}.
@@ -33,7 +33,6 @@ This theorem is a consequence of a stronger result proven by Lovász:
 	\label{thm:omegaalpha}
 	A graph $G$ is perfect if and only if for every induced subgraph $H$, the number of vertices of $H$ is at most $\alpha(H)\omega(H)$.
 \end{theorem}
-\todo{proof? min. 1 page}
 % \begin{proof}
 % 	First assume that $G$ is perfect -- for every induced subgraph $H$, $\omega(G) = \chi(H)$. Since the number of vertices of $H$ is at most $\alpha(H)\chi(H)$, the claim follows.
 
@@ -79,7 +78,7 @@ The proof of \Cref{thm:spgt} is a consequence of the \emph{Decomposition theorem
 
 See \cite{MC06} for the full proof of \Cref{thm:spgt} and \cite{GC03} for its shorter overview.
 
-\section{Recognizing Berge Graphs}
+\section{Recognizing berge graphs}
 \label{sec:recognizingBerge}
 
 The following is based on the paper by \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but we will aim to show the intuition behind the algorithm.
@@ -195,6 +194,7 @@ It is easy to see, that if \textsc{Contains-Pyramid($G$)} outputs that $G$ conta
 Now we will proove the time complexity.
 
 \begin{theorem}[part of Theorem 2.2 of \cite{MC05}]
+	\label{thm:containsPyramid9}
 	Procedure \textsc{Contains-Pyramid($G$)} works in $O(|V|^9)$ time.
 \end{theorem}
 \begin{proof}
@@ -269,8 +269,8 @@ Now, we shall prove the following:
 	Let $(v_1, v_2, v_3, v_4, P, X)$ be a configuration of type $\T_2$. Let us assume that $G$ is not Berge and consider the following:
 	\begin{itemize}
 		\item if $P$ is even, then $v_1, v_2, v_3, v_4, P, v_1$ is an odd hole,
-		\item if $P$ is of length 3. \todo{I merged a couple of proofs from \cite{MC06}, check in the morning if this is correct.} Let us name its vertices $v_1, p_2, p_3, v_4$. It follows from \Cref{lem:Roussel-Rubio}, that there exists an odd antipath between $p_2$ and $p_3$ with interior in $X$. We can complete it with $v_2p_2$ and $v_2p_3$ into an odd antihole,
-		\item if $P$ is odd with the length of at least 5 \todo{check in the morning}, it follows from \Cref{lem:Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2, x, p_2, \ldots, p_{n-1}, y, v_2$.
+		\item if $P$ is of length 3, let us name its vertices $v_1, p_2, p_3, v_4$. It follows from \Cref{lem:Roussel-Rubio}, that there exists an odd antipath between $p_2$ and $p_3$ with interior in $X$. We can complete it with $v_2p_2$ and $v_2p_3$ into an odd antihole,
+		\item if $P$ is odd with the length of at least 5, it follows from \Cref{lem:Roussel-Rubio} that we have $x, y \in X$ with only two edges to $P$ being $xp_2$ and $yp_{n-1}$. This gives us an odd hole: $v_2-x-p_2-\ldots-p_{n-1}-y-v_2$.
 	\end{itemize}
 \end{proof}
 
@@ -332,6 +332,7 @@ The following algorithm with running time of $O(|V|^6)$ checks whether $G$ conta
 We will skip the proof that each graph containing $\T_3$ is not Berge, as it is quite technical. See section 6.7 of \cite{MC05} for the proof.
 
 \begin{theorem}[part of Theorem 6.4 of \cite{MC05}]
+	\label{thm:t3Time}
 	\Cref{alg:t3} runs in $O(|V|^6)$ time.
 \end{theorem}
 \begin{proof}
@@ -361,7 +362,7 @@ First, let us introduce a few new definitions.
   Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{cleaner for $C$} if $X \cap V(C) = \emptyset$ and every $C$-major vertex belongs to $X$.
 \end{defn}
 
-Let us notice, that if $X$ is a cleaner for $C$ then $C$ is a clean hole in $G \setminus X$.
+Let us notice, that if $X$ is a cleaner for $C$, then $C$ is a clean hole in $G \setminus X$.
 
 \begin{defn}[near-cleaner]
   Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if $X$ contains all $C$-major vertices and $X \cap V(C)$ is a subset of vertex set of some 3-node path of $C$.
@@ -389,7 +390,7 @@ Some pictures might be helpful. \Cref{fig:amenableOddHole} shows an example of a
 
 \begin{theorem}[Theorem 8.1 of \cite{MC05}]
 	\label{thm:amenableHoles}
-	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then every shortest hole in $G$ is amenable.
+	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then every shortest odd hole in $G$ is amenable.
 	% \TODO{Any ideas on what else to say here? List all 9 steps?}
 	% \TODO{Dobre pytanie. Te 9 kroków to da się zawrzeć w 1-2 zdaniach każde? Jeśli nie, to tylko napisałbym ogólnikowo, że "jest sekwencja kroków, która to robi, tu jest odnośnik"}
 \end{theorem}
@@ -455,6 +456,7 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 \end{theorem}
 
 \begin{theorem}[Theorem 9.2 of \cite{MC05}]
+	\label{thm:92}
 	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then the result of the \Cref{alg:listNearCleaners} on the graph $G$ is a set $\mathcal{R}$, such that for every shortest amenable hole $C$, there is a near-cleaner for $C$ in $\mathcal{R}$.
 \end{theorem}
 \begin{proof}
@@ -500,12 +502,15 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 
 
 
-Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The proof of the correctness of the other possible result is more complicated, see section 4 and theorem 5.1 of \cite{MC05}.
+Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The proof of the correctness of the other possible result is more complicated, see section 4 and Theorem 5.1 of \cite{MC05}.
 
 \begin{theorem}[Theorem 5.1 of \cite{MC05}]
-	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Let $X$ be a subset of $V(G)$. If \Cref{alg:testNearCleaner} reports an odd hole, then $G$ contains an odd hole.
+	\label{thm:testNCWorks}
+	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Let $X$ be a subset of $V(G)$. If \Cref{alg:testNearCleaner} reports an odd hole, then $G$ contains an odd hole, else there is no shortest odd hole $C$ in $G$, such that $X$ is a near-cleaner for $C$.
 \end{theorem}
 \begin{proof}
+	Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The rest of the proof is more complicated, see section 4 and Theorem 5.1 of \cite{MC05}.
+
 	Let us suppose that there is a choice of $x_1$, $x_2$, $x_3$, $y_1$ satisfying the three conditions in the \Cref{alg:testNearCleaner} and let $y_2$ and $n$ be defined as in there. We claim that $G$ contains an odd hole.
 	
 	{\makeatletter
@@ -533,6 +538,52 @@ Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole i
 
 
 
-% \subsection{Summary}
+\subsection{Algorithm for Berge graphs recognition}
 
-% \TODO{todo?}
+To summarize, we present a complete algorithm for recognizing Berge graphs.
+\begin{alg}[Determine if a graph is Berge]
+	\label{alg:testNearCleaner}
+	Input: A graph $G$.
+
+	\noindent Output: Determines if $G$ is Berge.
+	\label{alg:bergeness}
+\end{alg}
+
+\begin{algorithmic}[1]
+	\mProcedure{Check-Berge}{$G$}
+		\mIf{\texttt{Contains-Pyramid}$(G)$ \OR \texttt{Contains-Jewel}$(G)$ \OR \lsx 
+		\texttt{Contains-T1}$(G)$ \OR \texttt{Contains-T2}$(G)$ \OR \texttt{Contains-T3}$(G)$ \label{line:simpleStart}}
+			\ls \RETURN $G$ is not Berge
+		\mEndIf
+		\mIf{\texttt{Contains-Pyramid}$(\overline{G})$ \OR \texttt{Contains-Jewel}$(\overline{G})$ \OR \lsx 
+		\texttt{Contains-T1}$(\overline{G})$ \OR \texttt{Contains-T2}$(\overline{G})$ \OR \texttt{Contains-T3}$(\overline{G})$}
+			\ls \RETURN $G$ is not Berge
+		\mEndIf \label{line:simpleEnd}
+		\ls $\mathcal{R} \gets $\texttt{List-Possible-Near-Cleaners}$(G)$ \label{line:getR}
+		\mForEach{$X \in \mathcal{R}$} \label{line:testXStart}
+			\mIf{\texttt{Test-Near-Cleaner}$(G, X)$ reports an odd hole}
+				\ls \RETURN $G$ is not Berge
+			\mEndIf
+		\mEndFor \label{line:testXEnd}
+		\ls $\mathcal{R'} \gets $\texttt{List-Possible-Near-Cleaners}$(\overline{G})$
+		\mForEach{$X \in \mathcal{R'}$}
+			\mIf{\texttt{Test-Near-Cleaner}$(\overline{G}, X)$ reports an odd hole}
+				\ls \RETURN $G$ is not Berge
+			\mEndIf
+		\mEndFor
+		\ls \RETURN $G$ is Berge
+	\mEndProcedure
+\end{algorithmic}
+
+\begin{theorem}[Theorem 10.1 of \cite{MC05}]
+	Given a graph $G = (V, E)$, \Cref{alg:bergeness} works in $O(|V|^9)$ time and determines is $G$ is Berge.
+\end{theorem}
+\begin{proof}
+	First, in lines \ref{line:simpleStart}-\ref{line:simpleEnd} we test whether $G$ or $\overline{G}$ contain a pyramid, a jewel or a configuration of type $\T_1, \T_2$ or $\T_3$. If it is not the case, then by \Cref{thm:amenableHoles} every shortest odd hole in $G$ and in $\overline{G}$ is amenable. 
+	
+	By \Cref{thm:92} in line \ref{line:getR} we get a set $\mathcal{R}$, such that if $G$ contains an amenable hole $C$, one of the sets $X \in \mathcal{R}$ is a near-cleaner for $C$. In lines \ref{line:testXStart}-\ref{line:testXEnd} we test each $X \in \mathcal{R}$ and if an odd hole is reported, then by \Cref{thm:testNCWorks} $G$ is not Berge. If for all $X \in \mathcal{R}$ an odd hole is not reported, then by \Cref{thm:amenableHoles}, \Cref{thm:92} and \Cref{thm:testNCWorks} there is no odd hole in $G$. We  run the same procedure on $\overline{G}$ and if again we do not detect an odd hole, then $G$ is Berge and by \Cref{thm:spgt} $G$ is perfect.
+
+	Finally, let us add up the total running time. By \Cref{thm:containsPyramid9} checking if there is a pyramid in $G$ or $\overline{G}$ takes $O(|V|^9)$ time. Testing for jewels takes $O(|V|^7)$ time, testing for a configuration of type $\T_1$ takes $O(|V|^5)$ time and testing for configuration of type $\T_2$ takes $O(|V|^6)$ time. By \Cref{thm:t3Time} testing for a configuration of type $\T_3$ takes $O(|V|^6)$ time. Running \Cref{alg:listNearCleaners} takes $O(|V|^5)$ time and returns $O(|V|^5)$ subsets. For each subset running \Cref{alg:testNearCleaner} takes $O(|V|^4)$ time, so testing all possible near-cleaners takes $O(|V|^9)$ time. Then we repeat on the $\overline{G}$.
+
+	The overall running time is $O(|V|^9)$ with testing for pyramids and testing all possible near-cleaners being algorithms with biggest time complexity.
+\end{proof}

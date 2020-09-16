@@ -7,9 +7,9 @@ There has been much progress on the quest of finding a more classical algorithm 
 
 \Cref{sec:InformationTheory} and \Cref{sec:computingTheta} are based on lecture notes by Lovász \cite{Lovasz95}.
 
-The polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semi-definite matrices. The connection of coloring graphs and the cones of semi-definite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this was exactly the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
+The polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semidefinite matrices. The connection of coloring graphs and the cones of semidefinite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this was exactly the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
 
-\subsection{Shannon Capacity of a graph}
+\subsection{Shannon capacity of a graph}
 \label{sec:ShannonCapacity}
 
 Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected if and only if values they represent can be confused.
@@ -36,7 +36,7 @@ For a channel defined by a graph $C_5$, using five messages of length 2 to commu
 Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ as its "handle" and 5 "ribs" of unit length.  Open it up to the point where non-consecutive ribs are orthogonal, i.e., form an angle of 90$^\circ$. This way we get a representation of $C_5$ by 5 unit vectors $u_1, \ldots u_5$ so that each $u_i$ forms the same angle with $e_1$ and any two non-adjacent nodes are represented with orthogonal vectors. See \Cref{fig:umbrella}. We can calculate $e_1^\intercal u_i = 5 ^ {-1/4}$.
 
 
-\begin{wrapfigure}{l}{0.4\textwidth}
+\begin{wrapfigure}{r}{0.4\textwidth}
   \input{tikzpictures/umbrella.tex}
   \caption{Lovász's umbrella}
   \label{fig:umbrella}
@@ -44,20 +44,19 @@ Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ 
 
 It turns out, that we can obtain a similar representation of the nodes of $C_5^k$ by unit vectors $v_i \in \mathbb{R}^{3k}$, so that any two non-adjacent nodes are labeled with orthogonal vectors (this representation is sometimes called the \emph{orthogonal representation} \cite{Lovsz1989Orthogonal}). Moreover, we still get $e_1^\intercal v_i = 5^{-k/4}$ for every $i \in V(C_5^k)$ (the proof is quite technical and we omit it here).
 
-If $S$ is any stable set in $C_5^k$, then $\{v_i, i \in S\}$ is a set of mutually orthogonal unit vectors so we get \todo{why?}
-$$\sum\limits_{i\in S}(e_1^\intercal v_i)^2 \leq |e_1|^2 = 1$$
-(if $v_i$ formed a basis then this inequality would be an equality).
+If $S$ is any stable set in $C_5^k$, then $\{v_i: i \in S\}$ is a set of mutually orthogonal unit vectors, so we could extend $S$ to $S'$, so that $\{v_i: i \in S'\}$ is a basis of $\mathbb{R}^{3k}$. This gives us
+$$\sum\limits_{i\in S}(e_1^\intercal v_i)^2 \leq \sum\limits_{i \in S'}(e_1^\intercal v_i)^2 \leq ? = 1$$
+\todo{todo}
+Each term on the left hand side is $5^{-k/4}$, so the left hand side is equal to $|S|5^{-k/2}$, and so $|S| \leq 5^{k/2}$. Since $|S|$ was an arbitrary stable set, we get $\alpha(C_5^k) \leq 5 ^{k/2}$ and $\Theta(C_5) = \sqrt{5}$.
 
-On the other hand each term on the left hand side is $5^{-1/4}$, so the left hand side is equal to $|S|5^{-k/2}$, and so $|S| \leq 5^{k/2}$. Since $|S|$ was an arbitrary stable set, we get $\alpha(C_5^k) \leq 5 ^{k/2}$ and $\Theta(C_5) = \sqrt{5}$.
-
-It turns out that this method extends to any graph $G$ in place of $C_5$. All we have to do is find a orthogonal representation that will give us the best bound. So, we can define the \emph{Lovász number} of a graph $G$ as \todo{this equation does not really follow from the thought process above, it is a slightly different definition}:
+It turns out that this method extends to any graph $G$ in place of $C_5$. All we have to do is to find a orthogonal representation that will give us the best bound. So, we can define the \emph{Lovász number} of a graph $G$ as \todo{this equation does not really follow from the thought process above, it is a slightly different definition}:
 $$\vartheta(G) = \min\limits_{c,U} \max\limits_{i\in V} \frac{1}{(c^\intercal u_i)^2},$$
 
-\noindent where $c$ is a unit vector in $\mathbb{R}^{|V(G)|}$ and $U$ is a orthogonal representation of $G$.
+\noindent where $c$ is a unit vector in $\mathbb{R}^{|V(G)|}$ and $U$ is an orthogonal representation of $G$.
 
-Contrary to Lovász's first hope \cite{Lovasz1979} $\vartheta(G)$ does not always equal $\Theta(G)$, it is only an upper bound on it. However, these two are equal for some graphs, including all perfect graphs, as is demonstrated in the Lovász "sandwich theorem".
+Contrary to Lovász's first hope \cite{Lovasz1979} $\vartheta(G)$ does not always equal $\Theta(G)$, but it is only an upper bound on it. However, these two are equal for some graphs, including all perfect graphs, as is demonstrated in the Lovász "Sandwich theorem".
 
-\begin{theorem}[Lovász "sandwich theorem" \cite{Knuth1994}]
+\begin{theorem}[Lovász "Sandwich theorem" \cite{Knuth1994}]
   \label{thm:sandwich}
   For any graph $G$:
   $$ \omega(G) \leq \vartheta(\overline{G}) \leq \chi(G).$$
@@ -65,7 +64,7 @@ Contrary to Lovász's first hope \cite{Lovasz1979} $\vartheta(G)$ does not alway
 
 Because in perfect graphs $\omega(G) = \chi(G)$, we get $\omega(G) = \vartheta(\overline{G}) = \chi(G)$. Therefore, if for any perfect graph $G$, we could calculate $\vartheta(G)$ and $\vartheta(\overline{G})$, we would get $\omega(G)$, $\chi(G)$ and $\alpha(G)$.
 
-But how can we construct an optimum (or even good) orthogonal representation? It turns out that it can be computed in polynomial time using semidefinite optimization.
+But how can we construct an optimum (or even sufficiently good) orthogonal representation? It turns out that it can be computed in polynomial time using semidefinite optimization.
 
 \section{Computing \boldmath$\vartheta$}
 \label{sec:computingTheta}
@@ -73,7 +72,7 @@ But how can we construct an optimum (or even good) orthogonal representation? It
 First, let us recall some definitions, with \cite{gilbertstrang2020} as a reference for the linear algebra.
 
 \begin{defn}[eigenvector, eigenvalue]
-  Let $A$ be an $n \times n$ real matrix. An \emph{eigenvector} of $A$ is a vector $x$ such that $Ax$ is parallel to $x$. In other words, there is a real or complex number $\lambda$, such that $Ax = \lambda x$. This $\lambda$ is called the \emph{eigenvalue} of $A$ belonging to eigenvector $x$.
+  Let $A$ be an $n \times n$ real matrix. An \emph{eigenvector} of $A$ is a vector $x$ such that $Ax$ is parallel to $x$. In other words, there is a real or a complex number $\lambda$, such that $Ax = \lambda x$. This $\lambda$ is called the \emph{eigenvalue} of $A$ belonging to eigenvector $x$.
 \end{defn}
 
 If a matrix $A$ is symmetric\footnote{Matrix $A$ is symmetric if and only if $A = A^\intercal$}, all the eigenvalues are real.
@@ -116,7 +115,7 @@ Here $A_1, \ldots, A_n, B$ are given symmetric $m \times m$ matrices and $c \in 
 
 The special case when $A_1, \ldots A_n, B$ are diagonal matrices is a ''generic'' linear program, in fact we can think of semidefinite programs as generalizations of linear programs. Not all properties of linear programs are carried over to semidefinite programs, but the intuition is helpful.
 
-Solving semidefinite programs is a complex topic, we refer to \cite{grotschel1993} for reference. All we need to know is that we can solve semidefinite programs up to an arbitrarily small error in polynomial time. One of the methods to do this is called the \emph{ellipsoid method}, hence the name for the coloring algorithm.
+Solving semidefinite programs is a complex topic, we refer to \cite{grotschel1993} for details. All we need to know is that we can solve semidefinite programs up to an arbitrarily small error in polynomial time. One of the methods to do this is called the \emph{ellipsoid method}, hence the name for the coloring algorithm.
 
 \paragraph{Calculating \boldmath$\vartheta$.}
 
@@ -158,7 +157,7 @@ Now, that we know how to calculate $\vartheta(G)$, let us describe the algorithm
 
 \section{Coloring perfect graph using ellipsoid method}
 \label{sec:coloringEllipsoid}
-The following is based on \citetitle{Laurent2005} by \citeauthor{Laurent2005} \cite{Laurent2005}.
+The following part is based on \citetitle{Laurent2005} by \citeauthor{Laurent2005} \cite{Laurent2005}.
 
 \subsection{Maximum cardinality stable set}
 
@@ -202,7 +201,7 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$. We will co
   The running time of \Cref{alg:maxStableSet} is polynomial, because we construct $|V|$ auxiliary graphs, each requiring calculating $\alpha$ once plus additional $O(|V|^2)$ time for constructing the graph.
 \end{proof}
 
-Given a natural weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ using the following modification: 
+Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ using the following modification: 
 
 \begin{alg}[Maximum weighted stable set in a perfect graph]
   \label{alg:maxWeightedStableSet}
@@ -285,7 +284,7 @@ There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single cliq
   \mEndProcedure
 \end{algorithmic}
 
-Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$. We will call recursion at most $O(|V|)$ times, each step of recursion is polynomial in time. Therefore the running time of \Cref{alg:minColoring} is polynomial.
+Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$. We will call recursion at most $O(|V|)$ times, each step of recursion requires polynomial time. Therefore the total running time of \Cref{alg:minColoring} is polynomial.
 
 \section{Classical algorithms}
 \label{sec:classicalColoring}
@@ -293,16 +292,16 @@ Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \ome
 Ever since Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs, a combinatorial algorithm for doing the same has been sought. As of yet, it is not known, although there is much progress in the field.
 
 \begin{defn}[prism]
-  A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them. Notice, that for a graph to contain no odd hole, all three paths in a prism must have the same parity. A prism with all three paths odd is called an \emph{odd prism}.
+  A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them. Notice that for a graph to contain no odd hole, all three paths in a prism must have the same parity. A prism with all three paths odd is called an \emph{odd prism}.
   \label{def:prism}
 \end{defn}
 
-In 2005 Maffray and Trotignon a coloring algorithm that colors graphs containing no odd hole, no antihole and no prism (sometimes called Artemis graphs) in $O(|V|^4|E|)$ time \cite{Maffray2006}. They later improved the time complexity to $O(|V|^2|E|)$ \cite{Lvque2009}.
+In 2005 Maffray and Trotignon a coloring algorithm that colors graphs containing no odd hole, no antihole and no prism (sometimes called Artemis graphs) in $O(|V|^4|E|)$ time \cite{Maffray2006}. They later improved the time complexity to $O(|V|^2|E|)$ \cite{coloringArtemis}.
 
 In 2015 Maffray showed an algorithm for coloring Berge graphs with no squares (a square is a $C_4$) and no odd prism \cite{Maff2015}.
 
-In 2016 Chudnovsky et al. published an algorithm that given a perfect graph $G$ with $\omega(G) = k$ colors it optimally in a time polynomial for a fixed $k$ \cite{Chudnovsky2017}.
+In 2016 Chudnovsky et al. published an algorithm that given a perfect graph $G$ with $\omega(G) = k$ colors it optimally in a time polynomial for a fixed $k$ \cite{Chudnovsky2017}. In general case this algorithm has a time complexity of $O(|V|^{(k+1)^2})$.
 
-A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{Chudnovsky2019}. Before proving strong perfect graph conjecture, a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern.
+A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{coloringSquareFree}. Before proving strong perfect graph conjecture, a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern.
 
-The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is a member of class that is simpler to analyze and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{Chudnovsky2019} is of much more mathematical ''flavor'' then \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper is far from straightforward. We do it in the Appendix A.
+The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is a member of class that is simpler to analyze and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper is far from straightforward. We provide its pseudocode in the Appendix A.

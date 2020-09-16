@@ -109,7 +109,7 @@ algo_field_labels = {
     csv_simpleStructures: "Simple structures",
     csv_testNCRest: "CPU test",
     csv_getNearCleaners: "Get near cleaners",
-    csv_testNCShortestPaths: "Calculare $R$",
+    csv_testNCShortestPaths: "Calculate $R$",
     csv_gpuCopyR: "Copy $R$",
     csv_gpuWork: "GPU test",
     csv_color_res: "Graph manipulation",
