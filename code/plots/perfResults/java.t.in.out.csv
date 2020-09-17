@@ -1,4 +1,4 @@
-algorithm, n, result, num_runs, Overall
+algorithm,n,result,num_runs,Overall
 JAVA,10,1,10,2.020800
 JAVA,11,1,10,5.320400
 JAVA,12,1,10,13.249800

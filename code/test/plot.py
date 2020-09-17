@@ -88,6 +88,7 @@ algo_colors = {
     "CUDA Naive": "#ff0000",
     "Naive": "#00ff00",
     "CSDP Color": "#377eb8",
+    "JAVA": "#d62728",
 }
 algo_markers = {
     "Cuda Perfect": ".",
@@ -95,6 +96,7 @@ algo_markers = {
     "CUDA Naive": "o",
     "Naive": "+",
     "CSDP Color": ".",
+    "JAVA": ".",
 }
 
 algo_labels = {
@@ -103,6 +105,7 @@ algo_labels = {
     "CUDA Naive": 'GPU Na"ive',
     "Naive": "Naïve",
     "CSDP Color": "Color",
+    "JAVA": "JGraphT"
 }
 
 algo_field_labels = {
@@ -140,6 +143,7 @@ sizes_in_inches = {
     "allGraphs": (10, 25),
     "wideDetailed": (4.77, 7.1),
     "regular_small": (2.38, 1.5),
+    # "regular_small": (3, 2),
     "wideDetailed_small": (2.38, 1.5),
 }
 # sizes_in_inches = {"regular": (5, 3), "wide": (8, 3)}
@@ -453,6 +457,22 @@ experiments = [
         "out_prefix": "color",
         # "ylim": (0, 1),
     },
+    {
+        "restrictions": [(csv_algo, "JAVA")],
+        "x_param": csv_N,
+        "x_show": csv_N,
+        "type": "lines",
+        "size": sizes_in_inches["regular_small"],
+        "y_param": csv_overall,
+        "ylog": True,
+        "yformatter": func_formatter,
+        "x_label": label_lca_N,
+        # "x_ticks": [18, 24, 30, 36, 42, 48],
+        # "x_ticks_labels": ["$6\\times 3$", "", "$6\\times 5$", "", "$6\\times 7$", ""],
+        "y_label": label_time_overall_s,
+        "out_prefix": "java",
+        "ylim": (1, 250),
+    },
 ]
 
 if len(sys.argv) < 2:
@@ -498,12 +518,8 @@ for i_exp, experiment in enumerate(experiments):
     # Filter data we should plot in current image
     for row in csv_file:
         isOk = True
-        for res_name, res_val in experiment[
-            "restrictions"
-        ]:  # process restrictions to plot only what we want
-            if isinstance(
-                res_val, str
-            ):  # for a string, restriction should be a substring of a field in a row
+        for res_name, res_val in experiment["restrictions"]:
+            if isinstance(res_val, str):
                 if res_name == csv_filename:
                     if not re.findall(res_val, ntpath.basename(sys.argv[1])):
                         isOk = False
