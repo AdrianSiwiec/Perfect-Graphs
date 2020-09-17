@@ -146,6 +146,25 @@ Examples of full binary graphs, and lattice graphs show that getting possible ne
 
 % There are no long paths here, so na\"ive algorithm works great (\cref{plot:splitLines}). What is interesting, when looking at detailed times of GPU CCLSV, we can see that checking the existence of simple forbidden structures takes more than 30\% of the time. This opens a possibility of further GPU speedups, not explored by us.
 
+\subsubsection{JGraphT implementation}
+
+% \begin{wrapfigure}{r}{0.5\textwidth}
+%   \centering\
+%   \input{plots/java.java.t.in.out.csv.lines.pgf}
+%   \caption{JGraphT Berge recognition performance}
+%   \label{plot:jgrapht}
+% \end{wrapfigure}
+\begin{figure}
+  \centering
+  \input{plots/java.java.t.in.out.csv.lines.pgf}
+  \caption{JGraphT Berge recognition performance}
+  \label{plot:jgrapht}
+\end{figure}
+
+JGraphT \cite{jgrapht} is an open-source Java library of graph data structures and algorithms. It provides many graph algorithms, such as bipartite and general matchings, flows and colorings. In a research paper about it \cite{jgraphtPaper}, the library is described as a robust and performance-driven graph library. It is used in many commercial and open-source projects, including Apache Cassandra database, Apache Storm and Graal JVM.
+
+The Berge recognition algorithm implemented there is exactly the CCLSV algorithm, but during our tests the performance was much worse when compared to our implementations. See \Cref{plot:jgrapht} for a overall running times on line graphs of random bipartite graphs. After looking at the source code of the Berge recognition algorithm, we think that the poor performance may be caused by the lack of optimizations we talked about in Sections \ref{sec:secnaive} and \ref{sec:Optimizations} -- the implementation is rather straightforward and unoptimized. For example in many places it uses HashSets when arrays would suffice.
+
 \section{Coloring Berge graphs}
 
 \subsubsection{Ellipsoid method}
@@ -224,5 +243,7 @@ We notice that on some graphs, namely line graphs of bipartite graphs, rook grap
 We implemented and benchmarked two different approaches for recognizing perfect graphs. Both have their positives and drawbacks -- testing big graph of unknown structure is probably better done with the CCLSV algorithm, while the na\"ive algorithm is much faster on some cases. The GPU CCLSV implementation shows that using parallel computation can be very profitable for this task. An additional research could be done to see if further progress can be made, however there is no obvious improvement we can see. Generating all possible near-cleaners makes a heavy use of sets (our tests indicated that if we simply list all combinations of sets $X_i$ and $N_j$, the resulting list $\mathcal{R}$ would be much bigger than necessary). Possibly a newly developed dynamic dictionary for the GPU \cite{Ashkiani2018} would be of use here. Testing for simple forbidden structures should also be parallelizable, although our preliminary tests indicated that spreading all the work evenly between CUDA threads is not trivial.
 
 A GPU implementation of the na\"ive algorithm could also be considered for future work. We have created one, but after all path-enumeration optimizations of the CPU implementation we didn't manage to achieve any noticeable speedup. The reason again was, that we couldn't spread the work evenly between CUDA threads. Because some prefixes of paths require much more processing than others, this is not a trivial task and a careful study would be needed.
+
+All of our implementations are significantly faster than the only other perfect graph recognition implementation we found.
 
 We also implemented algorithm for coloring perfect graphs. It is not entirely unusable, although far from fast. Maybe a better way of calculating $\vartheta$ could be found, or the GPU could again be usable for this task. We point to Nvidia's cuSOLVER  \cite{cusolver} as a possible starting point.

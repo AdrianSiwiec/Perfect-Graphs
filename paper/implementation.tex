@@ -2,7 +2,8 @@ A repository containing the discussed source code and tests is available under t
 
 
 \section{Berge graphs recognition: na\"ive approach}
-When implementing an algorithm with the running time of $O(|V|^9)$ (especially one as complex as CCLSV), one of the first questions that pop up is whether this algorithm is at all usable. We couldn't find any existing programs that test whether the graph is perfect, be it an implementation of CCLSV, or a na\"ive approach. So, to test the usability of CCLSV implementation, we measured it against our own na\"ive perfect recognition algorithm. Let us describe it briefly.
+\label{sec:secnaive}
+When implementing an algorithm with the running time of $O(|V|^9)$ (especially one as complex as CCLSV), one of the first questions that pop up is whether this algorithm is at all usable. We found only one existing attempt at implementing a perfect graph recognition algorithm, but it suffers from a very poor performance (see \Cref{plot:jgrapht}). So, to test the usability of the CCLSV implementation, we measured it against our own na\"ive perfect recognition algorithm. Let us describe it briefly.
 
 We try find an odd hole directly, then, we run the same algorithm on $\overline{G}$, and if no odd hole is found we report that the graph is perfect, else that it is not.
 

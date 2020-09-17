@@ -143,6 +143,7 @@ sizes_in_inches = {
     "allGraphs": (10, 25),
     "wideDetailed": (4.77, 7.1),
     "regular_small": (2.38, 1.5),
+    "regular_small2": (3.17, 2),
     # "regular_small": (3, 2),
     "wideDetailed_small": (2.38, 1.5),
 }
@@ -462,7 +463,7 @@ experiments = [
         "x_param": csv_N,
         "x_show": csv_N,
         "type": "lines",
-        "size": sizes_in_inches["regular_small"],
+        "size": sizes_in_inches["regular_small2"],
         "y_param": csv_overall,
         "ylog": True,
         "yformatter": func_formatter,
