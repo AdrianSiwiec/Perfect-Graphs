@@ -46,7 +46,6 @@ It turns out, that we can obtain a similar representation of the vertices of $C_
 
 If $S$ is any stable set in $C_5^k$, then $\{v_i: i \in S\}$ is a set of mutually orthogonal unit vectors, so we could extend $S$ to $S'$, so that $\{v_i: i \in S'\}$ is a basis of $\mathbb{R}^{3k}$. This gives us
 $$\sum\limits_{i\in S}(e_1^\intercal v_i)^2 \leq \sum\limits_{i \in S'}(e_1^\intercal v_i)^2 \leq |e_1|^2 = 1$$
-\todo{todo}
 Each term on the left hand side is equal to $5^{-k/4}$, so the left hand side is equal to $|S|5^{-k/2}$, and so $|S| \leq 5^{k/2}$. Since $|S|$ was an arbitrary stable set, we get $\alpha(C_5^k) \leq 5 ^{k/2}$ and $\Theta(C_5) = \sqrt{5}$.
 
 It turns out that this method extends to any graph $G$ in place of $C_5$. All we have to do is to find a orthogonal representation that will give us the best bound. So, we can define the \emph{Lovász number} of a graph $G$ as:
