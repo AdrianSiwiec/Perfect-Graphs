@@ -7,12 +7,12 @@ There has been much progress on the quest of finding an algorithm coloring perfe
 
 \Cref{sec:InformationTheory} and \Cref{sec:computingTheta} are based on lecture notes by Lovász \cite{Lovasz95}.
 
-The polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semidefinite matrices. The connection of coloring graphs and the cones of semidefinite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this was exactly the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
+The only polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semidefinite matrices. The connection of coloring graphs and the cones of semidefinite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this was exactly the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
 
 \subsection{Shannon capacity of a graph}
 \label{sec:ShannonCapacity}
 
-Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected if and only if values they represent can be confused.
+Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected if and only if the values they represent can be confused.
 
 \begin{wrapfigure}{r}{0.35\textwidth}
   \input{tikzpictures/c5.tex}
@@ -23,9 +23,9 @@ Suppose we have a noisy communication channel in which certain signal values can
 
 We are interested in transmission without possibility of confusion. For this example it is possible for two values to be transmitted without ambiguity e.g. values 1 and 4, which allows us to send $2^n$ non-confoundable messages in $n$ steps. But we could do better, for example we could communicate five two-step codewords e.g. "00", "12", "24", "43", "31". Each pair of these codewords includes at least one position where its values differ by two or more modulo 5, which allows the recipient to distinguish them without confusion.  This allows us to send $5^{n / 2}$ non-confoundable messages in $n$ steps.
 
-Let us be more precise. Given a graph $G$ modeling a communication channel and a number $k \geq 1$ we say that two messages $v_1v_2\ldots v_k$, $w_1w_2\ldots w_k \in V(G)^k$ of length $k$ are non-confoundable if and only if there is $1 \leq i \leq k$ such that $v_i$, $w_i$ are non-confoundable. We are interested in the maximum rate at which we can reliably transmit information (the \emph{Shannon capacity} of the channel defined by $G$).
+Let us be more precise. Given a graph $G$ modeling a communication channel and a number $k \geq 1$ we say that two messages $v_1v_2\ldots v_k$, $w_1w_2\ldots w_k \in V(G)^k$ of length $k$ are non-confoundable if and only if there is $1 \leq i \leq k$ such that $v_i$, $w_i$ are non-confoundable. We are interested in the maximum rate at which we can reliably transmit information, that is, the \emph{Shannon capacity} of the channel defined by $G$.
 
-For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$. To describe longer messages we use \emph{strong product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ if and only if $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ -- which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$.
+For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$. To describe longer messages we use \emph{strong product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ if and only if $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$.
 
 Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graphs in finite time. If we could calculate $\alpha(G^k)$ for a first few values of $k$ (we will show how to do it in \Cref{alg:maxStableSet}) we could have a lower bound on $\Theta(G)$. Let us now turn into search for some usable upper bound.
 
@@ -45,9 +45,9 @@ Consider an "umbrella" in $\mathbb{R}^3$ with the unit vector $e_1 = (1, 0, 0)$ 
 It turns out, that we can obtain a similar representation of the vertices of $C_5^k$ by unit vectors $v_i \in \mathbb{R}^{3k}$, so that any two non-adjacent vertices are labeled with orthogonal vectors (this representation is sometimes called the \emph{orthogonal representation} \cite{Lovsz1989Orthogonal}). Moreover, we still get $e_1^\intercal v_i = 5^{-k/4}$ for every $i \in V(C_5^k)$ (the proof is quite technical and we omit it here).
 
 If $S$ is any stable set in $C_5^k$, then $\{v_i: i \in S\}$ is a set of mutually orthogonal unit vectors, so we could extend $S$ to $S'$, so that $\{v_i: i \in S'\}$ is a basis of $\mathbb{R}^{3k}$. This gives us
-$$\sum\limits_{i\in S}(e_1^\intercal v_i)^2 \leq \sum\limits_{i \in S'}(e_1^\intercal v_i)^2 \leq ? = 1$$
+$$\sum\limits_{i\in S}(e_1^\intercal v_i)^2 \leq \sum\limits_{i \in S'}(e_1^\intercal v_i)^2 \leq |e_1|^2 = 1$$
 \todo{todo}
-Each term on the left hand side is $5^{-k/4}$, so the left hand side is equal to $|S|5^{-k/2}$, and so $|S| \leq 5^{k/2}$. Since $|S|$ was an arbitrary stable set, we get $\alpha(C_5^k) \leq 5 ^{k/2}$ and $\Theta(C_5) = \sqrt{5}$.
+Each term on the left hand side is equal to $5^{-k/4}$, so the left hand side is equal to $|S|5^{-k/2}$, and so $|S| \leq 5^{k/2}$. Since $|S|$ was an arbitrary stable set, we get $\alpha(C_5^k) \leq 5 ^{k/2}$ and $\Theta(C_5) = \sqrt{5}$.
 
 It turns out that this method extends to any graph $G$ in place of $C_5$. All we have to do is to find a orthogonal representation that will give us the best bound. So, we can define the \emph{Lovász number} of a graph $G$ as:
 $$\vartheta(G) = \min\limits_{c,U} \max\limits_{i\in V} \frac{1}{(c^\intercal u_i)^2},$$
@@ -78,7 +78,7 @@ First, let us recall some definitions, with \cite{gilbertstrang2020} as a refere
 If a matrix $A$ is symmetric\footnote{Matrix $A$ is symmetric if and only if $A = A^\intercal$}, all the eigenvalues are real.
 
 \begin{defn}[positive semidefinite matrix]
-  Let $A$ be an $n \times n$ symmetric matrix. $A$ is \emph{positive semidefinite} if all of its eigenvalues are nonnegative. We denote it by $A \succeq 0$.
+  Let $A$ be an $n \times n$ symmetric matrix. $A$ is \emph{positive semidefinite} if and only if all of its eigenvalues are nonnegative. We denote it by $A \succeq 0$.
 \end{defn}
 
 We have equivalent definitions of semidefinite matrices.
@@ -99,7 +99,7 @@ We may think equivalently of $n \times n$ matrices as vectors with $n^2$ coordin
   A subset $C$ of $\mathbb{R}^n$ is a \emph{convex cone}, if and only if for any positive scalars $\alpha, \beta$ and for any $x, y \in C$, $\alpha x + \beta y \in C$.
 \end{defn}
 
-The fact that the sum of two positive semidefinite matrices is again positive semidefinite, with the fact that every positive scalar multiple of a positive semidefinite matrix is positive semidefinite, translates into the geometric statement that the set of all positive semidefinite matrices forms a convex closed cone $\mathcal{P}_n$ in $\mathbb{R}^{n \times n}$ with vertex 0. This cone $\mathcal{P}_n$ is important but its structure is not trivial.
+The fact that the sum of two positive semidefinite matrices is again positive semidefinite, with the fact that every positive scalar multiple of a positive semidefinite matrix is positive semidefinite, translates into the geometric statement that the set of all positive semidefinite matrices forms a convex closed cone $\mathcal{P}_n$ in $\mathbb{R}^{n \times n}$ with its apex at 0. This cone $\mathcal{P}_n$ is important but its structure is not trivial.
 
 \paragraph{Semidefinite programs.}
 
@@ -151,17 +151,17 @@ This leads us to definition of $\vartheta(G)$ in terms of semidefinite programmi
   \end{equation*}
 \end{theorem}
 
-Any stable set $S$ of $G$ provides a feasible solution of the sual program, by choosing $Z_{ij} = \frac{1}{S}$, if $i, j \in S$ and 0 otherwise. Similarly, any $k$-coloring of $\overline{G}$ provides a feasible solution of the former semidefinite program, by choosing $Y_{ij} = -1$ if $i$ and $j$ have different colors, $Y_{ii} = k-1$, and $Y_{ij} = 0$ otherwise.
+Any stable set $S$ of $G$ provides a feasible solution of the dual program, by choosing $Z_{ij} = \frac{1}{S}$ if $i, j \in S$ and 0 otherwise. Similarly, any $k$-coloring of $\overline{G}$ provides a feasible solution of the former semidefinite program, by choosing $Y_{ij} = -1$ if $i$ and $j$ have different colors, $Y_{ii} = k-1$, and $Y_{ij} = 0$ otherwise.
 
 Now, that we know how to calculate $\vartheta(G)$, let us describe the algorithm to calculate the coloring of $G$.
 
-\section{Coloring perfect graph using ellipsoid method}
+\section{Coloring perfect graphs using ellipsoid method}
 \label{sec:coloringEllipsoid}
 The following part is based on \citetitle{Laurent2005} by \citeauthor{Laurent2005} \cite{Laurent2005}.
 
 \subsection{Maximum cardinality stable set}
 
-Given graph $G$, recall that stability number of $G$ is equal clique number of the complement of $G$. This gives us a way to compute $\alpha(G)$ for any perfect graph $G$.
+Given graph $G$, recall that the stability number of $G$ is equal the clique number of the complement of $G$. This gives us a way to compute $\alpha(G)$ for any perfect graph $G$.
 
 In fact, to calculate $\chi(\overline{G})$ and $\alpha(G)$ we only need an approximated value of $\vartheta(G)$ with precision smaller than $1/2$, as the former values are always integral.
 
@@ -259,7 +259,7 @@ Recall that to calculate a maximum cardinality clique of $G$, we can calculate a
 
 To understand \Cref{alg:ssIntersectingCliques}, let us note that $S$ calculated in line \ref{line:ssGetS} has a weight equal $t$, which means that $S$ meets each of $Q_1, \ldots Q_t$. Then, if $\omega(G \setminus S) < \omega(G)$, then $S$ meets all the maximum cardinality cliques in G so we return $S$.
 
-There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single clique to the list of maximum cardinality cliques requires constructing auxiliary graph for weighted maximum stable set, which is of size $O(|V|^2)$ and running \Cref{alg:maxStableSet} on it. Therefore total running time is polynomial.
+There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single clique to the list of maximum cardinality cliques requires constructing auxiliary graph for weighted maximum stable set, which is of size $O(|V|^2)$ and running \Cref{alg:maxWeightedStableSet} on it. Therefore total running time is polynomial.
 
 \subsection{Minimum coloring}
 
@@ -284,7 +284,7 @@ There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single cliq
   \mEndProcedure
 \end{algorithmic}
 
-Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$. We will call recursion at most $O(|V|)$ times, each step of recursion requires polynomial time. Therefore the total running time of \Cref{alg:minColoring} is polynomial.
+Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$ colors, so we will call the recursion $O(|V|)$ times, each step of recursion requires polynomial time. Therefore the total running time of \Cref{alg:minColoring} is polynomial.
 
 \section{Classical algorithms}
 \label{sec:classicalColoring}
@@ -292,16 +292,16 @@ Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \ome
 Ever since Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs, a combinatorial algorithm for doing the same has been sought. As of yet, it is not known, although there is much progress in the field.
 
 \begin{defn}[prism]
-  A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them. Notice that for a graph to contain no odd hole, all three paths in a prism must have the same parity. A prism with all three paths odd is called an \emph{odd prism}.
+  A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them. Notice that for a graph to contain no odd holes, all three paths in a prism must have the same parity.
   \label{def:prism}
 \end{defn}
 
-In 2005 Maffray and Trotignon showed a coloring algorithm that colors graphs containing no odd hole, no antihole and no prism (sometimes called Artemis graphs) in $O(|V|^4|E|)$ time \cite{Maffray2006}. They later improved the time complexity to $O(|V|^2|E|)$ \cite{coloringArtemis}.
+A prism with all three paths odd is called an \emph{odd prism} and a prism with all three paths even is called an \emph{even prism}.
 
-In 2015 Maffray showed an algorithm for coloring Berge graphs with no squares (a square is a $C_4$) and no odd prism \cite{Maff2015}.
+In 2005 Maffray and Trotignon showed a coloring algorithm that colors graphs containing no odd holes, no antiholes and no prisms (sometimes called Artemis graphs) in $O(|V|^4|E|)$ time \cite{Maffray2006}. They later improved the time complexity to $O(|V|^2|E|)$ \cite{coloringArtemis}. In 2015 Maffray showed an algorithm for coloring Berge graphs with no squares\footnote{sometimes called square-free Berge graphs} (a square is a $C_4$) and no odd prisms \cite{Maff2015}.
 
 In 2016 Chudnovsky et al. published an algorithm that given a perfect graph $G$ with $\omega(G) = k$ colors it optimally in a time polynomial for a fixed $k$ \cite{Chudnovsky2017}. In general case this algorithm has a time complexity of $O(|V|^{(k+1)^2})$.
 
-A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{coloringSquareFree}. Before proving strong perfect graph conjecture, a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern.
+A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{coloringSquareFree}. Before proving strong perfect graph conjecture a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern.
 
-The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is not a member of class that is simpler to analyze and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper is far from straightforward. We provide its pseudocode in the Appendix A.
+The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is not a member of class that is simple to recognize and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper is far from straightforward. We provide its pseudocode in the Appendix A.

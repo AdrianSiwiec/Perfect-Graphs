@@ -25,16 +25,16 @@ We begin by recalling the basic notions of graph theory. We use standard definit
 
 We will only consider finite graphs, that is, $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. When the context of $G$ is clear we will use $V$ and $E$ to denote its vertex and edge set.
 
-An edge $\{x, y\}$ is said to \emph{join}, or \emph{be between} vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ denote the same edge (all our graphs are \emph{undirected}). If $xy \in E(G)$ then $x$ and $y$ are \emph{adjacent}, \emph{connected} or \emph{neighboring}. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is, all vertices $y$ such that $xy$ is an edge. Similarly, for $X \subseteq V(G)$, by $N(X)$ we will denote the \emph{neighborhood} of $X$, meaning all vertices of $v \in V(G) \setminus X$, so that there is a $x \in X$, that $xv$ is an edge in $G$. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{anticonnected}.
+An edge $\{x, y\}$ is said to \emph{join}, or \emph{be between} vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ denote the same edge (all our graphs are \emph{undirected}). If $xy \in E(G)$ then $x$ and $y$ are \emph{adjacent}, \emph{connected} or \emph{neighboring}. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is, all vertices $y$ such that $xy$ is an edge. Similarly, for $X \subseteq V(G)$, by $N(X)$ we will denote the \emph{neighborhood} of $X$, meaning all vertices of $v \in V(G) \setminus X$, so that there is a $x \in X$, that $xv$ is an edge in $G$. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{nonneighbors} or \emph{anticonnected}.
 
 \Cref{fig:examplePath} shows an example graph $G_0 = (V, E)$ with $V = \{v_1, v_2, v_3, v_4\}$ and $E = \{v_1v_2, v_2v_3, v_3v_4\}$. We will mark edges as solid lines on figures. Nonedges significant to the ongoing reasoning will be marked as dashed lines.
 
 \begin{defn}[subgraph]
-  $G' = (V', E')$ is a \emph{subgraph} of $G = (V, E)$ if and only if $V' \subseteq V$ and $E' \subseteq E$.
+  A graph $G' = (V', E')$ is a \emph{subgraph} of $G = (V, E)$ if and only if $V' \subseteq V$ and $E' \subseteq E$.
 \end{defn}
 
 \begin{defn}[induced subgraph]
-  If $G' = (V', E')$ is a subgraph of $G$ and it contains \emph{all edges} of $G$ that join two vertices in $V'$, then $G'$ is said to be \emph{induced subgraph} of $G$ and is denoted $G[V']$.
+  If $G' = (V', E')$ is a subgraph of $G$ and it contains \emph{all edges} of $G$ that join two vertices in $V'$, then $G'$ is said to be an \emph{induced subgraph} of $G$ and is denoted $G[V']$.
 \end{defn}
 
 Given a graph $G = (V, E)$ and a set $X \subseteq V$ by $G\setminus X$ we will denote a induced subgraph $G[V\setminus X]$.
@@ -53,7 +53,7 @@ For example, for $X = \{v_2\}$, the set $\{v_1, v_3\}$ is $X$-complete in $G$, w
 \end{defn}
 This path $P$ is usually denoted by $x_1x_2\ldots x_l$ or $x_1$-$x_2$-$\ldots$-$x_l$. The vertices $x_1$ and $x_l$ are the \emph{endvertices} and ${l-1} = |E(P)|$ is the \emph{length} of the path P. $\{x_2, \ldots x_{l-1}\}$ is the \emph{inside} of the path $P$, denoted as $P^*$. Notice that we don't allow any edges other than the ones between consecutive vertices for a graph to be called a path.
 
-Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we  added any edge to $G_0$ it would stop being a path.
+Our graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we  added any edge to $G_0$ it would stop being a path.
 
 
 \begin{defn}[connected graph, subset]
@@ -71,7 +71,7 @@ Graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we
   \[ V(C) = \{x_1, x_2, \ldots, x_l\},\quad E(C) = \{x_1x_2, x_2x_3, \ldots, x_{l-1}x_l, x_lx_1\} \]
 \end{defn}
 
-This cycle $C$ is usually denoted by $x_1x_2\ldots x_lx_1$ or $x_1 - x_2 - \ldots - x_l - x_1$. $l = |E(C)|$ is the \emph{length} of the cycle $C$. Sometimes we will denote the cycle of length $l$ as $C_l$.
+This cycle $C$ is usually denoted by $x_1x_2\ldots x_lx_1$ or $x_1$-$x_2$-$\ldots$-$x_l$-$x_1$. $l = |E(C)|$ is the \emph{length} of the cycle $C$. Sometimes we will denote the cycle of length $l$ as $C_l$.
 
 
 \begin{defn}[hole]
@@ -95,8 +95,12 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
   An \emph{anticomponent} of a graph $G$ is an induced subgraph whose complement is a component in $\overline{G}$.
 \end{defn}
 
+\begin{defn}[antipath]
+  An \emph{antipath} is a graph $G$ such that $\overline{G}$ is a path.
+\end{defn}
+
 \begin{defn}[antihole]
-  An \emph{antihole} is a subgraph of $G$ whose complement is a hole in $G$.
+  An \emph{antihole} is a graph $G$ such that $\overline{G}$ is a hole.
 \end{defn}
 
 \begin{defn}[clique]

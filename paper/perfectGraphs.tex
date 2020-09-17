@@ -61,16 +61,17 @@ In 1961 Berge conjured that a graph is perfect if and only if it contains no odd
 The proof is long and complicated. Moreover, it has little noticeable connection to the algorithm of recognizing Berge graphs we discuss later. Therefore we will discuss it very briefly following the overview by Cornuéjols \cite{GC03}.
 
 \subsubsection{Basic classes of perfect graphs}
-Bipartite graphs are perfect, since we can color them with two colors. From the theorem of König we get that line graphs of bipartite graphs are also perfect \cite{Knig1916, GC03}. From the perfect graph theorem (\Cref{thm:pgt}) it follows that complements of bipartite graphs and complement of line graphs of bipartite graphs are also perfect. We will call these four classes \emph{basic}.
+Bipartite graphs are perfect, since we can color them with two colors. From the theorem of König \cite{Knig1916} we get that line graphs of bipartite graphs are also perfect \cite{GC03}. From the perfect graph theorem (\Cref{thm:pgt}) it follows that complements of bipartite graphs and complement of line graphs of bipartite graphs are also perfect. We will call these four classes \emph{basic}.
 
 \subsubsection{2-join, Homogeneous Pair and Skew Partition}
-A graph $G$ has a \emph{2-join} if its vertices can be partitioned into sets $V_1$, $V_2$, each of size at least three, and there are nonempty disjoint subsets $A_1, B_1 \subseteq V_1$ and $A_2, B_2 \subseteq V_2$, such that all vertices of $A_1$ are adjacent to all vertices of $A_2$, all vertices of $B_1$ are adjacent to all vertices of $B_2$, and these are the only edges between $V_1$ and $V_2$. When a graph $G$ has a 2-join, it can be decomposed onto two smaller graphs $G_1$, $G_2$, so that $G$ is perfect if and only if $G_1$ and $G_2$ are perfect \cite{Cornujols1985}.
+A graph $G$ has a \emph{2-join} if and only if its vertices can be partitioned into sets $V_1$, $V_2$, each of size at least three, and there are nonempty disjoint subsets $A_1, B_1 \subseteq V_1$ and $A_2, B_2 \subseteq V_2$, such that all vertices of $A_1$ are adjacent to all vertices of $A_2$, all vertices of $B_1$ are adjacent to all vertices of $B_2$, and these are the only edges between $V_1$ and $V_2$. When a graph $G$ has a 2-join, it can be decomposed onto two smaller graphs $G_1$, $G_2$, so that $G$ is perfect if and only if $G_1$ and $G_2$ are perfect \cite{Cornujols1985}.
 
 A graph $G$ has a \emph{homogeneous pair} if $V(G)$ can be partitioned into subsets $A_1$, $A_2$, $B$, such that $|A_1|+|A_2| \geq 3$, $|B| \geq 2$ and if a vertex $v \in B$ is adjacent to a vertex from $A_i$, then it is adjacent to all vertices from $A_i$. Chvátal and Sbihi proved that no minimally imperfect graph has a homogeneous pair \cite{Chvtal1987}.
 
 A graph $G$ has a \emph{skew partition} if $V(G)$ can be partitioned into nonempty subsets $A, B, C, D$ such that there are all possible edges between $A$ and $B$ and no edges between $C$ and $D$. Chudnovsky et at. proved that no minimally imperfect graph has a skew partition.
 
 The proof of \Cref{thm:spgt} is a consequence of the \emph{Decomposition theorem}:
+
 \begin{theorem}[Decomposition theorem, stated as Theorem 4.2 of \cite{GC03}]
 	\label{thm:decomposition}
 	Every Berge graph $G$ is basic or has a skew partition or a homogeneous pair, or either $G$ or $\overline{G}$ has a 2-join.
@@ -81,9 +82,9 @@ See \cite{MC06} for the full proof of \Cref{thm:spgt} and \cite{GC03} for its sh
 \section{Recognizing berge graphs}
 \label{sec:recognizingBerge}
 
-The following is based on the paper by \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but we will aim to show the intuition behind the algorithm.
+The following section is based on the paper by \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but we will aim to show the intuition behind the algorithm.
 
-Berge graph recognition algorithm (later called CCLSV from the names of its authors) could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\Cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole or for shortest odd antihole (\Cref{AmenableHoles}).
+Berge graph recognition algorithm (later called CCLSV from the names of its authors) could be divided into two parts: first we check if either $G$ or $\overline{G}$ contain any of a number of simple forbidden structures (\Cref{SimpleStructures}). If they do, we output that graph is not Berge and stop. Else, we check if there is a near-cleaner for a shortest odd hole or for shortest odd antihole (\Cref{AmenableHoles}). If we find no such near-cleaners, then, as we will see, the graph is Berge.
 
 \subsection{Simple forbidden structures}
 \label{SimpleStructures}
@@ -115,7 +116,7 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 
 \paragraph{Finding Pyramids.}
 
-\begin{alg}[Test if $G$ contains a Pyramid]
+\begin{alg}[Test if $G$ contains a pyramid]
 	\label{alg:testPyramid}
 	Input: A graph $G$.
 
@@ -141,7 +142,7 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 				\mEndFor \label{line:pyramidSEnd}
 				 
 					\mIf{$s_1 = b_1$ \label{line:ShortestPathsStart}} \Comment{calculate all possible $P_1$ paths}
-						\ls $P_1(b_1) \gets$ the one-vertex path with vertex $b_1$
+						\ls $P_1(b_1) \gets$ the one-vertex path $b_1$
 						\ls \algorithmicforeach ~$m \in M$ \algorithmicdo~ $P_1(m) \gets$ \textsc{undefined}
 					\mElse
 						\ls $P_1(b_1) \gets $ \textsc{undefined}
@@ -153,7 +154,7 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 								\lsx and $V(T_1(m) \setminus m)$ 
 								\lsx
 							}
-								\ls $P_1(m) \gets s_1-S_1(m)-m-T_1(m)-b_1$
+								\ls $P_1(m) \gets s_1$-$S_1(m)$-$m$-$T_1(m)$-$b_1$
 							\mElse
 								\ls $P_1(m) \gets$ \textsc{undefined}
 							\mEndIf
@@ -166,7 +167,7 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 					\mIf{$P_1(m_1) \neq \UND$}
 						\ls color black the vertices of $M$ that either belong to \label{line:pyramidColor}
 						\lsx $P_1(m_1)$ or have a neighbor in $P_1(m_1)$
-						\lsx color all other vertices white.
+						\ls color all other vertices white.
 						\mForEach{$m_2 \in M \cup \{b_2\}$}
 							\mIf{$P_2(m_2)$ exists and contains no black vertices \lsx} \label{line:pyramidColor2}
 								\ls add $(m_1, m_2)$ to $good\_pairs_{1,2}$
@@ -176,7 +177,7 @@ It is easy to see that every graph containing a pyramid contains an odd hole -- 
 				\mEndFor
 				\ls calculate $good\_pairs_{1,3}$ and $good\_pairs_{2,3}$ in similar way
 				\mForEach{triple $m_1, m_2, m_3$ such that $m_i \in M \cup \{b_i\}$} \label{line:m1m2m3}
-					\mIf{$\forall_{1\leq i < j \leq 3}$: $(m_i, m_j)$ is a good $(i, j)$-pair}
+					\mIf{$\forall_{1\leq i < j \leq 3}$: $(m_i, m_j) \in good\_pairs_{i, 2}$}
 						\ls \RETURN \TRUE \label{line:pyramidTrue}
 					\mEndIf
 				\mEndFor
@@ -191,7 +192,7 @@ With definitions as above, for $1 \leq i < j \leq 3$, we say that $(m_i, m_j)$ i
 
 It is easy to see, that if \textsc{Contains-Pyramid($G$)} outputs that $G$ contains a pyramid, it indeed does -- when we return in line \ref{line:pyramidTrue} the vertex $a$ found in line \ref{line:a} can be linked into a triangle $b_1, b_2, b_3$ via paths $P_1(m_1), P_2(m_2), P_3(m_3)$ for $m_1$, $m_2$, $m_3$ from line \ref{line:m1m2m3}. The proof of the converse is rather technical and we refer to Theorem 2.2 of \cite{MC05} for it.
 
-Now we will proove the time complexity.
+Now we will prove the time complexity.
 
 \begin{theorem}[part of Theorem 2.2 of \cite{MC05}]
 	\label{thm:containsPyramid9}
@@ -228,7 +229,7 @@ Five vertices $v_1, \ldots, v_5$ and a path $P$ form a \emph{jewel} if and only 
 
 Notice that given a jewel $v_1, \ldots, v_5, P$, if the path $P$ is odd, then $v_1$-$P$-$v_4$-$v_5$-$v_1$ is an odd hole. If the path $P$ is even, then $v_1$-$P$-$v_4$-$v_3$-$v_2$-$v_1$ is an odd hole.
 
-Most obvious way to find a jewel is to enumerate all (possibly chordal) cycles of length 5 as $v_1, \ldots v_5$, check if it has all required nonedges and if it does, try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm, but since whole Berge recognition algorithm takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
+Most obvious way to find a jewel is to enumerate all (possibly chordal) cycles of length 5 as $v_1, \ldots v_5$, check if it has all required nonedges and if it does, try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm (see Algorithm 3.1 of \cite{MC05}), but since whole Berge recognition algorithm takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
 
 \subsubsection{Configurations of type $\T_1$}
 
@@ -344,9 +345,11 @@ It is easy to see that when \Cref{alg:t3} reports a configuration of type $\T_3$
 	Each execution of lines \ref{line:t3n4start}-\ref{line:t3mid} takes $O(|V|^2)$ time, and there are $O(|V|)$ $v_4$s to enumerate. Line \ref{line:t3v4if} takes $O(|V|)$ time and then there are $O(|V|)$ $v_3$ to enumerate. Each is checked in $O(1)$ time. If we find the correct one, we calculate a path $P$, but return right away, so we calculate $P$ at most once in whole algorithm.
 \end{proof}
 
+When graphs $G$ and $\overline{G}$ contain no pyramids, no jewels and no configurations of type $\T_1, \T_2$ or $\T_3$, we will say that graph $G$ contains no \emph{simple forbidden structures}.
+
 \subsection{Amenable holes.}
 \label{AmenableHoles}
-As we will see (\Cref{thm:amenableHoles}), if graphs $G$ and $\overline{G}$ contain no jewels, pyramids or configurations of type $\T_1, \T_2$ or $\T_3$, then every shortest odd hole in $G$ or $\overline{G}$ will have a special structure and we will call it amenable. This fact will help us determine if $G$ or $\overline{G}$ contain an odd hole. But first, let us introduce a few new definitions.
+As we will see (\Cref{thm:amenableHoles}), if graph $G$ contains no simple forbidden structures, then every shortest odd hole in $G$ or $\overline{G}$ will have a special structure and we will call it amenable. This fact will help us determine if $G$ or $\overline{G}$ contain an odd hole. But first, let us introduce a few new definitions.
 
 \begin{defn}[relevant triple]
 	Given a graph $G$, a triple $(a, b, c)$ of vertices is called \emph{relevant} if and only if $a \neq b$ (but possibly $c \in \{a, b\}$) and $G[\{a,b,c\}]$ is an independent set.
@@ -364,7 +367,7 @@ As we will see (\Cref{thm:amenableHoles}), if graphs $G$ and $\overline{G}$ cont
   Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{cleaner for $C$} if and only if $X \cap V(C) = \emptyset$ and every $C$-major vertex belongs to $X$.
 \end{defn}
 
-Let us notice, that if $X$ is a cleaner for $C$, then $C$ is a clean hole in $G \setminus X$.
+\noindent Let us notice, that if $X$ is a cleaner for $C$, then $C$ is a clean hole in $G \setminus X$.
 
 \begin{defn}[near-cleaner]
   Given a shortest odd hole $C$ in $G$, a subset $X \subseteq V(G)$ is a \emph{near-cleaner for $C$} if and only if $X$ contains all $C$-major vertices and $X \cap V(C)$ is a subset of vertex set of some 3-vertex path of $C$.
@@ -387,12 +390,12 @@ Let us notice, that if $X$ is a cleaner for $C$, then $C$ is a clean hole in $G 
   \end{minipage}
   \end{figure}
 
-Some pictures might be helpful. \Cref{fig:amenableOddHole} shows an example of an amenable odd hole $C = v_1$-$\ldots$-$v_7$-$v_1$. It is not a clean hole -- vertices $v_8$ and $v_9$ are $C$-major, and $\{v_8, v_9, v_1, v_2, v_3\}$ is an axample of a near-cleaner for $C$.
+Some pictures might be helpful. \Cref{fig:amenableOddHole} shows an example of an amenable odd hole $C = v_1$-$\ldots$-$v_7$-$v_1$. It is not a clean hole -- vertices $v_8$ and $v_9$ are $C$-major, and $\{v_8, v_9, v_1, v_2, v_3\}$ is an example of a near-cleaner for $C$.
 \Cref{fig:notAmenableHole} shows an odd hole $C = v_1$-$\ldots$-$v_7$-$v_1$ that is not amenable, because there is no $\{v_8, v_9\}$-complete edge in $C$.
 
 \begin{theorem}[Theorem 8.1 of \cite{MC05}]
 	\label{thm:amenableHoles}
-	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then every shortest odd hole in $G$ is amenable.
+	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no pyramids, no jewels and no configurations of types $\T_1, \T_2$ or $\T_3$. Then every shortest odd hole in $G$ is amenable.
 	% \TODO{Any ideas on what else to say here? List all 9 steps?}
 	% \TODO{Dobre pytanie. Te 9 kroków to da się zawrzeć w 1-2 zdaniach każde? Jeśli nie, to tylko napisałbym ogólnikowo, że "jest sekwencja kroków, która to robi, tu jest odnośnik"}
 \end{theorem}
@@ -403,7 +406,7 @@ With \Cref{thm:amenableHoles} we can describe the rest of the algorithm.
 
 \begin{alg}[List possible near cleaners]
 	\label{alg:listNearCleaners}
-	Input: A graph $G$.
+	Input: A graph $G$ containing no simple forbidden structures.
 
 	\noindent Output: $O(|V|^5)$ subsets of $V(G)$, such that if $C$ is an amenable hole in $G$, then one of the subsets is a near-cleaner for $C$.
 \end{alg}
@@ -459,7 +462,7 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 
 \begin{theorem}[Theorem 9.2 of \cite{MC05}]
 	\label{thm:92}
-	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Then the result of the \Cref{alg:listNearCleaners} on the graph $G$ is a set $\mathcal{R}$, such that for every shortest amenable hole $C$, there is a near-cleaner for $C$ in $\mathcal{R}$.
+	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no pyramids, no jewels and no configurations of types $\T_1, \T_2$ or $\T_3$. Then the result of the \Cref{alg:listNearCleaners} on the graph $G$ is a set $\mathcal{R}$, such that for every shortest amenable hole $C$, there is a near-cleaner for $C$ in $\mathcal{R}$.
 \end{theorem}
 \begin{proof}
 	Let us suppose that $C$ is an amenable hole in $G$. By \Cref{thm:91}, there is a relevant triple $(a, b, c)$ satisfying that theorem. Let $T$ be the set of all $C$-major vertices not in $X(a,b,c)$. From \Cref{thm:91} we get that $T$ is anticonnected. Since $C$ is amenable, there is an edge $uv$ of $C$ that is $T$-complete, and therefore $T \subseteq N(u, v)$. But then $N(u, v) \cup X(a, b, c) \in \mathcal{R}$ is a near-cleaner for $C$. Therefore the output of the \Cref{alg:listNearCleaners} is correct.
@@ -467,7 +470,7 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 
 \begin{alg}[Test possible near cleaner]
 	\label{alg:testNearCleaner}
-	Input: A graph $G$ containing no simple forbidden structure, and a subset $X \subseteq V(G)$.
+	Input: A graph $G$ containing no simple forbidden structures, and a subset $X \subseteq V(G)$.
 
 	\noindent Output: Determines one of the following:
 	\begin{itemize}
@@ -488,7 +491,7 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 				\ls $r(x, y) \gets \infty$
 			\mEndIf
 			\mForEach{$y_1 \in V(G) \setminus X$} \label{line:cudaStart}
-				\mForEach{3-vertex path $x_1-x_2-x_3$ of $G\setminus y_1$} \label{line:3vertex}
+				\mForEach{3-vertex path $x_1$-$x_2$-$x_3$ of $G\setminus y_1$} \label{line:3vertex}
 					\mIf{$R(x_1, y_1), R(x_2, y_2)$ both exist} \label{line:cudaWorkStard}
 						\ls $y_2 \gets$ the neighbor of $y_1$ in $R(x_2, y_1)$ \label{line:definey2}
 						\mIf{$r(x_2, y_1) = r(x_1, y_1) + 1 = r(x_1, y_2)$ \AND
@@ -505,7 +508,7 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 
 \begin{theorem}[Theorem 5.1 of \cite{MC05}]
 	\label{thm:testNCWorks}
-	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no Pyramid, no Jewel and no configuration of types $\T_1, \T_2$ or $\T_3$. Let $X$ be a subset of $V(G)$. If \Cref{alg:testNearCleaner} reports an odd hole, then $G$ contains an odd hole, else there is no shortest odd hole $C$ in $G$, such that $X$ is a near-cleaner for $C$.
+	Let $G$ be a graph, such that $G$ and $\overline{G}$ contain no pyramids, no jewels and no configurations of types $\T_1, \T_2$ or $\T_3$. Let $X$ be a subset of $V(G)$. If \Cref{alg:testNearCleaner} reports an odd hole, then $G$ contains an odd hole, else there is no shortest odd hole $C$ in $G$, such that $X$ is a near-cleaner for $C$.
 \end{theorem}
 \begin{proof}
 	Below we will prove that if the \Cref{alg:testNearCleaner} reports an odd hole in $G$, there indeed is one. The rest of the proof is more complicated, see section 4 and Theorem 5.1 of \cite{MC05}.
@@ -576,7 +579,7 @@ To summarize, we present a complete algorithm for recognizing perfect graphs.
 \begin{proof}
 	First, in lines \ref{line:simpleStart}-\ref{line:simpleEnd} we test whether $G$ or $\overline{G}$ contain a pyramid, a jewel or a configuration of type $\T_1, \T_2$ or $\T_3$. If it is not the case, then by \Cref{thm:amenableHoles} every shortest odd hole in $G$ and in $\overline{G}$ is amenable. 
 	
-	By \Cref{thm:92} in line \ref{line:getR} we get a set $\mathcal{R}$, such that if $G$ contains an amenable hole $C$, one of the sets $X \in \mathcal{R}$ is a near-cleaner for $C$. In lines \ref{line:testXStart}-\ref{line:testXEnd} we test each $X \in \mathcal{R}$ and if an odd hole is reported, then by \Cref{thm:testNCWorks} $G$ is not Berge. If for all $X \in \mathcal{R}$ an odd hole is not reported, then by \Cref{thm:amenableHoles}, \Cref{thm:92} and \Cref{thm:testNCWorks} there is no odd hole in $G$. We run the same checks on $\overline{G}$ and if again we do not detect an odd hole, then $G$ is Berge and by \Cref{thm:spgt} $G$ is perfect.
+	By \Cref{thm:92} in line \ref{line:getR} we get a set $\mathcal{R}$, such that if $G$ contains an amenable hole $C$, one of the sets $X \in \mathcal{R}$ is a near-cleaner for $C$. In lines \ref{line:testXStart}-\ref{line:testXEnd} we test each $X \in \mathcal{R}$ and if an odd hole is reported, then by \Cref{thm:testNCWorks} $G$ is not Berge. If for all $X \in \mathcal{R}$ no odd holes are reported, then by \Cref{thm:amenableHoles}, \Cref{thm:92} and \Cref{thm:testNCWorks} there are no odd holes in $G$. We run the same checks on $\overline{G}$ and if again we do not detect an odd hole, then $G$ is Berge and by \Cref{thm:spgt} $G$ is perfect.
 
 	Finally, let us add up the total running time. By \Cref{thm:containsPyramid9} checking if there is a pyramid in $G$ or $\overline{G}$ takes $O(|V|^9)$ time. Testing for jewels takes $O(|V|^7)$ time, testing for a configuration of type $\T_1$ takes $O(|V|^5)$ time and testing for configuration of type $\T_2$ takes $O(|V|^6)$ time. By \Cref{thm:t3Time} testing for a configuration of type $\T_3$ takes $O(|V|^6)$ time. Running \Cref{alg:listNearCleaners} takes $O(|V|^5)$ time and returns $O(|V|^5)$ subsets. For each subset running \Cref{alg:testNearCleaner} takes $O(|V|^4)$ time, so testing all possible near-cleaners takes $O(|V|^9)$ time.
 
