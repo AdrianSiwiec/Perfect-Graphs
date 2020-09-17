@@ -10,11 +10,11 @@
 int main() {
   srand(time(0));
 
-  int minN = 18;
-  int maxN = 36;
-  int step = 6;
+  int minN = 10;
+  int maxN = 16;
+  int step = 1;
 
-  for (int i = 0; i < 1; i++) {
+  for (int i = 0; i < 10; i++) {
     set<int> done;
 
     while (done.size() < (maxN - minN + step) / step) {
