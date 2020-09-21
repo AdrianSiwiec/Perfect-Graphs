@@ -4,14 +4,18 @@
 The following appendix is based on the paper \citetitle{coloringSquareFree} by \citeauthor{coloringSquareFree} \cite{coloringSquareFree}.
 
 \section{Introduction}
-We give a brief overview of the square-free perfect graph coloring algorithm and a pseudocode thereof. The work is not intended to be self-contained and will be impossible to fully understand without \cite{coloringSquareFree} at hand. But when reading \cite{coloringSquareFree}, one may pose a question of what sort of an algorithm emerges from it, and we believe the pseudocode below gives a first overview and is a major step required before an attempt to implement it would be made. For some, looking at the pseudocode could provide a better way to analyze and possibly simplify the algorithm.
+We give a brief overview of the square-free perfect graph coloring algorithm and a pseudocode thereof. The work is not intended to be self-contained and will be impossible to fully understand without \cite{coloringSquareFree} at hand. But when reading \cite{coloringSquareFree}, one may pose a question of what sort of an algorithm emerges from it, and we believe the pseudocode below gives a first overview and is a step required before an attempt to implement it would be made. Looking at the pseudocode could provide a better way to analyze and possibly simplify the algorithm.
 
 What we present would not be trivial to implement. For example in many places we say ''choose $x$, so that \dots'', without specifying how to do it. A most glaring example is calculating an inverse of a line graph (in \Cref{alg:growingJStrip}) which is a complicated algorithm in and of itself, see \cite{Liu2014} for reference.
 
-Recall, that a prism (\cref{def:prism}) is a graph consisting of two disjoint triangles and two disjoint paths between them.
+\begin{defnTwo}[prism]
+  A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them.
+\end{defnTwo}
+
+Notice that for a graph to contain no odd holes, all three paths in a prism must have the same parity. A prism with all three paths odd is called an \emph{odd prism} and a prism with all three paths even is called an \emph{even prism}.
 
 \begin{defnTwo}[Artemis graph]
-  A graph $G$ is an \emph{Artemis graph} if and only if it contains no odd hole, no antihole of length at least five, and no prism.
+  A graph $G$ is an \emph{Artemis graph} if and only if it contains no odd holes, no antiholes of length at least five, and no prisms.
 \end{defnTwo}
 
 In 2003 Maffray et al. published a paper on Artemis graphs where they show polynomial algorithms to recognize and color them \cite{Maffray2006}. In 2005 Maffray et al. published a paper on Artemis graphs \cite{Maffray2005} they showed an polynomial algorithm that checks if a perfect graph contains a prism, and returns it if so.
@@ -34,7 +38,7 @@ So, we will focus on square-free perfect graphs that are not Artemis graphs. Let
 Let us state a few definitions.
 
 \begin{defnTwo}[subdivision]
-  In a graph $G$, subdividing an edge $uv \in E(G)$ means removing the edge $uv$ and adding a new vertex $w$ and two new edges $uw, wv$. Starting with a graph $G$, the effect of repeatedly subdividing edges prioduces a graph $H$ called a \emph{subdivision of $G$}. Note that $V(G) \subseteq V(H)$.
+  In a graph $G$, subdividing an edge $uv \in E(G)$ means removing the edge $uv$ and adding a new vertex $w$ and two new edges $uw, wv$. Starting with a graph $G$, the effect of repeatedly subdividing edges produces a graph $H$ called a \emph{subdivision of $G$}. Note that $V(G) \subseteq V(H)$.
 \end{defnTwo}
 
 \begin{defnTwo}[triad]
@@ -52,7 +56,7 @@ Let us state a few definitions.
   \end{itemize}
 \end{defnTwo}
 
-The algorithm we present is derived from contructive proof of the following two theorems.
+The algorithm we present is derived from a constructive proof of the following two theorems.
 
 \begin{theorem}{}[Theorem 2.1 of \cite{coloringSquareFree}]
   Let $G$ be a square-free Berge graph. If $G$ contains a prism, then $G$ has a good partition.
@@ -67,7 +71,7 @@ A few more structures are used throughout the algorithm. Let us define them.
 For definitions \ref{def:majorNeiOfPrism} and \ref{def:localSubOfPrism}, let $K$ be a prism with triangles $\{a_1, a_2, a_3\}$ and $\{b_1, b_2, b_3\}$ and with paths $R_1, R_2, R_3$, where each $R_i$ has ends $a_i$ and $b_1$.
 
 \begin{defnTwo}[major neighbor of a prism]
-  A vertex $v \in V(G) \setminus K$ is a \emph{major neighbor} of pritm $K$ is and only if it has at least two neighbors in $\{a_1, a_2, a_3\}$ and at least two neighbors in $\{b_1, b_2, b_3\}$.
+  A vertex $v \in V(G) \setminus K$ is a \emph{major neighbor} of prism $K$ is and only if it has at least two neighbors in $\{a_1, a_2, a_3\}$ and at least two neighbors in $\{b_1, b_2, b_3\}$.
   \label{def:majorNeiOfPrism}
 \end{defnTwo}
 
@@ -136,7 +140,7 @@ Given a graph $G$ that contains a hyperprism $H$, we can define a few more struc
 
 \Cref{alg:growHyperprism} for growing hyperprism is based upon the following theorem. Recall that by $K_4$ we denote a clique on 4 vertices.
 \begin{theorem}[Lemma 3.3 of \cite{coloringSquareFree}]
-  Let $G$ be a berge graph, let $H$ be a hyperprism in $G$ and let $M$ be the set of major neighbors of $H$ in $G$. Let $F$ be a component of $V(G) \setminus(V(H) \cup M)$, such that the set of attachments of $F$ in $H$ is not local. Then one can find in polynomial time one of the following
+  Let $G$ be a Berge graph, let $H$ be a hyperprism in $G$ and let $M$ be the set of major neighbors of $H$ in $G$. Let $F$ be a component of $V(G) \setminus(V(H) \cup M)$, such that the set of attachments of $F$ in $H$ is not local. Then one can find in polynomial time one of the following
   \begin{itemize}
     \item a path $P$, with $\emptyset \neq V(P) \subseteq V(F)$, such that $V(H) \cup V(P)$ induces a hyperprism,
     \item a path $P$, with $\emptyset \neq V(P) \subseteq V(F)$, and for each $i \in \{1, 2, 3\}$ an $i$-rung $R_i$ of $H$, such that $V(P) \cup V(R_1) \cup V(R_2) \cup V(R_3)$ induces the line graph of a bipartite subdivision of $K_4$.
@@ -208,15 +212,15 @@ Given a square-free perfect graph $G$ and a $J$-strip system, for every choice o
   $X \subseteq V(G)$ \emph{saturates} the strip system if and only if for every $u \in V(J)$ there is at most one neighbor $v$ of $u$ such that $N_{uv} \nsubseteq X$.
 \end{defnTwo}
 
-\begin{defnTwo}[major vertex w.r.t. a strip system]
+\begin{defnTwo}[major vertex w.r.t.~a strip system]
   A vertex $v \in V(G) \setminus V(S, N)$  is \emph{major} with respect to (w.r.t.) the strip system if and only if the set of its neighbors saturates the strip system.
 \end{defnTwo}
 
-\begin{defnTwo}[major vertex w.r.t. some choice of rungs]
+\begin{defnTwo}[major vertex w.r.t.~some choice of rungs]
   A vertex $v \in V(G) \setminus V(S, N)$  is \emph{major} with respect to (w.r.t.) some choice of rungs if and only if the $J$-strip system defined by this choice of rungs is saturated by the set of neighbors of $v$.
 \end{defnTwo}
 
-\begin{defnTwo}[subset local w.r.t. a strip system]
+\begin{defnTwo}[subset local w.r.t.~a strip system]
   A subset $X \subseteq V(S, N)$ is \emph{local} with respect to (w.r.t.) the strip system, if and only if either $X \subseteq N_v$ for some $v \in V(J)$ or $X \subseteq S_{uv}$ for some $uv \in E(J)$.
 \end{defnTwo}
 
@@ -236,8 +240,8 @@ In the following algorithms we use a slightly different notation than before, wi
 	\item $a \cdots X$, when $a$ is a vertex and $X$ is a set of vertices -- $a$ has a nonneighbor in $X$,
 	\item $a \blacktriangleleft  X$, when $a$ is a vertex and $X$ is a set of vertices -- $a$ is complete to $X$,
 	\item $a \ntriangleleft X$, when $a$ is a vertex and $X$ is a set of vertices -- $a$ is anticomplete to $X$,
-	\item $X \setComplete Y$, when $X$ and $Y$ are set of vertices -- $X$ is complete to $Y$,
-	\item $X \setAntiComplete Y$, when $X$ and $Y$ are set of vertices -- $X$ is anticomplete to $Y$,
+	\item $X \setComplete Y$, when $X$ and $Y$ are sets of vertices -- $X$ is complete to $Y$,
+	\item $X \setAntiComplete Y$, when $X$ and $Y$ are sets of vertices -- $X$ is anticomplete to $Y$,
 	\item $[n]$  -- $\{1, \ldots, n\}$,
 	\item \LGBSK -- the line-graph of a bipartite subdivision of $K_4$.
 \end{itemize}

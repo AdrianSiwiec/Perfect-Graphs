@@ -4,16 +4,16 @@
   \KwData{$G$ -- square-free, Berge graph \newline
     $J$ -- a $3$-connected graph with appearance in $G$ \newline
     $(S, N)$ -- a $J$-strip system \newline
-    $m \in G \setminus (S, N)$ that is major w.r.t. some choice of rungs of $(S, N)$ but not w.r.t. $(S, N)$
+    $m \in G \setminus (S, N)$ that is major w.r.t.~some choice of rungs of $(S, N)$ but not w.r.t. $(S, N)$
   }
   \KwResult{$(S', N')$ -- A special $K_4$-strip system, or \newline
   $(S'', N'')$ -- a bigger $J$-strip system
   }
   \Indp	
   $X \gets N(m)$\;
-  $M \gets$ vertices of $G\setminus V(S,N)$ major w.r.t. $(S,N)$\;
-  $M^* \gets$ vertices of $G\setminus V(S,N)$ major w.r.t. some choice of rungs\;
-  \Assert[SPGT 8.4]{$J = K_4$}
+  $M \gets$ vertices of $G\setminus V(S,N)$ major w.r.t.~$(S,N)$\;
+  $M^* \gets$ vertices of $G\setminus V(S,N)$ major w.r.t.~some choice of rungs\;
+  \Assert[\cite{MC06} 8.4]{$J = K_4$}
   $V(J) \gets [4]$\;
   $\forall_{i\neq j \in [4]}$: choose rungs $R_{ij}, R_{ij}$, forming line graphs $L(H)$ and $L(H')$ so that $X$ 
   saturates $L(H)$ but does not saturate $L(H')$\;
@@ -34,7 +34,7 @@
   \Assert[6.3.(5)]{$R_{12}$ has length $0$, every $12$-rung has even length}
   \Assert[6.3.(6)]{$R_{24}$ has length $0$ and $R_{23}$ has odd length}
   \Assert[6.3.(7)]{Every $34$-rung has non-zero even length}
-  $\forall_{i \neq j \in [4]} O_{ij} \gets$ set of vertices that are not major w.r.t $L(H')$ and
+  $\forall_{i \neq j \in [4]} O_{ij} \gets$ set of vertices that are not major w.r.t~$L(H')$ and
   are complete to $(T'_i \cup T'_j) \setminus R'_{ij}$\;
   \Assert{$r_{12} = r_{21} \in O_{12}$, $m \in O_{34}$}
   \Assert{$O_{34} = M^* \setminus M$}

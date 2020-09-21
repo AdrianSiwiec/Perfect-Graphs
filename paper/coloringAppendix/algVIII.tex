@@ -20,9 +20,9 @@
 		} 
 	}
 	\ElseIf{$\exists F$ : $F$ is a component of $G\setminus(V(S,N) \cup M)$, 
-		such that no member of $F$ is major w.r.t. $(S, N)$ 
+		such that no member of $F$ is major w.r.t.~$(S, N)$ 
 		and set of attachments of $F$ on $H$ is not local}{
-		\Assert[6.2, or actually SPGT 8.5]{}
+		\Assert[6.2, or actually \cite{MC06} 8.5]{}
 		$F \gets$ minimal component with this property\;
 		% \TODO{minimal (component?)}
 								
@@ -31,9 +31,9 @@
 			$x :\in X \cap S_{uv} \setminus N_v$, for some $uv \in E(J)$\; 
 			% \TODO{brackets?}
 			$x' :\in X \cap S_{u'v}$, for some $u'v \in E(J), u' \neq u$\;
-			\Assert{$\{x, x'\}$ is not local w.r.t. $(S,N)$}
+			\Assert{$\{x, x'\}$ is not local w.r.t.~$(S,N)$}
 			$L(H) \gets \forall_{i,j \in E(J)}$ choose $ij$-rung $R_{ij}$, so that $x \in V(R_{uv}), x' \in V(R_{u'v})$\;
-			\Assert{$\{x, x'\}$ is not local w.r.t. $L(H)$}
+			\Assert{$\{x, x'\}$ is not local w.r.t.~$L(H)$}
 			$H \gets$ inverse line graph of $L(H)$\;
 			$D \gets$ a branch of $H$ with ends $d, u$: $\delta_H(d) \setminus E(D) = (X \cap E(H)) \setminus E(D)$\;
 			% \TODO{How can we get $H$ from $L(H)$}
@@ -47,7 +47,7 @@
 		}
 		\Else {
 			$K \gets \{uv \in E(J) : X \cap S_{uv} \neq \emptyset \}$\;
-			\Assert[SPGT 8.5.(3)]{There are two disjoint edges in $K$}
+			\Assert[\cite{MC06} 8.5.(3)]{There are two disjoint edges in $K$}
 			$F$ is a vertex set of a path $\gets f_1 - \ldots - f_n$\;
 			\Assert{Every choice of rungs is broad}
 		}

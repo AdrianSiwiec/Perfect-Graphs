@@ -5,7 +5,7 @@ A repository containing the discussed source code and tests is available under t
 \label{sec:secnaive}
 When implementing an algorithm with the running time of $O(|V|^9)$ (especially one as complex as CCLSV), one of the first questions that pop up is whether this algorithm is at all usable. We found only one existing attempt at implementing a perfect graph recognition algorithm, but it suffers from a very poor performance (see \Cref{plot:jgrapht}). So, to test the usability of the CCLSV implementation, we measured it against our own na\"ive perfect recognition algorithm. Let us describe it briefly.
 
-We try find an odd hole directly, then, we run the same algorithm on $\overline{G}$, and if no odd hole is found we report that the graph is perfect, else that it is not.
+We try find an odd hole directly, then, we run the same algorithm on $\overline{G}$, and if no odd holes are found we report that the graph is perfect, else that it is not.
 
 To find an odd hole, we use a backtracking technique. We will enumerate all paths and holes, and for each test if it is an odd hole. A partial solution to our backtracking problem is a path in $G$. To move forward from a partial solution, we append consecutively to its end all neighbors of current path's last vertex and continue recursively after each. When a current solution is an odd hole we return it. When we exhaust all possible paths from the current partial solution, we remove its last vertex and continue.
 
@@ -26,7 +26,7 @@ We have an array $first$ in which for each vertex is written its first neighbor 
 
 This simple change in the data structure design gave us a speedup of overall running time of our na\"ive algorithm in the range of about 5x.
 
-Another crucial optimization is to eliminate partial solutions that have edges between not consecutive vertices right away. Also, when we look for an odd hole specifically, we can assume that its first vertex we enumerate is the lowest. Those two optimizations make a huge difference. With them, our na\"ive algorithm implementation went from being able to check graphs with $|V|$ up to 12-14, within a reasonable time, to being faster than CCLSV on most of our tests.
+Another crucial optimization is to eliminate partial solutions that have edges between nonconsecutive vertices right away. Also, when we look for an odd hole specifically, we can assume that its first vertex we enumerate is the lowest. Those two optimizations make a huge difference. With them, our na\"ive algorithm implementation went from being able to check graphs with $|V|$ up to 12-14, within a reasonable time, to being faster than CCLSV on most of our tests.
 
 \paragraph{Array unique.}
 

@@ -23,7 +23,7 @@ We begin by recalling the basic notions of graph theory. We use standard definit
   \label{fig:examplePath}
 \end{wrapfigure}
 
-We will only consider finite graphs, that is, $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set}. When the context of $G$ is clear we will use $V$ and $E$ to denote its vertex and edge set.
+We will only consider finite graphs, that is, $V$ and $E$ are always finite. If $G$ is a graph, then $V = V(G)$ is the \emph{vertex set} of $G$, and $E = E(G)$ is the \emph{edge set} of $G$. When the context of $G$ is clear we will use $V$ and $E$ to denote its vertex and edge set.
 
 An edge $\{x, y\}$ is said to \emph{join}, or \emph{be between} vertices $x$ and $y$ and is denoted by $xy$. Thus $xy$ and $yx$ denote the same edge (all our graphs are \emph{undirected}). If $xy \in E(G)$ then $x$ and $y$ are \emph{adjacent}, \emph{connected} or \emph{neighboring}. By $N(x)$ we will denote the \emph{neighborhood} of $x$, that is, all vertices $y$ such that $xy$ is an edge. Similarly, for $X \subseteq V(G)$, by $N(X)$ we will denote the \emph{neighborhood} of $X$, meaning all vertices of $v \in V(G) \setminus X$, so that there is a $x \in X$, that $xv$ is an edge in $G$. If $xy \notin E(G)$ then $xy$ is a \emph{nonedge} and $x$ and $y$ are \emph{nonneighbors} or \emph{anticonnected}.
 
@@ -37,7 +37,7 @@ An edge $\{x, y\}$ is said to \emph{join}, or \emph{be between} vertices $x$ and
   If $G' = (V', E')$ is a subgraph of $G$ and it contains \emph{all edges} of $G$ that join two vertices in $V'$, then $G'$ is said to be an \emph{induced subgraph} of $G$ and is denoted $G[V']$.
 \end{defn}
 
-Given a graph $G = (V, E)$ and a set $X \subseteq V$ by $G\setminus X$ we will denote a induced subgraph $G[V\setminus X]$.
+Given a graph $G = (V, E)$ and a set $X \subseteq V$ by $G\setminus X$ we will denote the induced subgraph $G[V\setminus X]$.
 
 For example $(\{v_1, v_2, v_3\}, \{v_1v_2\})$ is \emph{not} an induced subgraph of the example graph $G_0$, while $(\{v_1, v_2, v_3\}, \{v_1v_2, v_2v_3\}) = G_0[\{v_1, v_2, v_3\}] = G_0 \setminus \{v_0\}$ is.
 
@@ -53,7 +53,7 @@ For example, for $X = \{v_2\}$, the set $\{v_1, v_3\}$ is $X$-complete in $G$, w
 \end{defn}
 This path $P$ is usually denoted by $x_1x_2\ldots x_l$ or $x_1$-$x_2$-$\ldots$-$x_l$. The vertices $x_1$ and $x_l$ are the \emph{endvertices} and ${l-1} = |E(P)|$ is the \emph{length} of the path P. $\{x_2, \ldots x_{l-1}\}$ is the \emph{inside} of the path $P$, denoted as $P^*$. Notice that we don't allow any edges other than the ones between consecutive vertices for a graph to be called a path.
 
-Our graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we  added any edge to $G_0$ it would stop being a path.
+Our graph $G_0$ is a path of length 3, with the inside $G_0^* = \{v_2, v_3\}$. If we added any edge to the $G_0$ it would stop being a path.
 
 
 \begin{defn}[connected graph, subset]
@@ -104,11 +104,13 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
 \end{defn}
 
 \begin{defn}[clique]
-  A \emph{complete graph} or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is, every two vertices are connected. We will denote a clique on $n$ vertices as $K_n$.
+  A \emph{complete graph} or a \emph{clique} is a graph of the form $G = (V, {V \choose 2})$, that is, every two vertices are connected.
 \end{defn}
 
+We will denote the clique on $n$ vertices as $K_n$.
+
 \begin{defn}[clique number]
-  A \emph{clique number} of a graph $G$, denoted as $\omega(G)$, is a cardinality of its largest induced clique.
+  The \emph{clique number} of a graph $G$, denoted as $\omega(G)$, is a cardinality of its largest induced clique.
 \end{defn}
 
 \begin{defn}[anticlique]
@@ -117,7 +119,7 @@ If a path, a cycle or a hole has an odd length, it will be called \emph{odd}. Ot
 In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \subseteq V$ will be called \emph{independent} (in the context of $G$) if and only if $G[V']$ is an anticlique.
 
 \begin{defn}[stability number]
-  A \emph{stability number} of a graph $G$, denoted as $\alpha(G)$, is a cardinality of its largest induced stable set.
+  The \emph{stability number} of a graph $G$, denoted as $\alpha(G)$, is a cardinality of its largest induced stable set.
 \end{defn}
 
 \begin{defn}[coloring]
@@ -125,7 +127,7 @@ In a similar fashion, given a graph $G = (V, E)$, a subset of its vertices $V' \
 \end{defn}
 
 \begin{defn}[chromatic number]
-  A \emph{chromatic number} of a graph $G$, denoted as $\chi(G)$, is a smallest natural number $k$, for which there exists a $k$-coloring of $G$.
+  The \emph{chromatic number} of a graph $G$, denoted as $\chi(G)$, is a smallest natural number $k$, for which there exists a $k$-coloring of $G$.
 \end{defn}
 
 \begin{defn}[line graph]

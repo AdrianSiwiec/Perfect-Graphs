@@ -1,4 +1,4 @@
-Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for a chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangles and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
+Given a graph $G$, let us consider a problem of coloring it using as few colors as possible. If $G$ contains a clique $K$ as a subgraph, we must use at least $|V(K)|$ colors to color it. This gives us a lower bound for the chromatic number $\chi(G)$ -- it is always greater or equal to the cardinality of the largest clique $\omega(G)$. The reverse is not always true, in fact we can construct a graph with no triangles and requiring arbitrarily large numbers of colors (e.g. construction by Mycielski \cite{Mycielski1955}).
 
 Do graphs that admit coloring using only $\omega(G)$ color are "simpler" to further analyze? Not necessarily so. Given a graph $G = (V, E)$, let us construct a graph $G'$ as the union of $G$ and a clique $K_{|V|}$. We can see that indeed $\chi(G') = \omega(G') = |V|$, but it gives us no indication of the structure of $G$ or $G'$. This leads us to the hereditary definition of \emph{perfect graphs}.
 
@@ -13,7 +13,7 @@ The most fundamental problem -- the problem of recognizing perfect graphs -- was
 
 \begin{defn}[Berge graph]
 	\label{def:bergeGraph}
-	A graph $G$ is \emph{Berge} if and only if both $G$ and $\overline{G}$ have no odd hole as an induced subgraph.
+	A graph $G$ is \emph{Berge} if and only if both $G$ and $\overline{G}$ have no odd holes as induced subgraphs.
 \end{defn}
 
 Perfect graphs are interesting not only because of their theoretical properties, but they are also used in other areas of study e.g. integrality of polyhedra \cite{Chvtal1975, Chudnovsky2003}, radio channel assignment problem \cite{McDiarmid99, McDiarmid2000} and appear in the theory of Shannon capacity of a graph \cite{Lovasz1979}. Also, as pointed out in \cite{alfonsinPerfect2001, Chudnovsky2003}, algorithms to solve semidefinite programs grew out of the theory of perfect graphs. We will take a look at semidefinite programs and at perfect graph's relation to the Shannon capacity in \Cref{sec:ShannonCapacity}.
@@ -49,9 +49,9 @@ This theorem is a consequence of a stronger result proven by Lovász:
 
 Then, since $\alpha(H) = \omega(\overline{H})$ and $\omega(H) = \alpha(\overline{H})$ \Cref{thm:omegaalpha} implies \Cref{thm:pgt}. We skip the proof of \Cref{thm:omegaalpha}, as it is quite technical.
 
-Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has a chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd hole and no odd antihole is called \emph{Berge} (\Cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
+Odd holes are not perfect, since their chromatic number is 3 and their largest cliques are of size 2. It is also easy to see, that an odd antihole of size $n$ has the chromatic number of $\frac{n+1}{2}$ and largest cliques of size $\frac{n-1}{2}$. A graph with no odd holes and no odd antiholes is called \emph{Berge} (\Cref{def:bergeGraph}) after Claude Berge who studied perfect graphs.
 
-In 1961 Berge conjured that a graph is perfect if and only if it contains no odd hole and no odd antihole in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}.
+In 1961 Berge conjured that a graph is perfect if and only if it contains no odd holes and no odd antiholes in what has become known as a strong perfect graph conjecture. In 2001 Chudnovsky et al. have proven it and published the proof in an over 150 pages long paper \citetitle{MC06} \cite{MC06}.
 
 \begin{theorem}[Strong perfect graph theorem, Theorem 1.1 of \cite{MC06}]
 	\label{thm:spgt}
@@ -79,7 +79,7 @@ The proof of \Cref{thm:spgt} is a consequence of the \emph{Decomposition theorem
 
 See \cite{MC06} for the full proof of \Cref{thm:spgt} and \cite{GC03} for its shorter overview.
 
-\section{Recognizing berge graphs}
+\section{Recognizing perfect graphs}
 \label{sec:recognizingBerge}
 
 The following section is based on the paper by \citeauthor{MC05} \citetitle*[]{MC05} \cite{MC05}. We will not provide full proof of its correctness, but we will aim to show the intuition behind the algorithm.
@@ -229,7 +229,7 @@ Five vertices $v_1, \ldots, v_5$ and a path $P$ form a \emph{jewel} if and only 
 
 Notice that given a jewel $v_1, \ldots, v_5, P$, if the path $P$ is odd, then $v_1$-$P$-$v_4$-$v_5$-$v_1$ is an odd hole. If the path $P$ is even, then $v_1$-$P$-$v_4$-$v_3$-$v_2$-$v_1$ is an odd hole.
 
-Most obvious way to find a jewel is to enumerate all (possibly chordal) cycles of length 5 as $v_1, \ldots v_5$, check if it has all required nonedges and if it does, try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with more careful algorithm (see Algorithm 3.1 of \cite{MC05}), but since whole Berge recognition algorithm takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
+The most obvious way to find a jewel is to enumerate all (possibly chordal) cycles of length 5 as $v_1, \ldots v_5$, check if it has all required nonedges and if it does, try to find a path $P$ as required. This gives us a time of $O(|V|^7)$. We could speed it up to $O(|V|^6)$ with a more careful algorithm (see Algorithm 3.1 of \cite{MC05}), but since whole Berge recognition algorithm takes time $O(|V|^9)$ and our testing showed that time it takes to test for jewels is negligible we decided against it.
 
 \subsubsection{Configurations of type $\T_1$}
 
@@ -291,7 +291,7 @@ A configuration of type $\T_3$ is a sequence $v_1, \ldots, v_6$, $P$, $X$, such 
 	\item $v_1, \ldots v_6$ are distinct vertices,
 	\item $v_1v_2$, $v_3v_4$, $v_1v_4$, $v_2v_3$, $v_3v_5$, $v_4v_6$ are edges, and $v_1v_3$, $v_2v_4$, $v_1v_5$, $v_2v_5$, $v_1v_6$, $v_2v_6$, $v_4v_5$ are nonedges,
 	\item $X$ is an anticomponent of the set of all $\{v_1, v_2, v_5\}$-complete vertices, and $v_3$, $v_4$ are not $X$-complete,
-	\item $P$ is a path of $G \setminus ( X \cup \{v_1, v_2, v_3, v_4\} )$ between $v_5$ and $v_6$ and no vertex in $P*$ is $X$-complete or adjacent to $v_1$ or adjacent to $v_2$,
+	\item $P$ is a path of $G \setminus ( X \cup \{v_1, v_2, v_3, v_4\} )$ between $v_5$ and $v_6$ and no vertex in $P^*$ is $X$-complete or adjacent to $v_1$ or adjacent to $v_2$,
 	\item If $v_5v_6$ is an edge, then $v_6$ is not $X$-complete.
 \end{itemize}
 
@@ -342,7 +342,7 @@ It is easy to see that when \Cref{alg:t3} reports a configuration of type $\T_3$
 \begin{proof}
 	There are $O(|V|^3)$ triples $(v_1, v_2, v_5)$ we enumerate in line \ref{line:t3start}. For each, there are $O(|V|)$ $X$s, so lines \ref{line:t3n4start}-\ref{line:t3n4end} are executed $O(|V|^4)$ times.
 
-	Each execution of lines \ref{line:t3n4start}-\ref{line:t3mid} takes $O(|V|^2)$ time, and there are $O(|V|)$ $v_4$s to enumerate. Line \ref{line:t3v4if} takes $O(|V|)$ time and then there are $O(|V|)$ $v_3$ to enumerate. Each is checked in $O(1)$ time. If we find the correct one, we calculate a path $P$, but return right away, so we calculate $P$ at most once in whole algorithm.
+	Each execution of lines \ref{line:t3n4start}-\ref{line:t3mid} takes $O(|V|^2)$ time, and there are $O(|V|)$ $v_4$s to enumerate. Line \ref{line:t3v4if} takes $O(|V|)$ time and then there are $O(|V|)$ $v_3$ to enumerate. Each is checked in $O(1)$ time. If we find the correct one, we calculate a path $P$, but return right away, so we calculate $P$ at most once in the whole algorithm.
 \end{proof}
 
 When graphs $G$ and $\overline{G}$ contain no pyramids, no jewels and no configurations of type $\T_1, \T_2$ or $\T_3$, we will say that graph $G$ contains no \emph{simple forbidden structures}.
@@ -502,7 +502,7 @@ To prove the correctness of \Cref{alg:listNearCleaners} we will need the followi
 				\mEndFor
 			\mEndFor \label{line:cudaEnd}
 		\mEndFor
-		\ls \RETURN no odd hole found
+		\ls \RETURN no odd holes found
 	\mEndProcedure
 \end{algorithmic}
 
@@ -583,5 +583,5 @@ To summarize, we present a complete algorithm for recognizing perfect graphs.
 
 	Finally, let us add up the total running time. By \Cref{thm:containsPyramid9} checking if there is a pyramid in $G$ or $\overline{G}$ takes $O(|V|^9)$ time. Testing for jewels takes $O(|V|^7)$ time, testing for a configuration of type $\T_1$ takes $O(|V|^5)$ time and testing for configuration of type $\T_2$ takes $O(|V|^6)$ time. By \Cref{thm:t3Time} testing for a configuration of type $\T_3$ takes $O(|V|^6)$ time. Running \Cref{alg:listNearCleaners} takes $O(|V|^5)$ time and returns $O(|V|^5)$ subsets. For each subset running \Cref{alg:testNearCleaner} takes $O(|V|^4)$ time, so testing all possible near-cleaners takes $O(|V|^9)$ time.
 
-	The overall running time is $O(|V|^9)$ with testing for pyramids and testing all possible near-cleaners being parts with biggest time complexity.
+	The overall running time is $O(|V|^9)$ with testing for pyramids and testing all possible near-cleaners being parts with the biggest time complexity.
 \end{proof}

@@ -1,6 +1,6 @@
 A natural problem for perfect graphs is a problem of coloring them. In 1988 Gr\"otschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs \cite{Grtschel1993}. We consider it in \Cref{sec:coloringEllipsoid}. However due to its use of the ellipsoid method, this algorithm has been usually considered unpractical \cite{coloringSquareFree,Chudnovsky2003, coloringArtemis}.
 
-There has been much progress on the quest of finding an algorithm coloring perfect graphs, without the use of ellipsoid method (see \Cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this.
+There has been much progress on the quest of finding an algorithm coloring perfect graphs, without the use of the ellipsoid method (see \Cref{sec:classicalColoring}), however there is still no known polynomial combinatorial algorithm to do this.
 
 \section{Information theory background}
 \label{sec:InformationTheory}
@@ -91,7 +91,7 @@ We have equivalent definitions of semidefinite matrices.
   \end{enumerate}
 \end{theorem}
 
-From (\ref{en:ei2}) it follows that diagonal entries of any positive semidefinite matrix are nonnegative and the sum of two positive semidefinite matrices is positive semidefinite.
+From (\ref{en:ei2}) it follows that diagonal entries of any positive semidefinite matrix are nonnegative and that the sum of two positive semidefinite matrices is positive semidefinite.
 
 We may think equivalently of $n \times n$ matrices as vectors with $n^2$ coordinates.
 \begin{defn}[convex cone]
@@ -102,15 +102,17 @@ The fact that the sum of two positive semidefinite matrices is again positive se
 
 \paragraph{Semidefinite programs.}
 
-Now, we can define a \emph{semidefinite program} to be an optimization problem of the following form:
+\begin{defn}[semidefinite program]
+  Let $A_1, \ldots, A_n, B$ be given symmetric $m \times m$ matrices and be $c \in \mathbb{R}^n$ a given vector. A \emph{semidefinite program} is an optimization problem of the following form:
+  \begin{equation*}
+    \begin{array}{ll@{}ll}
+      \text{minimize}   & c^\intercal x                          & \\
+      \text{subject to} & x_1A_1 + \ldots + x_nA_n - B \succeq 0   \\
+    \end{array}
+  \end{equation*}
+  Any choice of the values $x_i$ that satisfies the given constraint is called a \emph{feasible solution}.
+\end{defn}
 
-\begin{equation*}
-  \begin{array}{ll@{}ll}
-    \text{minimize}   & c^\intercal x                          & \\
-    \text{subject to} & x_1A_1 + \ldots + x_nA_n - B \succeq 0   \\
-  \end{array}
-\end{equation*}
-Here $A_1, \ldots, A_n, B$ are given symmetric $m \times m$ matrices and $c \in \mathbb{R}^n$ is a given vector. Any choice of the values $x_i$ that satisfies the given constraint is called a \emph{feasible solution}.
 
 The special case when $A_1, \ldots A_n, B$ are diagonal matrices is a ''generic'' linear program, in fact we can think of semidefinite programs as generalizations of linear programs. Not all properties of linear programs are carried over to semidefinite programs, but the intuition is helpful.
 
@@ -118,7 +120,7 @@ Solving semidefinite programs is a complex topic, we refer to \cite{grotschel199
 
 \paragraph{Calculating \boldmath$\vartheta$.}
 
-Let us recall, that an orthogonal representation of a graph $G = (V, E)$ is a labeling $u: V \rightarrow \mathbb{R}^d$ for some $d$, such that $u_i^\intercal u_j = 0$ for all anticonnected vertices $i, j$. An \emph{orthonormal} representation is an orthogonal representation with $|u_i| = 1$ for all $i$. The \emph{angle} of an orthogonal representation is the smallest half-angle of a rotational cone containing the representing vectors.
+Let us recall, that an orthogonal representation of a graph $G = (V, E)$ is a labeling $u: V \rightarrow \mathbb{R}^d$ for some $d$, such that $u_i^\intercal u_j = 0$ for all anticonnected vertices $i, j$. The \emph{angle} of an orthogonal representation is the smallest half-angle of a rotational cone containing the representing vectors.
 
 \begin{theorem}[Proposition 5.1 of \cite{Lovasz95}]
   The minimum angle $\phi$ of any orthogonal representation of $G$ is given by $\cos^2\phi = 1/\vartheta(G)$.
@@ -130,11 +132,11 @@ This leads us to definition of $\vartheta(G)$ in terms of semidefinite programmi
   $\vartheta(G)$ is the optimum of the following semidefinite program:
 
   \begin{equation*}
-    \begin{array}{ll@{}ll}
-      \text{minimize}   & t      &                                              \\
-      \text{subject to} & Y      & \succeq 0                                    \\
-                        & Y_{ij} & = -1      & (\forall~ij \in E(\overline{G})) \\
-                        & Y_{ii} & = t - 1                                      \\
+    \begin{array}{l@{}rlll}
+      \text{minimize~~}   & t      &                                              \\
+      \text{subject to~~} & Y      & \succeq & 0                                    \\
+                        & Y_{ij} & = & -1      & (\forall~ij \in E(\overline{G})) \\
+                        & Y_{ii} & = & t - 1                                      \\
     \end{array}
   \end{equation*}
 
@@ -154,7 +156,7 @@ Any stable set $S$ of $G$ provides a feasible solution of the dual program, by c
 
 Now, that we know how to calculate $\vartheta(G)$, let us describe the algorithm to calculate the coloring of $G$.
 
-\section{Coloring perfect graphs using ellipsoid method}
+\section{Coloring perfect graphs using an ellipsoid method}
 \label{sec:coloringEllipsoid}
 The following part is based on \citetitle{Laurent2005} by \citeauthor{Laurent2005} \cite{Laurent2005}.
 
@@ -179,11 +181,11 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$. We will co
   \ls $G_0 \leftarrow G$
   \ls $\alpha_G = \alpha(G)$
   \mForEach{$1 \leq i \leq |V|$}
-    \mIf{$\alpha(G_{i-1} \setminus v_i) = \alpha_G$}
-      \ls $G_i \leftarrow G_{i-1} \setminus \{v_i\}$
-    \mElse
-      \ls $G_i \leftarrow G_{i-1}$
-    \mEndIf
+  \mIf{$\alpha(G_{i-1} \setminus v_i) = \alpha_G$}
+  \ls $G_i \leftarrow G_{i-1} \setminus \{v_i\}$
+  \mElse
+  \ls $G_i \leftarrow G_{i-1}$
+  \mEndIf
   \mEndFor
   \ls \RETURN $G_{|V|}$
   \mEndProcedure
@@ -196,11 +198,11 @@ We will now show how to find a stable set in $G$ of size $\alpha(G)$. We will co
   Let us prove that $G_{|V|}$ is indeed a stable set. Suppose otherwise and let $v_iv_j$ be an edge in $G_{|V|}$ with $i < j$ and $i$ minimal. But then $\alpha(G_{i-1} \setminus v_i) = \alpha(G_{i-1}) = \alpha(G)$ so by our construction $v_i$ is not in $G_i$ and $v_iv_j$ is not an edge of $G_n$. Therefore there are no edges in $G_{|V|}$.
 
   Because at every step we have $\alpha(G_i) = \alpha(G_{i-1})$, therefore $\alpha(G_{|V|}) = \alpha(G)$, so $G_{|V|}$ is required maximum cardinality stable set.
-  
+
   The running time of \Cref{alg:maxStableSet} is polynomial, because we construct $|V|$ auxiliary graphs, each requiring calculating $\alpha$ once with additional $O(|V|^2)$ time for constructing the graph.
 \end{proof}
 
-Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ using the following modification: 
+Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the maximum weighted stable set in $G$ using the following modification:
 
 \begin{alg}[Maximum weighted stable set in a perfect graph]
   \label{alg:maxWeightedStableSet}
@@ -212,7 +214,7 @@ Given a weight function $w : V \rightarrow \mathbb{N}$ we could calculate the ma
 \begin{algorithmic}[1]
   \mProcedure{Get-Max-Weighted-Stable-Set}{$G, w$}
   \mForEach{$v \in V(G)$}
-    \ls $W_v \gets$ a set of nonadjacent vertices of size $w(v)$
+  \ls $W_v \gets$ a set of nonadjacent vertices of size $w(v)$
   \mEndFor
   \ls $V' \gets \bigcup W_v$, for $v \in V(G)$ \Comment{$|V'| = \sum_{v\in V(G)} w(v)$ \vspace{-.1cm}}
   \ls $E' \gets \{xy$ for $x, y \in V'$, such that for some $u, v \in V, u \neq v$:
@@ -239,20 +241,20 @@ Recall that to calculate a maximum cardinality clique of $G$, we can calculate a
 
 \begin{algorithmic}[1]
   \mProcedure{Get-Stable-Set-Intersecting-Max-Cliques}{$G$}
-    \ls $\omega_G \gets \omega(G)$
-    \ls $Q_1 \gets$ \textsc{Max-Stable-Set}$(\overline{G})$
-    \ls $t \gets 1$
-    \mWhile{true}
-      \ls $w \gets$ a weight function $V \rightarrow \mathbb{N}$, so that for $v \in V$, $w(v)$ is equal to
-      \lsx the number of cliques $Q_1, \ldots Q_t$ that contain $v$.
-      \ls $S \gets$ \textsc{Max-Weighted-Stable-Set}$(G, w)$ \label{line:ssGetS}
-      \mIf{$\omega(G \setminus S) < \omega_G$}
-        \ls \RETURN $S$
-      \mElse
-        \ls $t \gets t+1$ \vspace{-.1cm}
-        \ls $Q_t \gets$ \textsc{Max-Stable-Set}$(\overline{G \setminus S})$
-      \mEndIf
-    \mEndWhile
+  \ls $\omega_G \gets \omega(G)$
+  \ls $Q_1 \gets$ \textsc{Max-Stable-Set}$(\overline{G})$
+  \ls $t \gets 1$
+  \mWhile{true}
+  \ls $w \gets$ a weight function $V \rightarrow \mathbb{N}$, so that for $v \in V$, $w(v)$ is equal to
+  \lsx the number of cliques $Q_1, \ldots Q_t$ that contain $v$.
+  \ls $S \gets$ \textsc{Max-Weighted-Stable-Set}$(G, w)$ \label{line:ssGetS}
+  \mIf{$\omega(G \setminus S) < \omega_G$}
+  \ls \RETURN $S$
+  \mElse
+  \ls $t \gets t+1$ \vspace{-.1cm}
+  \ls $Q_t \gets$ \textsc{Max-Stable-Set}$(\overline{G \setminus S})$
+  \mEndIf
+  \mEndWhile
   \mEndProcedure
 \end{algorithmic}
 
@@ -272,13 +274,13 @@ There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single cliq
 \begin{algorithmic}[1]
   \mProcedure{Color-Perfect-Graph}{$G$}
   \mIf{$G =$~\textsc{Get-Max-Stable-Set$(G)$}}
-    \ls $C \gets$ coloring all vertices of $G$ with one color
-    \ls \RETURN $C$
+  \ls $C \gets$ coloring all vertices of $G$ with one color
+  \ls \RETURN $C$
   \mElse
-    \ls $S \gets$ \textsc{Get-Stable-Set-Intersecting-Max-Cliques}$(G)$
-    \ls $C' \gets$ \textsc{Color-Perfect-Graph}$(G \setminus S)$
-    \ls $C \gets C'$ with vertices of $S$ colored with an additional color
-    \ls \RETURN $C$
+  \ls $S \gets$ \textsc{Get-Stable-Set-Intersecting-Max-Cliques}$(G)$
+  \ls $C' \gets$ \textsc{Color-Perfect-Graph}$(G \setminus S)$
+  \ls $C \gets C'$ with vertices of $S$ colored with an additional color
+  \ls \RETURN $C$
   \mEndIf
   \mEndProcedure
 \end{algorithmic}
@@ -288,19 +290,14 @@ Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \ome
 \section{Classical algorithms}
 \label{sec:classicalColoring}
 
-Ever since Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs, a combinatorial algorithm for doing the same has been sought. As of yet, it is not known, although there is much progress in the field.
+Ever since Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs, a combinatorial algorithm for doing the same has been sought. As of yet, there isn't one, although there is much progress in the field.
 
-\begin{defn}[prism]
-  A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them. Notice that for a graph to contain no odd holes, all three paths in a prism must have the same parity.
-  \label{def:prism}
-\end{defn}
-
-A prism with all three paths odd is called an \emph{odd prism} and a prism with all three paths even is called an \emph{even prism}.
+A \emph{prism} is a graph consisting of two disjoint triangles and two disjoint paths between them. Notice that for a graph to contain no odd holes, all three paths in a prism must have the same parity. A prism with all three paths odd is called an \emph{odd prism} and a prism with all three paths even is called an \emph{even prism}.
 
 In 2005 Maffray and Trotignon showed a coloring algorithm that colors graphs containing no odd holes, no antiholes and no prisms (sometimes called Artemis graphs) in $O(|V|^4|E|)$ time \cite{Maffray2006}. They later improved the time complexity to $O(|V|^2|E|)$ \cite{coloringArtemis}. In 2015 Maffray showed an algorithm for coloring Berge graphs with no squares\footnote{sometimes called square-free Berge graphs} (a square is a $C_4$) and no odd prisms \cite{Maff2015}.
 
 In 2016 Chudnovsky et al. published an algorithm that given a perfect graph $G$ with $\omega(G) = k$ colors it optimally in a time polynomial for a fixed $k$ \cite{Chudnovsky2017}. In general case this algorithm has a time complexity of $O(|V|^{(k+1)^2})$.
 
-A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{coloringSquareFree}. Before proving strong perfect graph conjecture a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of full algorithm for coloring Berge graphs might follow a similar pattern.
+A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{coloringSquareFree}. Before proving strong perfect graph conjecture a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of a full algorithm for coloring Berge graphs might follow a similar pattern.
 
-The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is not a member of class that is simple to recognize and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper is far from straightforward. We provide its pseudocode in the Appendix A.
+The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is not a member of class that is simple to recognize and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper isn't straightforward. We provide its pseudocode in the Appendix A.
