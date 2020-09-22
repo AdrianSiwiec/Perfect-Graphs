@@ -5,14 +5,14 @@ There has been much progress on the quest of finding an algorithm coloring perfe
 \section{Information theory background}
 \label{sec:InformationTheory}
 
-\Cref{sec:InformationTheory} and \Cref{sec:computingTheta} are based on lecture notes by Lovász \cite{Lovasz95}.
+\Cref{sec:InformationTheory,sec:computingTheta} are based on lecture notes by Lovász \cite{Lovasz95}.
 
 The only polynomial technique of coloring perfect graphs known so far arose in the field of semidefinite programming. Semidefinite programs are linear programs over the cones of semidefinite matrices. The connection of coloring graphs and the cones of semidefinite matrices might be surprising, so let us take a brief digression into the field of information theory, where we will see the connection more clearly. Also, this was exactly the background which motivated Berge to introduce perfect graphs \cite{Chudnovsky2003}.
 
 \subsection{Shannon capacity of a graph}
 \label{sec:ShannonCapacity}
 
-Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected if and only if the values they represent can be confused.
+Suppose we have a noisy communication channel in which certain signal values can be confused with others. For instance, suppose our channel has five discrete signal values, represented as 0, 1, 2, 3, 4. However, each value of $i$ when sent across the channel can be confused with value $(i \pm 1)$ mod $5$. This situation can be modeled by a graph $C_5$ (\Cref{fig:c5}) in which vertices correspond to signal values and two vertices are connected if and only if the values they represent can be confused.
 
 \begin{wrapfigure}{r}{0.35\textwidth}
   \input{tikzpictures/c5.tex}
@@ -25,7 +25,7 @@ We are interested in transmission without possibility of confusion. For this exa
 
 Let us be more precise. Given a graph $G$ modeling a communication channel and a number $k \geq 1$ we say that two messages $v_1v_2\ldots v_k$, $w_1w_2\ldots w_k \in V(G)^k$ of length $k$ are non-confoundable if and only if there is $1 \leq i \leq k$ such that $v_i$, $w_i$ are non-confoundable. We are interested in the maximum rate at which we can reliably transmit information, that is, the \emph{Shannon capacity} of the channel defined by $G$.
 
-For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to $\alpha(G)$. To describe longer messages we use \emph{strong product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ if and only if $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$.
+For $k = 1$, maximum number of messages we can send without confusion in a single step is equal to the stability number $\alpha(G)$. To describe longer messages we use \emph{strong product} $G \cdot H$ of two graphs $G = (V, E)$, $H = (W, F)$ as the graph with $V(G \cdot H) = V \times W$, with $(i, u)(j, v) \in E(G \cdot H)$ if and only if $ij \in E$ and $uv \in F$, or $ij \in E$ and $u = v$, or $i = j$ and $uv \in F$. Given channel modeled by $G$ it is easy to see that the maximum number of distinguishable words of length 2 is equal to $\alpha(G \cdot G)$, and in general the number of distinguishable words of length $k$ is equal to $\alpha(G^k)$ which gives us $\sqrt[k]{\alpha(G^k)}$ as the number of distinguishable signals per single transmission. So, we can define the Shannon capacity of the channel defined by $G$ as $\Theta(G) = \sup\limits_k \sqrt[k]{\alpha(G^k)}$.
 
 Unfortunately, it is not known whether $\Theta(G)$ can be computed for all graphs in finite time. If we could calculate $\alpha(G^k)$ for a first few values of $k$ (we will show how to do it in \Cref{alg:maxStableSet}) we could have a lower bound on $\Theta(G)$. Let us now turn into search for some usable upper bound.
 
@@ -103,7 +103,7 @@ The fact that the sum of two positive semidefinite matrices is again positive se
 \paragraph{Semidefinite programs.}
 
 \begin{defn}[semidefinite program]
-  Let $A_1, \ldots, A_n, B$ be given symmetric $m \times m$ matrices and be $c \in \mathbb{R}^n$ a given vector. A \emph{semidefinite program} is an optimization problem of the following form:
+  Let $A_1, \ldots, A_n, B$ be given symmetric $m \times m$ matrices and be $c \in \mathbb{R}^n$ be a given vector. A \emph{semidefinite program} is an optimization problem of the following form:
   \begin{equation*}
     \begin{array}{ll@{}ll}
       \text{minimize}   & c^\intercal x                          & \\
@@ -287,7 +287,7 @@ There are at most $|V|$ maximum cardinality cliques in $G$. Adding a single cliq
 
 Note that coloring $C'$ uses $\chi(G \setminus S) = \omega(G \setminus S) = \omega(G) -1$ colors, so we will call the recursion $O(|V|)$ times, each step of recursion requires polynomial time. Therefore the total running time of \Cref{alg:minColoring} is polynomial.
 
-\section{Classical algorithms}
+\section{Combinatorial algorithms}
 \label{sec:classicalColoring}
 
 Ever since Grötschel et al. published an ellipsoid-method-based polynomial algorithm for coloring perfect graphs, a combinatorial algorithm for doing the same has been sought. As of yet, there isn't one, although there is much progress in the field.
@@ -298,6 +298,11 @@ In 2005 Maffray and Trotignon showed a coloring algorithm that colors graphs con
 
 In 2016 Chudnovsky et al. published an algorithm that given a perfect graph $G$ with $\omega(G) = k$ colors it optimally in a time polynomial for a fixed $k$ \cite{Chudnovsky2017}. In general case this algorithm has a time complexity of $O(|V|^{(k+1)^2})$.
 
+\subsubsection{Coloring square-free Berge graphs}
+
 A most recent advancement (2018) is an algorithm by Chudnovsky et al. that colors any square-free Berge graphs in time of $O(|V|^9)$ \cite{coloringSquareFree}. Before proving strong perfect graph conjecture a similar conjecture for square-free Berge graphs has been proven by Conforti et al. \cite{Conforti2004}. During one of her lectures, Maria Chudnovsky expressed hope that discovery of a full algorithm for coloring Berge graphs might follow a similar pattern.
 
-The algorithm for coloring square-free Berge graphs is much more complex than CCLSV algorithm for Berge graphs recognition and would be much harder to implement. The main idea is that, if square-free Berge graph $G$ is not a member of class that is simple to recognize and color (Artemis graphs), then it must have an induced prism. We find it and grow it until it is maximal and then we can create a partition of $G$, that we color recursively. The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper isn't straightforward. We provide its pseudocode in the Appendix A.
+The algorithm for coloring square-free Berge graphs is much more complex than the CCLSV algorithm for Berge graphs recognition and would be much harder to implement.  
+The main idea is that, if square-free Berge graph $G$ is not an Artemis graph, then it must have an induced prism. We find it and grow it into a structure called a hyperprism, which is a generalization of a prism. Then, we grow it further either to find a maximal induced hyperprism, or encounter an induced subgraph that is the line graph of a bipartite subdivision of $K_4$. If the latter outcome happens, we can grow it in turn into a rather complex structure called a $J$-strip system and then into a maximal $J$-strip system. When we have found a maximal induced hyperprism or a maximal $J$-strip system, we can find a partition of graph $G$ that we can color recursively. 
+
+The paper in which the algorithm is presented \cite{coloringSquareFree} is of much more mathematical ''flavor'' than \cite{MC05} -- there is a proof that a $O(|V|^9)$ algorithm exists, but actually deducing it from the paper isn't straightforward. We provide its pseudocode in the Appendix A. We believe that the work done there is a structurization of the algorithm that is a required step for a possible future work of implementing it.

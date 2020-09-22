@@ -13,11 +13,11 @@ We ran tests on eight classes of perfect graphs:
   % \item perfect Erd\H{o}s--Rényi graphs,
   \item random bipartite graphs,
   \item line graphs of random bipartite graphs,
-  \item lattice graphs (\cref{fig:lattice}),
-  \item rook graphs (\cref{fig:rook}),
-  \item knight graphs (\cref{fig:knight}),
-  \item hypercube graphs (\cref{fig:hypercube}),
-  \item split graphs (\cref{fig:split}),
+  \item lattice graphs (\Cref{fig:lattice}),
+  \item rook graphs (\Cref{fig:rook}),
+  \item knight graphs (\Cref{fig:knight}),
+  \item hypercube graphs (\Cref{fig:hypercube}),
+  \item split graphs (\Cref{fig:split}),
   \item full binary trees.
 \end{itemize}
 
@@ -118,33 +118,12 @@ We ran our tests on Intel Xeon E5-2690 CPU and Nvidia Tesla K80 GPU with 4992 CU
 \end{figure}
 
 First, let us take a look at the performance of the CCLSV algorithm. If we limit the runtime to about two minutes, we can run it on graphs of sizes up to 40-70, depending on the type of the graph we test. Worth noting is the fact that the CCLSV algorithm usually grows slower than the na\"ive algorithm. Oftentimes this is mitigated by the fact that the na\"ive algorithm works very well on smaller graphs, but it is not always the case. For example, for larger instances of lattice graphs and hypercube graphs the CCLSV works better than na\"ive algorithm. If we would want to test graphs larger than presented here, the GPU CCLSV seems to be the best solution. For every type of graph we tested, it finished within two minutes for graphs of $|V|$ up to about 50. The na\"ive algorithm is very fast for some graphs, like split graphs or random bipartite graphs, but GPU CCLSV still seems to be the best solution for larger graphs of unknown structure.
-  % there isn't that much of a variance of the running time depending on the type of graph we test on. This is a big advantage of CCLSV over the na\"ive algorithm, which is highly dependent on the type of input. On some graphs, it works almost instantaneously, what is to be expected, given its method of enumerating paths. But on some graphs, e.g. lattice graphs (\Cref{plot:gridLines}) its overall running time grows much faster than CCLSV's.
 
 Let us try to understand where the speedup of GPU CCLSV comes from. \Cref{plot:perfDetailed} shows breakdown of each implementation running times on a single graph of each class. We can clearly see that in most cases testing possible near-cleaners takes most of the running time, so the speedup achieved by utilizing the GPU is significant. 
 
 Examples of full binary graphs, and lattice graphs show that getting possible near cleaners still can be a big bottleneck. Parallelization of this method could be considered in the future. A possible idea would be to use recently developed dynamic dictionary for the GPU \cite{Ashkiani2018}. When running GPU CCLSV on split graphs, quite a lot of time is spent checking simple structures. The biggest challenge we can see is in an attempt to parallelize this is spreading the work evenly across CUDA threads.
 
-% When looking at the results (\Cref{plot:perfLines}), while na\"ive algorithm's time is almost zero, we see the CCLSV running time climbing with the growth of $|V|$, with only moderate improvement by GPU CCLSV. Slight GPU improvement is explained by analysis of the components of the overall time (\Cref{plot:perfDet}). Testing all near cleaners takes up around half of total time, so we cannot speed up the overall time by much. These are also relatively small tests, so the latency from copying data to the GPU is significant.
 
-
-% Next, we generated a random bipartite graphs (see paragraph above) and then calculated their line graphs. This gives us graphs of varying $|V|$, so we repeated the process until we had sufficient number of graphs for each $|V|$. On \cref{plot:perf2Lines} we can see na\"ive algorithm being much faster on the majority of the tests, although its faster growth allows GPU CCLSV to be faster on the biggest tests.
-
-% We turn our attention to graphs generated on a grid, or a checker board (see later paragraphs). First, we take lattice graphs. In lattice graph, each vertex is connected to vertices that are above, below, to the left and to the right of it, if such vertices exist. See \cref{fig:lattice} for an example of a $4 \times 4$ lattice graph.
-
-% Let us take a look at \cref{plot:gridLines}. It is a clear example of why polynomial algorithms can be useful, even the ones with time complexity as high as CCLSV. For $|V| = 48$ the running time for the CCLSV is 22.2s, for GPU CCLSV is 7.7s and for na\"ive is 1.5s. Na\"ive is almost 15x faster. But with growing $|V|$ its running time grows very fast, reaching 41s for $|V| = 60$ and 210s for $|V| = 66$. CCLSV growth is much gentler and for $|V| = 66$ it is 2.5x faster than na\"ive.
-
-% If we imagine our grid to be a chessboard we can define a rook graph to have an edge, when the rook from chess can move from one vertex to another in one move. See \cref{fig:rook} for an example of $4 \times 4$ Rook graph.
-
-% Rook graphs have many more chords than Lattice graphs, so the na\"ive's performance is much better here. What is more interesting, the overall performance of CCLSV is much worse (\cref{plot:rookLines}). Looking at \cref{plot:rookDet} we can see that the majority of CCLSV time is spent checking all near cleaners. This can be explained by the fact that rook graphs are much denser than lattice graphs and have many more 3-vertex paths (see line TODO of \cref{alg:testNearCleaner}). This is confirmed by greater CCLSV GPU speedup of around 6x on graphs with $|V| = 35$.
-
-
-% A hypercube is a generalization of a cube to a higher dimensional space. We use hypercubes that are not complete, to achieve higher granularity of data. In a hypercube of $n$ vertices there is an edge between vertices $u$ and $v$ if and only if binary representations of $u$ and $v$ differ by exactly one bit.
-
-% Hypercube graphs tell a similar story to lattice graphs and knight graphs. Na\"ive algorithm is very fast at first, but becomes unbearably slow for $|V|$ higher than 55. Unfortunately, CCLSV doesn't fare much better, although it grows slower. Again, the speedup of GPU CCLSV is noticeable, being around 4.8x for $|V| = 55$.
-
-% Split graphs we use are unions of cliques and independent sets of same size, with some edges between them. In generating them, each edge between a vertex from a clique and a vertex from an independent set has had $1/2$ chance to appear.
-
-% There are no long paths here, so na\"ive algorithm works great (\cref{plot:splitLines}). What is interesting, when looking at detailed times of GPU CCLSV, we can see that checking the existence of simple forbidden structures takes more than 30\% of the time. This opens a possibility of further GPU speedups, not explored by us.
 
 \subsubsection{JGraphT implementation}
 

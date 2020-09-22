@@ -459,11 +459,11 @@ experiments = [
         # "ylim": (0, 1),
     },
     {
-        "restrictions": [(csv_algo, "JAVA")],
+        "restrictions": [],
         "x_param": csv_N,
         "x_show": csv_N,
         "type": "lines",
-        "size": sizes_in_inches["regular_small2"],
+        "size": sizes_in_inches["regular"],
         "y_param": csv_overall,
         "ylog": True,
         "yformatter": func_formatter,
@@ -472,7 +472,7 @@ experiments = [
         # "x_ticks_labels": ["$6\\times 3$", "", "$6\\times 5$", "", "$6\\times 7$", ""],
         "y_label": label_time_overall_s,
         "out_prefix": "java",
-        "ylim": (1, 250),
+        # "ylim": (1, 250),
     },
 ]
 
