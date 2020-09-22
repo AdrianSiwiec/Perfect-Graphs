@@ -9,7 +9,7 @@ This is a library that provides a ```O(n^9)``` method for testing if a graph is 
 
 ## Building and testing instructions.
 
-All source code is located in ./code
+All source code is located in ```./code```
 
 First line of the Makefile enables/disables CUDA. In order to run CUDA tests, a Nvidia graphics card and nvcc is required.
 
